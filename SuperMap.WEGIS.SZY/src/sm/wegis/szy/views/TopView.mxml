@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<baseclass:ViewBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					xmlns:baseclass="sm.wegis.szy.core.baseclass.*" 
+					xmlns:ns="library://ns.supermap.com/flex/wegis/common"
+					width="100%" height="100%"
+					creationComplete="creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.components.events.MenuEventEx;
+			import com.supermap.wegis.common.components.menuBar.MenuItem;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.events.MenuItemEvent;
+			import sm.wegis.szy.skins.MenuItemSkin;
+			import sm.wegis.szy.skins.SubMenuItemSkin;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				initListener();
+			}
+			
+			/**初始化视图事件监听*/
+			public function initListener():void
+			{
+				//系统一级菜单
+				this.systemMenuId.addEventListener(MenuEventEx.MENU_CLICK, systemMenuHandler);
+				//系统二级菜单
+				this.systemSubMenuId.addEventListener(MenuEventEx.MENU_CLICK, systemSubMenuHandler);
+			}
+			
+			//系统一级菜单响应
+			private function systemMenuHandler(e:MenuEventEx):void
+			{
+				if(e.Message is MenuItem)
+				{
+					var item:MenuItem = e.Message as MenuItem;
+					if(item != null)
+					{
+						modelLocator.topInfo.systemSubMenuLabel = "name";
+						var subMenuDs:Object = item.data.subitems.subitem;
+						if(subMenuDs != null)
+						{
+							if(subMenuDs is ArrayCollection)
+							{
+								modelLocator.topInfo.systemSubMenuList = subMenuDs as ArrayCollection;
+							}
+							else
+							{
+								modelLocator.topInfo.systemSubMenuList = new ArrayCollection([subMenuDs]);
+							}
+						}
+					}
+				}
+			}
+			
+			//系统二级菜单响应
+			private function systemSubMenuHandler(e:MenuEventEx):void
+			{
+				if(e.Message is MenuItem)
+				{
+					var item:MenuItem = e.Message as MenuItem;
+					var menuEvent:MenuItemEvent = new MenuItemEvent(MenuItemEvent.SYSTEM_SUB_MENU_SELECT_CHANGE);
+					if(item != null)
+					{
+						menuEvent.data = item.data;
+						menuEvent.dispatch();
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%" gap="0">
+		<s:Group width="100%" height="80">
+			<s:Rect top="0" right="0"  bottom="0" left="0"  >
+				<s:fill>
+					<s:BitmapFill source="{ResourceManagerEx.FindResource('topHeadBg').cls}" fillMode="repeat"/> 
+				</s:fill>
+			</s:Rect>
+			<s:HGroup width="100%" height="100%" paddingLeft="0" verticalAlign="middle">
+				<s:Rect  width="60" height="60">
+					<s:fill>
+						<s:BitmapFill source="{ResourceManagerEx.FindResource('logoIcon').cls}" fillMode="clip"/> 
+					</s:fill>
+				</s:Rect>
+				<s:Rect width="530" height="80">
+					<s:fill>
+						<s:BitmapFill source="{ResourceManagerEx.FindResource('titleIcon').cls}" fillMode="clip"/> 
+					</s:fill>
+				</s:Rect>
+				<s:Spacer width="100%"/>
+				<ns:MenuBar id="systemMenuId" 
+							height="100%"
+							styleName="menuStyle"
+							menuItemSkinClass="{MenuItemSkin}"
+							isUpdateStatus="true"
+							itemHorizontalGap="5" itemVerticalGap="4" 
+							itemHeight="80" itemWidth="80"
+							itemRowCount="1"
+							isToolTip="false"
+							dataProvider="{modelLocator.topInfo.systemMenuList}"
+							labelField="{modelLocator.topInfo.systemMenuLabel}"/>
+			</s:HGroup>
+		</s:Group>
+		<s:Group width="100%" height="30">
+			<s:Rect top="0" right="0"  bottom="0" left="0"  >
+				<s:fill>
+					<s:BitmapFill source="{ResourceManagerEx.FindResource('topMenuBg').cls}" fillMode="repeat"/> 
+				</s:fill>
+			</s:Rect>
+			<ns:MenuBar id="systemSubMenuId" 
+						height="100%"
+						styleName="menuStyle"
+						menuItemSkinClass="{SubMenuItemSkin}"
+						isUpdateStatus="true"
+						itemHorizontalGap="0"
+						itemVerticalGap="4" 
+						itemHeight="30" itemWidth="100"
+						itemRowCount="1"
+						isToolTip="false"
+						dataProvider="{modelLocator.topInfo.systemSubMenuList}"
+						labelField="{modelLocator.topInfo.systemSubMenuLabel}"/>
+		</s:Group>
+	</s:VGroup>
+	<s:SWFLoader width="100%" height="100%" source="assets/swf/bubble.swf"/>
+</baseclass:ViewBase>

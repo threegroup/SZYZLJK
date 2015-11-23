@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="false"  
+				minHeight="25" 
+				styleName="dataGroupItemRenderStyle"
+				 height="100%" width="100%"
+				 creationComplete="creationCompleteHandler()"
+				dataChange="dataChangeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.controls.Spacer;
+			import mx.events.FlexEvent;
+			
+			import spark.components.Label;
+			//存储表格初始化信息，包括标题，每列显示的field，每列宽度
+			private var _initData:Array;
+			private var _captionField:String ="columncaption";
+			private var _columnField:String = "columnfield";
+			private var _columnWidthField:String ="columnwidth";
+			private var _columnType:String = "columntype";
+			private var _gap:int;//分割线和文本的间距
+			/**存储表格初始化信息，包括标题，每列显示的field，每列宽度*/
+			public function get initData():Array
+			{
+				return _initData;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set initData(value:Array):void
+			{
+				_initData = value;
+			}
+
+			/**标题字段*/
+			public function get captionField():String
+			{
+				return _captionField;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set captionField(value:String):void
+			{
+				_captionField = value;
+			}
+
+			/**值字段*/
+			public function get valueField():String
+			{
+				return _columnField;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set valueField(value:String):void
+			{
+				_columnField = value;
+			}
+
+			/**列框*/
+			public function get columnWidthField():String
+			{
+				return _columnWidthField;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set columnWidthField(value:String):void
+			{
+				_columnWidthField = value;
+			}
+
+			/**列下面控件的类型 ，checkbox  ,label，目前支持*/
+			public function get columnType():String
+			{
+				return _columnType;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set columnType(value:String):void
+			{
+				_columnType = value;
+			}
+
+			protected function dataChangeHandler(event:FlexEvent):void
+			{
+				if(data == null)
+				{
+					return;
+				}
+				//如果是第一个渲染器，将最上面一个line可见
+				if(itemIndex == 0)
+				{
+					topLine.visible = true;
+				}else
+				{
+					topLine.visible = false;
+				}
+//				creationCompleteHandler();
+			}
+			protected function creationCompleteHandler():void
+			{
+				_gap = getStyle("gap") == null ? 10 : getStyle("gap");
+				if(initData != null)
+				{
+//					contentGroup.removeAllElements();
+					var line:Line;
+					var space:Spacer;
+					var solidColorStroke:SolidColorStroke;
+					for each(var item:Object in initData)
+					{
+						var label:Label = new Label();
+						if(item.hasOwnProperty(captionField))
+						{
+							label.text = item[captionField];
+						}else {
+							label.text ="未定义";
+						}
+						if(item.hasOwnProperty(columnWidthField))
+						{
+							var itemWidth:String = item[columnWidthField];
+							var index:int =itemWidth.indexOf("%" );
+							if(index != -1)
+							{
+								label.percentWidth =  parseInt(itemWidth.substring(0,index));
+							}else
+							{
+								label.width = parseInt(itemWidth);
+							}
+						}else
+						{
+							label.percentWidth = 100;
+						}
+						line = new Line();
+						line.percentHeight = 100;
+						solidColorStroke = new SolidColorStroke();
+						solidColorStroke.color = getStyle('lineColor');
+						solidColorStroke.weight = 0.8;
+						line.stroke = solidColorStroke;
+						space = new Spacer();
+						space.width = _gap;
+						contentGroup.addElement(line);
+						contentGroup.addElement(space);
+						contentGroup.addElement(label);
+					}
+					line = new Line();
+					line.percentHeight = 100;
+					solidColorStroke = new SolidColorStroke();
+					solidColorStroke.color = getStyle('lineColor');
+					solidColorStroke.weight = 0.8;
+					line.stroke = solidColorStroke;
+					contentGroup.addElement(line);
+				}
+			}
+
+			public function get columnField():String
+			{
+				return _columnField;
+			}
+
+			public function set columnField(value:String):void
+			{
+				_columnField = value;
+			}
+
+			
+		]]>
+	</fx:Script>
+	<s:Rect left="0" right="0" top="0" bottom="0" topLeftRadiusX="0" topLeftRadiusY="0"
+			topRightRadiusX="0" topRightRadiusY="0">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="{getStyle('titleColorFrom')}"/>
+				<s:GradientEntry color="{getStyle('titleColorTo')}"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:VGroup gap="0"  width="100%" height="100%">
+		<s:Line  id="topLine" width="100%"    >
+			<s:stroke>
+				<s:SolidColorStroke color="{getStyle('lineColor')}" weight="0.8"/>
+			</s:stroke>
+		</s:Line>
+		<s:HGroup   id="contentGroup" gap="0" width="100%" height="100%" horizontalAlign="left" verticalAlign="middle" >
+		</s:HGroup>
+		<s:Line  width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="{getStyle('lineColor')}" weight="0.8"/>
+			</s:stroke>
+		</s:Line>
+	</s:VGroup>
+</s:ItemRenderer>

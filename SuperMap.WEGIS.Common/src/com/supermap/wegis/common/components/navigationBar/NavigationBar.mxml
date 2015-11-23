@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%" height="100%"
+		 creationComplete="init(event)">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		.menuItem
+		{
+			labelAlign:bottom;
+			iconPlacement:top;
+			skinClass:ClassReference("com.supermap.wegis.common.skins.MenuItemSkin");
+		}
+	</fx:Style>
+	
+	<fx:Metadata>
+		[Event(name="dataProviderChanged", type="flash.events.Event")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.components.events.MenuEventEx;
+			import com.supermap.wegis.common.core.resourceManager.DisplayInfo;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.components.HGroup;
+			
+			private var hGroup:HGroup = new HGroup();
+			
+			/**按钮组中项目的总数*/
+			private var itemSum:Number = 0;
+			/**按钮组中项目的总数*/
+			public var itemGap:Number = 6;
+			/**按钮组中项目的列表*/
+			private var itemList:ArrayCollection=new ArrayCollection();
+			
+			private var _dataProvider:ArrayCollection;
+		    private var _labelField:String="";
+			
+			private var _selectedIndex:Number = 0;
+			
+			/**按钮样式*/
+			public var buttonStyleName:String="menuItem";
+			
+			/**选中项目*/
+			public function get selectedIndex():Number
+			{
+				return _selectedIndex;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set selectedIndex(value:Number):void
+			{
+				_selectedIndex = value;
+			}
+
+			/**显示字段,如果需要定制显示的Label项目，
+			 *请在进行数据源绑定之前设置LabelField属性*/
+			[Bindable]
+			public function get labelField():String
+			{
+				return _labelField;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set labelField(value:String):void
+			{
+				_labelField = value;
+				dispatchEvent(new Event("dataProviderChanged"));
+			}
+			
+			/**数据源*/
+			[Bindable]
+			public function get dataProvider():ArrayCollection
+			{
+				return _dataProvider;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set dataProvider(value:ArrayCollection):void
+			{
+				if(_dataProvider)
+					this.removeEventListener("dataProviderChanged", dataProviderHandler);
+				_dataProvider = value;
+				
+				var event:Event = new Event("dataProviderChanged");
+				this.dataProviderHandler(event);
+			}
+			
+			protected function init(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.initButtonGroup();
+			}
+			
+			//init button group
+			private function initButtonGroup():void
+			{
+				hGroup.percentWidth = 100;
+				hGroup.percentHeight = 100;
+				hGroup.horizontalAlign = "left";
+				hGroup.verticalAlign = "middle";
+				hGroup.gap = itemGap;
+				
+				this.addElement(hGroup);
+				
+				this.addEventListener("dataProviderChanged", dataProviderHandler);
+			}
+			
+			private function dataProviderHandler(e:Event):void
+			{
+				if(_dataProvider != null)
+				{
+					this.hGroup.removeAllElements();
+					var len:int = _dataProvider.length;
+					for (var i:int = 0; i < len; i++) 
+					{
+						var item:Object = _dataProvider[i];
+						if(item != null)
+						{
+					 		var label:String;
+							if(_labelField != "")
+							{
+								label = item[_labelField];
+							} 
+							addButtonItem(label, item.key, item);
+						}
+					}
+					this.UpdateStyle();
+				}
+			}
+			
+			/**添加Button项目*/
+			public function addButton(button:NavigationItem = null, key:String="", label:String="", data:Object=null):void
+			{
+				if(button == null)
+					return;
+				button.key = key;
+				button.id = key;
+				button.label = label;
+				button.toolTip = label;
+				button.data = data;
+				button.addEventListener(MouseEvent.CLICK, clickHandler);
+				
+				this.hGroup.addElement(button);
+				
+				this.itemList.addItem(button);
+				
+				this.itemSum++;
+				
+				//add to the system display list
+				var displayInfo:DisplayInfo = new DisplayInfo();
+				displayInfo.key = key;
+				displayInfo.display = button as DisplayObject;
+				ResourceManagerEx.AddDisplayInfoToList(displayInfo);
+			}
+			
+			/**添加Button项目*/
+			public function addButtonItem(label:String="",key:String="", data:Object=null):void
+			{
+				var button:NavigationItem = new NavigationItem();
+				
+				button.percentHeight = 100;
+				
+				button.label = label;
+				button.toolTip = label;
+				button.key = key;
+				button.id = key;
+				button.data = data;
+				
+				button.addEventListener(MouseEvent.CLICK, clickHandler);
+				
+				this.hGroup.addElement(button);
+				
+				this.itemList.addItem(button);
+				
+				this.itemSum++;
+				
+				//add to the system display list
+				var displayInfo:DisplayInfo = new DisplayInfo();
+				displayInfo.key = key;
+				displayInfo.display = button as DisplayObject;
+				ResourceManagerEx.AddDisplayInfoToList(displayInfo);
+			}
+			
+			private function UpdateStyle():void
+			{
+				if(this.itemSum >= 1)
+				{
+					var len:Number = this.itemList.length;
+					
+					if(this.itemList != null && len > 0)
+					{
+						for each (var item:Object in this.itemList) 
+						{
+							var button:NavigationItem = item as NavigationItem;
+							button.styleName = this.buttonStyleName;
+						}
+					}
+					
+					if(this.itemList != null && len > 1
+						&& _selectedIndex >= 0 && _selectedIndex < len)
+					{
+						var selectedItem:NavigationItem = this.itemList[_selectedIndex] as NavigationItem;
+						UpdateStatus(selectedItem);
+					}
+				}
+			}
+			
+			private function UpdateStatus(click:NavigationItem=null):void
+			{
+				if(this.itemList != null && this.itemList.length > 0)
+				{
+					if(this.itemList.length >=1)
+					{
+						if(click != null)
+						{
+							if(!click.keepSelected)
+							{
+								for each (var item:Object in this.itemList) 
+								{
+									var button:NavigationItem = item as NavigationItem;
+									button.keepSelected = false;
+									button.invalidateSkinState();
+								}
+								click.keepSelected = true;
+								click.invalidateSkinState();
+							}
+						}
+					}
+				}
+			}
+			
+			
+			private function clickHandler(e:MouseEvent):void
+			{
+				var item:Object = e.target;
+				if(item is NavigationItem)
+				{
+					var clickitem:NavigationItem = item as NavigationItem;
+					if(clickitem != null)
+					{
+						this.UpdateStatus(clickitem);
+					}
+				}
+				this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, item, true));
+			}
+		]]>
+	</fx:Script>
+</s:Group>

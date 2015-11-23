@@ -1,0 +1,23 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+global
+{
+	color: #000000;
+	fontFamily:宋体;
+	fontSize:12;
+	backgroundAlpha:1;
+	titleColorFrom:#FBFBFA;
+	titleColorTo:#E1DFDA;
+	contentBackgroundAlpha:1;
+}
+
+.menuStyle
+{
+	color:#3c75bf;
+	fontSize:12;
+	borderColor:#436DD6;
+	dropShadowVisible:true;
+	iconPlacement:top;
+}

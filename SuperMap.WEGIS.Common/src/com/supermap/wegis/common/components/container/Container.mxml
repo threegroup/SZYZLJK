@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%" height="100%">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			
+			import spark.modules.ModuleLoader;
+			
+			/**加载模块*/
+			public function loadModule(url:String):void
+			{
+				var moduleLoader:ModuleLoader=new ModuleLoader();
+				moduleLoader.percentWidth=100;
+				moduleLoader.percentHeight=100;
+				moduleLoader.loadModule(url);
+				moduleLoader.top = 5;
+				moduleLoader.bottom = 5;
+				this.removeAllElements();
+				this.addElement(moduleLoader);
+			}
+			
+			/**添加组件*/
+			public function addComponent(component:IVisualElement):void
+			{
+				component.percentWidth = 100;
+				component.percentHeight = 100;
+				component.top = 5;
+				component.bottom = 5;
+				component.right = 5;
+				component.left = 5;
+				this.removeAllElements();
+				this.addElement(component);
+			}
+		]]>
+	</fx:Script>
+</s:Group>
