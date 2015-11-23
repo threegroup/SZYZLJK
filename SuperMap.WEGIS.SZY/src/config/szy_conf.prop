@@ -6,13 +6,13 @@ isNeedAuthorization=false
 systemFunctionUrl=config/szy_function.xml
 
 ﻿#系统标题
-systemTitle=松辽流域水资源监控平台
+systemTitle=水资源质量监控平台
 ﻿
 #系统标识
-systemID=SLW
+systemID=SZYZLJK
 
 #版权
-copyRight=2014  版权所有：水利部松辽水利委员会  技术支持：北京超图软件股份有限公司
+copyRight=2015  版权所有：XXXXXX委员会  技术支持：北京超图软件股份有限公司
 
 #========服务地址配置============#
 #WebServices地址
@@ -31,7 +31,7 @@ initBottom=-90
 initRight=180
 initTop=90
 
-#地图显示范围-设置为松辽流域范围
+#地图显示范围-设置为XXXX范围-待定
 viewLeft=84.50
 viewBottom=30.50
 viewRight=157.4

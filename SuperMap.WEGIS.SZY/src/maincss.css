@@ -13,11 +13,9 @@ global
 	contentBackgroundAlpha:1;
 }
 
-.menuStyle
+s|BorderContainer
 {
-	color:#3c75bf;
-	fontSize:12;
-	borderColor:#436DD6;
-	dropShadowVisible:true;
-	iconPlacement:top;
+	backgroundColor:#C5C8CA;
+	backgroundAlpha:0.5;
+	borderVisible:false
 }

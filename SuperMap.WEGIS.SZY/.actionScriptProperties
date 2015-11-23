@@ -19,9 +19,6 @@
     <application path="main.mxml"/>
   </applications>
   <modules>
-    <module application="src/main.mxml" destPath="sm/wegis/szy/widgets/redlinemanager/LimitPollutantWidget.swf" optimize="true" sourcePath="src/sm/wegis/szy/widgets/redlinemanager/LimitPollutantWidget.mxml"/>
-    <module application="src/main.mxml" destPath="sm/wegis/szy/widgets/redlinemanager/TotalWaterControlWidget.swf" optimize="true" sourcePath="src/sm/wegis/szy/widgets/redlinemanager/TotalWaterControlWidget.mxml"/>
-    <module application="src/main.mxml" destPath="sm/wegis/szy/widgets/redlinemanager/WaterUseEfficiencyWidget.swf" optimize="true" sourcePath="src/sm/wegis/szy/widgets/redlinemanager/WaterUseEfficiencyWidget.mxml"/>
     <module application="src/main.mxml" destPath="sm/wegis/szy/plugins/SystemIconFile.swf" optimize="true" sourcePath="src/sm/wegis/szy/plugins/SystemIconFile.as"/>
   </modules>
   <buildCSSFiles>

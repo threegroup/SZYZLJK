@@ -2,40 +2,50 @@
 <baseclass:ViewBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
-					xmlns:baseclass="sm.wegis.szy.core.baseclass.*"
+					xmlns:baseclass="sm.wegis.szy.core.baseclass.*" 
+					xmlns:ns="library://ns.supermap.com/flex/wegis/common"
+					xmlns:supermap="http://www.supermap.com/iclient/2010"
 					width="100%" height="100%">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import mx.core.IVisualElement;
-			/**Top*/
-			public function addTopView(component:IVisualElement):void
-			{
-				this.addComponent(this.TopContainer, component);
-			}
-			
-			/**Body*/
-			public function addBodyView(component:IVisualElement):void
-			{
-				this.addComponent(this.BodyContainer, component);
-			}
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 		]]>
 	</fx:Script>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	<s:Group width="100%"  height="100%">
-		<s:VGroup x="0" y="0" width="100%" height="100%" gap="0">
-			<s:Group id="TopContainerGroup" width="100%" height="110">
-				<s:BorderContainer id="TopContainer" 
-								   width="100%" 
-								   height="100%"/>	
-			</s:Group>
-			<s:Group id="BodyContainerGroup" width="100%" height="100%">
-				<s:BorderContainer id="BodyContainer"
-								   width="100%"
-								   height="100%">
-				</s:BorderContainer>
-			</s:Group>
+	<s:BorderContainer width="100%" height="100%" backgroundColor="#FFFFFF">
+		<supermap:Map>
+			<supermap:CloudLayer>
+			</supermap:CloudLayer>
+		</supermap:Map>
+	</s:BorderContainer>
+	<s:VGroup width="100%" height="100%" gap="0">
+		<s:BorderContainer width="100%">
+			<s:HGroup width="100%" height="100%" paddingLeft="0" verticalAlign="middle">
+				<s:Rect  width="60" height="60">
+					<s:fill>
+						<s:BitmapFill source="{ResourceManagerEx.FindResource('logoIcon').cls}" fillMode="clip"/> 
+					</s:fill>
+				</s:Rect>
+				<s:Rect width="530" height="80">
+					<s:fill>
+						<s:BitmapFill source="{ResourceManagerEx.FindResource('titleIcon').cls}" fillMode="clip"/> 
+					</s:fill>
+				</s:Rect>
+			</s:HGroup>
+		</s:BorderContainer>
+		<s:VGroup id="BodyContainerId" width="100%" height="100%" paddingTop="5" paddingBottom="5">
+			<s:BorderContainer width="300" height="100%">
+				
+			</s:BorderContainer>
 		</s:VGroup>
-	</s:Group>
+		<s:BorderContainer width="100%">
+			<s:HGroup id="CopyRight" width="100%" height="100%" gap="0" horizontalAlign="left" 
+					  verticalAlign="middle">
+				<s:Label fontFamily="Times New Roman" text="©" verticalAlign="middle"/>
+				<s:Label text="{modelLocator.systemInfo.copyRight}"  verticalAlign="middle"/>
+			</s:HGroup>
+		</s:BorderContainer>
+	</s:VGroup>
 </baseclass:ViewBase>

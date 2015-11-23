@@ -53,26 +53,6 @@
 		<property name="modelLocator" ref="appModelInstance" />
 		<property name="percentHeight" value="100" />
 		<property name="percentWidth" value="100" />
-		<method-invocation name="addTopView">
-			<arg ref="TopView" />
-		</method-invocation>
-		<method-invocation name="addBodyView">
-			<arg ref="BodyView" />
-		</method-invocation>
-	</object>
-
-	<!--TopView -->
-	<object id="TopView" class="sm.wegis.szy.views.TopView">
-		<property name="modelLocator" ref="appModelInstance" />
-		<property name="percentHeight" value="100" />
-		<property name="percentWidth" value="100" />
-	</object>
-
-	<!--BodyView -->
-	<object id="BodyView" class="sm.wegis.szy.views.BodyView">
-		<property name="modelLocator" ref="appModelInstance" />
-		<property name="percentHeight" value="100" />
-		<property name="percentWidth" value="100" />
 	</object>
 
 	<!-- SystemVo -->

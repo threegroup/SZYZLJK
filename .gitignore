@@ -44,3 +44,7 @@ Temporary Items
 
 #Flash Builder WorkSpace files
 .metadata
+
+#Compresss files
+.zip
+.rar
