@@ -15,6 +15,18 @@ package sm.wegis.szy.plugins
 		private static var titleIconKey:String = "titleIcon";
 		ResourceManagerEx.RegisterResource("",titleIconKey, titleIconCls);
 		
+		/**底图矢量*/
+		[Embed(source="assets/image/basemap/vector.png")]
+		private static var vectorPngCls:Class;
+		private static var vectorPngKey:String = "vectorPng";
+		ResourceManagerEx.RegisterResource("",vectorPngKey, vectorPngCls);
+		
+		/**底图影像*/
+		[Embed(source="assets/image/basemap/image.png")]
+		private static var imagePngCls:Class;
+		private static var imagePngKey:String = "imagePng";
+		ResourceManagerEx.RegisterResource("",imagePngKey, imagePngCls);
+		
 		public function SystemIconFile()
 		{
 			super();

@@ -29,7 +29,7 @@
 		<link>
 			<name>bin-debug</name>
 			<type>2</type>
-			<location>D:/tomcat8/webapps/szy</location>
+			<location>D:/iClient/tomcat6-szy/webapps/szy</location>
 		</link>
 	</linkedResources>
 </projectDescription>
