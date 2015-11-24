@@ -1,4 +1,4 @@
-package   com.supermap.wegis.common.mappingEx
+package  com.supermap.wegis.common.mappingEx
 {
 	import com.supermap.web.core.Point2D;
 	import com.supermap.web.core.Rectangle2D;
@@ -7,10 +7,13 @@ package   com.supermap.wegis.common.mappingEx
 	import com.supermap.web.sm_internal;
 	
 	import flash.net.URLRequest;
-	
+
 	use namespace sm_internal;
 	public class TiledTDTLayer extends TiledCachedLayer
 	{
+		public  static const vec:String = "vec";
+		public  static const img:String = "img";
+		public  static const ter:String = "ter";
 		//影像类型，包括：矢量、影像两种
 		private var _isLabel:Boolean=false;
 		private var _isLabelChange:Boolean=false;
@@ -19,11 +22,6 @@ package   com.supermap.wegis.common.mappingEx
 		private var _layerType:String="vec";
 		private var _layerTypeChange:Boolean=false;
 		private var _levelOffset:Number=1;
-		/**开始比例尺级别*/
-		private var _startLevel:int =0;
-		/**结束比例尺级别*/
-		private var _endLevel:int = -1;
-		private var _levelChange:Boolean =false;
 		
 		private const URL:String = "http://t{subdomain}.tianditu.com/DataServer?T={layerType}_{proj}&x={tileX}&y={tileY}&l={level}";
 		//private const CVA_URL:String = "http://t{subdomain}.tianditu.com/DataServer?T=cva_{proj}&x={tileX}&y={tileY}&l={level}";
@@ -40,32 +38,27 @@ package   com.supermap.wegis.common.mappingEx
 		private function loadLayerInfo():void
 		{
 			var lt:String = this._layerType;
-			var tempResolutions:Array = [];
-			var resStart:int = 0;
-			var resLength:int = 17;
 			if(lt=="vec"){
-				resStart = 0;
-				resLength = 17;
-				this._levelOffset = _startLevel+ 1;
+				var resStart = 0;
+				var resLength = 17;
+				this._levelOffset = 1;
 			}
 			else if(lt=="img"){
-				resStart = 1;
-				resLength = 17;
-				this._levelOffset =_startLevel+ 2;
+				var resStart = 1;
+				var resLength = 17;
+				this._levelOffset = 2;
 			}
 			else if(lt=="ter"){
-				resStart = 0;
-				resLength = 13;
-				this._levelOffset = _startLevel+  1;
+				var resStart = 0;
+				var resLength = 13;
+				this._levelOffset = 1;
 			}
 			if(this._projection == "4326"){
 				this.bounds = new Rectangle2D(-180, -90, 180, 90);
 				this.origin = new Point2D(-180,90);
 				this.resolutions = [];
 				for(var i:int=resStart;i<=resLength;i++){
-					tempResolutions.push(1.40625/2/Math.pow(2,i));
-					//					this.resolutions.push(1.407828831679488/2/Math.pow(2,i));
-					
+					this.resolutions.push(1.40625/2/Math.pow(2,i));
 				}
 				this._proj = "c";
 			}
@@ -73,28 +66,10 @@ package   com.supermap.wegis.common.mappingEx
 				this.bounds = new Rectangle2D(-20037508.3392, -20037508.3392, 20037508.3392, 20037508.3392);
 				this.origin = new Point2D(-20037508.3392,20037508.3392);
 				this.resolutions = [];
-				for(var j:int=resStart;j<=resLength;j++){
-					tempResolutions.push(156543.0339/2/Math.pow(2,j));
+				for(var i:int=resStart;i<=resLength;i++){
+					this.resolutions.push(156543.0339/2/Math.pow(2,i));
 				}
 				this._proj = "w";
-			}
-			
-			if(_levelChange == true)
-			{
-				if(_startLevel > 0 && _startLevel < tempResolutions.length && _endLevel > 0 
-					&& _endLevel <tempResolutions.length - 1) {
-					this.resolutions = tempResolutions.slice(_startLevel,_endLevel);
-				}
-				if(_endLevel != -1 && _endLevel < tempResolutions.length) {
-					this.resolutions = tempResolutions.slice(0,_endLevel);
-				}
-				if(_startLevel != -1 && _startLevel < tempResolutions.length )
-				{
-					this.resolutions =this.resolutions.slice(_startLevel);
-				}
-				_levelChange = false;				
-			}else{
-				this.resolutions = tempResolutions;
 			}
 			
 			//setLoaded(true);
@@ -105,7 +80,7 @@ package   com.supermap.wegis.common.mappingEx
 		{
 			return _isLabel;
 		}
-		/**设置天地图图可见比例尺*/
+
 		public function set isLabel(value:Boolean):void
 		{
 			if(this._isLabel != value)
@@ -145,7 +120,6 @@ package   com.supermap.wegis.common.mappingEx
 		override protected function commitProperties() : void
 		{
 			super.commitProperties();
-			
 			if (this._isLabelChange||this._layerTypeChange)
 			{
 				removeAllChildren();
@@ -154,7 +128,7 @@ package   com.supermap.wegis.common.mappingEx
 				invalidateLayer();
 			}
 		}
-		
+
 		override protected function getTileURL(row:int, col:int, level:int):URLRequest
 		{
 			level += this._levelOffset;
@@ -178,19 +152,8 @@ package   com.supermap.wegis.common.mappingEx
 		{
 			
 			this.loadLayerInfo();
+			//setLoaded(true);
 			super.setMap(map);
-		}
-		
-		/**开始比例尺级别*/
-		public function  setLevel(startLevel:int = -1,endLevel:int = -1):void
-		{
-			if( startLevel > endLevel)
-			{
-				return;
-			}
-			_startLevel = startLevel;
-			_endLevel = endLevel;
-			_levelChange = true;
 		}
 	}
 }
