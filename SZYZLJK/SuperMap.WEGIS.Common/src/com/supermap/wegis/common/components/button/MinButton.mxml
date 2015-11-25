@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 minWidth="10" minHeight="10"  
+		 mouseOver="mouseOverHandler(event)"
+		 mouseOut="mouseOutHandler(event)"
+		 mouseDown="mouseDownHandler(event)"
+		 mouseUp="mouseOverHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			protected function mouseOverHandler(event:MouseEvent):void
+			{
+				this.currentState = "over";
+			}
+			
+			protected function mouseOutHandler(event:MouseEvent):void
+			{
+				this.currentState = "normal";
+			}
+			
+			protected function mouseDownHandler(event:MouseEvent):void
+			{
+				this.currentState = "down";
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="over"/>
+		<s:State name="down"/>
+		<s:State name="disable"/>
+	</s:states>
+	<!--<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color.over="#D85251" color.down="#D85251" ratio="0.5"   alpha.normal="0" alpha.over="1" alpha.down="1"/>
+				<s:GradientEntry color.over="#D85251" color.down="#D85251" ratio="0.5"   alpha.normal="0" alpha.over="1" alpha.down="1"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:Rect width="100%" height="100%"	>
+		<s:fill  >
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color.over="#EAEAEA" color.down="#FFFFFF"  ratio="0.01" alpha.normal="0" alpha.over="0.2" alpha.down="0.01"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>-->
+	<!--<s:Rect width="100%" height="100%"	>
+		<s:stroke>
+			<s:SolidColorStroke color="#EAEAEA" weight="1" />
+		</s:stroke>
+	</s:Rect>-->
+	<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		<s:Group width="10" height="10">
+			<s:Graphic >
+				<s:Path right="6" verticalCenter="0" id="arrow"
+						data="M 0 2.5  L 10 2.5 L 5 10 Z">
+					<s:fill>
+						<s:RadialGradient rotation="90" focalPointRatio="1">   
+							<s:GradientEntry id="arrowFill1" color="0" />
+							<s:GradientEntry id="arrowFill2" color="0"  />
+						</s:RadialGradient>
+					</s:fill>
+				</s:Path>
+			</s:Graphic>
+		</s:Group>
+	</s:HGroup>
+</s:Group>

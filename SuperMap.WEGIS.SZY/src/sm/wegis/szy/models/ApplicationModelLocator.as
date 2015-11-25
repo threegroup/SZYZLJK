@@ -3,9 +3,9 @@ package sm.wegis.szy.models
 	import com.adobe.cairngorm.model.ModelLocator;
 	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 	
+	import sm.wegis.szy.vo.MenuVO;
 	import sm.wegis.szy.vo.SystemVO;
-	import sm.wegis.szy.vo.TopVO;
-	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
+	import sm.wegis.szy.vo.ToolVO;
 
 	[Bindable]
 	public class ApplicationModelLocator implements ModelLocator
@@ -36,7 +36,10 @@ package sm.wegis.szy.models
 		/**系统信息*/
 		public var systemInfo:SystemVO;
 		
-		/**顶部视图信息*/
-		public var topInfo:TopVO;
+		/**系统工具条视图信息*/
+		public var toolInfo:ToolVO =new ToolVO();
+		
+		/**系统菜单视图信息*/
+		public var menuInfo:MenuVO = new MenuVO();
 	}
 }

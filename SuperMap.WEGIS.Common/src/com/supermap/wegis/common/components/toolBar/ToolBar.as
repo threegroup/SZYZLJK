@@ -29,8 +29,8 @@ package com.supermap.wegis.common.components.toolBar
 		private var _isUpdateStatus:Boolean;
 		
 		//停靠位置
-		private var _dockDirection:String = "horizontalAlign";
-		[Inspectable (defaultValue="horizontalAlign", enumeration="horizontalAlign, verticalAlign")]
+		private var _dockDirection:String = "verticalAlign";
+		[Inspectable (defaultValue="verticalAlign", enumeration="horizontalAlign, verticalAlign")]
 		public function get dockDirection():String
 		{
 			return _dockDirection;

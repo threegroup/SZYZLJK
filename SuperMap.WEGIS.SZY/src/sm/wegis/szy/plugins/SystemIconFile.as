@@ -43,6 +43,57 @@ package sm.wegis.szy.plugins
 		private static var imagePngKey:String = "imagePng";
 		ResourceManagerEx.RegisterResource("",imagePngKey, imagePngCls);
 		
+		/**地图工具栏*/
+		[Embed(source="assets/image/tool/area.png")]
+		private static var areaCls:Class;
+		private static var areaKey:String = "Area";
+		ResourceManagerEx.RegisterResource("",areaKey, areaCls);
+		
+		[Embed(source="assets/image/tool/clear.png")]
+		private static var clearCls:Class;
+		private static var clearKey:String = "Clear";
+		ResourceManagerEx.RegisterResource("",clearKey, clearCls);
+		
+		[Embed(source="assets/image/tool/distance.png")]
+		private static var distanceCls:Class;
+		private static var distanceKey:String = "Distance";
+		ResourceManagerEx.RegisterResource("",distanceKey, distanceCls);
+		
+		[Embed(source="assets/image/tool/full.png")]
+		private static var fullCls:Class;
+		private static var fullKey:String = "Full";
+		ResourceManagerEx.RegisterResource("",fullKey, fullCls);
+		
+		[Embed(source="assets/image/tool/fullextent.png")]
+		private static var fullextentCls:Class;
+		private static var fullextentKey:String = "FullExtent";
+		ResourceManagerEx.RegisterResource("",fullextentKey, fullextentCls);
+		
+		[Embed(source="assets/image/tool/pan.png")]
+		private static var panCls:Class;
+		private static var panKey:String = "Pan";
+		ResourceManagerEx.RegisterResource("",panKey, panCls);
+		
+		[Embed(source="assets/image/tool/zoomin.png")]
+		private static var zoominCls:Class;
+		private static var zoominKey:String = "ZoomIn";
+		ResourceManagerEx.RegisterResource("",zoominKey, zoominCls);
+		
+		[Embed(source="assets/image/tool/zoomout.png")]
+		private static var zoomoutCls:Class;
+		private static var zoomoutKey:String = "ZoomOut";
+		ResourceManagerEx.RegisterResource("",zoomoutKey, zoomoutCls);
+		
+		[Embed(source="assets/image/tool/left.png")]
+		private static var leftCls:Class;
+		private static var leftKey:String = "Left";
+		ResourceManagerEx.RegisterResource("",leftKey, leftCls);
+		
+		[Embed(source="assets/image/tool/right.png")]
+		private static var rightCls:Class;
+		private static var rightKey:String = "Right";
+		ResourceManagerEx.RegisterResource("",rightKey, rightCls);
+		
 		public function SystemIconFile()
 		{
 			super();

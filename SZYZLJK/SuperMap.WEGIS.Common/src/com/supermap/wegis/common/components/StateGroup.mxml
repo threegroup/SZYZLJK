@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 minHeight="100"  minWidth="100" >
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import mx.core.IVisualElement;
+			private var _showWait:Boolean = false;
+			/**是否等待*/
+			public function get showWait():Boolean
+			{
+				return _showWait;
+			}
+			/**是否等待*/
+			public function set showWait(value:Boolean):void
+			{
+				_showWait = value;
+				if(value)
+				{
+					this.currentState ="wait";
+				}else
+				{
+					this.currentState = "normal";
+				}
+			}
+			
+			override public function addChild(child:DisplayObject):DisplayObject
+			{
+				return contentGroup.addChild(child);
+			}
+			
+			override public function addElement(element:IVisualElement):IVisualElement
+			{
+				return contentGroup.addElement(element);
+			}
+			
+			override public function addElementAt(element:IVisualElement, index:int):IVisualElement
+			{
+				return contentGroup.addElementAt(element,index);
+			}
+			
+			override public function removeAllElements():void
+			{
+				contentGroup.removeAllElements();
+			}
+			
+			override public function removeElement(element:IVisualElement):IVisualElement
+			{
+				return contentGroup.removeElement(element);
+			}
+			
+			override public function removeElementAt(index:int):IVisualElement
+			{
+				return contentGroup.removeElementAt(index);
+			}
+			
+// 			override  public  function set mxmlContent(value:Array):void
+//			{
+//				for each(var item:IVisualElement in value)
+//				{
+//					this.addElement(item);
+//				}
+//			}
+ 
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="wait"/>
+	</s:states>
+	<s:Group id="contentGroup" width="100%" height="100%"/>
+	<s:HGroup id="waitGroup"   horizontalAlign="center" verticalAlign="middle">
+		<s:SWFLoader source="@Embed('../swfs/loading.swf')" width="100%" height="100%" maxHeight="50"  maxWidth="50"/>
+	</s:HGroup>
+</s:Group>

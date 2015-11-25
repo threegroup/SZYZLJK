@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<baseclass:ViewBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" 
+					xmlns:baseclass="sm.wegis.szy.core.baseclass.*" 
+					xmlns:ns="library://ns.supermap.com/flex/wegis/common"
+					xmlns:supermap="http://www.supermap.com/iclient/2010"
+					width="100%" height="100%"
+					creationComplete="creationCompleteHandler(event)">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.supermap.wegis.common.core.widget.WidgetManager;
+			import com.supermap.wegis.common.components.events.MenuEventEx;
+			import com.supermap.wegis.common.components.menuBar.MenuItem;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.events.MenuItemEvent;
+			import sm.wegis.szy.skins.MenuItemSkin;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				initListener();
+			}
+			
+			/**初始化视图事件监听*/
+			public function initListener():void
+			{
+				//系统菜单
+				this.systemMenuId.addEventListener(MenuEventEx.MENU_CLICK, systemMenuHandler);
+				
+				//根据菜单选择切换主体面板内容
+				CairngormEventDispatcher.getInstance().addEventListener(MenuItemEvent.SYSTEM_MENU_SELECT_CHANGE
+					,switchBodyContent);
+			}
+			
+			//系统一级菜单响应
+			private function systemMenuHandler(e:MenuEventEx):void
+			{
+				if(e.Message is MenuItem)
+				{
+					var item:MenuItem = e.Message as MenuItem;
+					var menuEvent:MenuItemEvent = new MenuItemEvent(MenuItemEvent.SYSTEM_MENU_SELECT_CHANGE);
+					if(item != null)
+					{
+						menuEvent.data = item.data;
+						menuEvent.dispatch();
+					}
+				}
+			}
+			
+			//切换主体模块内容
+			private function switchBodyContent(event:MenuItemEvent):void
+			{
+				var menuItemData:Object = event.data;
+				if(menuItemData == null) {
+					return;
+				}
+				
+				this.BodyContainerID.removeAllElements();
+				menuItemData.parent = this.BodyContainerID;
+				WidgetManager.getInstance().loadWidget(menuItemData);
+			}
+		]]>
+	</fx:Script>
+	<s:BorderContainer id="MapContainerID" width="100%" height="100%" backgroundColor="#FFFFFF">
+		<supermap:Map>
+			<supermap:CloudLayer>
+			</supermap:CloudLayer>
+		</supermap:Map>
+	</s:BorderContainer>
+	<s:VGroup id="TopContainerID"  width="100%" height="100%" gap="0">
+		<s:BorderContainer width="100%">
+			<s:HGroup width="100%" height="100%" paddingLeft="0" verticalAlign="middle" gap="0">
+				<s:Rect  width="40" height="40">
+					<s:fill>
+						<s:BitmapFill source="{ResourceManagerEx.FindResource('logoIcon').cls}" fillMode="clip"/> 
+					</s:fill>
+				</s:Rect>
+				<s:Rect width="530" height="80">
+					<s:fill>
+						<s:BitmapFill source="{ResourceManagerEx.FindResource('titleIcon').cls}" fillMode="clip"/> 
+					</s:fill>
+				</s:Rect>
+				<s:Spacer width="100%"/>
+				<ns:MenuBar id="systemMenuId" 
+							height="100%"
+							styleName="menuStyle"
+							menuItemSkinClass="{MenuItemSkin}"
+							isUpdateStatus="true"
+							itemHorizontalGap="5" itemVerticalGap="4" 
+							itemHeight="80" itemWidth="80"
+							itemRowCount="1"
+							isToolTip="false"
+							dataProvider="{modelLocator.topInfo.systemMenuList}"
+							labelField="{modelLocator.topInfo.systemMenuLabel}"/>
+			</s:HGroup>
+		</s:BorderContainer>
+		<s:HGroup width="100%" height="100%" paddingTop="5" paddingBottom="5">
+			<s:BorderContainer id="BodyContainerID"  width="300" height="100%">
+				
+			</s:BorderContainer>
+		</s:HGroup>
+		<s:BorderContainer id="BottomContainerID"  width="100%">
+			<s:HGroup id="CopyRight" width="100%" height="100%" gap="0" horizontalAlign="left" 
+					  verticalAlign="middle">
+				<s:Label fontFamily="Times New Roman" text="©" verticalAlign="middle"/>
+				<s:Label text="{modelLocator.systemInfo.copyRight}"  verticalAlign="middle"/>
+			</s:HGroup>
+		</s:BorderContainer>
+	</s:VGroup>
+</baseclass:ViewBase>

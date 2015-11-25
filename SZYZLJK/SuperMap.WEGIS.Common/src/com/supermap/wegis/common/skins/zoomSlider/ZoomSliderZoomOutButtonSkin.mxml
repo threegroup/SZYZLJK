@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:mx="library://ns.adobe.com/flex/mx"
+        minHeight="10"
+        minWidth="10">
+
+	<!--定义缩放条的地图缩小按钮-->
+    <fx:Metadata>
+        [HostComponent("spark.components.Button")]
+    </fx:Metadata>
+
+	<!--按钮状态-->
+    <s:states>
+        <s:State name="disabled"/>
+        <s:State name="down"/>
+        <s:State name="over"/>
+        <s:State name="up"/>
+    </s:states>
+
+	<!--使用图片定义按钮-->
+    <s:BitmapImage bottom="0"
+                   left="0"
+                   right="0"
+				   source="@Embed('../../images/compass/sliderZoomOutNormal.png')"
+				   source.over="@Embed('../../images/compass/sliderZoomOutOver.png')"
+				   source.down="@Embed('../../images/compass/sliderZoomOutOver.png')"
+    			   top="0"/>
+</s:Skin>

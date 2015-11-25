@@ -1,7 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <functions>
+	<!-- 预加载模块 -->
+	<initwidget>
+
+	</initwidget>
+	<!-- 系统菜单 -->
 	<menu>
-		<systemmenu>
+		<mapmenu>
 			<item>
 				<name>水体查询</name>
 				<key>WaterBodyQuery</key>
@@ -26,6 +31,71 @@
 				<init></init>
 				<selected></selected>
 			</item>
-		</systemmenu>
+		</mapmenu>
 	</menu>
+	<assistmenu>
+	</assistmenu>
+	<widgets>
+		<mapsearch>
+		</mapsearch>
+	</widgets>
+	<!--工具条 -->
+	<tool>
+		<maptool>
+			<item>
+				<name>隐藏</name>
+				<key>Left</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+			<item>
+				<name>漫游</name>
+				<key>Pan</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+			<item>
+				<name>放大</name>
+				<key>ZoomIn</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+			<item>
+				<name>缩小</name>
+				<key>ZoomIn</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+			<item>
+				<name>全幅</name>
+				<key>FullExtent</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+			<item>
+				<name>测距</name>
+				<key>Distance</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+			<item>
+				<name>测面</name>
+				<key>Area</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+			<item>
+				<name>清除</name>
+				<key>Clear</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+			<item>
+				<name>全屏</name>
+				<key>Full</key>
+				<securitycontroler>false</securitycontroler>
+				<securitytype>visible</securitytype>
+			</item>
+		</maptool>
+	</tool>
 </functions>

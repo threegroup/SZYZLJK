@@ -13,13 +13,14 @@ global
 	contentBackgroundAlpha:1;
 }
 
-.menuStyle
+mx|ToolTip
 {
-	color:#3c75bf;
 	fontSize:12;
-	borderColor:#436DD6;
-	dropShadowVisible:true;
-	iconPlacement:top;
+	backgroundAlpha:1;
+	backgroundColor:#ffff00;
+	color:#0000ff;
+	borderColor:#ff0000;
+	borderVisible:true;
 }
 
 s|BorderContainer
@@ -28,3 +29,25 @@ s|BorderContainer
 	backgroundAlpha:0.8;
 	borderVisible:false
 }
+
+.menuStyle
+{
+	color:#FFFFFF;
+	fontSize:12;
+	borderColor:#436DD6;
+	dropShadowVisible:true;
+	iconPlacement:top;
+	skinClass:ClassReference("sm.wegis.szy.skins.ToolItemSkinEx")
+}
+
+.toolStyle
+{
+	color:#FFFFFF;
+	fontSize:12;
+	borderColor:#436DD6;
+	dropShadowVisible:true;
+	iconPlacement:top;
+    skinClass:ClassReference("sm.wegis.szy.skins.ToolItemSkinEx")
+}
+
+

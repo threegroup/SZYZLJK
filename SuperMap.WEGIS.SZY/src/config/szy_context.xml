@@ -64,15 +64,10 @@
 		<property name="copyRight" value="${copyRight}" />
 	</object>
 
-	<!-- TopVo -->
-	<object id="TopVO" class="sm.wegis.szy.vo.TopVO">
-	</object>
-
 	<!--ModelLocator -->
 	<object id="appModelInstance" class="sm.wegis.szy.models.ApplicationModelLocator"
 		factory-method="getInstance" singleton="true">
 		<property name="systemInfo" ref="SystemVO" />
-		<property name="topInfo" ref="TopVO" />
 	</object>
 
 	<!--Services -->

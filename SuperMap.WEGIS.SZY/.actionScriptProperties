@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <actionScriptProperties analytics="false" mainApplicationPath="main.mxml" projectUUID="8a32a865-53d5-4935-8fcb-df72ae3eae51" version="10">
-  <compiler additionalCompilerArguments="-locale en_US&#13;&#10;-load-config+=config/szy.config" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="D:/iClient/tomcat6-szy/webapps/szy" outputFolderPath="bin-debug" removeUnusedRSL="true" rootURL="" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+  <compiler additionalCompilerArguments="-locale en_US&#13;&#10;-load-config+=config/szy.config" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="D:/tomcat8/webapps/szy" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
@@ -10,8 +10,8 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
-      <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/Libs/SuperMap.WEGIS.Common.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/SuperMap.WEGIS.TransData/bin-debug/SuperMap.WEGIS.TransData.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/SuperMap.WEGIS.Common/bin-debug/SuperMap.WEGIS.Common.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

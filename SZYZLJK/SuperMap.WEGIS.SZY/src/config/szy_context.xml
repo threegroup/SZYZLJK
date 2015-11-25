@@ -1,0 +1,177 @@
+<objects>
+	<!--导入外部资源文件 -->
+	<property file="szy_conf.prop" />
+	
+	<!-- 地图使用的图层 -->
+	<object id="SGSWMTSLayer"
+		class="com.supermap.wegis.common.mappingEx.TiledWMTSLayerEx" />
+	<object id="TDTEx" class="com.supermap.wegis.common.mappingEx.TiledTDTLayerEx" />
+	<!-- 图层索引范围 -->
+	<object id="bounds" class="com.supermap.web.core.Rectangle2D">
+		<constructor-arg type="number" value="${initLeft}"></constructor-arg>
+		<constructor-arg type="number" value="${initBottom}"></constructor-arg>
+		<constructor-arg type="number" value="${initRight}"></constructor-arg>
+		<constructor-arg type="number" value="${initTop}"></constructor-arg>
+	</object>
+	<!-- 地图显示范围 -->
+	<object id="viewBoundsEx" class="com.supermap.web.core.Rectangle2D">
+		<constructor-arg type="number" value="${viewLeft}"></constructor-arg>
+		<constructor-arg type="number" value="${viewBottom}"></constructor-arg>
+		<constructor-arg type="number" value="${viewRight}"></constructor-arg>
+		<constructor-arg type="number" value="${viewTop}"></constructor-arg>
+	</object>
+	<!-- 地图显示比例尺 -->
+	<object id="LayerScales" class="com.supermap.wegis.common.core.ArrayEx">
+		<constructor-arg value="${layerScales}" />
+	</object>
+	<!--地图控件 -->
+	<object id="MapCtrl"
+		class="com.supermap.wegis.common.components.mapCtrl.MapCtrl"
+		depends-on="viewBoundsEx">
+		<property name="percentHeight" value="100" />
+		<property name="percentWidth" value="100" />
+		<property name="viewBoundsEx" ref="viewBoundsEx" />
+		<property name="scales" ref="LayerScales" />
+		<property name="restrictedBounds" ref="viewBoundsEx" />
+	</object>
+
+	<!--所有view，通过这个对象添加到界面上 -->
+	<object class="sm.wegis.szy.utils.ApplicationViewAssembler"
+		init-method="init">
+		<property name="elements">
+			<value>
+				<array>
+					<ref>MainView</ref>
+				</array>
+			</value>
+		</property>
+	</object>
+
+	<!--Views -->
+	<!--MainView -->
+	<object id="MainView" class="sm.wegis.szy.views.MainView">
+		<property name="modelLocator" ref="appModelInstance" />
+		<property name="percentHeight" value="100" />
+		<property name="percentWidth" value="100" />
+	</object>
+
+	<!-- SystemVo -->
+	<object id="SystemVO" class="sm.wegis.szy.vo.SystemVO">
+		<property name="systemFunctionUrl" value="${systemFunctionUrl}" />
+		<property name="systemTitle" value="${systemTitle}" />
+		<property name="systemID" value="${systemID}" />
+		<property name="isNeedAuthorization" value="${isNeedAuthorization}" />
+		<property name="copyRight" value="${copyRight}" />
+	</object>
+
+	<!-- TopVo -->
+	<object id="TopVO" class="sm.wegis.szy.vo.TopVO">
+	</object>
+
+	<!--ModelLocator -->
+	<object id="appModelInstance" class="sm.wegis.szy.models.ApplicationModelLocator"
+		factory-method="getInstance" singleton="true">
+		<property name="systemInfo" ref="SystemVO" />
+		<property name="topInfo" ref="TopVO" />
+	</object>
+
+	<!--Services -->
+	<object id="webService" class="mx.rpc.soap.WebService">
+		<property name="wsdl" value="${wsdl}" />
+		<property name="useProxy" value="false" />
+		<property name="requestTimeout" value="120000" />
+	</object>
+	<object id="httpService" class="mx.rpc.http.HTTPService">
+		<property name="method" value="POST" />
+		<property name="useProxy" value="false" />
+		<property name="showBusyCursor" value="true" />
+		<property name="requestTimeout" value="30000" />
+	</object>
+
+	<!--Delegate Factory webService -->
+	<object id="businessDelegateFactory"
+		class="org.springextensions.actionscript.cairngorm.business.BusinessDelegateFactory">
+		<property name="service" ref="webService" />
+		<property name="delegateClass" type="class"
+			value="sm.wegis.szy.businesses.GetDelegate"></property>
+	</object>
+
+	<!--FrontControler -->
+	<object id="appAwareCmdFactory"
+		class="sm.wegis.szy.factories.ApplicationModelAwareCommandFactory">
+		<property name="modelLocator" ref="appModelInstance" />
+		<method-invocation name="addBusinessDelegateFactory">
+			<arg>
+				<ref>businessDelegateFactory</ref>
+			</arg>
+			<arg>
+				<array>
+					<value type="Class">sm.wegis.szy.commands.SystemInitCommand</value>
+					<value type="Class">sm.wegis.szy.commands.DataBindCreatedCommand</value>
+					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand</value>
+					<!--切换底图-->
+					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand</value>
+				</array>
+			</arg>
+		</method-invocation>
+	</object>
+	<object id="frontController"
+		class="org.springextensions.actionscript.cairngorm.control.CairngormFrontController">
+		<constructor-arg>
+			<object>
+				<property name="SystemInit" value="SystemInitCommand" />
+				<property name="DataBindCreated" value="DataBindCreatedCommand" />
+				<property name="SystemSecurity" value="SystemSecurityCommand" />
+				<property name="BaseMapChangeCommand" value="BaseMapChangeCommand" />
+			</object>
+		</constructor-arg>
+		<constructor-arg value="sm.wegis.szy.commands" />
+		<method-invocation name="addCommandFactory">
+			<arg>
+				<ref>appAwareCmdFactory</ref>
+			</arg>
+		</method-invocation>
+	</object>
+
+	<!--Delegate Factory httpService -->
+	<object id="httpBusinessDelegateFactory"
+		class="org.springextensions.actionscript.cairngorm.business.BusinessDelegateFactory">
+		<property name="service" ref="httpService" />
+		<property name="delegateClass" type="class"
+			value="sm.wegis.szy.businesses.GetDelegate"></property>
+	</object>
+
+	<!-- HttpServices -->
+	<object id="httpAppAwareCmdFactory"
+		class="sm.wegis.szy.factories.ApplicationModelAwareCommandFactory">
+		<property name="modelLocator" ref="appModelInstance" />
+		<method-invocation name="addBusinessDelegateFactory">
+			<arg>
+				<ref>httpBusinessDelegateFactory</ref>
+			</arg>
+			<arg>
+				<array>
+					<!--获取系统功能 -->
+					<value type="Class">sm.wegis.szy.commands.GetFunctionCommand</value>
+				</array>
+			</arg>
+		</method-invocation>
+	</object>
+
+	<!-- HttpServices -->
+	<object id="httpfrontController"
+		class="org.springextensions.actionscript.cairngorm.control.CairngormFrontController">
+		<constructor-arg>
+			<object>
+				<!--获取系统功能 -->
+				<property name="GetFunction" value="GetFunctionCommand" />
+			</object>
+		</constructor-arg>
+		<constructor-arg value="sm.wegis.szy.commands" />
+		<method-invocation name="addCommandFactory">
+			<arg>
+				<ref>httpAppAwareCmdFactory</ref>
+			</arg>
+		</method-invocation>
+	</object>
+</objects>

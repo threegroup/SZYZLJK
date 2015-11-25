@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="200" height="50"
+				   borderColor="#53ACFA" 
+				   cornerRadius="5"
+				   horizontalCenter="0" verticalCenter="0">
+	<s:backgroundFill>
+		<s:LinearGradient rotation="-90">
+			<s:entries>
+				<s:GradientEntry alpha="0.3" color="#ffffff" ratio="0.1"/>  
+				<s:GradientEntry alpha="0.5" color="#53ACFA" ratio="0.9"/> 
+			</s:entries>
+		</s:LinearGradient>
+	</s:backgroundFill>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			private var label:String;
+			
+			public function close():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			public function set setLabel(label:String):void
+			{
+				this.label = label
+				invalidateProperties();
+			}
+			
+			override protected function commitProperties():void
+			{
+				image.toolTip =label;
+				this.lb.text = label;
+				super.commitProperties();
+			}
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%" height="100%" horizontalAlign="left" paddingBottom="5" paddingLeft="5"
+			  paddingRight="5" paddingTop="5" verticalAlign="middle">
+		<mx:Image id="image" width="100%" source="@Embed('../../swfs/roll.swf')" toolTip="正在查询"/>
+		<mx:Label id="lb" text="查询中..."/>
+	</s:VGroup> 
+	
+</s:BorderContainer>
+
+

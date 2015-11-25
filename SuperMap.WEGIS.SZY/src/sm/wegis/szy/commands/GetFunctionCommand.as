@@ -21,21 +21,27 @@ package sm.wegis.szy.commands
 		override public function result(data:Object):void
 		{
 			//绑定数据源
-			//系统主菜单功能
-			modelLocator.topInfo.systemMenuLabel = "name";
-			var menuDs:Object = data.result.functions.menu.systemmenu.item;
-			if(menuDs != null)
+			//二维地图相关功能
+			modelLocator.toolInfo.mapToolLabel = "name";
+			var mapTool:Object = data.result.functions.tool.maptool;
+			if(mapTool != null)
 			{
-				if(menuDs is ArrayCollection)
-				{
-					modelLocator.topInfo.systemMenuList = menuDs as ArrayCollection;
-				}
+				if(mapTool.item is ArrayCollection)
+					modelLocator.toolInfo.mapToolList = mapTool.item as ArrayCollection;
 				else
-				{
-					modelLocator.topInfo.systemMenuList = new ArrayCollection([menuDs]);
-				}
+					modelLocator.toolInfo.mapToolList = new ArrayCollection([mapTool.item]);
 			}
 			
+			modelLocator.menuInfo.mapMenuLabel = "name";
+			var mapMenu:Object = data.result.functions.menu.mapmenu;
+			if(mapMenu != null)
+			{
+				if(mapMenu.item is ArrayCollection)
+					modelLocator.menuInfo.mapMenuList = mapMenu.item as ArrayCollection;
+				else
+					modelLocator.menuInfo.mapMenuList = new ArrayCollection([mapMenu.item]);
+			}
+
 			//发送数据绑定完成事件
 			var dataBindCreated:SystemEvent = new SystemEvent(SystemEvent.DATA_BIND_CREATED);
 			dataBindCreated.dispatch();

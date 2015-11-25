@@ -22,7 +22,7 @@
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.events.MenuItemEvent;
-			import sm.wegis.szy.skins.MenuItemSkin;
+			import sm.wegis.szy.skins.MenuItemSkinEx;
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
@@ -92,20 +92,29 @@
 				<ns:MenuBar id="systemMenuId" 
 							height="100%"
 							styleName="menuStyle"
-							menuItemSkinClass="{MenuItemSkin}"
+							menuItemSkinClass="{MenuItemSkinEx}"
 							isUpdateStatus="true"
 							itemHorizontalGap="5" itemVerticalGap="4" 
 							itemHeight="80" itemWidth="80"
 							itemRowCount="1"
 							isToolTip="false"
-							dataProvider="{modelLocator.topInfo.systemMenuList}"
-							labelField="{modelLocator.topInfo.systemMenuLabel}"/>
+							dataProvider="{modelLocator.menuInfo.mapMenuList}"
+							labelField="{modelLocator.menuInfo.mapMenuLabel}"/>
 			</s:HGroup>
 		</s:BorderContainer>
-		<s:HGroup width="100%" height="100%" paddingTop="5" paddingBottom="5">
+		<s:HGroup width="100%" height="100%" paddingTop="5" paddingBottom="5" gap="0">
 			<s:BorderContainer id="BodyContainerID"  width="300" height="100%">
 				
 			</s:BorderContainer>
+			<s:BorderContainer width="40" height="100%" >
+				<ns:ToolBar id="MapTool" width="100%" height="100%" 
+							buttonStyleName="toolStyle"
+							dataProvider="{modelLocator.toolInfo.mapToolList}"
+							labelField="{modelLocator.toolInfo.mapToolLabel}"/>
+			</s:BorderContainer>
+			<s:Group id="MainBodyContainerID"  width="100%" height="100%">
+				
+			</s:Group>
 		</s:HGroup>
 		<s:BorderContainer id="BottomContainerID"  width="100%">
 			<s:HGroup id="CopyRight" width="100%" height="100%" gap="0" horizontalAlign="left" 

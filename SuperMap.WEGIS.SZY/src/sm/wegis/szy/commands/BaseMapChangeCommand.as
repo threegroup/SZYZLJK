@@ -16,12 +16,12 @@ package sm.wegis.szy.commands
 			var baseMapVO:BaseMapVO = event.data as BaseMapVO;
 			var mapCtrl:MapCtrl = modelLocator.mapCtrl;
 			//底图和注记两个图层
-			var baseLayer:TiledTDTLayer = mapCtrl.getLayer( ConstVO.baseMapLayerId);
+			var baseLayer:TiledTDTLayer = mapCtrl.getLayer( ConstVO.baseMapLayerId) as TiledTDTLayer;
 			if (baseLayer == null) {
 				baseLayer = new TiledTDTLayer();
 				mapCtrl.addLayer(baseLayer, 0);
 			}
-			var baseLabelLayer:TiledTDTLayer = mapCtrl.getLayer( ConstVO.baseMapLabelLayerId);
+			var baseLabelLayer:TiledTDTLayer = mapCtrl.getLayer( ConstVO.baseMapLabelLayerId) as TiledTDTLayer;
 			if (baseLabelLayer == null) {
 				baseLabelLayer = new TiledTDTLayer();
 				baseLabelLayer.isLabel = true;
