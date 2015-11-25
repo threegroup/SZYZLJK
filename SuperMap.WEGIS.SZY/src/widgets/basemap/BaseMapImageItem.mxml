@@ -9,7 +9,12 @@
 		<![CDATA[
 			[Bindable]
 			public var source:Object;
+			
+			[Bindable]
 			public var title:String;
+			
+			[Bindable]
+			public var url:String;
 		]]>
 	</fx:Script>
 	<s:Image id="image"  source="{url}"/>

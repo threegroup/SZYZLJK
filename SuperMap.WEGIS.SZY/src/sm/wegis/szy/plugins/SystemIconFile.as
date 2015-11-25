@@ -15,7 +15,6 @@ package sm.wegis.szy.plugins
 		private static var titleIconKey:String = "titleIcon";
 		ResourceManagerEx.RegisterResource("",titleIconKey, titleIconCls);
 		
-<<<<<<< HEAD
 		//系统菜单图标
 		[Embed(source="assets/image/top/water.png")]
 		private static var waterCls:Class;
@@ -31,7 +30,7 @@ package sm.wegis.szy.plugins
 		private static var userCls:Class;
 		private static var userKey:String = "UserLogin";
 		ResourceManagerEx.RegisterResource("",userKey, userCls);
-=======
+		
 		/**底图矢量*/
 		[Embed(source="assets/image/basemap/vector.png")]
 		private static var vectorPngCls:Class;
@@ -43,7 +42,6 @@ package sm.wegis.szy.plugins
 		private static var imagePngCls:Class;
 		private static var imagePngKey:String = "imagePng";
 		ResourceManagerEx.RegisterResource("",imagePngKey, imagePngCls);
->>>>>>> origin/master
 		
 		public function SystemIconFile()
 		{

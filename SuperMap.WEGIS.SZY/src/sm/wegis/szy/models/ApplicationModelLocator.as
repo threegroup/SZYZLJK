@@ -38,8 +38,5 @@ package sm.wegis.szy.models
 		
 		/**顶部视图信息*/
 		public var topInfo:TopVO;
-		
-		/**map引用*/
-		public var mapCtrl:MapCtrl;
 	}
 }
