@@ -1,6 +1,7 @@
 package sm.wegis.szy.models
 {
 	import com.adobe.cairngorm.model.ModelLocator;
+	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 	
 	import sm.wegis.szy.vo.SystemVO;
 	import sm.wegis.szy.vo.TopVO;
@@ -37,5 +38,8 @@ package sm.wegis.szy.models
 		
 		/**顶部视图信息*/
 		public var topInfo:TopVO;
+		
+		/**map引用*/
+		public var mapCtrl:MapCtrl;
 	}
 }
