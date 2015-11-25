@@ -3,20 +3,28 @@
 	<menu>
 		<systemmenu>
 			<item>
-				<name>测试</name>
-				<key>Test</key>
+				<name>水体查询</name>
+				<key>WaterBodyQuery</key>
 				<url></url>
-				<mutex>false</mutex>
+				<mutex>true</mutex>
 				<init></init>
 				<selected></selected>
-				<subitems>
-					<subitem>
-						<name>水资源</name>
-						<key>SZY</key>
-						<url></url>
-						<mutex>false</mutex>
-					</subitem>
-				</subitems>
+			</item>
+			<item>
+				<name>地图服务</name>
+				<key>MapService</key>
+				<url></url>
+				<mutex>true</mutex>
+				<init></init>
+				<selected></selected>
+			</item>
+			<item>
+				<name>用户登录</name>
+				<key>UserLogin</key>
+				<url></url>
+				<mutex>true</mutex>
+				<init></init>
+				<selected></selected>
 			</item>
 		</systemmenu>
 	</menu>

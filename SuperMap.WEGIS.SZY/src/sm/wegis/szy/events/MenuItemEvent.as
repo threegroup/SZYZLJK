@@ -6,10 +6,10 @@ package sm.wegis.szy.events
 	
 	public class MenuItemEvent extends CairngormEvent
 	{
-		/**系统一级菜单*/
+		/**系统菜单*/
 		public static const SYSTEM_MENU_SELECT_CHANGE:String = "SystemMeunSelectChange";
-		/**系统二级菜单*/
-		public static const SYSTEM_SUB_MENU_SELECT_CHANGE:String = "SystemSubMeunSelectChange";
+//		/**系统二级菜单*/
+//		public static const SYSTEM_SUB_MENU_SELECT_CHANGE:String = "SystemSubMeunSelectChange";
 		public function MenuItemEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);

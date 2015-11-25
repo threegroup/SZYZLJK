@@ -4,8 +4,8 @@
 
 global
 {
-	color: #000000;
-	fontFamily:宋体;
+	color: #FFFFFF;
+	fontFamily:Microsoft YaHei UI Light;
 	fontSize:12;
 	backgroundAlpha:1;
 	titleColorFrom:#FBFBFA;
@@ -13,9 +13,18 @@ global
 	contentBackgroundAlpha:1;
 }
 
+.menuStyle
+{
+	color:#3c75bf;
+	fontSize:12;
+	borderColor:#436DD6;
+	dropShadowVisible:true;
+	iconPlacement:top;
+}
+
 s|BorderContainer
 {
-	backgroundColor:#C5C8CA;
-	backgroundAlpha:0.5;
+	backgroundColor:#304A6D;
+	backgroundAlpha:0.8;
 	borderVisible:false
 }

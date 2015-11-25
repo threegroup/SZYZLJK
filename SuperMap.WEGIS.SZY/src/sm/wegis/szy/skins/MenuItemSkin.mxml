@@ -56,24 +56,27 @@
     </s:states>
 	
 	<!-- layer 2: fill -->
+	<!--
+	<s:LinearGradient rotation="90">
+	<s:GradientEntry color.keepSelected="0x92EFF9" 
+	alpha="0.0" />
+	<s:GradientEntry color.keepSelected="0x3FAEFF" 
+	alpha="1" />
+	</s:LinearGradient>
+	-->
 	<!--- @private -->
-	<s:Rect id="fill" left="1" right="1" top="1" bottom="1" radiusX="2" 
-			alpha="0" alpha.keepSelected="0.6">
+	<s:Rect id="fill" left="1" right="1" top="1" bottom="1" radiusX="0" 
+			alpha="0" alpha.keepSelected="0.0">
 		<s:fill>
-			<s:LinearGradient rotation="90">
-				<s:GradientEntry color.keepSelected="0x92EFF9" 
-								 alpha="0.0" />
-				<s:GradientEntry color.keepSelected="0x3FAEFF" 
-								 alpha="1" />
-			</s:LinearGradient>
+			<s:SolidColor color.keepSelected="#FFFFFF"/>
 		</s:fill>
 	</s:Rect>
 	
 	<!-- layer 7: border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
 	<!--- @private -->
-	<s:Rect id="border" left="0" right="0" top="0" bottom="0" width="80" height="80" radiusX="2">
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0" width="80" height="80" radiusX="0" alpha="0">
 		<s:stroke>
-			<s:SolidColorStroke id="borderStroke" />
+			<s:SolidColorStroke id="borderStroke"/>
 		</s:stroke>
 	</s:Rect>
     
@@ -88,11 +91,11 @@
 			 verticalAlign="middle"
 			 left="2" right="2" 
 			 top="2" bottom="2"
-			 color.over="#f9e07e"
-			 color.down="#f9e07e"
-			 color.keepSelected="#f9e07e"
+			 color.over="#FFFF00"
+			 color.down="#FFFF00"
+			 color.keepSelected="#FFFF00"
 			 showTruncationTip="false"
-			 color="#ffffff">
+			 color="#FFFFFF">
 	</s:Label>
     
 </s:SparkButtonSkin>
