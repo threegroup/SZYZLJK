@@ -16,23 +16,27 @@
 			
 			protected function rollOverHandler(event:MouseEvent):void
 			{
-				tittleBG.visible = true;				
+				this.currentState = "overState";
 			}
 			
 			protected function rollOutHandler(event:MouseEvent):void
 			{
-				tittleBG.visible = false;					
+				this.currentState = "outState";					
 			}
 			
 		]]>
 	</fx:Script>
+	<s:states>
+		<s:State name="outState"/>
+		<s:State name="overState"/>
+	</s:states>
 	<s:Image id="image"  source="{source}" width="49" height="46" />
-	<s:Rect id="tittleBG" visible="false" left="0" right="0" bottom="0" height="18">
+	<s:Rect   left="0" right="0" bottom="0" height="16">
 		<s:fill>
-			<s:SolidColor color="0x333333" alpha="0.3"/>
+			<s:SolidColor color.outState="0xFEFEFE" color.overState="0x1393F6" alpha="0.4"/>
 		</s:fill>
 	</s:Rect>
-	<s:Label bottom="2"  fontWeight="bold" horizontalCenter="0" text="{title}" color="0x333333">
+	<s:Label bottom="2"  horizontalCenter="0" text="{title}" color.outState="0x333333" color.overState="0xFFFFFF">
 		<s:filters>
 			<fx:Array>
 				<s:GlowFilter color="0xFFFFFF" blurX="1" blurY="1"/>
