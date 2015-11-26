@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" buttonMode="true"
-		 rollOver="rollOverHandler(event)" rollOut="rollOutHandler(event)">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 buttonMode="true"
+		 rollOver="rollOverHandler(event)"
+		 rollOut="rollOutHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
@@ -16,27 +18,21 @@
 			
 			protected function rollOverHandler(event:MouseEvent):void
 			{
-				tittleBG.visible = true;				
+				baseMapTitle.setStyle("color","#FFFF00");
 			}
 			
 			protected function rollOutHandler(event:MouseEvent):void
 			{
-				tittleBG.visible = false;					
+				baseMapTitle.setStyle("color","#FFFFFF");
 			}
 			
 		]]>
 	</fx:Script>
 	<s:Image id="image"  source="{source}" width="49" height="46" />
-	<s:Rect id="tittleBG" visible="false" left="0" right="0" bottom="0" height="18">
+	<s:Rect id="tittleBG" visible="true" left="0" right="0" bottom="0" height="18">
 		<s:fill>
-			<s:SolidColor color="0x333333" alpha="0.3"/>
+			<s:SolidColor color="0x304A6D" alpha="0.8"/>
 		</s:fill>
 	</s:Rect>
-	<s:Label bottom="2"  fontWeight="bold" horizontalCenter="0" text="{title}" color="0x333333">
-		<s:filters>
-			<fx:Array>
-				<s:GlowFilter color="0xFFFFFF" blurX="1" blurY="1"/>
-			</fx:Array>
-		</s:filters>
-	</s:Label>
+	<s:Label id="baseMapTitle" bottom="2"  fontWeight="normal" horizontalCenter="0" text="{title}" color="0xFFFFFF"/>
 </s:Group>

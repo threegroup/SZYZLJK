@@ -42,8 +42,13 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-#Flash Builder WorkSpace files
+# Flash Builder WorkSpace files
 .metadata
 
-#Compresss files
+# Compresss files
 .zip
+
+# Project files
+.project
+.flexProperties
+.actionScriptProperties
