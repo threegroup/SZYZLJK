@@ -104,6 +104,8 @@ package com.supermap.wegis.common.components.toolBar
 		public function ToolItem()
 		{
 			super();
+			
+			buttonMode = true;
 		}
 	}
 }

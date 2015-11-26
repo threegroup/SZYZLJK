@@ -101,6 +101,7 @@
 							dataProvider="{modelLocator.menuInfo.mapMenuList}"
 							labelField="{modelLocator.menuInfo.mapMenuLabel}"/>
 			</s:HGroup>
+			<s:SWFLoader width="100%" height="100%" source="assets/swf/bubble.swf"/>
 		</s:BorderContainer>
 		<s:HGroup width="100%" height="100%" paddingTop="5" paddingBottom="5" gap="0">
 			<s:BorderContainer id="BodyContainerID"  width="300" height="100%">
@@ -114,7 +115,7 @@
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID"  width="100%" height="100%">
 				
-			</s:Group>
+			</s:Group> 
 		</s:HGroup>
 		<s:BorderContainer id="BottomContainerID"  width="100%">
 			<s:HGroup id="CopyRight" width="100%" height="100%" gap="0" horizontalAlign="left" 
