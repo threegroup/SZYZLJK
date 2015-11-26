@@ -21,11 +21,19 @@ package sm.wegis.szy.commands
 		override public function result(data:Object):void
 		{
 			//绑定数据源
-			//二维地图相关功能
+	
+			var initWidget:Object = data.result.functions.initwidget.item;
+			//派发事件，通知mapview添加widget
+			var initialWidgetEvent:SystemEvent = new SystemEvent(SystemEvent.INITIAL_WIDGET);
+			initialWidgetEvent.data = initWidget;
+			initialWidgetEvent.dispatch();
+		//系统主菜单功能
+			modelLocator.topInfo.systemMenuLabel = "name";
+			var menuDs:Object = data.result.functions.menu.systemmenu.item;
+			if(menuDs != null)	//二维地图相关功能
 			modelLocator.toolInfo.mapToolLabel = "name";
 			var mapTool:Object = data.result.functions.tool.maptool;
-			if(mapTool != null)
-			{
+			if(mapTool != null)			{
 				if(mapTool.item is ArrayCollection)
 					modelLocator.toolInfo.mapToolList = mapTool.item as ArrayCollection;
 				else

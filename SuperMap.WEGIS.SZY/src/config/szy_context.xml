@@ -31,8 +31,8 @@
 		<property name="percentHeight" value="100" />
 		<property name="percentWidth" value="100" />
 		<property name="viewBoundsEx" ref="viewBoundsEx" />
-		<property name="scales" ref="LayerScales" />
-		<property name="restrictedBounds" ref="viewBoundsEx" />
+		<!--<property name="scales" ref="LayerScales" />-->
+		<!--<property name="restrictedBounds" ref="viewBoundsEx" />-->
 	</object>
 
 	<!--所有view，通过这个对象添加到界面上 -->
@@ -49,10 +49,13 @@
 
 	<!--Views -->
 	<!--MainView -->
-	<object id="MainView" class="sm.wegis.szy.views.MainView">
+	<object id="MainView" class="sm.wegis.szy.views.MainView" init-method="initMehthod">
 		<property name="modelLocator" ref="appModelInstance" />
 		<property name="percentHeight" value="100" />
 		<property name="percentWidth" value="100" />
+		<method-invocation name="addMapCtrl">
+			<arg ref="MapCtrl" />
+		</method-invocation>
 	</object>
 
 	<!-- SystemVo -->
@@ -68,6 +71,7 @@
 	<object id="appModelInstance" class="sm.wegis.szy.models.ApplicationModelLocator"
 		factory-method="getInstance" singleton="true">
 		<property name="systemInfo" ref="SystemVO" />
+		<property name="mapCtrl" ref="MapCtrl" />
 	</object>
 
 	<!--Services -->

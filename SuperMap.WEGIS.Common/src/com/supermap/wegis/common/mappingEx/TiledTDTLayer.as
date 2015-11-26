@@ -7,13 +7,13 @@ package  com.supermap.wegis.common.mappingEx
 	import com.supermap.web.sm_internal;
 	
 	import flash.net.URLRequest;
-
+	
 	use namespace sm_internal;
 	public class TiledTDTLayer extends TiledCachedLayer
 	{
-		public  static const vec:String = "vec";
-		public  static const img:String = "img";
-		public  static const ter:String = "ter";
+		public static const vec:String = "vec";
+		public static const img:String = "img";
+		public static const ter:String = "ter";
 		//影像类型，包括：矢量、影像两种
 		private var _isLabel:Boolean=false;
 		private var _isLabelChange:Boolean=false;
@@ -80,7 +80,7 @@ package  com.supermap.wegis.common.mappingEx
 		{
 			return _isLabel;
 		}
-
+		
 		public function set isLabel(value:Boolean):void
 		{
 			if(this._isLabel != value)
@@ -128,7 +128,7 @@ package  com.supermap.wegis.common.mappingEx
 				invalidateLayer();
 			}
 		}
-
+		
 		override protected function getTileURL(row:int, col:int, level:int):URLRequest
 		{
 			level += this._levelOffset;

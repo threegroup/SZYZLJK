@@ -21,6 +21,9 @@ package sm.wegis.szy.events
 		/**数据绑定完成时派发此事件*/
 		public static const DATA_BIND_CREATED:String = "DataBindCreated";
 		
+		/**初始化系统预加载模块*/
+		public static const INITIAL_WIDGET:String ="InitialWidget";
+		
 		public function SystemEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);

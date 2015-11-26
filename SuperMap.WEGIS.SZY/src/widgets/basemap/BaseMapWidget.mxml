@@ -3,11 +3,16 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
-			   xmlns:basemap="widgets.basemap.*">
+			   xmlns:basemap="widgets.basemap.*" creationComplete="creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import com.supermap.wegis.common.core.resourceManager.ResourceInfo;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.events.MapLayerEvent;
+			import sm.wegis.szy.vo.BaseMapVO;
 			import sm.wegis.szy.vo.ConstVO;
 			
 			
@@ -18,6 +23,21 @@
 				} else {
 					this.currentState = ConstVO.vectorMapState;
 				}
+				dispatchBaseMapChangeEvent();
+			}
+			
+			private function dispatchBaseMapChangeEvent():void
+			{
+				var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE_COMMAND);
+				var baseMapVO:BaseMapVO = new BaseMapVO();
+				baseMapVO.baseMapState = this.currentState;
+				mapLayerEvent.data = baseMapVO;
+				mapLayerEvent.dispatch();
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				dispatchBaseMapChangeEvent();
 			}
 			
 		]]>
@@ -30,7 +50,7 @@
 		<s:State name="imageMapState"/>
 	</ns:states>
 	<basemap:BaseMapImageItem id="vector" includeIn="vectorMapState"  click="baseMapType_clickHandler(event)"
-							  source="{ResourceManagerEx.FindResource('vectorPngCls').cls}" title="矢量"/>
+							  source="{ResourceManagerEx.FindResource('vectorPng').cls}" title="矢量"/>
 	<basemap:BaseMapImageItem id="image" includeIn="imageMapState"  click="baseMapType_clickHandler(event)"
-							  source="{ResourceManagerEx.FindResource('imagePngCls').cls}" title="影像"/>
+							  source="{ResourceManagerEx.FindResource('imagePng').cls}" title="影像"/>
 </ns:WidgetBase>

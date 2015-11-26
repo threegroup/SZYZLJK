@@ -2,9 +2,15 @@
 <functions>
 	<!-- 预加载模块 -->
 	<initwidget>
-
+		<item>
+			<name>显示控制</name>
+			<key>BaseMapControl</key>
+			<url>widgets/basemap/BaseMapWidget.swf</url>
+			<mutex>false</mutex>
+			<top>5</top>
+			<right>5</right>
+		</item>
 	</initwidget>
-	<!-- 系统菜单 -->
 	<menu>
 		<mapmenu>
 			<item>

@@ -19,13 +19,16 @@ package sm.wegis.szy.commands
 			var baseLayer:TiledTDTLayer = mapCtrl.getLayer( ConstVO.baseMapLayerId) as TiledTDTLayer;
 			if (baseLayer == null) {
 				baseLayer = new TiledTDTLayer();
+				baseLayer.id = ConstVO.baseMapLayerId;
 				mapCtrl.addLayer(baseLayer, 0);
 			}
 			var baseLabelLayer:TiledTDTLayer = mapCtrl.getLayer( ConstVO.baseMapLabelLayerId) as TiledTDTLayer;
 			if (baseLabelLayer == null) {
 				baseLabelLayer = new TiledTDTLayer();
+				baseLabelLayer.id = ConstVO.baseMapLabelLayerId;
 				baseLabelLayer.isLabel = true;
-				mapCtrl.addLayer(baseLayer, 1);
+				mapCtrl.addLayer(baseLabelLayer, 1);
+				mapCtrl.viewEntire();
 			}
 			//显示矢量底图
 			if (baseMapVO.baseMapState == ConstVO.vectorMapState) {
@@ -33,6 +36,7 @@ package sm.wegis.szy.commands
 			} else {
 				baseLabelLayer.layerType = baseLayer.layerType = TiledTDTLayer.img;
 			}
+			
 		}
 	}
 }

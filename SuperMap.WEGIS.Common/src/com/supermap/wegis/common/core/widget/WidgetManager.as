@@ -24,6 +24,8 @@ package com.supermap.wegis.common.core.widget
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
 	
+	import org.osmf.layout.HorizontalAlign;
+	
 	
 	/**负责Widget器件的增、删、改、查*/
 	public class WidgetManager

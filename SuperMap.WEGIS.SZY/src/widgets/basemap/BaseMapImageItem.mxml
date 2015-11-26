@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" buttonMode="true"
+		 rollOver="rollOverHandler(event)" rollOut="rollOutHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
@@ -13,10 +14,29 @@
 			[Bindable]
 			public var title:String;
 			
-			[Bindable]
-			public var url:String;
+			protected function rollOverHandler(event:MouseEvent):void
+			{
+				tittleBG.visible = true;				
+			}
+			
+			protected function rollOutHandler(event:MouseEvent):void
+			{
+				tittleBG.visible = false;					
+			}
+			
 		]]>
 	</fx:Script>
-	<s:Image id="image"  source="{url}"/>
-	<s:Label bottom="2" horizontalCenter="0" text="{title}"/>
+	<s:Image id="image"  source="{source}" width="49" height="46" />
+	<s:Rect id="tittleBG" visible="false" left="0" right="0" bottom="0" height="18">
+		<s:fill>
+			<s:SolidColor color="0x333333" alpha="0.3"/>
+		</s:fill>
+	</s:Rect>
+	<s:Label bottom="2"  fontWeight="bold" horizontalCenter="0" text="{title}" color="0x333333">
+		<s:filters>
+			<fx:Array>
+				<s:GlowFilter color="0xFFFFFF" blurX="1" blurY="1"/>
+			</fx:Array>
+		</s:filters>
+	</s:Label>
 </s:Group>
