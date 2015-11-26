@@ -75,12 +75,12 @@
 				{
 					for each(var obj:Object in initWidgetConfig)
 					{
-						obj.parent = InitWidgetContainer;
+						obj.parent = MainBodyContainerID;
 					}
 				}
 				else if(initWidgetConfig is Object)
 				{
-					initWidgetConfig.parent = InitWidgetContainer;
+					initWidgetConfig.parent = MainBodyContainerID;
 				}
 				WidgetManager.getInstance().loadWidget(initWidgetConfig);
 			}
@@ -138,21 +138,21 @@
 							dataProvider="{modelLocator.menuInfo.mapMenuList}"
 							labelField="{modelLocator.menuInfo.mapMenuLabel}"/>
 			</s:HGroup>
+			<s:SWFLoader width="100%" height="100%" source="assets/swf/bubble.swf"/>
 		</s:BorderContainer>
 		<s:HGroup width="100%" height="100%" paddingTop="5" paddingBottom="5" gap="0">
 			<s:BorderContainer id="BodyContainerID"  width="300" height="100%">
 				
 			</s:BorderContainer>
-			<s:Group id="InitWidgetContainer" width="100%" height="100%"/>
-			<s:BorderContainer width="40" height="100%" >
-				<ns:ToolBar id="MapTool" width="100%" height="100%" 
+			<s:BorderContainer width="40" height="100%">
+				<ns:ToolBar id="MapTool" width="100%" height="100%"   
 							buttonStyleName="toolStyle"
 							dataProvider="{modelLocator.toolInfo.mapToolList}"
 							labelField="{modelLocator.toolInfo.mapToolLabel}"/>
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID"  width="100%" height="100%">
 				
-			</s:Group>
+			</s:Group> 
 		</s:HGroup>
 		<s:BorderContainer id="BottomContainerID"  width="100%">
 			<s:HGroup id="CopyRight" width="100%" height="100%" gap="0" horizontalAlign="left" 
