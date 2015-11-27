@@ -65,13 +65,11 @@
 				{
 					this.showEffect.play();
 					this.ControlBodyControlID.source = ResourceManagerEx.FindResource("Left").cls;
-					this.MiddleContainerID.gap = 1;
 				}
 				else
 				{
 					this.hideEffect.play();
 					this.ControlBodyControlID.source = ResourceManagerEx.FindResource("Right").cls;
-					this.MiddleContainerID.gap = 0;
 				}
 			}
 			
@@ -175,22 +173,23 @@
 			</s:HGroup>
 			<s:SWFLoader width="100%" height="100%" source="assets/swf/bubble.swf"/>
 		</s:BorderContainer>
-		<s:HGroup id="MiddleContainerID" width="100%" height="100%" paddingTop="0" paddingBottom="0" gap="1">
+		<s:HGroup id="MiddleContainerID" width="100%" height="100%" paddingTop="0" paddingBottom="0" gap="0">
 			<s:BorderContainer id="BodyContainerID"  width="300" height="100%">
 				
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID"  width="100%" height="100%">
-				<s:BorderContainer width="100%" height="30">
-					<s:HGroup width="100%" height="100%" verticalAlign="middle">
-						<s:Image id="ControlBodyControlID" 
+				<s:BorderContainer left="0" top="0" backgroundAlpha="0.5">
+					<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+						<s:Image id="ControlBodyControlID"
 								 source="{ResourceManagerEx.FindResource('Left').cls}"
 								 buttonMode="true"/>
-						<s:Spacer width="100%"/>
-						<ns:ToolBar id="MapTool" height="100%"
-									buttonStyleName="toolStyle"
-									dataProvider="{modelLocator.toolInfo.mapToolList}"
-									labelField="{modelLocator.toolInfo.mapToolLabel}"/>
-					</s:HGroup>
+					</s:VGroup>
+				</s:BorderContainer>
+				<s:BorderContainer height="30" right="5" top="0">
+					<ns:ToolBar id="MapTool" height="100%"
+								buttonStyleName="toolStyle"
+								dataProvider="{modelLocator.toolInfo.mapToolList}"
+								labelField="{modelLocator.toolInfo.mapToolLabel}"/>
 				</s:BorderContainer>
 			</s:Group> 
 		</s:HGroup>
