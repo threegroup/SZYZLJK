@@ -7,7 +7,7 @@
 			<key>BaseMapControl</key>
 			<url>widgets/basemap/BaseMapWidget.swf</url>
 			<mutex>false</mutex>
-			<top>45</top>
+			<top>35</top>
 			<right>5</right>
 		</item>
 	</initwidget>
