@@ -45,7 +45,6 @@ Temporary Items
 # Flash Builder WorkSpace files
 .metadata
 
-<<<<<<< HEAD
 # Compresss files
 .zip
 
@@ -53,9 +52,3 @@ Temporary Items
 .project
 .flexProperties
 .actionScriptProperties
-=======
-#Compresss files
-.zip
-/Libs/SuperMap.WEGIS.Common.swc
-/Libs/SuperMap.WEGIS.TransData.swc
->>>>>>> 052ca6db0a83e3bb06a785fd15ff3cf1b966b212
