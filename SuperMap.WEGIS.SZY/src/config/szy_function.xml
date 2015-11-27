@@ -49,12 +49,6 @@
 	<tool>
 		<maptool>
 			<item>
-				<name>隐藏</name>
-				<key>Right</key>
-				<securitycontroler>false</securitycontroler>
-				<securitytype>visible</securitytype>
-			</item>
-			<item>
 				<name>漫游</name>
 				<key>Pan</key>
 				<securitycontroler>false</securitycontroler>
