@@ -107,10 +107,6 @@
 		]]>
 	</fx:Script>
 	<s:BorderContainer id="MapContainerID" width="100%" height="100%" backgroundColor="#FFFFFF">
-		<!--		<supermap:Map>
-		<supermap:CloudLayer>
-			</supermap:CloudLayer>
-		</supermap:Map>-->
 	</s:BorderContainer>
 	<s:VGroup id="TopContainerID"  width="100%" height="100%" gap="0">
 		<s:BorderContainer width="100%">
