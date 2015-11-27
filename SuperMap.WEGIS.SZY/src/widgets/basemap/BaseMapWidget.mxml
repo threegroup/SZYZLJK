@@ -3,7 +3,8 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
-			   xmlns:basemap="widgets.basemap.*" creationComplete="creationCompleteHandler(event)">
+			   xmlns:basemap="widgets.basemap.*" 
+			   creationComplete="creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.supermap.wegis.common.core.resourceManager.ResourceInfo;

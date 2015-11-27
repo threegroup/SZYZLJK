@@ -25,6 +25,7 @@
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			
+			import sm.wegis.szy.core.utils.MapCtrlTool;
 			import sm.wegis.szy.events.MenuItemEvent;
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.skins.MenuItemSkinEx;
@@ -125,10 +126,22 @@
 				WidgetManager.getInstance().loadWidget(menuItemData);
 			}
 			
-			/*****添加二维地图******************************************************/
+			/*****添加二维地图控件******************************************************/
 			public function addMapCtrl(component:IVisualElement):void
 			{
 				this.MapContainerID.addElement(component);
+				
+				this.initMapControl();
+			}
+			
+			/**控件初始化，调用控件实例时，必须先调用该方法*/
+			public function initMapControl():void
+			{
+				if(modelLocator.mapCtrl != null)
+				{
+					var mapCtrlTool:MapCtrlTool = new MapCtrlTool();
+					mapCtrlTool.initMapCompass(this.MainBodyContainerID);
+				}
 			}
 		]]>
 	</fx:Script>

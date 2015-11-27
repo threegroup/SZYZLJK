@@ -1,7 +1,7 @@
 <objects>
 	<!--导入外部资源文件 -->
 	<property file="szy_conf.prop" />
-	
+
 	<!-- 地图使用的图层 -->
 	<object id="SGSWMTSLayer"
 		class="com.supermap.wegis.common.mappingEx.TiledWMTSLayerEx" />
@@ -32,7 +32,7 @@
 		<property name="percentWidth" value="100" />
 		<property name="viewBoundsEx" ref="viewBoundsEx" />
 		<property name="scales" ref="LayerScales" />
-		<!--<property name="restrictedBounds" ref="viewBoundsEx" />-->
+		<!--<property name="restrictedBounds" ref="viewBoundsEx" /> -->
 	</object>
 
 	<!--所有view，通过这个对象添加到界面上 -->
@@ -49,7 +49,8 @@
 
 	<!--Views -->
 	<!--MainView -->
-	<object id="MainView" class="sm.wegis.szy.views.MainView" init-method="initMehthod">
+	<object id="MainView" class="sm.wegis.szy.views.MainView"
+		init-method="initMehthod">
 		<property name="modelLocator" ref="appModelInstance" />
 		<property name="percentHeight" value="100" />
 		<property name="percentWidth" value="100" />
@@ -65,14 +66,22 @@
 		<property name="systemID" value="${systemID}" />
 		<property name="isNeedAuthorization" value="${isNeedAuthorization}" />
 		<property name="copyRight" value="${copyRight}" />
-		<property name="layerBounds" ref="bounds"/>
-		
+		<property name="layerBounds" ref="bounds" />
+	</object>
+
+	<!-- baseMapVo -->
+	<object id="BaseMapVO" class="sm.wegis.szy.vo.BaseMapVO">
+		<property name="tdtVector" value="${TDTVector}" />
+		<property name="tdtVectorLabel" value="${TDTVectorLabel}" />
+		<property name="tdtImage" value="${TDTImage}" />
+		<property name="tdtImageLabel" value="${TDTImageLabel}" />
 	</object>
 
 	<!--ModelLocator -->
 	<object id="appModelInstance" class="sm.wegis.szy.models.ApplicationModelLocator"
 		factory-method="getInstance" singleton="true">
 		<property name="systemInfo" ref="SystemVO" />
+		<property name="baseMapInfo" ref="BaseMapVO" />
 		<property name="mapCtrl" ref="MapCtrl" />
 	</object>
 
@@ -108,10 +117,13 @@
 			<arg>
 				<array>
 					<value type="Class">sm.wegis.szy.commands.SystemInitCommand</value>
-					<value type="Class">sm.wegis.szy.commands.DataBindCreatedCommand</value>
-					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand</value>
-					<!--切换底图-->
-					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand</value>
+					<value type="Class">sm.wegis.szy.commands.DataBindCreatedCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand
+					</value>
+					<!--切换底图 -->
+					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>

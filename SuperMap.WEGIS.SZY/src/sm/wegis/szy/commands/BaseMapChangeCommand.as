@@ -40,11 +40,11 @@ package sm.wegis.szy.commands
 			}
 			//显示矢量底图
 			if (baseMapVO.baseMapState == ConstVO.vectorMapState) {
-				baseLayer.url = Property.getDefaultProperty("TDTVector");
-				baseLabelLayer.url =  Property.getDefaultProperty("TDTVectorLabel");
+				baseLayer.url = modelLocator.baseMapInfo.tdtVector;
+				baseLabelLayer.url = modelLocator.baseMapInfo.tdtVectorLabel;
 			} else {
-				baseLayer.url = Property.getDefaultProperty("TDTImage");
-				baseLabelLayer.url =  Property.getDefaultProperty("TDTImageLabel");
+				baseLayer.url = modelLocator.baseMapInfo.tdtImage;
+				baseLabelLayer.url = modelLocator.baseMapInfo.tdtImageLabel;
 			}
 		}
 	}

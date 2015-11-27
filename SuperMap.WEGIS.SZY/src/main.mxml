@@ -31,7 +31,6 @@
 			private var isReadCreateSpring:Boolean = false;
 			//spring和view都创建完成
 			private var allCreateComplete:Boolean =false;
-			private var config_url:String = "config/szy_conf.prop";
 			
 			protected function preinitializeHandler(event:FlexEvent):void
 			{
@@ -43,18 +42,6 @@
 				
 				//全局异常捕获
 				this.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, systemErrorHandler);
-				loadProperty();
-			}
-			
-			//先加载properties配置文件
-			private function loadProperty():void
-			{
-				Property.getInstance().addEventListener(Property.LoadCompleteEvent,propertyLoadCompleteHandler);
-				Property.initPropertyFiles([config_url]);
-			}
-			private function propertyLoadCompleteHandler(event:Event):void
-			{
-				Property.getInstance().removeEventListener(Property.LoadCompleteEvent,propertyLoadCompleteHandler);
 				getConfigInfo();
 			}
 			

@@ -3,6 +3,7 @@ package sm.wegis.szy.models
 	import com.adobe.cairngorm.model.ModelLocator;
 	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 	
+	import sm.wegis.szy.vo.BaseMapVO;
 	import sm.wegis.szy.vo.MenuVO;
 	import sm.wegis.szy.vo.SystemVO;
 	import sm.wegis.szy.vo.ToolVO;
@@ -41,5 +42,8 @@ package sm.wegis.szy.models
 		
 		/**系统菜单视图信息*/
 		public var menuInfo:MenuVO = new MenuVO();
+		
+		/**系统底图信息*/
+		public var baseMapInfo:BaseMapVO;
 	}
 }
