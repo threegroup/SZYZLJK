@@ -62,7 +62,7 @@
 			</item>
 			<item>
 				<name>缩小</name>
-				<key>ZoomIn</key>
+				<key>ZoomOut</key>
 				<securitycontroler>false</securitycontroler>
 				<securitytype>visible</securitytype>
 			</item>
