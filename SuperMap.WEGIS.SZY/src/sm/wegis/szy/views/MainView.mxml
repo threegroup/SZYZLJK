@@ -147,15 +147,15 @@
 	</fx:Script>
 	<s:BorderContainer id="MapContainerID" width="100%" height="100%" backgroundColor="#FFFFFF">
 	</s:BorderContainer>
-	<s:VGroup id="TopContainerID"  width="100%" height="100%" gap="1">
-		<s:BorderContainer width="100%">
+	<s:VGroup width="100%" height="100%" gap="1">
+		<s:BorderContainer id="TopContainerID"  width="100%" height="60">
 			<s:HGroup width="100%" height="100%" paddingLeft="0" verticalAlign="middle" gap="0">
 				<s:Rect  width="40" height="40">
 					<s:fill>
 						<s:BitmapFill source="{ResourceManagerEx.FindResource('logoIcon').cls}" fillMode="clip"/> 
 					</s:fill>
 				</s:Rect>
-				<s:Rect width="530" height="60">
+				<s:Rect width="345" height="45">
 					<s:fill>
 						<s:BitmapFill source="{ResourceManagerEx.FindResource('titleIcon').cls}" fillMode="clip"/> 
 					</s:fill>
