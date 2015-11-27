@@ -52,3 +52,11 @@ Temporary Items
 .project
 .flexProperties
 .actionScriptProperties
+/SuperMap.WEGIS.Common/manifest.xml
+/SuperMap.WEGIS.Common/.actionScriptProperties
+/SuperMap.WEGIS.Common/.flexLibProperties
+/SuperMap.WEGIS.Common/.fxpProperties
+/SuperMap.WEGIS.Common/.project
+/SuperMap.WEGIS.SZY/.project
+/SuperMap.WEGIS.SZY/.actionScriptProperties
+/SuperMap.WEGIS.SZY/.flexProperties
