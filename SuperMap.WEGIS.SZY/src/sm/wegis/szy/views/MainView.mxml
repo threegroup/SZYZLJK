@@ -167,7 +167,7 @@
 				
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID"  width="100%" height="100%">
-				<s:BorderContainer width="100%" height="40">
+				<s:BorderContainer width="100%" height="30">
 					<s:HGroup width="100%" height="100%" verticalAlign="middle">
 						<s:Image id="ControlBodyControlID" 
 								 source="{ResourceManagerEx.FindResource('Left').cls}"
