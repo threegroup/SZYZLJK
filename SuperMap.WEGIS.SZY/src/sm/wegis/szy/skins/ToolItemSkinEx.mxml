@@ -47,6 +47,7 @@
 	<!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
 	<s:VGroup gap="{getStyle('gap')}" horizontalAlign="center" verticalAlign="middle" paddingBottom="2" paddingTop="2" paddingLeft="2" paddingRight="2">
 		<s:Image id="icon"  source="{getStyle('preImage')}" visible="{icon.source == null ? false : true}" width="32" height="32"/>
+		<!--
 		<s:Label id="labelDisplay"
 				 textAlign="center"
 				 maxDisplayedLines="1"
@@ -55,5 +56,6 @@
 				 color.over="#FFFF00"
 				 color.down="#FFFF00"
 				 left="2" right="2" top="2" bottom="2"/>
+		-->
 	</s:VGroup>
 </s:SparkButtonSkin>
