@@ -1,5 +1,7 @@
 package sm.wegis.szy.vo
 {
+	import com.supermap.web.core.Rectangle2D;
+	
 	import sm.wegis.szy.core.baseclass.ValueObjectBase;
 
 	[Bindable]
@@ -18,6 +20,22 @@ package sm.wegis.szy.vo
 		private var _copyRight:String;
 		
 		private var _isNeedAuthorization:Boolean = false;
+		
+		private var _layerBounds:Rectangle2D;
+
+		/**地图图层地图范围*/
+		public function get layerBounds():Rectangle2D
+		{
+			return _layerBounds;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set layerBounds(value:Rectangle2D):void
+		{
+			_layerBounds = value;
+		}
 
 		/**地图浏览右下角版权*/
 		public function get copyRight():String

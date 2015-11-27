@@ -98,8 +98,14 @@ package com.supermap.wegis.common.components.mapCtrl
 		 * @param fields 排序字段，可以使多字段，第一个字段为主字段
 		 * @param fields 是否降序
 		 * */
-		public function sortLayers(fields:Array,descendings:Array = null,isnums:Array = null):void
+		public function sortLayers(fields:Array=null, descendings:Array = null, isnums:Array =null):void
 		{
+			if (fields == null) {
+				fields = ["layerType","layerIndex"];
+			}
+			if (isnums == null) {
+				isnums = [true, true];
+			}
 			var layers:ArrayCollection = this.layers as ArrayCollection;
 			var tempLayers:ArrayCollection = new ArrayCollection(layers.toArray());
 			//针对drawaction往map中添加的临时featureslayers，此处先移到最上层，然后从排序数组中移除

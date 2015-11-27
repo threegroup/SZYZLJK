@@ -31,7 +31,7 @@
 		<property name="percentHeight" value="100" />
 		<property name="percentWidth" value="100" />
 		<property name="viewBoundsEx" ref="viewBoundsEx" />
-		<!--<property name="scales" ref="LayerScales" />-->
+		<property name="scales" ref="LayerScales" />
 		<!--<property name="restrictedBounds" ref="viewBoundsEx" />-->
 	</object>
 
@@ -65,6 +65,8 @@
 		<property name="systemID" value="${systemID}" />
 		<property name="isNeedAuthorization" value="${isNeedAuthorization}" />
 		<property name="copyRight" value="${copyRight}" />
+		<property name="layerBounds" ref="bounds"/>
+		
 	</object>
 
 	<!--ModelLocator -->

@@ -7,6 +7,13 @@ systemFunctionUrl=config/szy_function.xml
 
 ﻿#系统标题
 systemTitle=水资源质量监控平台
+
+#天地图服务地址
+TDTVector=http://10.1.193.22:81/slb_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=slb&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
+TDTVectorLabel=http://10.1.193.22:81/sla_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sla&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
+TDTImage=http://10.1.193.22:81/img_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
+TDTImageLabel=http://10.1.193.22:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sia&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
+
 ﻿
 #系统标识
 systemID=SZYZLJK
