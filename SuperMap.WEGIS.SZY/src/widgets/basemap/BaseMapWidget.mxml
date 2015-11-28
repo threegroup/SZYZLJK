@@ -50,8 +50,8 @@
 		<s:State name="vectorMapState"/>
 		<s:State name="imageMapState"/>
 	</ns:states>
-	<basemap:BaseMapImageItem id="vector" includeIn="vectorMapState"  click="baseMapType_clickHandler(event)"
+	<basemap:BaseMapImageItem id="vector" includeIn="imageMapState"  click="baseMapType_clickHandler(event)"
 							  source="{ResourceManagerEx.FindResource('vectorPng').cls}" title="矢量"/>
-	<basemap:BaseMapImageItem id="image" includeIn="imageMapState"  click="baseMapType_clickHandler(event)"
+	<basemap:BaseMapImageItem id="image" includeIn="vectorMapState"  click="baseMapType_clickHandler(event)"
 							  source="{ResourceManagerEx.FindResource('imagePng').cls}" title="影像"/>
 </ns:WidgetBase>
