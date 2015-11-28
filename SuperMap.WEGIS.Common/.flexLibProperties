@@ -24,6 +24,6 @@
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
-    <namespaceManifestEntry manifest="D:/Project/SVN_DS/SZYZLJK/SuperMap.WEGIS.Common/manifest.xml" namespace="library://ns.supermap.com/flex/wegis/common"/>
+    <namespaceManifestEntry manifest="E:/ProjectSVN/10水资源所/SZYZLJK/SuperMap.WEGIS.Common/manifest.xml" namespace="library://ns.supermap.com/flex/wegis/common"/>
   </namespaceManifests>
 </flexLibProperties>
