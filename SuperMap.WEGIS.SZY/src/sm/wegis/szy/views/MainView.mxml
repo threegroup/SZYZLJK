@@ -26,6 +26,7 @@
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.core.utils.MapCtrlTool;
+			import sm.wegis.szy.events.MapLayerEvent;
 			import sm.wegis.szy.events.MenuItemEvent;
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.skins.MenuItemSkinEx;
@@ -53,6 +54,29 @@
 				
 				//控制左侧面板显示隐藏
 				this.ControlBodyControlID.addEventListener(MouseEvent.MOUSE_DOWN, controlBodyHandler);
+				
+				//底图切换
+				CairngormEventDispatcher.getInstance().addEventListener(MapLayerEvent.BASE_MAP_CHANGE_COMMAND, basemapChangeHandler);
+			}
+			
+			private function basemapChangeHandler(e:MapLayerEvent):void
+			{
+				var data:Object = e.data;
+				if(data != null)
+				{
+					if(data.hasOwnProperty("baseMapState"))
+					{
+						var current:String = data["baseMapState"];
+						if(current == "vectorMapState")
+						{
+							this.CopyRightID.styleName = "verctorCopyRightStyle";
+						}
+						else
+						{
+							this.CopyRightID.styleName = "imageCopyRightStyle";
+						}
+					}
+				}
 			}
 			
 			//控制左侧面板显示隐藏
@@ -143,9 +167,7 @@
 			}
 		]]>
 	</fx:Script>
-	<s:BorderContainer id="MapContainerID" width="100%" height="100%" backgroundColor="#FFFFFF">
-	</s:BorderContainer>
-	<s:VGroup width="100%" height="100%" gap="1">
+	<s:VGroup width="100%" height="100%" gap="0">
 		<s:BorderContainer id="TopContainerID"  width="100%" height="60">
 			<s:HGroup width="100%" height="100%" paddingLeft="0" verticalAlign="middle" gap="0">
 				<s:Rect  width="40" height="40">
@@ -165,7 +187,7 @@
 							menuItemSkinClass="{MenuItemSkinEx}"
 							isUpdateStatus="true"
 							itemHorizontalGap="5" itemVerticalGap="4" 
-							itemHeight="60" itemWidth="80"
+							itemHeight="60" itemWidth="70"
 							itemRowCount="1"
 							isToolTip="false"
 							dataProvider="{modelLocator.menuInfo.mapMenuList}"
@@ -173,32 +195,47 @@
 			</s:HGroup>
 			<s:SWFLoader width="100%" height="100%" source="assets/swf/bubble.swf"/>
 		</s:BorderContainer>
-		<s:HGroup id="MiddleContainerID" width="100%" height="100%" paddingTop="0" paddingBottom="0" gap="0">
+		<s:Rect width="100%" height="1">
+			<s:fill>
+				<s:SolidColor color="#B5B9C0"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup id="BottomContainerID" width="100%" height="100%" paddingTop="0" paddingBottom="0" gap="0">
 			<s:BorderContainer id="BodyContainerID"  width="300" height="100%">
 				
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID"  width="100%" height="100%">
-				<s:BorderContainer left="0" top="0" backgroundAlpha="0.5">
-					<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+				<s:BorderContainer id="MapContainerID" width="100%" height="100%">
+				</s:BorderContainer>
+				<s:HGroup left="0" top="0" height="100%" verticalAlign="middle" horizontalAlign="left" gap="0">
+					<s:Rect width="1" height="100%">
+						<s:fill>
+							<s:SolidColor color="#B5B9C0"/>
+						</s:fill>
+					</s:Rect>
+					<s:BorderContainer width="15" height="60" backgroundAlpha="0.9">
 						<s:Image id="ControlBodyControlID"
 								 source="{ResourceManagerEx.FindResource('Left').cls}"
 								 buttonMode="true"/>
-					</s:VGroup>
-				</s:BorderContainer>
-				<s:BorderContainer height="30" right="5" top="0">
+					</s:BorderContainer>
+				</s:HGroup>
+				<s:BorderContainer height="30" right="5" top="5" borderVisible="true">
 					<ns:ToolBar id="MapTool" height="100%"
 								buttonStyleName="toolStyle"
 								dataProvider="{modelLocator.toolInfo.mapToolList}"
 								labelField="{modelLocator.toolInfo.mapToolLabel}"/>
 				</s:BorderContainer>
+				<s:HGroup id="CopyRightID" 
+						  width="100%"
+						  gap="0"
+						  left="3"
+						  bottom="3"
+						  horizontalAlign="left" 
+						  verticalAlign="middle">
+					<s:Label fontFamily="Times New Roman" text="©"/>
+					<s:Label text="{modelLocator.systemInfo.copyRight}"/>
+				</s:HGroup>
 			</s:Group> 
 		</s:HGroup>
-		<s:BorderContainer id="BottomContainerID"  width="100%">
-			<s:HGroup id="CopyRight" width="100%" height="100%" gap="0" horizontalAlign="left" 
-					  verticalAlign="middle">
-				<s:Label fontFamily="Times New Roman" text="©" verticalAlign="middle"/>
-				<s:Label text="{modelLocator.systemInfo.copyRight}"  verticalAlign="middle"/>
-			</s:HGroup>
-		</s:BorderContainer>
 	</s:VGroup>
 </baseclass:ViewBase>

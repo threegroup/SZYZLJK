@@ -4,7 +4,7 @@
 
 global
 {
-	color: #FFFFFF;
+	color: #000000;
 	fontFamily:Microsoft YaHei UI Light;
 	fontSize:12;
 	backgroundAlpha:1;
@@ -17,22 +17,23 @@ mx|ToolTip
 {
 	fontSize:12;
 	backgroundAlpha:1;
-	backgroundColor:#304A6D;
+	backgroundColor:#3385FF;
 	color:#FFFFFF;
-	borderColor:#304A6D;
+	borderColor:#B5B9C0;
 	borderVisible:true;
 }
 
 s|BorderContainer
 {
-	backgroundColor:#304A6D;
-	backgroundAlpha:0.8;
+	backgroundColor:#FFFFFF;
+	backgroundAlpha:1;
+	borderColor:#B5B9C0;
 	borderVisible:false
 }
 
 .menuStyle
 {
-	color:#FFFFFF;
+	color:#000000;
 	fontFamily:Microsoft YaHei UI Light;
 	fontSize:12;
 	borderColor:#436DD6;
@@ -43,13 +44,31 @@ s|BorderContainer
 
 .toolStyle
 {
-	color:#FFFFFF;
+	color:#000000;
 	fontFamily:Microsoft YaHei UI Light;
 	fontSize:12;
 	borderColor:#436DD6;
 	dropShadowVisible:true;
 	iconPlacement:top;
     skinClass:ClassReference("sm.wegis.szy.skins.ToolItemSkinEx")
+}
+
+.verctorCopyRightStyle
+{
+	color:#000000;
+	fontFamily:Microsoft YaHei UI Light;
+	fontSize:12;
+	verticalAlign:middle;
+	horizontalAlign:left;
+}
+
+.imageCopyRightStyle
+{
+	color:#FFFFFF;
+	fontFamily:Microsoft YaHei UI Light;
+	fontSize:12;
+	verticalAlign:middle;
+	horizontalAlign:left;
 }
 
 

@@ -43,6 +43,13 @@
 		<s:State name="keepSelected" />
     </s:states>
 	
+	<!--- @private -->
+	<s:Rect id="fill" left="1" right="1" top="1" bottom="1" radiusX="0">
+		<s:fill>
+			<s:SolidColor color.over="#3385FF" color="#FFFFFF"/>
+		</s:fill>
+	</s:Rect>
+	
 	<!-- layer 8: text -->
 	<!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
 	<s:HGroup gap="{getStyle('gap')}" horizontalAlign="center" verticalAlign="middle" paddingBottom="2" paddingTop="2" paddingLeft="2" paddingRight="2">
@@ -52,8 +59,8 @@
 				 maxDisplayedLines="1"
 				 horizontalCenter="0" 
 				 verticalCenter="0" 
-				 color.over="#FFFF00"
-				 color.down="#FFFF00"
+				 color.over="#FFFFFF"
+				 color.down="#FFFFFF"
 				 left="2" right="2" top="2" bottom="2"/>
 	</s:HGroup>
 </s:SparkButtonSkin>

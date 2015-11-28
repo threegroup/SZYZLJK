@@ -64,6 +64,7 @@ package sm.wegis.szy.core.utils
 					vGroup.bottom = 10;
 					vGroup.right = 0;
 					vGroup.gap = 0;
+					vGroup.depth = container.numElements + 100;
 					vGroup.verticalAlign = "top";
 					vGroup.horizontalAlign = "center";
 					vGroup.addEventListener(MouseEvent.MOUSE_MOVE, moveHandler);

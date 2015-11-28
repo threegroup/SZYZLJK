@@ -35,7 +35,7 @@
 	<s:Image id="image"  source="{source}" width="49" height="46" />
 	<s:Rect   left="2" right="2" bottom="2" height="16">
 		<s:fill>
-			<s:SolidColor color.outState="0xFEFEFE" color.overState="0x304A6D" alpha="0.8"/>
+			<s:SolidColor color.outState="0xFFFFFF" color.overState="0x3385FF" alpha="1"/>
 		</s:fill>
 	</s:Rect>
 	<s:Label bottom="2"  horizontalCenter="0" text="{title}" color.outState="0x333333" color.overState="0xFFFFFF"/>
