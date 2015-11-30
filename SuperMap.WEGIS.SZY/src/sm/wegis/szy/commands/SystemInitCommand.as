@@ -26,9 +26,7 @@ package sm.wegis.szy.commands
 					break;
 				}
 				default:
-				{
 					break;
-				}
 			}
 		}
 	}
