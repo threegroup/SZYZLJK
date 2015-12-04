@@ -34,7 +34,6 @@ s|BorderContainer
 .menuStyle
 {
 	color:#000000;
-	fontFamily:Microsoft YaHei UI Light;
 	fontSize:14;
 	borderColor:#436DD6;
 	dropShadowVisible:true;
@@ -45,7 +44,6 @@ s|BorderContainer
 .toolStyle
 {
 	color:#000000;
-	fontFamily:Microsoft YaHei UI Light;
 	fontSize:12;
 	borderColor:#436DD6;
 	dropShadowVisible:true;
@@ -56,7 +54,6 @@ s|BorderContainer
 .verctorCopyRightStyle
 {
 	color:#000000;
-	fontFamily:Microsoft YaHei UI Light;
 	fontSize:12;
 	verticalAlign:middle;
 	horizontalAlign:left;
@@ -65,10 +62,62 @@ s|BorderContainer
 .imageCopyRightStyle
 {
 	color:#FFFFFF;
-	fontFamily:Microsoft YaHei UI Light;
 	fontSize:12;
 	verticalAlign:middle;
 	horizontalAlign:left;
+}
+
+.LoginTitleStyle
+{
+	fontSize:24;
+	textAlign:left;
+	verticalAlign:middle;
+	fontWeight:bold
+}
+
+.LoginLabelStyle
+{
+	fontSize:18;
+	textAlign:left;
+	verticalAlign:middle;
+	fontWeight:bold
+}
+
+.UserIdStyle
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.UserTextSkin");
+}
+
+.PasswordStyle
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.PasswordTextSkin");
+}
+
+.SubmitRegisterInfo
+{
+	color:#F80505;
+	verticalAlign:middle;
+	fontSize:14
+}
+
+.LoginInfoStyle
+{
+	verticalAlign:middle;
+	fontSize:13
+}
+
+.SubmitRegisterStyle
+{
+	fontFamily:Microsoft YaHei UI Light;
+	skinClass:ClassReference("sm.wegis.szy.skins.SubmitRegisterSkin");
+	fontSize:16;
+	fontWeight:bold;
+	color:#ffffff
+}
+
+.CloseLoginButtonStyle
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.CloseLoginButtonSkin")
 }
 
 
