@@ -181,17 +181,28 @@
 					</s:fill>
 				</s:Rect>
 				<s:Spacer width="100%"/>
-				<ns:MenuBar id="systemMenuId" 
-							height="100%"
-							styleName="menuStyle"
-							menuItemSkinClass="{MenuItemSkinEx}"
-							isUpdateStatus="true"
-							itemHorizontalGap="5" itemVerticalGap="4" 
-							itemHeight="60" itemWidth="70"
-							itemRowCount="1"
-							isToolTip="false"
-							dataProvider="{modelLocator.menuInfo.mapMenuList}"
-							labelField="{modelLocator.menuInfo.mapMenuLabel}"/>
+				<s:VGroup horizontalAlign="right" paddingRight="5">
+					<s:HGroup verticalAlign="middle" horizontalAlign="right" gap="0">
+						<s:Label id="userInfoId" text="" height="100%" verticalAlign="middle" buttonMode="true"/>
+						<s:Button id="userLoginId" 
+								  label="登录" 
+								  width="40" height="100%" 
+								  skinClass="sm.wegis.szy.skins.LoginButtonSkin" 
+								  buttonMode="true"/>
+					</s:HGroup>
+					<s:Spacer height="100%"/>
+					<ns:MenuBar id="systemMenuId" 
+								height="100%"
+								styleName="menuStyle"
+								menuItemSkinClass="{MenuItemSkinEx}"
+								isUpdateStatus="true"
+								itemHorizontalGap="0" itemVerticalGap="4" 
+								itemHeight="30" itemWidth="70"
+								itemRowCount="1"
+								isToolTip="false"
+								dataProvider="{modelLocator.menuInfo.mapMenuList}"
+								labelField="{modelLocator.menuInfo.mapMenuLabel}"/>
+				</s:VGroup>
 			</s:HGroup>
 			<s:SWFLoader width="100%" height="100%" source="assets/swf/bubble.swf"/>
 		</s:BorderContainer>

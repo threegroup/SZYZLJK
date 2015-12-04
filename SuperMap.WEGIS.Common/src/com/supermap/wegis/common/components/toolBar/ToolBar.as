@@ -27,9 +27,22 @@ package com.supermap.wegis.common.components.toolBar
 		private var _labelField:String;
 		private var _buttonStyleName:String;
 		private var _isUpdateStatus:Boolean;
+		private var _isToolTip:Boolean;
 		
 		//停靠位置
 		private var _dockDirection:String = "horizontalAlign";
+		
+		/**是否显示工具提示*/
+		public function get isToolTip():Boolean
+		{
+			return _isToolTip;
+		}
+		
+		public function set isToolTip(value:Boolean):void
+		{
+			_isToolTip = value;
+		}
+		
 		[Inspectable (defaultValue="horizontalAlign", enumeration="horizontalAlign, verticalAlign")]
 		public function get dockDirection():String
 		{
@@ -51,6 +64,7 @@ package com.supermap.wegis.common.components.toolBar
 			_itemSum = 0;
 			_isUpdateStatus = false;
 			_buttonStyleName = "";
+			_isToolTip = false;
 			
 			if(_dockDirection == "horizontalAlign")
 				_hGroup = new HGroup();
@@ -293,7 +307,10 @@ package com.supermap.wegis.common.components.toolBar
 			var button:ToolItem = new ToolItem();
 			
 			button.label = label;
-			button.toolTip = label;
+			if(_isToolTip)
+			{
+				button.toolTip = label;
+			}
 			button.key = key;
 			button.id = key;
 			button.type = type;

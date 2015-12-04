@@ -23,7 +23,8 @@
 <s:SparkButtonSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
              xmlns:s="library://ns.adobe.com/flex/spark" 
              xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
-             alpha.disabled="0.5">
+			 minWidth="21" minHeight="21"
+			 alpha.disabled="0.5">
      
     <fx:Metadata>
         <![CDATA[ 
@@ -40,27 +41,28 @@
         <s:State name="over" />
         <s:State name="down" />
         <s:State name="disabled" />
-		<s:State name="keepSelected" />
     </s:states>
-	
+    
 	<!--- @private -->
-	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0">
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0" radiusY="0">
 		<s:fill>
 			<s:SolidColor color.over="#3385FF" color="#FFFFFF"/>
 		</s:fill>
 	</s:Rect>
-	
-	<!-- layer 8: text -->
-	<!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
-	<s:HGroup gap="{getStyle('gap')}" horizontalAlign="center" verticalAlign="middle" paddingBottom="2" paddingTop="2" paddingLeft="2" paddingRight="2">
-		<s:Image id="icon"  source="{getStyle('preImage')}" visible="{icon.source == null ? false : true}" width="24" height="24"/>
-		<s:Label id="labelDisplay"
-				 textAlign="center"
-				 maxDisplayedLines="1"
-				 horizontalCenter="0" 
-				 verticalCenter="0" 
-				 color.over="#FFFFFF"
-				 color.down="#FFFFFF"
-				 left="2" right="2" top="2" bottom="2"/>
-	</s:HGroup>
+    
+    <!-- layer 8: text -->
+    <!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
+    <s:Label id="labelDisplay"
+             textAlign="center"
+             maxDisplayedLines="1"
+             horizontalCenter="0" 
+			 verticalCenter="1" 
+			 verticalAlign="middle"
+			 color.over="#FFFFFF"
+			 color.down="#FFFFFF"
+			 color="#000000"
+			 left="0" right="0" 
+			 top="2" bottom="2">
+    </s:Label>
+    
 </s:SparkButtonSkin>
