@@ -75,6 +75,9 @@
 		<property name="tdtVectorLabel" value="${TDTVectorLabel}" />
 		<property name="tdtImage" value="${TDTImage}" />
 		<property name="tdtImageLabel" value="${TDTImageLabel}" />
+		<property name="waterResourceVectorMapUrl" value="${waterResourceVectorMapUrl}" />
+		<property name="waterResourceRasterMapUrl" value="${waterResourceRasterMapUrl}" />
+		<property name="waterResourceBaseLayerIds" value="${waterResourceBaseLayerIds}" />
 	</object>
 
 	<!--ModelLocator -->
@@ -122,8 +125,9 @@
 					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand
 					</value>
 					<!--切换底图 -->
-					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand
-					</value>
+					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand</value>
+					<!--水资源专题地图图层控制-->
+					<value type="Class">sm.wegis.szy.commands.WaterResourceLayerIdChangeCommand</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -135,7 +139,8 @@
 				<property name="SystemInit" value="SystemInitCommand" />
 				<property name="DataBindCreated" value="DataBindCreatedCommand" />
 				<property name="SystemSecurity" value="SystemSecurityCommand" />
-				<property name="BaseMapChangeCommand" value="BaseMapChangeCommand" />
+				<property name="BaseMapChange" value="BaseMapChangeCommand" />
+				<property name="WaterResourceLayerIdChange" value="WaterResourceLayerIdChangeCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />
@@ -166,6 +171,8 @@
 				<array>
 					<!--获取系统功能 -->
 					<value type="Class">sm.wegis.szy.commands.GetFunctionCommand</value>
+						<!--获取图层Json文件-->
+					<value type="Class">sm.wegis.szy.commands.GetLayerJsonCommand</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -178,6 +185,8 @@
 			<object>
 				<!--获取系统功能 -->
 				<property name="GetFunction" value="GetFunctionCommand" />
+				<!--获取图层Json文件-->
+				<property name="GetLayerJson" value="GetLayerJsonCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

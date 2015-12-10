@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.events.LayerListEvent;
+			import sm.wegis.szy.events.MapLayerEvent;
+			import sm.wegis.szy.vo.LayerInfo;
+			
+			import spark.events.IndexChangeEvent;
+			[Bindable]
+			public var dataProvider:ArrayCollection;
+			
+			protected function rollOverHandler(event:MouseEvent):void
+			{
+				this.currentState = "over";
+			}
+			
+			protected function rollOutHandler(event:MouseEvent):void
+			{
+				this.currentState = "normal";
+			}
+			
+			protected function layerList_changeHandler(event:LayerListEvent):void
+			{
+				var layerIds:String = "";
+				for each (var item:Object in layerList.dataProvider) 
+				{
+					if (item.selected == 1) {
+						layerIds = layerIds + item.layerIds + ",";
+					}
+				}
+				if (layerIds.length > 0) {
+					layerIds = layerIds.substr(0 ,layerIds.length -1);
+					var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.Water_Resource_LayerId_Change);
+					var layerInfo:LayerInfo = new LayerInfo();
+					layerInfo.layerIds = layerIds;
+					mapLayerEvent.data = layerInfo;
+					mapLayerEvent.dispatch();
+				}
+			}
+			
+			protected function layerList_creationCompleteHandler(event:FlexEvent):void
+			{
+				layerList.addEventListener(LayerListEvent.LayerSelectedChange, layerList_changeHandler);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="over"/>
+	</s:states>
+	<s:Rect left="-1" bottom="-1" right="-1" top="-1">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xB0B0B0"/>
+		</s:stroke>
+	</s:Rect>	
+	
+	<s:VGroup rollOver="rollOverHandler(event)" rollOut="rollOutHandler(event)"  horizontalAlign="center" gap="0" buttonMode="true">
+		<s:Group height="20" width="100%"  minWidth="50">
+			<s:Rect left="0" right="0"  height="100%">
+				<s:fill>
+					<s:SolidColor color="0xE8EFF6" alpha="0.9"/>
+				</s:fill>
+			</s:Rect>
+			<s:Label id="label" text="图层"  verticalAlign="middle"  horizontalCenter="0" height="100%" left.over="5"/>
+		</s:Group> 
+		<s:Group includeIn="normal"  width="100%" height="15">
+			<s:Image source="@Embed('assets/image/layercontrol/triangle.png')" horizontalCenter="0" verticalCenter="0" />
+		</s:Group>
+		<s:List id="layerList" includeIn="over" dataProvider="{dataProvider}" borderVisible="false" 
+				minWidth="80" itemRenderer="assets.renders.LayerListItemrenderer"
+				creationComplete="layerList_creationCompleteHandler(event)"/>
+	</s:VGroup>
+</s:Group>

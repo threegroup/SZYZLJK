@@ -19,17 +19,17 @@
 			
 			protected function baseMapType_clickHandler(event:MouseEvent):void
 			{
-				if (this.currentState == ConstVO.vectorMapState) {
-					this.currentState = ConstVO.imageMapState;
+				if (this.currentState == ConstVO.VectorMapState) {
+					this.currentState = ConstVO.ImageMapState;
 				} else {
-					this.currentState = ConstVO.vectorMapState;
+					this.currentState = ConstVO.VectorMapState;
 				}
 				dispatchBaseMapChangeEvent();
 			}
 			
 			private function dispatchBaseMapChangeEvent():void
 			{
-				var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE_COMMAND);
+				var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE);
 				var baseMapVO:BaseMapVO = new BaseMapVO();
 				baseMapVO.baseMapState = this.currentState;
 				mapLayerEvent.data = baseMapVO;

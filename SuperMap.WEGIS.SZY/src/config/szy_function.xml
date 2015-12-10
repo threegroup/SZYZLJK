@@ -3,6 +3,14 @@
 	<!-- 预加载模块 -->
 	<initwidget>
 		<item>
+			<name>图层控制</name>
+			<key>LayerControl</key>
+			<url>widgets/layercontrol/LayerControlWidget.swf</url>
+			<mutex>false</mutex>
+			<top>100</top>
+			<right>5</right>
+		</item>
+		<item>
 			<name>显示控制</name>
 			<key>BaseMapControl</key>
 			<url>widgets/basemap/BaseMapWidget.swf</url>

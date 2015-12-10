@@ -24,5 +24,14 @@ package sm.wegis.szy.vo
 		 * 影像底图标签
 		 */
 		public var tdtImageLabel:String;
+		
+		/**水资源矢量底地图url*/
+		public var waterResourceVectorMapUrl:String;
+		
+		/**水资源影像底图url*/
+		public var waterResourceRasterMapUrl:String;
+		
+		/**水资源地图默认显示图层LayerIDS*/
+		public var waterResourceBaseLayerIds:String
 	}
 }

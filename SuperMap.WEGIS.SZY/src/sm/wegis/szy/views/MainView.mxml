@@ -56,7 +56,7 @@
 				this.ControlBodyControlID.addEventListener(MouseEvent.MOUSE_DOWN, controlBodyHandler);
 				
 				//底图切换
-				CairngormEventDispatcher.getInstance().addEventListener(MapLayerEvent.BASE_MAP_CHANGE_COMMAND, basemapChangeHandler);
+				CairngormEventDispatcher.getInstance().addEventListener(MapLayerEvent.BASE_MAP_CHANGE, basemapChangeHandler);
 			}
 			
 			private function basemapChangeHandler(e:MapLayerEvent):void

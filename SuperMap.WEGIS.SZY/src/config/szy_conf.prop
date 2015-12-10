@@ -14,7 +14,10 @@ TDTVectorLabel=http://tdt.mwr.gov.cn:81/sla_c/wmts?SERVICE=WMTS&REQUEST=GetTile&
 TDTImage=http://tdt.mwr.gov.cn:81/img_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
 TDTImageLabel=http://tdt.mwr.gov.cn:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sia&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
 
-﻿
+﻿#水资源地图地址--矢量、影像两个版本地图
+waterResourceVectorMapUrl=http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_V
+waterResourceRasterMapUrl=http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_R
+waterResourceBaseLayerIds=20,21,38,39
 #系统标识
 systemID=SZYZLJK
 
@@ -39,10 +42,10 @@ initRight=180
 initTop=90
 
 #地图显示范围-设置为XXXX范围-待定
-viewLeft=84.50
-viewBottom=30.50
-viewRight=157.4
-viewTop=63.38
+viewLeft=118.84 
+viewBottom=38.72 
+viewRight=125.79 
+viewTop=43.49 
 
 
 

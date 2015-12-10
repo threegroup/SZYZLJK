@@ -2,12 +2,15 @@ package sm.wegis.szy.vo
 {
 	public class ConstVO
 	{
-	public  static const  vectorMapState:String = "vectorMapState";
-	public  static const  imageMapState:String = "imageMapState";
+	public  static const  VectorMapState:String = "vectorMapState";
+	public  static const  ImageMapState:String = "imageMapState";
 	
 	/**天地图底图*/
-	public  static const baseMapLayerId:String = "baseMapLayerId";
+	public  static const BaseMapLayerId:String = "baseMapLayerId";
 	/**天地图底图注记*/
-	public  static const baseMapLabelLayerId:String = "baseMapLabelLayerId";
+	public  static const BaseMapLabelLayerId:String = "baseMapLabelLayerId";
+	
+	/**水资源底图图层名称*/
+	public static const WaterResourceLayerId:String = "waterResourceLayerId";
 	}
 }

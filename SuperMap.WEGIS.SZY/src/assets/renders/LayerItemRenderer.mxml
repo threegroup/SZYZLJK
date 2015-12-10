@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="false" 
+				height="25" width="100%" 
+				creationComplete="initHandler(event)"
+				dataChange="dataChangeHandler(event)">
+	<fx:Metadata>
+		[Event(name="deleteLayer", type="com.supermap.wegis.wcsr.mvc.events.LayerControlEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.web.mapping.Layer;
+			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.events.MapLayerEvent;
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			
+			import spark.components.List;
+			
+			[Bindable]
+			private var _modelLocate:ApplicationModelLocator  = ApplicationModelLocator.getInstance();;
+			private var map:MapCtrl = _modelLocate.mapCtrl;
+			protected function dataChangeHandler(event:FlexEvent):void
+			{
+				var list:List = this.owner as List;
+				if (data != null)
+				{
+					if(data.hasOwnProperty("visible")  && data["visible"] == false)
+					{ 
+						this.ShowHideImage.source = ResourceManagerEx.FindResource("HideLayerIcon").cls;
+					}else {
+						data["visible"] = true;
+						this.ShowHideImage.source =ResourceManagerEx.FindResource("ShowLayerIcon").cls;
+					}
+					//图例图片地址 
+					if(!("legendUrl" in data))
+					{
+						this.LayerImage.source = ResourceManagerEx.FindResource("DefaultLayerIcon").cls;
+					}
+					else
+					{
+						this.LayerImage.source = data.legendUrl;
+					}
+					
+					//固定文本长度
+					if (list != null && list.labelField != null)
+					{
+						var fields:Array = list.labelField.split(",");
+						for each (var field:String in fields)
+						{
+							var  label:String = data[field];
+							if(label != null)
+							{
+								var len:int = label.length;
+								ItemLabel.text=len >6 ? label.substr(0,6)+'...' : label;
+								ItemLabel.toolTip = len > 6 ? label : "";
+								return;
+							}
+						}
+					}
+				}
+			}
+			
+			protected function initHandler(event:FlexEvent):void
+			{
+				this.ShowHideImage.addEventListener(MouseEvent.CLICK, showhideClickHandler);
+			}
+			
+			//显示或隐藏图层
+			private function showhideClickHandler(event:MouseEvent):void
+			{
+				data.visible = !data.visible;
+				this.ShowHideImage.source = data.visible ? ResourceManagerEx.FindResource("ShowLayerIcon").cls
+					:ResourceManagerEx.FindResource("HideLayerIcon").cls;
+				var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.changed);
+				mapLayerEvent.dispatch();
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	
+	<s:HGroup width="100%" height="100%" gap="0" horizontalAlign="left" left="0"  right="0" paddingLeft="5"
+			  paddingRight="5" verticalAlign="middle">
+		<s:Image id="ShowHideImage" toolTip="显示或隐藏图层" buttonMode="true"/>
+		<s:Spacer width="5"/>
+		<s:Image id="LayerImage"/>
+		<s:Spacer width="5"/>
+		<s:Label id="ItemLabel" width="100%"   buttonMode="true"/>
+	</s:HGroup>
+</s:ItemRenderer>

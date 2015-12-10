@@ -78,6 +78,23 @@ package sm.wegis.szy.plugins
 		private static var rightKey:String = "Right";
 		ResourceManagerEx.RegisterResource("",rightKey, rightCls);
 		
+		/**显示控制图标*/
+		[Embed(source="assets/image/showcontrol/show-a.png")]
+		private static var showLayerCls:Class;
+		private static var showLayerKey:String = "ShowLayerIcon";
+		ResourceManagerEx.RegisterResource("",showLayerKey, showLayerCls);
+		
+		[Embed(source="assets/image/showcontrol/hide-a.png")]
+		private static var hideLayerCls:Class;
+		private static var hideLayerKey:String = "HideLayerIcon";
+		ResourceManagerEx.RegisterResource("",hideLayerKey, hideLayerCls);
+		
+		//根节点
+		[Embed(source="assets/image/legend/root.png")]
+		private static var defaultCls:Class;
+		private static var defaultKey:String = "DefaultLayerIcon";
+		ResourceManagerEx.RegisterResource("",defaultKey, defaultCls);
+		
 		public function SystemIconFile()
 		{
 			super();
