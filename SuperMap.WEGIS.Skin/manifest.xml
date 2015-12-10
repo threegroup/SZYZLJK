@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<componentPackage>
+
+	<!-- cores -->
+	<!--<component id="CalculateClass" class="com.supermap.wegis.common.core.convert.CalculateClass"/>-->
+	<component id="CalculateClass" class="com.ksria.flex.silvergreen.spark.BorderContainer.BorderContainerSkin"/>
+</componentPackage>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses/>
+  <includeResources>
+    <resourceEntry destPath="com/ksria/flex/silvergreen/mx/Tree/assets/defaultLeafIcon.png" sourcePath="com/ksria/flex/silvergreen/mx/Tree/assets/defaultLeafIcon.png"/>
+    <resourceEntry destPath="com/ksria/flex/silvergreen/mx/Tree/assets/folderClosedIcon.png" sourcePath="com/ksria/flex/silvergreen/mx/Tree/assets/folderClosedIcon.png"/>
+    <resourceEntry destPath="com/ksria/flex/silvergreen/spark/spark.css" sourcePath="com/ksria/flex/silvergreen/spark/spark.css"/>
+    <resourceEntry destPath="com/ksria/flex/silvergreen/mx/Tree/assets/folderOpenIcon.png" sourcePath="com/ksria/flex/silvergreen/mx/Tree/assets/folderOpenIcon.png"/>
+    <resourceEntry destPath="style.css" sourcePath="style.css"/>
+  </includeResources>
+  <namespaceManifests>
+    <namespaceManifestEntry manifest="E:/ProjectSVN/10水资源所/SZYZLJK/SuperMap.WEGIS.Skin/manifest.xml" namespace="library://ns.ksria.com/flex/skin"/>
+  </namespaceManifests>
+</flexLibProperties>
