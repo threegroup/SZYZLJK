@@ -6,6 +6,9 @@
 			   backgroundColor="#646464" 
 			   preloader="com.supermap.wegis.common.components.progressBar.InitBar"
 			   preinitialize="preinitializeHandler(event)">
+	<fx:Metadata>
+		[ResourceBundle("osmf")]
+	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
