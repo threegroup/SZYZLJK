@@ -35,7 +35,7 @@ WeGIS.F = {
                         enableKinetic: true
                     }
                 })],
-            allOverlays:true
+            allOverlays: true
         });
 
         //天地图矢量底图
@@ -49,14 +49,14 @@ WeGIS.F = {
         WeGIS.V.baseLabelLayer.zOffset = 4;
 
         /*//天地图影像底图
-        WeGIS.V.baseImageMaplayer = new SuperMap.Layer.Tianditu();
-        WeGIS.V.baseImageMaplayer.url = WeGIS.V.baseImageMapUrl;
-        WeGIS.V.baseImageMaplayer.zOffset = 4;
+         WeGIS.V.baseImageMaplayer = new SuperMap.Layer.Tianditu();
+         WeGIS.V.baseImageMaplayer.url = WeGIS.V.baseImageMapUrl;
+         WeGIS.V.baseImageMaplayer.zOffset = 4;
 
-        //天地图影像底图标注
-        WeGIS.V.baseImageLabelLayer = new SuperMap.Layer.Tianditu();
-        WeGIS.V.baseImageLabelLayer.url = WeGIS.V.baseImageLabelUrl;
-        WeGIS.V.baseImageLabelLayer.zOffset = 4;*/
+         //天地图影像底图标注
+         WeGIS.V.baseImageLabelLayer = new SuperMap.Layer.Tianditu();
+         WeGIS.V.baseImageLabelLayer.url = WeGIS.V.baseImageLabelUrl;
+         WeGIS.V.baseImageLabelLayer.zOffset = 4;*/
 
         //marker layer
         WeGIS.V.markerLayer = new SuperMap.Layer.Markers(WeGIS.V.markerLayerName);
@@ -87,7 +87,7 @@ WeGIS.F = {
             var y = parseInt(xyArray[1]);
             WeGIS.V.map.setCenter(new SuperMap.LonLat(x, y), 8);//居中显示
             WeGIS.F.createMarker(x, y);//创建地图标签
-            WeGIS.F.createGeoText(x, y, searchObject["name"]);//创建文本标签
+            WeGIS.F.createGeoText(x, y, decodeURIComponent(searchObject["name"]));//创建文本标签
         }
     },
     //根据坐标创建点图标
