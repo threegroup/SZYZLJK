@@ -28,9 +28,18 @@
 			
 		]]>
 	</fx:Script>
-	<s:HGroup width="100%" height="100%" verticalAlign="middle" left="5" right="5">
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+	</s:states>
+	<s:Rect left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF" color.hovered="0x3385FF"/>
+		</s:fill>
+	</s:Rect>
+ 	<s:HGroup width="100%" height="100%" verticalAlign="middle" left="5" right="5">
 		<s:CheckBox id="selectCk" change="selectCk_changeHandler(event)"/>
-		<s:Label id="lb" verticalAlign="middle"  height="100%"/>
+		<s:Label id="lb" verticalAlign="middle"  height="100%" color="0x000000" color.hovered="0xFFFFFF"/>
 	</s:HGroup>
 	<s:Line width="100%"  bottom="0">
 		<s:stroke>
