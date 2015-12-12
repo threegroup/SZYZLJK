@@ -47,22 +47,3 @@ Temporary Items
 
 # Compresss files
 .zip
-
-# Project files
-.project
-.flexProperties
-.actionScriptProperties
-/SuperMap.WEGIS.Common/manifest.xml
-/SuperMap.WEGIS.Common/.actionScriptProperties
-/SuperMap.WEGIS.Common/.flexLibProperties
-/SuperMap.WEGIS.Common/.fxpProperties
-/SuperMap.WEGIS.Common/.project
-/SuperMap.WEGIS.SZY/.project
-/SuperMap.WEGIS.SZY/.actionScriptProperties
-/SuperMap.WEGIS.SZY/.flexProperties
-/SuperMap.WEGIS.Common/.actionScriptProperties
-/SuperMap.WEGIS.Common/.flexLibProperties
-/SuperMap.WEGIS.Common/.fxpProperties
-/SuperMap.WEGIS.Common/.project
-/Libs/SuperMap.WEGIS.Common.swc
-/SuperMap.WEGIS.Common/.flexLibProperties
