@@ -220,6 +220,11 @@
 				this.choosePanel(true);
 			}
 			
+			protected function OkBtn_clickHandler(event:MouseEvent):void
+			{
+				this.choosePanel(false,true);
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -358,7 +363,8 @@
 									dataProvider="{systemArrCol}" labelField="name"/>
 					<s:HGroup width="355" horizontalAlign="right">
 						<s:Button id="OkBtn" width="60" height="30" label="确定" buttonMode="true"
-								  styleName="SubmitRegisterStyle"/>
+								  styleName="SubmitRegisterStyle"
+								  click="OkBtn_clickHandler(event)"/>
 					</s:HGroup>
 				</s:VGroup>
 			</s:BorderContainer>
