@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<baseclass:ViewBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					xmlns:s="library://ns.adobe.com/flex/spark" 
-					xmlns:mx="library://ns.adobe.com/flex/mx" 
-					xmlns:baseclass="sm.wegis.szy.core.baseclass.*" 
+<baseclass:ViewBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+					xmlns:s="library://ns.adobe.com/flex/spark"
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					xmlns:baseclass="sm.wegis.szy.core.baseclass.*"
 					xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 					xmlns:supermap="http://www.supermap.com/iclient/2010"
 					xmlns:basemap="widgets.basemap.*"
-					width="100%" height="100%"
-					creationComplete="creationCompleteHandler(event)">
+					width="100%" height="100%" creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Resize id="hideEffect" duration="200" widthFrom="300" widthTo="0" target="{BodyContainerID}" repeatCount="1"/>
-		<s:Resize id="showEffect" duration="200" widthFrom="0" widthTo="300" target="{BodyContainerID}" repeatCount="1"/>
+		<s:Resize id="hideEffect" duration="200" repeatCount="1" target="{BodyContainerID}"
+				  widthFrom="300" widthTo="0"/>
+		<s:Resize id="showEffect" duration="200" repeatCount="1" target="{BodyContainerID}"
+				  widthFrom="0" widthTo="300"/>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
@@ -31,9 +32,36 @@
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.skins.MenuItemSkinEx;
 			
+			/**应用系统选择项，仅测试之用*/
+			[Bindable]
+			private var systemArrCol:ArrayCollection = new ArrayCollection(
+				[
+					{name:"太子河流域",code:"TZHLY"},
+					{name:"于桥水库",code:"YQSK"}
+				]
+			);
+			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
+				this.choosePanel(true);
+				
 				initListener();
+			}
+			
+			/**更改面板显示内容*/
+			private function choosePanel(isLogin:Boolean=false, isNormal:Boolean=false, isChoose:Boolean=false):void
+			{
+				//登录面板
+				this.loginPanelId.visible = isLogin;
+				this.loginPanelId.includeInLayout = isLogin;
+				
+				//登录之后运行面板
+				this.mainPanelId.visible = isNormal;
+				this.mainPanelId.includeInLayout = isNormal;
+				
+				//系统选择面板
+				this.choosePanelId.visible = isChoose;
+				this.choosePanelId.includeInLayout = isChoose;
 			}
 			
 			public function initMehthod():void 
@@ -49,11 +77,17 @@
 			/**初始化视图事件监听*/
 			public function initListener():void
 			{
-				//系统菜单
-				this.systemMenuId.addEventListener(MenuEventEx.MENU_CLICK, systemMenuHandler);
+				if(this.systemMenuId != null)
+				{
+					//系统菜单
+					this.systemMenuId.addEventListener(MenuEventEx.MENU_CLICK, systemMenuHandler);
+				}
 				
-				//控制左侧面板显示隐藏
-				this.ControlBodyControlID.addEventListener(MouseEvent.MOUSE_DOWN, controlBodyHandler);
+				if(this.ControlBodyControlID != null)
+				{
+					//控制左侧面板显示隐藏
+					this.ControlBodyControlID.addEventListener(MouseEvent.MOUSE_DOWN, controlBodyHandler);
+				}
 				
 				//底图切换
 				CairngormEventDispatcher.getInstance().addEventListener(MapLayerEvent.BASE_MAP_CHANGE, basemapChangeHandler);
@@ -168,57 +202,58 @@
 			
 			protected function userLoginId_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				this.loginPanelId.visible = true;
-				this.loginPanelId.includeInLayout = true;
+				this.choosePanel(true);
 			}
 			
 			protected function closeLoginId_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				this.loginPanelId.visible = false;
-				this.loginPanelId.includeInLayout = false;
+				this.choosePanel(false,true);
+			}
+			
+			protected function SubmitBtn_clickHandler(event:MouseEvent):void
+			{
+				this.choosePanel(false,false,true);
+			}
+			
+			protected function closeChooseId_clickHandler(event:MouseEvent):void
+			{
+				this.choosePanel(true);
 			}
 			
 		]]>
 	</fx:Script>
 	
-	<s:VGroup width="100%" height="100%" gap="0">
-		<s:BorderContainer id="TopContainerID"  width="100%" height="60">
-			<s:HGroup width="100%" height="100%" paddingLeft="0" verticalAlign="middle" gap="0">
-				<s:Rect  width="40" height="40">
+	<s:VGroup id="mainPanelId" width="100%" height="100%" gap="0">
+		<s:BorderContainer id="TopContainerID" width="100%" height="60">
+			<s:HGroup width="100%" height="100%" gap="0" paddingLeft="0" verticalAlign="middle">
+				<s:Rect width="40" height="40">
 					<s:fill>
-						<s:BitmapFill source="{ResourceManagerEx.FindResource('logoIcon').cls}" fillMode="clip"/> 
+						<s:BitmapFill fillMode="clip"
+									  source="{ResourceManagerEx.FindResource('logoIcon').cls}"/> 
 					</s:fill>
 				</s:Rect>
 				<s:Rect width="345" height="45">
 					<s:fill>
-						<s:BitmapFill source="{ResourceManagerEx.FindResource('titleIcon').cls}" fillMode="clip"/> 
+						<s:BitmapFill fillMode="clip"
+									  source="{ResourceManagerEx.FindResource('titleIcon').cls}"/> 
 					</s:fill>
 				</s:Rect>
 				<s:Spacer width="100%"/>
 				<s:VGroup horizontalAlign="right" paddingRight="5">
-					<s:HGroup verticalAlign="middle" horizontalAlign="right" gap="0">
-						<s:Label id="userInfoId" text="" height="100%" verticalAlign="middle" buttonMode="true"/>
-						<s:Button id="userLoginId" 
-								  label="登录" 
-								  width="40" height="100%" 
-								  skinClass="sm.wegis.szy.skins.LoginButtonSkin" 
-								  buttonMode="true"
-								  click="userLoginId_clickHandler(event)"/>
+					<s:HGroup gap="0" horizontalAlign="right" verticalAlign="middle">
+						<s:Label id="userInfoId" height="100%" buttonMode="true" text=""
+								 verticalAlign="middle"/>
+						<s:Button id="userLoginId" width="40" height="100%" label="登录"
+								  buttonMode="true" click="userLoginId_clickHandler(event)"
+								  skinClass="sm.wegis.szy.skins.LoginButtonSkin"/>
 					</s:HGroup>
 					<s:Spacer height="100%"/>
-					<ns:MenuBar id="systemMenuId" 
-								height="100%"
-								styleName="menuStyle"
-								menuItemSkinClass="{MenuItemSkinEx}"
-								isUpdateStatus="true"
-								itemHorizontalGap="0" itemVerticalGap="4" 
-								itemHeight="30" itemWidth="70"
-								itemRowCount="1"
-								isToolTip="false"
-								dataProvider="{modelLocator.menuInfo.mapMenuList}"
-								labelField="{modelLocator.menuInfo.mapMenuLabel}"/>
+					<ns:MenuBar id="systemMenuId" height="100%"
+								dataProvider="{modelLocator.menuInfo.mapMenuList}" isToolTip="false"
+								isUpdateStatus="true" itemHeight="30" itemHorizontalGap="0"
+								itemRowCount="1" itemVerticalGap="4" itemWidth="70"
+								labelField="{modelLocator.menuInfo.mapMenuLabel}"
+								menuItemSkinClass="{MenuItemSkinEx}" styleName="menuStyle"/>
 				</s:VGroup>
 			</s:HGroup>
 			<s:SWFLoader width="100%" height="100%" source="assets/swf/bubble.swf"/>
@@ -228,38 +263,33 @@
 				<s:SolidColor color="#B5B9C0"/>
 			</s:fill>
 		</s:Rect>
-		<s:HGroup id="BottomContainerID" width="100%" height="100%" paddingTop="0" paddingBottom="0" gap="0">
-			<s:BorderContainer id="BodyContainerID"  width="300" height="100%">
+		<s:HGroup id="BottomContainerID" width="100%" height="100%" gap="0" paddingBottom="0"
+				  paddingTop="0">
+			<s:BorderContainer id="BodyContainerID" width="300" height="100%">
 				
 			</s:BorderContainer>
-			<s:Group id="MainBodyContainerID"  width="100%" height="100%">
+			<s:Group id="MainBodyContainerID" width="100%" height="100%">
 				<s:BorderContainer id="MapContainerID" width="100%" height="100%">
 				</s:BorderContainer>
-				<s:HGroup left="0" top="0" height="100%" verticalAlign="middle" horizontalAlign="left" gap="0">
+				<s:HGroup left="0" top="0" height="100%" gap="0" horizontalAlign="left"
+						  verticalAlign="middle">
 					<s:Rect width="1" height="100%">
 						<s:fill>
 							<s:SolidColor color="#B5B9C0"/>
 						</s:fill>
 					</s:Rect>
 					<s:BorderContainer width="15" height="60" backgroundAlpha="0.9">
-						<s:Image id="ControlBodyControlID"
-								 source="{ResourceManagerEx.FindResource('Left').cls}"
-								 buttonMode="true"/>
+						<s:Image id="ControlBodyControlID" buttonMode="true"
+								 source="{ResourceManagerEx.FindResource('Left').cls}"/>
 					</s:BorderContainer>
 				</s:HGroup>
-				<s:BorderContainer height="30" right="5" top="5" borderVisible="true">
-					<ns:ToolBar id="MapTool" height="100%"
-								buttonStyleName="toolStyle"
+				<s:BorderContainer right="5" top="5" height="30" borderVisible="true">
+					<ns:ToolBar id="MapTool" height="100%" buttonStyleName="toolStyle"
 								dataProvider="{modelLocator.toolInfo.mapToolList}"
 								labelField="{modelLocator.toolInfo.mapToolLabel}"/>
 				</s:BorderContainer>
-				<s:HGroup id="CopyRightID" 
-						  width="100%"
-						  gap="0"
-						  left="3"
-						  bottom="3"
-						  horizontalAlign="left" 
-						  verticalAlign="middle">
+				<s:HGroup id="CopyRightID" left="3" bottom="3" width="100%" gap="0"
+						  horizontalAlign="left" verticalAlign="middle">
 					<s:Label fontFamily="Times New Roman" text="©"/>
 					<s:Label text="{modelLocator.systemInfo.copyRight}"/>
 				</s:HGroup>
@@ -267,39 +297,69 @@
 		</s:HGroup>
 	</s:VGroup>
 	
-	<s:BorderContainer id="loginPanelId" 
-					   visible="false" includeInLayout="true"
-					   width="100%" height="100%"
-					   backgroundColor="#D9D9D9" backgroundAlpha="0.6">
-		<s:VGroup width="100%" height="100%" 
-				  horizontalAlign="center"
-				  verticalAlign="middle">
+	<s:BorderContainer id="loginPanelId" width="100%" height="100%"
+					   backgroundAlpha="1" backgroundColor="#D9D9D9">
+		<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
 			<s:BorderContainer>
-				<s:VGroup width="400"
-						  paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"
-						  horizontalAlign="center"
-						  verticalAlign="middle" 
-						  gap="10">
-					<s:HGroup width="100%" height="30" verticalAlign="middle" paddingLeft="10" paddingRight="10">
-						<s:Label text="登录系统账号" width="100%" styleName="LoginLabelStyle"/>
+				<s:VGroup width="400" gap="10" horizontalAlign="center" paddingBottom="10"
+						  paddingLeft="10" paddingRight="10" paddingTop="10" verticalAlign="middle">
+					<s:HGroup width="100%" height="30" paddingLeft="10" paddingRight="10"
+							  verticalAlign="middle">
+						<s:Label width="100%" styleName="LoginLabelStyle" text="登录系统账号"/>
 						<s:Spacer width="100%"/>
-						<s:Button id="closeLoginId" styleName="CloseLoginButtonStyle" buttonMode="true"
-								  click="closeLoginId_clickHandler(event)"/>
+						<s:Button id="closeLoginId" buttonMode="true"
+								  click="closeLoginId_clickHandler(event)"
+								  styleName="CloseLoginButtonStyle"/>
 					</s:HGroup>
 					<s:Line width="100%">
 						<s:stroke>
 							<s:SolidColorStroke color="#ABDBFC" weight="1"/>
 						</s:stroke>
 					</s:Line>
-					<s:TextInput id="UserIdName" width="355" height="30"
-								 prompt="用户名" styleName="UserIdStyle"/>
+					<s:TextInput id="UserIdName" width="355" height="30" prompt="用户名"
+								 styleName="UserIdStyle"/>
 					<s:TextInput id="PwdValue" width="355" height="30" displayAsPassword="true"
 								 prompt="密码" styleName="PasswordStyle"/>
 					<s:HGroup width="355" horizontalAlign="right">
-						<s:Button id="SubmitBtn" width="60" height="30" label="登录"
-								  buttonMode="true" styleName="SubmitRegisterStyle"/>
+						<s:Button id="SubmitBtn" width="60" height="30" label="登录" buttonMode="true"
+								  styleName="SubmitRegisterStyle" click="SubmitBtn_clickHandler(event)"/>
 					</s:HGroup>
 					<s:Label id="LoginInfoLabel" width="355" styleName="SubmitRegisterInfo"/>
+				</s:VGroup>
+			</s:BorderContainer>
+		</s:VGroup>
+	</s:BorderContainer>
+	
+	<s:BorderContainer id="choosePanelId" width="100%" height="100%"
+					   backgroundAlpha="1" backgroundColor="#D9D9D9">
+		<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+			<s:BorderContainer>
+				<s:VGroup width="400" gap="10" horizontalAlign="center" paddingBottom="10"
+						  paddingLeft="10" paddingRight="10" paddingTop="10" verticalAlign="middle">
+					<s:HGroup width="100%" height="30" paddingLeft="10" paddingRight="10"
+							  verticalAlign="middle">
+						<s:Label width="100%" styleName="LoginLabelStyle" text="选择应用系统"/>
+						<s:Spacer width="100%"/>
+						<s:Button id="closeChooseId" buttonMode="true"
+								  styleName="CloseLoginButtonStyle"
+								  click="closeChooseId_clickHandler(event)"/>
+					</s:HGroup>
+					<s:Line width="100%">
+						<s:stroke>
+							<s:SolidColorStroke color="#ABDBFC" weight="1"/>
+						</s:stroke>
+					</s:Line>
+					<s:DropDownList id="systemSelector" 
+									width="355" height="30"
+									prompt="应用系统" 
+									requireSelection="true"
+									buttonMode="true"
+									styleName="SystemSelectorStyle"
+									dataProvider="{systemArrCol}" labelField="name"/>
+					<s:HGroup width="355" horizontalAlign="right">
+						<s:Button id="OkBtn" width="60" height="30" label="确定" buttonMode="true"
+								  styleName="SubmitRegisterStyle"/>
+					</s:HGroup>
 				</s:VGroup>
 			</s:BorderContainer>
 		</s:VGroup>

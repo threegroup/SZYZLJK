@@ -120,6 +120,13 @@ s|BorderContainer
 	skinClass:ClassReference("sm.wegis.szy.skins.CloseLoginButtonSkin")
 }
 
+.SystemSelectorStyle
+{
+	textAlign:left;
+	fontFamily:Microsoft YaHei UI Light;
+	skinClass:ClassReference("sm.wegis.szy.skins.DropDownListSkinEx")
+}
+
 /*
 //==========================================================================================================================
 //
