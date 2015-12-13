@@ -9,14 +9,17 @@ systemFunctionUrl=config/szy_function.xml
 systemTitle=水资源质量监控平台
 
 #天地图服务地址
-TDTVector=http://tdt.mwr.gov.cn:81/slb_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=slb&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
-TDTVectorLabel=http://tdt.mwr.gov.cn:81/sla_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sla&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
-TDTImage=http://tdt.mwr.gov.cn:81/img_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
-TDTImageLabel=http://tdt.mwr.gov.cn:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sia&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=4
+TDTVector=http://tdt.mwr.gov.cn:81/slb_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=slb&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=7
+TDTVectorLabel=http://tdt.mwr.gov.cn:81/sla_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sla&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=7
+TDTImage=http://tdt.mwr.gov.cn:81/img_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=7
+TDTImageLabel=http://tdt.mwr.gov.cn:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sia&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=7
 
 ﻿#水资源地图地址--矢量、影像两个版本地图
 waterResourceVectorMapUrl=http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_V
 waterResourceRasterMapUrl=http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_R
+#waterResourceVectorMapUrl=http://192.168.117.199:8080/iserver/services/map-SZY/rest/maps/SZY_V
+#waterResourceRasterMapUrl=http://192.168.117.199:8080/iserver/services/map-SZY/rest/maps/SZY_R
+
 waterResourceBaseLayerIds=20,21,38,39
 #系统标识
 systemID=SZYZLJK
@@ -30,7 +33,7 @@ wsdl=http://10.1.3.141/WEGIS-00-WEB_SERVICE/WSWebService?wsdl
 
 #=============二维地图====================#
 #地图比例尺
-layerScales=0.00000002704261714564, 0.00000005408523429128,0.00000010817046858257, 0.00000021634093716514, 0.00000043268187433028, 0.00000086536374866056,0.00000173072749732112, 0.00000346145499464224,0.00000692290998928384,0.00001384581997856768,0.00002769163995713790, 0.00005538327991427580
+layerScales=0.00000021634093716514, 0.00000043268187433028, 0.00000086536374866056,0.00000173072749732112, 0.00000346145499464224,0.00000692290998928384,0.00001384581997856768,0.00002769163995713790, 0.00005538327991427580
 
 #地图图层偏移级别,在服务url参数offlevel基础上增加偏移
 subOffLevel=0

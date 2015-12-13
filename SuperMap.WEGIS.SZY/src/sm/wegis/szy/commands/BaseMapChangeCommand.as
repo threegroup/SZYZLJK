@@ -22,6 +22,25 @@ package sm.wegis.szy.commands
 			//底图和注记两个图层
 			var baseLayer:TiledWMTSLayerEx = mapCtrl.getLayer( ConstVO.BaseMapLayerId) as TiledWMTSLayerEx;
 			var baseLabelLayer:TiledWMTSLayerEx = mapCtrl.getLayer( ConstVO.BaseMapLabelLayerId) as TiledWMTSLayerEx;
+			//天地图地图和注记图层
+			if (baseLayer == null) {
+				baseLayer = new TiledWMTSLayerEx();
+				baseLayer.id = ConstVO.BaseMapLayerId;
+				baseLayer.layerType = 0
+				baseLayer.layerIndex = 1;
+				baseLayer.bounds = modelLocator.systemInfo.layerBounds;
+				mapCtrl.addLayer(baseLayer);
+			}
+			
+			if( baseLabelLayer == null) {
+				baseLabelLayer = new TiledWMTSLayerEx();
+				baseLabelLayer.id = ConstVO.BaseMapLabelLayerId;
+				baseLabelLayer.layerType = 4;
+				baseLabelLayer.layerIndex = 1;
+				baseLabelLayer.bounds = modelLocator.systemInfo.layerBounds;
+				mapCtrl.addLayer(baseLabelLayer);
+				mapCtrl.viewEntire();
+			}
 			
 			//水资源地图显示
 			var waterResourceLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer(ConstVO.WaterResourceLayerId) as TiledDynamicRESTLayerEx;
@@ -33,23 +52,8 @@ package sm.wegis.szy.commands
 				waterResourceLayer.transparent = true;
 				mapCtrl.addLayer(waterResourceLayer);
 			}
-			if (baseLayer == null) {
-				baseLayer = new TiledWMTSLayerEx();
-				baseLayer.id = ConstVO.BaseMapLayerId;
-				baseLayer.layerType = 0
-				baseLayer.layerIndex = 1;
-				baseLayer.bounds = modelLocator.systemInfo.layerBounds;
-				
-				baseLabelLayer = new TiledWMTSLayerEx();
-				baseLabelLayer.id = ConstVO.BaseMapLabelLayerId;
-				baseLabelLayer.layerType = 4;
-				baseLabelLayer.layerIndex = 1;
-				baseLabelLayer.bounds = modelLocator.systemInfo.layerBounds;
-				mapCtrl.addLayer(baseLayer);
-				mapCtrl.addLayer(baseLabelLayer);
-				mapCtrl.viewEntire();
-				mapCtrl.sortLayers();
-			}
+			mapCtrl.sortLayers();
+			
 			//显示矢量底图
 			if (baseMapVO.baseMapState == ConstVO.VectorMapState) {
 				baseLayer.url = modelLocator.baseMapInfo.tdtVector;
