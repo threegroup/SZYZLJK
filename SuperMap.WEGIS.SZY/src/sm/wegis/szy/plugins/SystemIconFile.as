@@ -15,6 +15,67 @@ package sm.wegis.szy.plugins
 		private static var titleIconKey:String = "titleIcon";
 		ResourceManagerEx.RegisterResource("",titleIconKey, titleIconCls);
 		
+		/**系统选择界面*/
+		[Embed(source="assets/image/system/system.png")]
+		private static var tzhlyPngCls:Class;
+		private static var tzhlyPngKey:String = "TZHLY";
+		ResourceManagerEx.RegisterResource("",tzhlyPngKey, tzhlyPngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var yqskPngCls:Class;
+		private static var yqskPngKey:String = "YQSK";
+		ResourceManagerEx.RegisterResource("",yqskPngKey, yqskPngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var tzhly1PngCls:Class;
+		private static var tzhly1PngKey:String = "TZHLY1";
+		ResourceManagerEx.RegisterResource("",tzhly1PngKey, tzhly1PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var yqsk1PngCls:Class;
+		private static var yqsk1PngKey:String = "YQSK1";
+		ResourceManagerEx.RegisterResource("",yqsk1PngKey, yqsk1PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var tzhly2PngCls:Class;
+		private static var tzhly2PngKey:String = "TZHLY2";
+		ResourceManagerEx.RegisterResource("",tzhly2PngKey, tzhly2PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var yqsk2PngCls:Class;
+		private static var yqsk2PngKey:String = "YQSK2";
+		ResourceManagerEx.RegisterResource("",yqsk2PngKey, yqsk2PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var tzhly3PngCls:Class;
+		private static var tzhly3PngKey:String = "TZHLY3";
+		ResourceManagerEx.RegisterResource("",tzhly3PngKey, tzhly3PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var yqsk3PngCls:Class;
+		private static var yqsk3PngKey:String = "YQSK3";
+		ResourceManagerEx.RegisterResource("",yqsk3PngKey, yqsk3PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var tzhly4PngCls:Class;
+		private static var tzhly4PngKey:String = "TZHLY4";
+		ResourceManagerEx.RegisterResource("",tzhly4PngKey, tzhly4PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var yqsk4PngCls:Class;
+		private static var yqsk4PngKey:String = "YQSK4";
+		ResourceManagerEx.RegisterResource("",yqsk4PngKey, yqsk4PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var tzhly5PngCls:Class;
+		private static var tzhly5PngKey:String = "TZHLY5";
+		ResourceManagerEx.RegisterResource("",tzhly5PngKey, tzhly5PngCls);
+		
+		[Embed(source="assets/image/system/system.png")]
+		private static var yqsk5PngCls:Class;
+		private static var yqsk5PngKey:String = "YQSK5";
+		ResourceManagerEx.RegisterResource("",yqsk5PngKey, yqsk5PngCls);
+		
 		/**底图矢量*/
 		[Embed(source="assets/image/basemap/vector.png")]
 		private static var vectorPngCls:Class;

@@ -93,8 +93,7 @@
 			 color.down="#FFFFFF"
 			 color.keepSelected="#FFFFFF"
 			 color="#000000"
-			 showTruncationTip="false"
-			 >
+			 showTruncationTip="false">
 	</s:Label>
     
 </s:SparkButtonSkin>

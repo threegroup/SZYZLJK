@@ -127,6 +127,11 @@ s|BorderContainer
 	skinClass:ClassReference("sm.wegis.szy.skins.DropDownListSkinEx")
 }
 
+.ScrollPanelItemStyle
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.ButtonItemSkinEx");
+}
+
 /*
 //==========================================================================================================================
 //

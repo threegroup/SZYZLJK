@@ -79,7 +79,7 @@
 			<s:Image source="@Embed('assets/image/layercontrol/triangle.png')" horizontalCenter="0" verticalCenter="0" />
 		</s:Group>
 		<s:List id="layerList" includeIn="over" dataProvider="{dataProvider}" borderVisible="false" 
-				minWidth="80" itemRenderer="assets.renders.LayerListItemrenderer"
+				minWidth="80" itemRenderer="sm.wegis.szy.renders.LayerListItemrenderer"
 				creationComplete="layerList_creationCompleteHandler(event)"/>
 	</s:VGroup>
 </s:Group>

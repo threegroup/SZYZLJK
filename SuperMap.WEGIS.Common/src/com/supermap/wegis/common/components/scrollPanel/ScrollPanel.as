@@ -64,12 +64,15 @@ package com.supermap.wegis.common.components.scrollPanel
 		
 		private var _type:String="button";
 		
+		/**是否显示tooltip*/
+		public var isShowToolTip:Boolean = false;
+		
 		/**按钮样式*/
 		public function get buttonStyleName():String
 		{
 			return _buttonStyleName;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -77,13 +80,13 @@ package com.supermap.wegis.common.components.scrollPanel
 		{
 			_buttonStyleName = value;
 		}
-
+		
 		/**文本样式*/
 		public function get textStyleName():String
 		{
 			return _textStyleName;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -91,7 +94,7 @@ package com.supermap.wegis.common.components.scrollPanel
 		{
 			_textStyleName = value;
 		}
-
+		
 		[Inspectable(category="General",defaultValue="button", enumeration="button,label")]
 		public function get type():String
 		{
@@ -506,7 +509,10 @@ package com.supermap.wegis.common.components.scrollPanel
 									{	
 										var label:String = item[_labelField];
 										button.label = label;
-										button.toolTip = label;
+										if(isShowToolTip)
+										{
+											button.toolTip = label;
+										}
 									}
 								} 
 								if(item.hasOwnProperty("key"))
