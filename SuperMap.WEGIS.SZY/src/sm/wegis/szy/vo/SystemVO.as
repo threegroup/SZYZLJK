@@ -13,6 +13,10 @@ package sm.wegis.szy.vo
 		}
 		private var _systemTitle:String;
 		
+		private var _subSystemTitle:String;
+		
+		private var _subSystemID:String;
+		
 		private var _systemFunctionUrl:String;
 		
 		private var _systemID:String;
@@ -22,6 +26,28 @@ package sm.wegis.szy.vo
 		private var _isNeedAuthorization:Boolean = false;
 		
 		private var _layerBounds:Rectangle2D;
+
+		/**子系统ID*/
+		public function get subSystemID():String
+		{
+			return _subSystemID;
+		}
+
+		public function set subSystemID(value:String):void
+		{
+			_subSystemID = value;
+		}
+
+		/**子系统标题*/
+		public function get subSystemTitle():String
+		{
+			return _subSystemTitle;
+		}
+
+		public function set subSystemTitle(value:String):void
+		{
+			_subSystemTitle = value;
+		}
 
 		/**地图图层地图范围*/
 		public function get layerBounds():Rectangle2D

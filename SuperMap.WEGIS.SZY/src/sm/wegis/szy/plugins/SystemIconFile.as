@@ -5,6 +5,11 @@ package sm.wegis.szy.plugins
 	
 	public class SystemIconFile extends Plugin
 	{
+		[Embed(source="assets/image/top/banner.png")]
+		private static var bannerCls:Class;
+		private static var bannerKey:String = "banner";
+		ResourceManagerEx.RegisterResource("",bannerKey, bannerCls);
+		
 		[Embed(source="assets/image/top/logo.png")]
 		private static var logoIconCls:Class;
 		private static var logoIconKey:String = "logoIcon";

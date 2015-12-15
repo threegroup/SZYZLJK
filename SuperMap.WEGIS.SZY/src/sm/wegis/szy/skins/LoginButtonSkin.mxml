@@ -44,7 +44,7 @@
     </s:states>
     
 	<!--- @private -->
-	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0" radiusY="0">
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0" radiusY="0" alpha.over="1" alpha="0">
 		<s:fill>
 			<s:SolidColor color.over="#3385FF" color="#FFFFFF"/>
 		</s:fill>
