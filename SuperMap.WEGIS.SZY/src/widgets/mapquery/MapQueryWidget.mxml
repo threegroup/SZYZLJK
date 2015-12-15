@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:WidgetBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:ns="library://ns.supermap.com/flex/wegis/common" 
+			   width="100%" height="100%" creationComplete="creationCompleteHandler(event)" xmlns:line="sm.wegis.szy.components.line.*">
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.events.QueryEvent;
+			
+			import spark.components.DropDownList;
+			import spark.events.IndexChangeEvent;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				initEventListener();
+				queryMainTypes();
+			}
+			
+			public function initEventListener():void{
+				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.Query_Main_Types_Response
+					, queryMainTypesHandler);
+				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.Query_Types_And_Detail_List_Response
+					, queryTypesAndDetailListHandler);
+			}
+			
+			public function queryMainTypes():void
+			{
+				var queryMainTypes:QueryEvent = new QueryEvent(QueryEvent.Query_Main_Types);
+				queryMainTypes.dispatch();
+			}
+			
+			private function queryTypesAndDetailList():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.Query_Types_And_Detail_List);
+				queryEvent.dispatch();
+			}
+			
+			private function queryMainTypesHandler(event:CairngormEvent):void
+			{
+				var data:Object = event.data;
+				if (data.success == true) {
+					if (data.attributes) {
+						if (data.attributes.getMainTypes != null && data.attributes.getMainTypes.length > 0) {
+							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.getMainTypes);
+						}
+					}
+				}
+			}
+			
+			
+			private function queryTypesAndDetailListHandler(event:CairngormEvent):void
+			{
+				var data:Object = event.data;
+				if (data.success == true) {
+					if (data.attributes) {
+						if (data.attributes.types != null && data.attributes.types.length > 0) {
+							var dropDownList:DropDownList = createTypeDropDownControl(new ArrayCollection(data.attributes.types));
+							conditionGroup.addElement(dropDownList);
+						}
+						if (data.attributes.targetList != null && data.attributes.targetList.length > 0) {
+							resultList.dataProvider = new ArrayCollection(data.attributes.targetList);
+						}
+					}
+				}
+			}
+			
+			private function createTypeDropDownControl(dataProvider:ArrayCollection):DropDownList
+			{
+				var dropDownList:DropDownList = new DropDownList();
+				dropDownList.requireSelection = true;
+				dropDownList.percentWidth = 100;
+				dropDownList.addEventListener(IndexChangeEvent.CHANGE, selectChangeHandler);
+				dropDownList.labelField = "typeName";
+				dropDownList.dataProvider = dataProvider;
+				return dropDownList;
+			}
+			
+			private function selectChangeHandler(event:IndexChangeEvent):void
+			{
+				var currentDrop:DropDownList = event.currentTarget as DropDownList;
+				//将要删除的下拉框，删除当前选择后面所有下拉框
+				var removeDDs:Array = [];
+				for(var i:int = 0 ; i < conditionGroup.numElements ; i++)
+				{
+					var childElement:DropDownList = conditionGroup.getElementAt(i) as DropDownList;
+					if (currentDrop == childElement &&  i < conditionGroup.numElements - 1) {
+						for (i = i+1; i < conditionGroup.numElements ; i++)
+						{
+							removeDDs.push(conditionGroup.getElementAt(i));
+						}
+						break;
+					}
+				}
+				for each(var item:IVisualElement in removeDDs) {
+					conditionGroup.removeElement(item);
+				}
+				if (currentDrop.selectedIndex != 0 ) {
+					queryTypesAndDetailList();
+				}
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%" gap="10" paddingTop="5" paddingLeft="5" paddingRight="5">
+		<ns:ScrollPanel id="scrollButtonPanel" 
+						hGap="3"  
+						itemHeight="90" itemWidth="90"
+						contentBackgroundAlpha="0.8" alpha="0.8"
+						labelField="name"
+						rowCount="6" columnCount="4"
+						type="button"
+						buttonStyleName="ScrollPanelItemStyle"/>
+		<s:HGroup width="100%" height="25" gap="10" verticalAlign="middle">
+			<s:TextInput id="searchInput"  height="100%" prompt="请输入关键字" width="100%"/> 
+			<s:Button id="searchBt" height="100%" width="60" buttonMode="true" label="查询" click="queryTypesAndDetailList()"/>
+		</s:HGroup>
+		<line:HLine />
+		<s:Label id="title" text="类型列表"/>
+		<line:HLine />
+		<s:VGroup id="conditionGroup" width="100%" paddingLeft="5" paddingRight="5" />
+		<s:Label  text="对象列表"/>
+		<line:HLine />
+		<s:List id="resultList" width="100%" height="100%"  labelField="name" borderVisible="false" itemRenderer="sm.wegis.szy.renders.MapQueryListItemRenderer"/>
+	</s:VGroup>
+</ns:WidgetBase>

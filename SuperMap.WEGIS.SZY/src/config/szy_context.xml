@@ -173,6 +173,10 @@
 					<value type="Class">sm.wegis.szy.commands.GetFunctionCommand</value>
 						<!--获取图层Json文件-->
 					<value type="Class">sm.wegis.szy.commands.GetLayerJsonCommand</value>
+						<!--获取第一级分类-->
+					<value type="Class">sm.wegis.szy.commands.QueryMainTypesCommand</value>
+					<!--获取类型分类和要素列表-->
+					<value type="Class">sm.wegis.szy.commands.QueryTypesAndDetailListCommand</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -187,6 +191,12 @@
 				<property name="GetFunction" value="GetFunctionCommand" />
 				<!--获取图层Json文件-->
 				<property name="GetLayerJson" value="GetLayerJsonCommand" />
+				  <!--获取第一级分类-->
+				<property name="QueryMainTypes" value="QueryMainTypesCommand" />
+				
+				<!--获取类型分类和要素列表-->
+				<property name="QueryTypesAndDetailList" value="QueryTypesAndDetailListCommand" />
+			  
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

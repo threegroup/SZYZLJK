@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Line xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		width="100%">
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var weigth:int = 1;
+			[Bindable]
+			public var color:uint = 0xABDBFC;
+		]]>
+	</fx:Script>
+	<s:stroke>
+		<s:SolidColorStroke color="{color}" weight="{weigth}"/>
+	</s:stroke>
+</s:Line>

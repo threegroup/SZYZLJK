@@ -24,10 +24,10 @@
 			<item>
 				<name>水体查询</name>
 				<key>WaterBodyQuery</key>
-				<url></url>
+				<url>widgets/mapquery/MapQueryWidget.swf</url>
 				<mutex>true</mutex>
-				<init></init>
-				<selected></selected>
+				<init>true</init>
+				<selected>true</selected>
 			</item>
 			<item>
 				<name>水体预警</name>

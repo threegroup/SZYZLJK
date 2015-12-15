@@ -156,6 +156,18 @@ package sm.wegis.szy.plugins
 		private static var defaultKey:String = "DefaultLayerIcon";
 		ResourceManagerEx.RegisterResource("",defaultKey, defaultCls);
 		
+		//重要水体
+		[Embed(source="assets/image/type/zyst.png")]
+		private static var ZYSTCls:Class;
+		private static var ZYSTKey:String = "ZYST";
+		ResourceManagerEx.RegisterResource("",ZYSTKey, ZYSTCls);
+		
+		//敏感目标
+		[Embed(source="assets/image/type/mgmb.png")]
+		private static var MGMBCls:Class;
+		private static var MGMBKey:String = "MGMB";
+		ResourceManagerEx.RegisterResource("",MGMBKey, MGMBCls);
+		
 		public function SystemIconFile()
 		{
 			super();

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				dataChange="dataChangeHandler(event)"
+				height="25" buttonMode="true">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.components.List;
+			
+			protected function dataChangeHandler(event:FlexEvent):void
+			{
+				if (data != null) {
+					var list:List = this.owner as List;
+					title.text = data[list.labelField];
+					selectCk.selected = data.selected == true ? true : false;
+				} else {
+					title.text = "";
+					selectCk.selected = false;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+	</s:states>
+	<s:Rect left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF" color.hovered="0x3385FF"/>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup width="100%" height="100%" verticalAlign="middle" left="5" right="5">
+		<s:CheckBox id="selectCk" />
+		<s:Label id="title" verticalAlign="middle"  height="100%" color="0x000000" color.hovered="0xFFFFFF"/>
+	</s:HGroup>
+	<s:Line width="100%"  bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke color="0xE8EFF6"/>
+		</s:stroke>
+	</s:Line>
+</s:ItemRenderer>

@@ -3,7 +3,7 @@
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				dataChange="itemrenderer1_dataChangeHandler(event)"
-				height="25">
+				height="25" xmlns:line="sm.wegis.szy.components.line.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -41,9 +41,5 @@
 		<s:CheckBox id="selectCk" change="selectCk_changeHandler(event)"/>
 		<s:Label id="lb" verticalAlign="middle"  height="100%" color="0x000000" color.hovered="0xFFFFFF"/>
 	</s:HGroup>
-	<s:Line width="100%"  bottom="0">
-		<s:stroke>
-			<s:SolidColorStroke color="0xE8EFF6"/>
-		</s:stroke>
-	</s:Line>
+	<line:HLine bottom="0" />
 </s:ItemRenderer>
