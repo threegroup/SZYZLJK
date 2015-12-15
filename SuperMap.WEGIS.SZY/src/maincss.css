@@ -5,7 +5,7 @@
 global
 {
 	color: #000000;
-	fontFamily:Microsoft YaHei UI Light;
+	fontFamily:宋体;
 	fontSize:12;
 	backgroundAlpha:1;
 	titleColorFrom:#FBFBFA;
@@ -67,6 +67,15 @@ s|BorderContainer
 	horizontalAlign:left;
 }
 
+/**子系统标题等相关信息样式*/
+.SubSystemTitleStyle
+{
+	color:#FFFF00;
+	fontSize:14;
+	verticalAlign:"middle";
+	fontWeight:bold
+}
+
 .LoginTitleStyle
 {
 	fontSize:24;
@@ -108,7 +117,7 @@ s|BorderContainer
 
 .SubmitRegisterStyle
 {
-	fontFamily:Microsoft YaHei UI Light;
+	fontFamily:宋体;
 	skinClass:ClassReference("sm.wegis.szy.skins.SubmitRegisterSkin");
 	fontSize:16;
 	fontWeight:bold;
@@ -123,7 +132,7 @@ s|BorderContainer
 .SystemSelectorStyle
 {
 	textAlign:left;
-	fontFamily:Microsoft YaHei UI Light;
+	fontFamily:宋体;
 	skinClass:ClassReference("sm.wegis.szy.skins.DropDownListSkinEx")
 }
 

@@ -9,15 +9,17 @@
 					width="100%" height="100%" creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Resize id="hideEffect" duration="200" repeatCount="1" target="{BodyContainerID}"
-				  widthFrom="300" widthTo="0"/>
-		<s:Resize id="showEffect" duration="200" repeatCount="1" target="{BodyContainerID}"
-				  widthFrom="0" widthTo="300"/>
+		<s:Resize id="hideEffect" duration="1000" repeatCount="1" target="{BodyContainerID}"
+				  widthFrom="300" widthTo="0" easer="{bounceEffect}"/>
+		<s:Resize id="showEffect" duration="1000" repeatCount="1" target="{BodyContainerID}"
+				  widthFrom="0" widthTo="300" easer="{bounceEffect}"/>
+		<s:Bounce id="bounceEffect"/>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.wegis.common.components.events.MenuEventEx;
+			import com.supermap.wegis.common.components.events.ScrollPanelEvent;
 			import com.supermap.wegis.common.components.menuBar.MenuItem;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.core.widget.WidgetManager;
@@ -99,8 +101,23 @@
 					this.ControlBodyControlID.addEventListener(MouseEvent.MOUSE_DOWN, controlBodyHandler);
 				}
 				
+				//系统选择项事件
+				this.ScrollButtonPanel.addEventListener(ScrollPanelEvent.CLICK, scrollButtonClickHandler);
+				
 				//底图切换
 				CairngormEventDispatcher.getInstance().addEventListener(MapLayerEvent.BASE_MAP_CHANGE, basemapChangeHandler);
+			}
+			
+			private function scrollButtonClickHandler(event:ScrollPanelEvent):void
+			{
+				var data:Object = event.Message;
+				if(data != null && data.hasOwnProperty("param"))
+				{
+					var param:Object = data.param;
+					modelLocator.systemInfo.subSystemTitle = param["name"];
+					modelLocator.systemInfo.subSystemID = param["key"];
+					choosePanel(false,true);
+				}
 			}
 			
 			private function basemapChangeHandler(e:MapLayerEvent):void
@@ -235,11 +252,24 @@
 				this.choosePanel(false,true);
 			}
 			
+			protected function changeSystemId_clickHandler(event:MouseEvent):void
+			{
+				this.choosePanel(false,false,true);
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<s:VGroup id="mainPanelId" width="100%" height="100%" gap="0">
-		<s:BorderContainer id="TopContainerID" width="100%" height="100">
+		<s:BorderContainer id="TopContainerID" width="100%" height="80" backgroundColor="#69C2EC">
+			<!--<s:HGroup width="100%" height="100%" gap="0">
+				<s:Rect width="100%" height="100%">
+					<s:fill>
+						<s:BitmapFill fillMode="scale"
+									  source="{ResourceManagerEx.FindResource('banner').cls}"/> 
+					</s:fill>
+				</s:Rect>
+			</s:HGroup>-->
 			<s:HGroup width="100%" height="100%" gap="0" paddingLeft="0" verticalAlign="middle">
 				<s:Rect width="40" height="40">
 					<s:fill>
@@ -247,18 +277,25 @@
 									  source="{ResourceManagerEx.FindResource('logoIcon').cls}"/> 
 					</s:fill>
 				</s:Rect>
-				<s:Rect width="345" height="45">
+				<s:Rect width="500" height="45">
 					<s:fill>
 						<s:BitmapFill fillMode="clip"
 									  source="{ResourceManagerEx.FindResource('titleIcon').cls}"/> 
 					</s:fill>
-				</s:Rect>
+				</s:Rect>	
 				<s:Spacer width="100%"/>
 				<s:VGroup height="100%" horizontalAlign="right" paddingRight="5">
-					<s:HGroup gap="0" horizontalAlign="right" verticalAlign="middle">
-						<s:Label id="userInfoId" height="100%" buttonMode="true" text=""
-								 verticalAlign="middle"/>
-						<s:Button id="userLoginId" width="40" height="100%" label="登录"
+					<s:HGroup gap="10" horizontalAlign="right" verticalAlign="middle">
+						<s:Label id="subSystemTitleId" height="100%" 
+								 text="{modelLocator.systemInfo.subSystemTitle}"
+								 styleName="SubSystemTitleStyle"/>
+						<s:Button id="changeSystemId" width="60" height="100%" label="[切换系统]"
+								  buttonMode="true"
+								  skinClass="sm.wegis.szy.skins.LoginButtonSkin"
+								  click="changeSystemId_clickHandler(event)"/>
+						<s:Label id="userInfoId" height="100%" text="管理员"
+								 styleName="SubSystemTitleStyle"/>
+						<s:Button id="userLoginId" width="40" height="100%" label="[登录]"
 								  buttonMode="true" click="userLoginId_clickHandler(event)"
 								  skinClass="sm.wegis.szy.skins.LoginButtonSkin"/>
 					</s:HGroup>
@@ -281,7 +318,6 @@
 		<s:HGroup id="BottomContainerID" width="100%" height="100%" gap="0" paddingBottom="0"
 				  paddingTop="0">
 			<s:BorderContainer id="BodyContainerID" width="300" height="100%">
-				
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID" width="100%" height="100%">
 				<s:BorderContainer id="MapContainerID" width="100%" height="100%">
@@ -293,7 +329,7 @@
 							<s:SolidColor color="#B5B9C0"/>
 						</s:fill>
 					</s:Rect>
-					<s:BorderContainer width="15" height="60" backgroundAlpha="0.9">
+					<s:BorderContainer width="15" height="60">
 						<s:Image id="ControlBodyControlID" buttonMode="true"
 								 source="{ResourceManagerEx.FindResource('Left').cls}"/>
 					</s:BorderContainer>
@@ -320,7 +356,7 @@
 						  paddingLeft="10" paddingRight="10" paddingTop="10" verticalAlign="middle">
 					<s:HGroup width="100%" height="30" paddingLeft="10" paddingRight="10"
 							  verticalAlign="middle">
-						<s:Image source="assets/image/top/logo.png" 
+						<s:Image source="{ResourceManagerEx.FindResource('logoIcon').cls}" 
 								 fillMode="scale"/>
 						<s:Label width="100%" styleName="LoginLabelStyle" text="登录系统账号"/>
 						<s:Button id="closeLoginId" buttonMode="true"
@@ -347,15 +383,15 @@
 	</s:BorderContainer>
 	
 	<s:VGroup id="choosePanelId" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-		<s:BorderContainer minWidth="100"
+		<s:BorderContainer width="100%" height="100%"
 						   backgroundAlpha="1" backgroundColor="#D9D9D9">
 			<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-				<s:BorderContainer>
+				<s:BorderContainer  minWidth="100">
 					<s:VGroup gap="10" horizontalAlign="center" paddingBottom="10"
 							  paddingLeft="10" paddingRight="10" paddingTop="10" verticalAlign="middle">
 						<s:HGroup width="100%" height="30" paddingLeft="10" paddingRight="10"
 								  verticalAlign="middle">
-							<s:Image source="assets/image/top/logo.png" 
+							<s:Image source="{ResourceManagerEx.FindResource('logoIcon').cls}" 
 									 fillMode="scale"/>
 							<s:Label width="100%" styleName="LoginLabelStyle" text="选择应用系统"/>
 							<s:Button id="closeChooseId" buttonMode="true"
@@ -375,11 +411,6 @@
 										rowCount="6" columnCount="4"
 										type="button"
 										buttonStyleName="ScrollPanelItemStyle"/>
-						<!--<s:HGroup width="355" horizontalAlign="right">
-						<s:Button id="OkBtn" width="60" height="30" label="确定" buttonMode="true"
-						styleName="SubmitRegisterStyle"
-						click="OkBtn_clickHandler(event)"/>
-						</s:HGroup>-->
 					</s:VGroup>
 				</s:BorderContainer>
 			</s:VGroup>
