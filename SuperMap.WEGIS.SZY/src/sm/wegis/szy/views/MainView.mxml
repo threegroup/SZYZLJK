@@ -9,10 +9,11 @@
 					width="100%" height="100%" creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Resize id="hideEffect" duration="200" repeatCount="1" target="{BodyContainerID}"
-				  widthFrom="300" widthTo="0"/>
-		<s:Resize id="showEffect" duration="200" repeatCount="1" target="{BodyContainerID}"
-				  widthFrom="0" widthTo="300"/>
+		<s:Resize id="hideEffect" duration="1000" repeatCount="1" target="{BodyContainerID}"
+				  widthFrom="300" widthTo="0" easer="{bounceEffect}"/>
+		<s:Resize id="showEffect" duration="1000" repeatCount="1" target="{BodyContainerID}"
+				  widthFrom="0" widthTo="300" easer="{bounceEffect}"/>
+		<s:Bounce id="bounceEffect"/>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
