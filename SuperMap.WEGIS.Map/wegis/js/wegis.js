@@ -83,8 +83,8 @@ WeGIS.F = {
         var xyObject = searchObject["centerxy"];
         if (xyObject != "" && xyObject != null) {
             var xyArray = xyObject.split(',');
-            var x = parseInt(xyArray[0]);
-            var y = parseInt(xyArray[1]);
+            var x = parseFloat(xyArray[0]);
+            var y = parseFloat(xyArray[1]);
             WeGIS.V.map.setCenter(new SuperMap.LonLat(x, y), 0);//居中显示
             WeGIS.F.createMarker(x, y);//创建地图标签
             WeGIS.F.createGeoText(x, y, decodeURIComponent(searchObject["name"]));//创建文本标签
