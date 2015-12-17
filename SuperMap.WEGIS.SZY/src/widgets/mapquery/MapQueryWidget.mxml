@@ -3,16 +3,19 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common" 
-			   width="100%" height="100%" creationComplete="creationCompleteHandler(event)" xmlns:line="sm.wegis.szy.components.line.*">
+			   xmlns:line="sm.wegis.szy.components.line.*"
+			   width="100%" height="100%" creationComplete="creationCompleteHandler(event)" >
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			
 			import mx.collections.ArrayCollection;
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			
+			import sm.wegis.szy.events.ListCheckItemRendererEvent;
 			import sm.wegis.szy.events.QueryEvent;
 			
 			import spark.components.DropDownList;
@@ -25,21 +28,21 @@
 			}
 			
 			public function initEventListener():void{
-				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.Query_Main_Types_Response
+				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_MAIN_TYPES_RESPONSE
 					, queryMainTypesHandler);
-				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.Query_Types_And_Detail_List_Response
+				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST_RESPONSE
 					, queryTypesAndDetailListHandler);
 			}
 			
 			public function queryMainTypes():void
 			{
-				var queryMainTypes:QueryEvent = new QueryEvent(QueryEvent.Query_Main_Types);
+				var queryMainTypes:QueryEvent = new QueryEvent(QueryEvent.QUERY_MAIN_TYPES);
 				queryMainTypes.dispatch();
 			}
 			
 			private function queryTypesAndDetailList():void
 			{
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.Query_Types_And_Detail_List);
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST);
 				queryEvent.dispatch();
 			}
 			
@@ -54,7 +57,6 @@
 					}
 				}
 			}
-			
 			
 			private function queryTypesAndDetailListHandler(event:CairngormEvent):void
 			{
@@ -72,6 +74,7 @@
 				}
 			}
 			
+			//创建新下拉框
 			private function createTypeDropDownControl(dataProvider:ArrayCollection):DropDownList
 			{
 				var dropDownList:DropDownList = new DropDownList();
@@ -85,6 +88,8 @@
 			
 			private function selectChangeHandler(event:IndexChangeEvent):void
 			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_WATCH_WIDGET);
+				queryEvent.dispatch();
 				var currentDrop:DropDownList = event.currentTarget as DropDownList;
 				//将要删除的下拉框，删除当前选择后面所有下拉框
 				var removeDDs:Array = [];
@@ -108,30 +113,48 @@
 			}
 			
 			
+			protected function resultList_creationCompleteHandler(event:FlexEvent):void
+			{
+				resultList.addEventListener(ListCheckItemRendererEvent.SELECT_CHANGED, selectChangedHandler);
+			}
+			
+			private function selectChangedHandler(event:ListCheckItemRendererEvent):void
+			{
+				var data:Object = event.data;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO);
+				queryEvent.data = data;
+				queryEvent.dispatch();
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:VGroup width="100%" height="100%" gap="10" paddingTop="5" paddingLeft="5" paddingRight="5">
-		<ns:ScrollPanel id="scrollButtonPanel" 
-						hGap="3"  
-						itemHeight="90" itemWidth="90"
-						contentBackgroundAlpha="0.8" alpha="0.8"
-						labelField="name"
-						rowCount="6" columnCount="4"
-						type="button"
-						buttonStyleName="ScrollPanelItemStyle"/>
+		<s:HGroup width="100%" horizontalAlign="center">
+			<ns:ScrollPanel id="scrollButtonPanel"  horizontalCenter="0"
+							hGap="3"  
+							itemHeight="90" itemWidth="90"
+							contentBackgroundAlpha="0.8" alpha="0.8"
+							labelField="name"
+							rowCount="6" columnCount="4"
+							type="button"
+							buttonStyleName="ScrollPanelItemStyle"/>
+		</s:HGroup>
 		<s:HGroup width="100%" height="25" gap="10" verticalAlign="middle">
 			<s:TextInput id="searchInput"  height="100%" prompt="请输入关键字" width="100%"/> 
-			<s:Button id="searchBt" height="100%" width="60" buttonMode="true" label="查询" click="queryTypesAndDetailList()"/>
+			<s:Button id="searchBt" height="100%" width="60" buttonMode="true" label="查询" 
+					  styleName="SubmitRegisterStyle"
+					  click="queryTypesAndDetailList()"/>
 		</s:HGroup>
 		<line:HLine />
-		<s:Label id="title" text="类型列表"/>
+		<line:IconLabel  text="类型列表"  fontWeight="bold" source="{ResourceManagerEx.FindResource('List1').cls}"/>
 		<line:HLine />
 		<s:VGroup id="conditionGroup" width="100%" paddingLeft="5" paddingRight="5" />
 		<s:Label  text="对象列表"/>
+		<line:IconLabel   text="对象列表"  fontWeight="bold" source="{ResourceManagerEx.FindResource('List2').cls}"/>
 		<line:HLine />
-		<s:List id="resultList" width="100%" height="100%"  labelField="name" borderVisible="false" itemRenderer="sm.wegis.szy.renders.MapQueryListItemRenderer"/>
+		<s:List id="resultList" width="100%" height="100%"  labelField="name"  creationComplete="resultList_creationCompleteHandler(event)"
+				borderVisible="false" itemRenderer="sm.wegis.szy.renders.MapQueryListItemRenderer"/>
 	</s:VGroup>
 </ns:WidgetBase>

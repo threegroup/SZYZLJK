@@ -204,6 +204,23 @@
 					return;
 				}
 				
+				//若有多个子模块
+				if(menuItemData.hasOwnProperty("subitems")
+					&& menuItemData["subitems"] != null){
+					var subitems:Object = menuItemData["subitems"];
+					var subWidgets:ArrayCollection =  subitems["subitem"] is  ArrayCollection ? subitems["subitem"] as  ArrayCollection
+						: new ArrayCollection([subitems["subitem"]]);
+					if(subWidgets != null && subWidgets.length > 0) {
+						for each (var item:Object in subWidgets) {
+							if(item.hasOwnProperty("url") 	&& item["url"] != null )
+							{
+								item.parent = this.rightWidgetContainerID;
+								WidgetManager.getInstance().loadWidget(item);
+							}
+						}
+					}
+				}
+				
 				this.BodyContainerID.removeAllElements();
 				menuItemData.parent = this.BodyContainerID;
 				WidgetManager.getInstance().loadWidget(menuItemData);
@@ -223,7 +240,7 @@
 				if(modelLocator.mapCtrl != null)
 				{
 					var mapCtrlTool:MapCtrlTool = new MapCtrlTool();
-					mapCtrlTool.initMapCompass(this.MainBodyContainerID);
+					mapCtrlTool.initMapCompass(this.mapCtrlAssistContainerID);
 				}
 			}
 			
@@ -263,12 +280,12 @@
 	<s:VGroup id="mainPanelId" width="100%" height="100%" gap="0">
 		<s:BorderContainer id="TopContainerID" width="100%" height="80" backgroundColor="#69C2EC">
 			<!--<s:HGroup width="100%" height="100%" gap="0">
-				<s:Rect width="100%" height="100%">
-					<s:fill>
-						<s:BitmapFill fillMode="scale"
-									  source="{ResourceManagerEx.FindResource('banner').cls}"/> 
-					</s:fill>
-				</s:Rect>
+			<s:Rect width="100%" height="100%">
+			<s:fill>
+			<s:BitmapFill fillMode="scale"
+			source="{ResourceManagerEx.FindResource('banner').cls}"/> 
+			</s:fill>
+			</s:Rect>
 			</s:HGroup>-->
 			<s:HGroup width="100%" height="100%" gap="0" paddingLeft="0" verticalAlign="middle">
 				<s:Rect width="40" height="40">
@@ -322,6 +339,13 @@
 			<s:Group id="MainBodyContainerID" width="100%" height="100%">
 				<s:BorderContainer id="MapContainerID" width="100%" height="100%">
 				</s:BorderContainer>
+				<s:HGroup id="CopyRightID" left="3" bottom="3" width="100%" gap="0"
+						  horizontalAlign="left" verticalAlign="middle">
+					<s:Label fontFamily="Times New Roman" text="©"/>
+					<s:Label text="{modelLocator.systemInfo.copyRight}"/>
+				</s:HGroup>
+				<s:Group id="mapCtrlAssistContainerID" left="0" right="0" height="100%"/>
+				<s:Group id="rightWidgetContainerID" left="0" right="0" height="100%"/>
 				<s:HGroup left="0" top="0" height="100%" gap="0" horizontalAlign="left"
 						  verticalAlign="middle">
 					<s:Rect width="1" height="100%">
@@ -339,11 +363,7 @@
 								dataProvider="{modelLocator.toolInfo.mapToolList}"
 								labelField="{modelLocator.toolInfo.mapToolLabel}"/>
 				</s:BorderContainer>
-				<s:HGroup id="CopyRightID" left="3" bottom="3" width="100%" gap="0"
-						  horizontalAlign="left" verticalAlign="middle">
-					<s:Label fontFamily="Times New Roman" text="©"/>
-					<s:Label text="{modelLocator.systemInfo.copyRight}"/>
-				</s:HGroup>
+				
 			</s:Group> 
 		</s:HGroup>
 	</s:VGroup>

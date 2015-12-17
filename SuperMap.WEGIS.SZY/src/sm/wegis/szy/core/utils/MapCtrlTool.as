@@ -61,8 +61,8 @@ package sm.wegis.szy.core.utils
 				{
 					//初始化地图控件容器
 					vGroup = new VGroup();
-					vGroup.bottom = 10;
-					vGroup.right = 0;
+					vGroup.top = 10;
+					vGroup.left = 0;
 					vGroup.gap = 0;
 					vGroup.depth = container.numElements + 100;
 					vGroup.verticalAlign = "top";
