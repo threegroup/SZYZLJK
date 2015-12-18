@@ -240,7 +240,7 @@
 				if(modelLocator.mapCtrl != null)
 				{
 					var mapCtrlTool:MapCtrlTool = new MapCtrlTool();
-					mapCtrlTool.initMapCompass(this.mapCtrlAssistContainerID);
+					mapCtrlTool.initMapCompass(this.MainBodyContainerID);
 				}
 			}
 			
@@ -344,7 +344,6 @@
 					<s:Label fontFamily="Times New Roman" text="©"/>
 					<s:Label text="{modelLocator.systemInfo.copyRight}"/>
 				</s:HGroup>
-				<s:Group id="mapCtrlAssistContainerID" left="0" right="0" height="100%"/>
 				<s:Group id="rightWidgetContainerID" left="0" right="0" height="100%"/>
 				<s:HGroup left="0" top="0" height="100%" gap="0" horizontalAlign="left"
 						  verticalAlign="middle">
