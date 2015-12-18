@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:WidgetBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
+			   xmlns:basedataquery="widgets.basedataquery.*"
+			   visible="true" width="100%" creationComplete="initWidget(event)"
+			   includeInLayout="true"
+			   visible.HIDE="false"  includeInLayout.HIDE="false"
+			   visible.SHOW="true" includeInLayout.SHOW="true"
+			   visible.SHOWTITLE="true" includeInLayout.SHOWTITLE="true"
+			   height.SHOWTITLE="{titleContainer.height}" 
+			   WidgetAddComplete="widgetAddCompleteHandler(event)"
+			   WidgetRemove="widgetRemoveHandler(event)" xmlns:line="sm.wegis.szy.components.line.*">
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
+			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			import com.supermap.wegis.common.utils.ArrayCollectionUtils;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.core.IToolTip;
+			import mx.events.FlexEvent;
+			import mx.managers.ToolTipManager;
+			
+			import sm.wegis.szy.events.QueryEvent;
+			import sm.wegis.szy.events.SystemEvent;
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.utils.CairngormEventClass;
+			import sm.wegis.szy.utils.CairngormEventManager;
+			
+			import spark.components.gridClasses.GridColumn;
+			
+			//状态
+			private const SHOW:String = "SHOW";
+			private const HIDE:String ="HIDE";
+			private const SHOWTITLE:String ="SHOWTITLE";
+			
+			[Bindable]
+			/**模型定位器*/
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
+			
+			private var _queryInfo:String = null;
+			
+			/**显示用户操作提示信息*/
+			private var tooltip:IToolTip
+			/**控制用户信息提示时间*/
+			private var timer:Timer = new Timer(2000);
+			
+			private function clickHandler(event:MouseEvent):void
+			{
+				this.currentState = this.currentState== SHOW ? SHOWTITLE : SHOW;
+				
+				//用户操作提示控制
+				createUserHelp();
+			}
+			
+			/**创建用户提示信息*/
+			private function createUserHelp():void
+			{
+				var toolTipX:int = ControlBtn.parent.localToGlobal(new Point(ControlBtn.x,ControlBtn.y)).x - ControlBtn.width * 3.5;	
+				var toolTipY:int = ControlBtn.parent.localToGlobal(new Point(ControlBtn.x,ControlBtn.y)).y - ControlBtn.height * 1.5;	
+				
+				if(tooltip)
+				{
+					ToolTipManager.destroyToolTip(tooltip);
+				}
+				
+				if(this.currentState == SHOW)
+				{
+					tooltip = ToolTipManager.createToolTip("点击隐藏按钮关闭结果面板", toolTipX, toolTipY);
+				}
+				else if(this.currentState == SHOWTITLE)
+				{
+					tooltip = ToolTipManager.createToolTip("点击显示按钮打开结果面板", toolTipX, toolTipY);
+				}
+				
+				timer.stop();
+				timer.reset();
+				timer.addEventListener(TimerEvent.TIMER, timerHandler);
+				timer.start();
+			}
+			
+			//隐藏提示
+			private function timerHandler(event:TimerEvent):void
+			{
+				if(tooltip)
+				{
+					ToolTipManager.destroyToolTip(tooltip);
+					tooltip = null;
+				}
+				
+				timer.removeEventListener(TimerEvent.TIMER, timerHandler);
+				timer.stop();
+				timer.reset();
+			}
+			
+			protected function initWidget(event:FlexEvent):void
+			{
+				this.currentState = HIDE;
+				initListener();
+			}
+			
+			/**初始化事件监听*/
+			private function initListener():void
+			{
+				var eventObject:CairngormEventClass = new CairngormEventClass();
+				/**事件列表*/
+				var eList:ArrayCollection = new ArrayCollection([
+					[QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE, querySingleObjectInfoResponseHandler],//响应查询结果
+					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],//隐藏容器面板
+				]);
+				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+				
+				//响应系统清除功能
+				CairngormEventManager.getInstance().attachSingleEvent(new CairngormEventClass(SystemEvent.CLEAR_SYSTEM, clearSystemHandler));
+				
+				//模块状态切换
+				this.addEventListener(BaseWidgetEvent.WIDGET_ADD_COMPLETE,changeHideState);
+			}
+			
+			private function changeHideState(event:BaseWidgetEvent):void
+			{
+				if(this.currentState  == HIDE)
+				{
+					this.visible = false;
+					this.includeInLayout = false;
+				}
+			}
+			
+			//响应系统清除
+			private function clearSystemHandler(event:CairngormEvent):void
+			{
+				this.currentState = HIDE;
+				clearAllResult();
+			}
+			
+			/**清除所有结果*/
+			private function clearAllResult():void
+			{
+				resultGrid.dataProvider = null;
+				resultGrid.columns.removeAll();
+				hideInfoWidow();
+			}
+			
+			/**清除地图弹出面板*/
+			private function hideInfoWidow():void
+			{
+				var map:MapCtrl = modelLocator.mapCtrl;
+				if(map.infoWindow.content != null)
+					map.infoWindow.content = null;
+				map.infoWindow.hide();
+			}
+			
+			/**响应查询结果*/
+			private function querySingleObjectInfoResponseHandler(event:QueryEvent):void
+			{
+				var resultData:Object = event.data;
+				if (resultData != null)
+				{
+					if (resultData.selected == true) {
+						if ( resultData.success == true)
+						{
+							resultGrid.dataProvider = resultGrid.dataProvider == null ? new ArrayCollection() : resultGrid.dataProvider;
+							var item:Object = {};
+							var resultTarget:Object = resultData.attributes.target;
+							item.id = resultTarget.id;
+							item.name = resultTarget.name;
+							item.index = resultTarget.index;
+							var newColumn:GridColumn;
+							//如果为空或者length=0，添加名称列
+							if (resultGrid.columns == null || resultGrid.columns.length == 0) {
+								resultGrid.columns =new ArrayList();
+								newColumn = new GridColumn();
+								newColumn.dataField = "name";
+								newColumn.headerText = "名称";
+								resultGrid.columns.addItem(newColumn);
+							}
+							//遍历，添加不包含的列
+							for (var propKey:String in resultTarget.attributes) {
+								var hasContain:Boolean = false;
+								for (var index:int = 0 ; index < resultGrid.columns.length; index++) {
+									var colmn:GridColumn = resultGrid.columns.getItemAt(index) as GridColumn;
+									if (colmn.dataField == propKey) {
+										hasContain = true;
+										break;
+									}
+								}
+								if (hasContain == false) {
+									newColumn = new GridColumn();
+									newColumn.dataField = propKey;
+									resultGrid.columns.addItem(newColumn);
+								}
+								item[propKey] = resultTarget.attributes[propKey];
+							}
+						}
+						resultGrid.dataProvider.addItem(item);
+						ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);
+						this.currentState = SHOW;
+					}
+				} else if (resultData.selected == false) {
+					var dataProvider:ArrayCollection = resultGrid.dataProvider as ArrayCollection;
+					for each(var itemData:Object in dataProvider)
+					{
+						if (resultData.id == itemData.id) {
+							dataProvider.removeItemAt(dataProvider.getItemIndex(itemData));
+							break;
+						}
+					}
+				}
+			}
+			
+			
+			//显示或隐藏数据展示
+			override public function set visible(value:Boolean):void
+			{
+				super.visible = value;
+				var map:MapCtrl = modelLocator.mapCtrl;
+				
+				if(!value)
+				{
+					if(map.infoWindow.content != null)
+						map.infoWindow.content = null;
+					map.infoWindow.hide();
+				}
+			}
+			
+			protected function widgetAddCompleteHandler(event:BaseWidgetEvent):void
+			{
+				var  baseDataEvent:QueryEvent = new QueryEvent(QueryEvent.WIDGET_ADD_COMPLETE);
+				baseDataEvent.dispatch();
+			}
+			
+			protected function widgetRemoveHandler(event:BaseWidgetEvent):void
+			{
+				var  baseDataEvent:QueryEvent = new QueryEvent(QueryEvent.WIDGET_REMOVE);
+				baseDataEvent.dispatch();
+			}
+			
+		]]>
+	</fx:Script>
+	<ns:states>
+		<s:State name="HIDE"/>
+		<s:State name="SHOW"/>
+		<s:State name="SHOWTITLE"/>
+	</ns:states>
+	<ns:transitions>
+		<s:Transition fromState="SHOW" toState="SHOWTITLE">
+			<s:Parallel>
+				<s:Fade alphaFrom="1" alphaTo="0" duration="200" target="{WidgetContainer}"/>
+			</s:Parallel>
+		</s:Transition>
+		<s:Transition fromState="SHOWTITLE" toState="SHOW">
+			<s:Parallel>
+				<s:Fade alphaFrom="0" alphaTo="1" duration="500" target="{WidgetContainer}"/>
+			</s:Parallel>
+		</s:Transition>
+	</ns:transitions>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BorderContainer id="MainContainer" width="100%" height="100%" backgroundColor="0xFFFFFF"
+					   left.SHOW="0" top.SHOW="0" width.SHOW="100%"
+					   left.SHOWTITLE="5" top.SHOWTITLE="5" 
+					   height.SHOWTITLE="{titleContainer.height}">
+		<s:VGroup width="100%" height="100%" gap="5">
+			<s:Group id="titleContainer" width="100%" height="25">
+					<line:IconLabel id="TitleContent" height="100%"  text="对象信息列表" 
+									left="5" source="{ResourceManagerEx.FindResource('List3').cls}" fontWeight="bold" />
+					<s:Button id="ControlBtn" width="45" height="100%" label="显示" right="5" buttonMode="true"
+							  click="clickHandler(event)"
+							  label.SHOW="隐藏"
+							  label.SHOWTITLE="显示"/>
+			</s:Group>
+			<line:HLine width="100%" visible="false" visible.SHOW="true"/>
+			<s:VGroup id="WidgetContainer" width="100%" height="100%" gap="0"
+					  visible.HIDE="false" includeInLayout.HIDE="false"
+					  visible.SHOW="true" includeInLayout.SHOW="true" 
+					  visible.SHOWTITLE="false" includeInLayout.SHOWTITLE="false">
+				<s:DataGrid id="resultGrid" width="100%" height="100%" minHeight="200"/>
+			</s:VGroup>
+		</s:VGroup>
+	</s:BorderContainer>
+</ns:WidgetBase>

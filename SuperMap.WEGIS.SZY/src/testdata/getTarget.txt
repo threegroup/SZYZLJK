@@ -1,0 +1,15 @@
+﻿     {
+            "success": true,
+            "message": null,
+            "title": null,
+            "attributes":{  
+              "target":{  
+                 "id" :"id1",
+                  "name":"官厅水库",
+                  "attributes":{  
+                      "对象属性1":"1000xxx",
+                      "对象属性2":"sdfd"
+                  }
+              }
+            }
+    }

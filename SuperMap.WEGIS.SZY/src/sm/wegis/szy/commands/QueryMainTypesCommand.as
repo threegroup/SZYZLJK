@@ -26,7 +26,7 @@ package sm.wegis.szy.commands
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var value:Object = jsDec.getValue() as Object;
-			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.Query_Main_Types_Response);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MAIN_TYPES_RESPONSE);
 			queryEvent.data = value;
 			queryEvent.dispatch();
 		}
@@ -35,6 +35,8 @@ package sm.wegis.szy.commands
 		{
 			Alert.show("获取第一级分类失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MAIN_TYPES_RESPONSE);
+			queryEvent.dispatch();
 		}
 	}
 }

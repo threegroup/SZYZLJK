@@ -6,6 +6,8 @@ package sm.wegis.szy.events
 	
 	public class SystemEvent extends CairngormEvent
 	{
+		/**点击清除按钮*/
+		public static const CLEAR_SYSTEM:String = "ClearSystem";
 		/**系统view，主体创建完成*/
 		public static const SYSTEM_CREATION_COMPLETE:String = "SystemCreationComplete";
 		
@@ -23,6 +25,8 @@ package sm.wegis.szy.events
 		
 		/**初始化系统预加载模块*/
 		public static const INITIAL_WIDGET:String ="InitialWidget";
+		
+		
 		
 		/**加载图层配置文件*/
 		public static const GetLayerJson:String ="GetLayerJson";

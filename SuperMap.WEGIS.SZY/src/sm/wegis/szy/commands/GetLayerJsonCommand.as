@@ -34,6 +34,8 @@ package sm.wegis.szy.commands
 		{
 			Alert.show("系统功能初始化失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
+			var getLayerEvent:SystemEvent = new SystemEvent(SystemEvent.GetLayerJsonResponse);
+			getLayerEvent.dispatch();
 		}
 	}
 }

@@ -28,6 +28,17 @@
 				<mutex>true</mutex>
 				<init>true</init>
 				<selected>true</selected>
+				<subitems>
+					<subitem>
+						<key>WaterWatchWidget</key>
+						<name>监测数据展示面板</name>
+						<url>widgets/mapquery/WaterWatchIndexWidget.swf</url>
+						<mutex>true</mutex>
+						<cover>true</cover>
+						<bottom>0</bottom>
+						<left>1</left>
+					</subitem>
+				</subitems>
 			</item>
 			<item>
 				<name>水体预警</name>

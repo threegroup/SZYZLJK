@@ -5,20 +5,20 @@
             "attributes": {  
               "types": [  
                 {
-                    "typeId":"xxx", 
+                    "typeId":"ALL", 
                     "typeName":"全部" 
                 },
                 {
                     "typeId":"xxx", 
-                    "typeName":"类型1" 
+                    "typeName":"河流" 
                 },
                 {
                     "typeId":"xxx", 
-                    "typeName":"类型2" 
+                    "typeName":"二级河流" 
                 },
                 {
                     "typeId":"xxx", 
-                    "typeName":"类型3" 
+                    "typeName":"大型水库" 
                 }],
               "targetList":[{ 
                 "id": "id1" ,
