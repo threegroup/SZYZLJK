@@ -93,28 +93,6 @@ package sm.wegis.szy.commands
 						}
 						case "Full":
 						{
-//							var label:String = toolItem.label;
-//							
-//							if(label == "全屏")
-//							{
-//								//派发全屏事件
-//								var fullScreenEvent:SystemEvent = new SystemEvent(SystemEvent.SYSTEM_FULLSCREEN);
-//								fullScreenEvent.dispatch();
-//								
-//								modelLocator.systemInfo.isFullScreen = true;
-//							}
-//							else
-//							{
-//								//派发退出全屏事�
-//								var exitFullScreenEvent:SystemEvent = new SystemEvent(SystemEvent.EXIT_SYSTEM_FULLSCREEN);
-//								exitFullScreenEvent.dispatch();
-//								
-//								modelLocator.systemInfo.isFullScreen = false;
-//							}
-//							
-//							//同步全屏按钮状�
-//							var updateFullScreenEvent:SystemEvent = new SystemEvent(SystemEvent.UPDATE_FULLSCREEN_STATUS);
-//							updateFullScreenEvent.dispatch();
 							break;
 						}
 						default:

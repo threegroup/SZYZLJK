@@ -162,13 +162,13 @@ package sm.wegis.szy.plugins
 		ResourceManagerEx.RegisterResource("",defaultKey, defaultCls);
 		
 		//重要水体
-		[Embed(source="assets/image/type/zyst.png")]
+		[Embed(source="assets/image/type/water.png")]
 		private static var ZYSTCls:Class;
 		private static var ZYSTKey:String = "ZYST";
 		ResourceManagerEx.RegisterResource("",ZYSTKey, ZYSTCls);
 		
 		//敏感目标
-		[Embed(source="assets/image/type/mgmb.png")]
+		[Embed(source="assets/image/type/target.png")]
 		private static var MGMBCls:Class;
 		private static var MGMBKey:String = "MGMB";
 		ResourceManagerEx.RegisterResource("",MGMBKey, MGMBCls);
