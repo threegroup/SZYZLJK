@@ -3,7 +3,7 @@
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				dataChange="dataChangeHandler(event)"
-				height="25" buttonMode="true">
+				height="30" buttonMode="true">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;

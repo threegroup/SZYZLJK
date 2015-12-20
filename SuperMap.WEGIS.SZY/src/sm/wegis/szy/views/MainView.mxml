@@ -301,7 +301,7 @@
 	</fx:Script>
 	
 	<s:VGroup id="mainPanelId" width="100%" height="100%" gap="0">
-		<s:BorderContainer id="TopContainerID" width="100%" height="80" backgroundColor="#69C2EC">
+		<s:BorderContainer id="TopContainerID" width="100%" height="80">
 			<!--<s:HGroup width="100%" height="100%" gap="0">
 			<s:Rect width="100%" height="100%">
 			<s:fill>
