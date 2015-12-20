@@ -73,18 +73,18 @@
 				<securitycontroler>false</securitycontroler>
 				<securitytype>visible</securitytype>
 			</item>
-			<item>
-				<name>放大</name>
-				<key>ZoomIn</key>
-				<securitycontroler>false</securitycontroler>
-				<securitytype>visible</securitytype>
-			</item>
-			<item>
-				<name>缩小</name>
-				<key>ZoomOut</key>
-				<securitycontroler>false</securitycontroler>
-				<securitytype>visible</securitytype>
-			</item>
+<!-- 			<item> -->
+<!-- 				<name>放大</name> -->
+<!-- 				<key>ZoomIn</key> -->
+<!-- 				<securitycontroler>false</securitycontroler> -->
+<!-- 				<securitytype>visible</securitytype> -->
+<!-- 			</item> -->
+<!-- 			<item> -->
+<!-- 				<name>缩小</name> -->
+<!-- 				<key>ZoomOut</key> -->
+<!-- 				<securitycontroler>false</securitycontroler> -->
+<!-- 				<securitytype>visible</securitytype> -->
+<!-- 			</item> -->
 			<item>
 				<name>全幅</name>
 				<key>FullExtent</key>

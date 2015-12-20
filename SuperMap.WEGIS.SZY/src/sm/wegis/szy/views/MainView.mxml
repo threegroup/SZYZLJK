@@ -20,7 +20,9 @@
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.wegis.common.components.events.MenuEventEx;
 			import com.supermap.wegis.common.components.events.ScrollPanelEvent;
+			import com.supermap.wegis.common.components.events.ToolEvent;
 			import com.supermap.wegis.common.components.menuBar.MenuItem;
+			import com.supermap.wegis.common.components.toolBar.ToolItem;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.core.widget.WidgetManager;
 			
@@ -32,6 +34,7 @@
 			import sm.wegis.szy.events.MapLayerEvent;
 			import sm.wegis.szy.events.MenuItemEvent;
 			import sm.wegis.szy.events.SystemEvent;
+			import sm.wegis.szy.events.ToolItemEvent;
 			import sm.wegis.szy.skins.MenuItemSkinEx;
 			
 			/**应用系统选择项，仅测试之用*/
@@ -101,11 +104,31 @@
 					this.ControlBodyControlID.addEventListener(MouseEvent.MOUSE_DOWN, controlBodyHandler);
 				}
 				
+				if(this.MapTool != null)
+				{
+					//地图工具
+					this.MapTool.addEventListener(ToolEvent.TOOL_CLICK, mapToolHandler);
+				}
+				
 				//系统选择项事件
 				this.ScrollButtonPanel.addEventListener(ScrollPanelEvent.CLICK, scrollButtonClickHandler);
 				
 				//底图切换
 				CairngormEventDispatcher.getInstance().addEventListener(MapLayerEvent.BASE_MAP_CHANGE, basemapChangeHandler);
+			}
+			
+			private function mapToolHandler(e:ToolEvent):void
+			{
+				if(e.Message is ToolItem)
+				{
+					var item:ToolItem = e.Message as ToolItem;
+					var toolEvent:ToolItemEvent = new ToolItemEvent(ToolItemEvent.MAP_TOOL_ITEM_CLICK);
+					if(item != null)
+					{
+						toolEvent.data = item;
+						toolEvent.dispatch();
+					}
+				}
 			}
 			
 			private function scrollButtonClickHandler(event:ScrollPanelEvent):void

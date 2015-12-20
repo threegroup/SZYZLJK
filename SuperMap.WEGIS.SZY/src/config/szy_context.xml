@@ -126,6 +126,8 @@
 					</value>
 					<!--切换底图 -->
 					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand</value>
+					<value type="Class">sm.wegis.szy.commands.MapToolItemClickCommand
+					</value>
 					<!--水资源专题地图图层控制-->
 					<value type="Class">sm.wegis.szy.commands.WaterResourceLayerIdChangeCommand</value>
 				</array>
@@ -140,6 +142,7 @@
 				<property name="DataBindCreated" value="DataBindCreatedCommand" />
 				<property name="SystemSecurity" value="SystemSecurityCommand" />
 				<property name="BaseMapChange" value="BaseMapChangeCommand" />
+				<property name="MapToolItemClick" value="MapToolItemClickCommand" />
 				<property name="WaterResourceLayerIdChange" value="WaterResourceLayerIdChangeCommand" />
 			</object>
 		</constructor-arg>
