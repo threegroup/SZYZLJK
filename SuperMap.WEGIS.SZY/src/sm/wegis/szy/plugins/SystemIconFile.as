@@ -191,6 +191,12 @@ package sm.wegis.szy.plugins
 		private static var List3Key:String = "List3";
 		ResourceManagerEx.RegisterResource("",List3Key, List3Cls);
 		
+		//地图定位图片
+		[Embed(source="assets/image/location/location.png")]
+		private static var LocationCls:Class;
+		private static var LocationKey:String = "Location";
+		ResourceManagerEx.RegisterResource("",LocationKey, LocationCls);
+		
 		public function SystemIconFile()
 		{
 			super();

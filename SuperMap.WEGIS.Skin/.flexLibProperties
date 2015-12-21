@@ -9,6 +9,6 @@
     <resourceEntry destPath="style.css" sourcePath="style.css"/>
   </includeResources>
   <namespaceManifests>
-    <namespaceManifestEntry manifest="D:/Project/SVN_DS/SZYZLJK/SuperMap.WEGIS.Skin/manifest.xml" namespace="library://ns.ksria.com/flex/skin"/>
+    <namespaceManifestEntry manifest="E:/ProjectSVN/10水资源所/SZYZLJK/SuperMap.WEGIS.Skin/manifest.xml" namespace="library://ns.ksria.com/flex/skin"/>
   </namespaceManifests>
 </flexLibProperties>

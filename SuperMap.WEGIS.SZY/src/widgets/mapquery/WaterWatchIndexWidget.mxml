@@ -15,9 +15,14 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.supermap.web.core.Feature;
+			import com.supermap.web.core.Point2D;
+			import com.supermap.web.core.geometry.GeoPoint;
+			import com.supermap.web.core.styles.PictureMarkerStyle;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
 			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			import com.supermap.wegis.common.utils.ArrayCollectionUtils;
 			
 			import mx.collections.ArrayCollection;
@@ -31,8 +36,11 @@
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.utils.FeatureLayerUtil;
+			import sm.wegis.szy.vo.ConstVO;
 			
 			import spark.components.gridClasses.GridColumn;
+			import spark.events.GridEvent;
 			
 			//状态
 			private const SHOW:String = "SHOW";
@@ -142,7 +150,10 @@
 			private function clearAllResult():void
 			{
 				resultGrid.dataProvider = null;
-				resultGrid.columns.removeAll();
+				if( resultGrid.columns != null)
+				{
+					resultGrid.columns.removeAll();
+				}
 				hideInfoWidow();
 			}
 			
@@ -170,6 +181,8 @@
 							item.id = resultTarget.id;
 							item.name = resultTarget.name;
 							item.index = resultTarget.index;
+							item.x = resultTarget.x;
+							item.y = resultTarget.y;
 							var newColumn:GridColumn;
 							//如果为空或者length=0，添加名称列
 							if (resultGrid.columns == null || resultGrid.columns.length == 0) {
@@ -240,6 +253,29 @@
 				baseDataEvent.dispatch();
 			}
 			
+			//点击对象表格行，定位要素
+			protected function resultGrid_gridClickHandler(event:GridEvent):void
+			{
+				var grid:DataGrid = event.currentTarget as DataGrid;
+				if (event.rowIndex > -1 && event.rowIndex < grid.dataProvider.length)
+				{
+					//地图定位
+					var selectedItem:Object = grid.selectedItem;
+					var point2D:Point2D = new Point2D(selectedItem.x, selectedItem.y);
+					modelLocator.mapCtrl.panTo(point2D);
+					
+					//添加地图定位点图片
+					var importFeatureLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
+					importFeatureLayer.clear();
+					var feature:Feature = new Feature();
+					feature.geometry = new GeoPoint(point2D.x, point2D.y);
+					var picStyle:PictureMarkerStyle = new PictureMarkerStyle(ResourceManagerEx.FindResource("Location").cls);
+					picStyle.yOffset = 11;
+					feature.style = picStyle;
+					importFeatureLayer.addFeature(feature);
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<ns:states>
@@ -276,11 +312,12 @@
 							  label.SHOWTITLE="显示"/>
 			</s:Group>
 			<line:HLine width="100%" visible="false" visible.SHOW="true"/>
-			<s:VGroup id="WidgetContainer" width="100%" height="100%" gap="0"
+			<s:VGroup id="WidgetContainer" width="100%" height="100%" gap="0" 
 					  visible.HIDE="false" includeInLayout.HIDE="false"
 					  visible.SHOW="true" includeInLayout.SHOW="true" 
 					  visible.SHOWTITLE="false" includeInLayout.SHOWTITLE="false">
-				<s:DataGrid id="resultGrid" width="100%" height="100%" minHeight="200"/>
+				<s:DataGrid id="resultGrid" width="100%" height="100%" minHeight="200" 
+							gridClick="resultGrid_gridClickHandler(event)"/>
 			</s:VGroup>
 		</s:VGroup>
 	</s:BorderContainer>
