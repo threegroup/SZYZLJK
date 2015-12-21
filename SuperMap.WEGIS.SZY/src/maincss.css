@@ -148,6 +148,13 @@ s|Label
 
 s|Panel
 {
-	skinClass:ClassReference("sm.wegis.szy.skins.PanelSkinEx")
+	skinClass:ClassReference("sm.wegis.szy.skins.PanelSkinEx");
+}
+
+s|DataGrid
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.FlatDataGridSkin");
+	alternatingRowColors:#FFFFFF,#E8EFF6;
+	rollOverColor:#3385FF;
 }
 

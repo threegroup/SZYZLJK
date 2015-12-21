@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DefaultGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						   xmlns:s="library://ns.adobe.com/flex/spark" 
+						   xmlns:mx="library://ns.adobe.com/flex/mx"
+						   rollOver="rollOverHandler(event)"  rollOut="rollOutHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			protected function rollOverHandler(event:MouseEvent):void
+			{
+				setStyle("color",0xFFFFFF);
+			}
+			
+			protected function rollOutHandler(event:MouseEvent):void
+			{
+				var cssObj:CSSStyleDeclaration;
+				cssObj = styleManager.getStyleDeclaration("global");
+				if(cssObj != null){
+					setStyle("color", cssObj.getStyle("color"));
+				}else {
+					setStyle("color", 0x343434);
+				}
+			
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+</s:DefaultGridItemRenderer>
