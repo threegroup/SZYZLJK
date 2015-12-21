@@ -162,34 +162,16 @@ package sm.wegis.szy.plugins
 		ResourceManagerEx.RegisterResource("",defaultKey, defaultCls);
 		
 		//重要水体
-		[Embed(source="assets/image/type/zyst.png")]
+		[Embed(source="assets/image/type/water.png")]
 		private static var ZYSTCls:Class;
 		private static var ZYSTKey:String = "ZYST";
 		ResourceManagerEx.RegisterResource("",ZYSTKey, ZYSTCls);
 		
 		//敏感目标
-		[Embed(source="assets/image/type/mgmb.png")]
+		[Embed(source="assets/image/type/target.png")]
 		private static var MGMBCls:Class;
 		private static var MGMBKey:String = "MGMB";
 		ResourceManagerEx.RegisterResource("",MGMBKey, MGMBCls);
-		
-		//文字前面图片
-		[Embed(source="assets/image/list/list1.png")]
-		private static var List1Cls:Class;
-		private static var List1Key:String = "List1";
-		ResourceManagerEx.RegisterResource("",List1Key, List1Cls);
-		
-		//文字前面图片
-		[Embed(source="assets/image/list/list2.png")]
-		private static var List2Cls:Class;
-		private static var List2Key:String = "List2";
-		ResourceManagerEx.RegisterResource("",List2Key, List2Cls);
-		
-		//文字前面图片
-		[Embed(source="assets/image/list/list3.png")]
-		private static var List3Cls:Class;
-		private static var List3Key:String = "List3";
-		ResourceManagerEx.RegisterResource("",List3Key, List3Cls);
 		
 		//地图定位图片
 		[Embed(source="assets/image/location/location.png")]

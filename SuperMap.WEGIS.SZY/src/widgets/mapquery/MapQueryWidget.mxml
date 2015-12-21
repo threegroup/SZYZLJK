@@ -61,16 +61,27 @@
 			private function queryTypesAndDetailListHandler(event:CairngormEvent):void
 			{
 				var data:Object = event.data;
-				if (data.success == true) {
-					if (data.attributes) {
-						if (data.attributes.types != null && data.attributes.types.length > 0) {
+				if (data.success == true) 
+				{
+					if(!this.ResultContentPanel.visible)
+						this.ResultContentPanel.visible = true;
+					if (data.attributes) 
+					{
+						if (data.attributes.types != null && data.attributes.types.length > 0)
+						{
 							var dropDownList:DropDownList = createTypeDropDownControl(new ArrayCollection(data.attributes.types));
 							conditionGroup.addElement(dropDownList);
 						}
-						if (data.attributes.targetList != null && data.attributes.targetList.length > 0) {
+						if (data.attributes.targetList != null && data.attributes.targetList.length > 0) 
+						{
 							resultList.dataProvider = new ArrayCollection(data.attributes.targetList);
 						}
 					}
+				}
+				else
+				{
+					this.ResultContentPanel.visible = false;
+					//此处面板做相应的初始化
 				}
 			}
 			
@@ -80,9 +91,11 @@
 				var dropDownList:DropDownList = new DropDownList();
 				dropDownList.requireSelection = true;
 				dropDownList.percentWidth = 100;
+				dropDownList.height = 30;
 				dropDownList.addEventListener(IndexChangeEvent.CHANGE, selectChangeHandler);
 				dropDownList.labelField = "typeName";
 				dropDownList.dataProvider = dataProvider;
+				dropDownList.styleName = "SystemSelectorStyle";
 				return dropDownList;
 			}
 			
@@ -130,31 +143,36 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:VGroup width="100%" height="100%" gap="10" paddingTop="5" paddingLeft="5" paddingRight="5">
+	<s:VGroup width="100%" height="100%" gap="10" 
+			  paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5">
 		<s:HGroup width="100%" horizontalAlign="center">
 			<ns:ScrollPanel id="scrollButtonPanel"  horizontalCenter="0"
-							hGap="3"  
-							itemHeight="90" itemWidth="90"
+							hGap="15"  
+							itemHeight="80" itemWidth="80"
 							contentBackgroundAlpha="0.8" alpha="0.8"
 							labelField="name"
 							rowCount="6" columnCount="4"
 							type="button"
 							buttonStyleName="ScrollPanelItemStyle"/>
 		</s:HGroup>
-		<s:HGroup width="100%" height="25" gap="10" verticalAlign="middle">
+		<line:HLine />
+		<s:HGroup width="100%" height="30" gap="10" verticalAlign="middle">
 			<s:TextInput id="searchInput"  height="100%" prompt="请输入关键字" width="100%"/> 
 			<s:Button id="searchBt" height="100%" width="60" buttonMode="true" label="查询" 
 					  styleName="SubmitRegisterStyle"
 					  click="queryTypesAndDetailList()"/>
 		</s:HGroup>
-		<line:HLine />
-		<line:IconLabel  text="类型列表"  fontWeight="bold" source="{ResourceManagerEx.FindResource('List1').cls}"/>
-		<line:HLine />
-		<s:VGroup id="conditionGroup" width="100%" paddingLeft="5" paddingRight="5" />
-		<s:Label  text="对象列表"/>
-		<line:IconLabel   text="对象列表"  fontWeight="bold" source="{ResourceManagerEx.FindResource('List2').cls}"/>
-		<line:HLine />
-		<s:List id="resultList" width="100%" height="100%"  labelField="name"  creationComplete="resultList_creationCompleteHandler(event)"
-				borderVisible="false" itemRenderer="sm.wegis.szy.renders.MapQueryListItemRenderer"/>
+		<s:VGroup id="ResultContentPanel" width="100%" height="100%" gap="10" visible="false">
+			<s:Panel title="水体类型" width="100%" maxHeight="200" minHeight="80">
+				<s:VGroup id="conditionGroup" width="100%" 
+						  paddingLeft="5" paddingRight="5" paddingBottom="5" paddingTop="5"/>
+			</s:Panel>
+			<s:Panel title="水体对象" width="100%" height="100%">
+				<s:List id="resultList" width="100%" height="100%"  labelField="name"  
+						creationComplete="resultList_creationCompleteHandler(event)"
+						borderVisible="false" 
+						itemRenderer="sm.wegis.szy.renders.MapQueryListItemRenderer"/>
+			</s:Panel>
+		</s:VGroup>
 	</s:VGroup>
 </ns:WidgetBase>

@@ -13,8 +13,11 @@ package sm.wegis.szy.core.utils
 	
 	import flash.events.MouseEvent;
 	
+	import mx.core.IVisualElementContainer;
+	
 	import sm.wegis.szy.core.baseclass.ToolBase;
 	
+	import spark.components.BorderContainer;
 	import spark.components.Group;
 	import spark.components.VGroup;
 	import spark.effects.Fade;
@@ -52,7 +55,7 @@ package sm.wegis.szy.core.utils
 		private var isAddOn:Boolean = true;
 		
 		/**初始化地图罗盘控件等*/
-		public function initMapCompass(container:Group=null):void
+		public function initMapCompass(container:IVisualElementContainer=null):void
 		{
 			if(map != null)
 			{

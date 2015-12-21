@@ -70,7 +70,7 @@ s|BorderContainer
 /**子系统标题等相关信息样式*/
 .SubSystemTitleStyle
 {
-	color:#FFFF00;
+	color:#FF0000;
 	fontSize:14;
 	verticalAlign:"middle";
 	fontWeight:bold
@@ -120,7 +120,7 @@ s|BorderContainer
 	fontFamily:宋体;
 	skinClass:ClassReference("sm.wegis.szy.skins.SubmitRegisterSkin");
 	fontSize:16;
-	fontWeight:bold;
+	fontWeight:normal;
 	color:#ffffff
 }
 
@@ -144,5 +144,10 @@ s|BorderContainer
 s|Label 
 {
 	verticalAlign:middle;
+}
+
+s|Panel
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.PanelSkinEx")
 }
 

@@ -45,13 +45,13 @@
     
 	<!-- layer 6: highlight stroke (down state only) -->
 	<!--- @private -->
-	<s:Rect id="hldownstroke1" left="0" right="0" top="0" bottom="0" radiusX="2" includeIn="over">
+	<s:Rect id="hldownstroke1" left="0" right="0" top="0" bottom="0"  radiusX="0" radiusY="0" includeIn="over">
 		<s:fill>
 			<s:SolidColor color="#d0e6f3"/>
 		</s:fill>
 	</s:Rect>
 	<!--- @private -->
-	<s:Rect id="hldownstroke2" left="0" right="0" top="0" bottom="0" radiusX="2" includeIn="down">
+	<s:Rect id="hldownstroke2" left="0" right="0" top="0" bottom="0"  radiusX="0" radiusY="0" includeIn="down">
 		<s:fill>
 			<s:SolidColor color="#d0e6f3"/>
 		</s:fill>
@@ -59,7 +59,7 @@
 
     <!-- layer 7: border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
     <!--- @private -->
-    <s:Rect id="border" left="0" right="0" top="0" bottom="0" width="69" height="20" radiusX="2">
+    <s:Rect id="border" left="0" right="0" top="0" bottom="0" width="69" height="20" radiusX="0" radiusY="0">
         <s:stroke>
 			<s:SolidColorStroke color.disabled="#f0f0f0" color="#646464"/>
 		</s:stroke>
