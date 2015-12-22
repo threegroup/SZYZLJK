@@ -389,7 +389,6 @@
 								dataProvider="{modelLocator.toolInfo.mapToolList}"
 								labelField="{modelLocator.toolInfo.mapToolLabel}"/>
 				</s:BorderContainer>
-				
 			</s:Group> 
 		</s:HGroup>
 	</s:VGroup>
