@@ -42,7 +42,9 @@ declarations define DataGrid skin parts except <code>headerColumnSeparator</code
     xmlns:s="library://ns.adobe.com/flex/spark" 
     xmlns:mx="library://ns.adobe.com/flex/mx"
     xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
-    alpha.disabled="0.5" minWidth="89" minHeight="84" xmlns:renders="sm.wegis.szy.renders.*">
+    alpha.disabled="0.5" minWidth="89" minHeight="84" 
+	xmlns:renders="sm.wegis.szy.renders.*"
+	buttonMode="true">
     
     <fx:Metadata>
     <![CDATA[

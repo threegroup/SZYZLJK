@@ -154,7 +154,7 @@ s|Panel
 s|DataGrid
 {
 	skinClass:ClassReference("sm.wegis.szy.skins.FlatDataGridSkin");
-	alternatingRowColors:#FFFFFF,#E8EFF6;
+/*	alternatingRowColors:#FFFFFF,#E8EFF6;*/
 	rollOverColor:#3385FF;
 }
 

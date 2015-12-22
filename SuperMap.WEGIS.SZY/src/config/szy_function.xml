@@ -36,7 +36,7 @@
 						<mutex>true</mutex>
 						<cover>true</cover>
 						<bottom>0</bottom>
-						<left>1</left>
+						<left>0</left>
 					</subitem>
 				</subitems>
 			</item>
