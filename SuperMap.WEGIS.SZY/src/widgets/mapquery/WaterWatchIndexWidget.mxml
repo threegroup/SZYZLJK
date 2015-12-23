@@ -4,8 +4,8 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 			   xmlns:line="sm.wegis.szy.components.line.*"
-			   width="100%" creationComplete="initWidget(event)"
-			  >
+			   width="100%" 
+			   creationComplete="initWidget(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
@@ -35,6 +35,11 @@
 			
 			private const  SHOW:String = "show";
 			private const  HIDE:String = "hide";
+			
+			private const MaxHeight:int = 200;
+			
+			private const CONTRACT:String = "收缩";
+			private const EXPAND:String = "展开";
 			
 			[Bindable]
 			/**模型定位器*/
@@ -137,6 +142,7 @@
 						}
 						resultGrid.dataProvider.addItem(item);
 						ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);
+						panel.contentGroup.visible = panel.contentGroup.includeInLayout = true;
 						this.currentState = SHOW;
 					}
 				} else if (resultData.selected == false) {
@@ -187,15 +193,46 @@
 				}
 			}
 			
+			//点击控制panel展开和收缩
+			protected function stateImage_clickHandler(event:MouseEvent):void
+			{
+				panel.contentGroup.visible = panel.contentGroup.includeInLayout = !panel.contentGroup.includeInLayout;
+				if ( panel.contentGroup.visible) {
+					stateImage.toolTip = CONTRACT;
+					resizeEffect.heightTo =  MaxHeight;
+					fadeEffect.alphaTo = 1;
+				} else {
+					stateImage.toolTip = EXPAND;
+					resizeEffect.heightTo =  panel.controlBarGroup.height;
+					fadeEffect.alphaTo = 0;
+				}
+				animateEffect.stop();
+				animateEffect.play();
+			}
 		]]>
 	</fx:Script>
+	<fx:Declarations>
+		<s:Parallel id="animateEffect" duration="500" effectEnd="stateImage.enabled=true;"
+					effectStart="stateImage.enabled=false">
+			<s:Fade id="fadeEffect" target="{resultGrid}"   />
+			<s:Resize id="resizeEffect"  target="{panel}" />
+			<s:Rotate id="rotateEffect" angleBy="180" autoCenterTransform="true"
+					  target="{stateImage}"/>
+		</s:Parallel>
+	</fx:Declarations>
 	<ns:states>
 		<s:State name="hide"/>
 		<s:State name="show"/>
 	</ns:states>
-	<s:Panel id="panel" title="对象监测数据列表"  height.show="100%" height.hide="0" width="100%" minHeight="200">
-		<s:DataGrid id="resultGrid" width="100%" height="100%"
-					maxHeight="200" sortableColumns="false"
-					gridClick="resultGrid_gridClickHandler(event)"/>
+	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" title="对象监测数据列表" bottom.show="5" bottom.hide="0"
+			 height.hide="0">
+		<s:controlBarContent>
+			<s:Image id="stateImage" width="16" height="16" buttonMode="true" 
+					 click="stateImage_clickHandler(event)"
+					 source="{ResourceManagerEx.FindResource('Down').cls}" toolTip="收缩"/>
+			<s:Spacer width="10"/>
+		</s:controlBarContent>
+		<s:DataGrid id="resultGrid" width="100%" height="100%" maxHeight="200"  borderVisible="false"
+					gridClick="resultGrid_gridClickHandler(event)" sortableColumns="false"/>
 	</s:Panel>
 </ns:WidgetBase>

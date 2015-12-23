@@ -179,6 +179,12 @@ package sm.wegis.szy.plugins
 		private static var LocationKey:String = "Location";
 		ResourceManagerEx.RegisterResource("",LocationKey, LocationCls);
 		
+		//控制panel窗口展开和关闭图片
+		[Embed(source="assets/image/down.png")]
+		private static var DownCls:Class;
+		private static var DownKey:String = "Down";
+		ResourceManagerEx.RegisterResource("",DownKey, DownCls);
+		
 		public function SystemIconFile()
 		{
 			super();

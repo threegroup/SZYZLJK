@@ -2,26 +2,55 @@
 <s:DefaultGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 						   xmlns:s="library://ns.adobe.com/flex/spark" 
 						   xmlns:mx="library://ns.adobe.com/flex/mx"
-						   rollOver="rollOverHandler(event)" 
-						   rollOut="rollOutHandler(event)">
-	
+						   rollOver="rollOverHandler()" 
+						   rollOut="rollOutHandler()"  
+						   dataChange="dataChangeHandler()">
 	<fx:Script>
 		<![CDATA[
-			protected function rollOverHandler(event:MouseEvent):void
+			import mx.events.FlexEvent;
+			private var hasInitEvent:Boolean = false;
+			
+			import sm.wegis.szy.events.DataGridItemRendererMouseEvent;
+			protected function rollOverHandler():void
 			{
-				setStyle("color",0xFFFFFF);
+				grid.dispatchEvent(new DataGridItemRendererMouseEvent(DataGridItemRendererMouseEvent.ROLLOVER, rowIndex));
 			}
 			
-			protected function rollOutHandler(event:MouseEvent):void
+			protected function rollOutHandler():void
 			{
-				var cssObj:CSSStyleDeclaration;
-				cssObj = styleManager.getStyleDeclaration("global");
-				if(cssObj != null){
-					setStyle("color", cssObj.getStyle("color"));
-				}else {
-					setStyle("color", 0x343434);
-				}
+				grid.dispatchEvent(new DataGridItemRendererMouseEvent(DataGridItemRendererMouseEvent.ROLLOUT, rowIndex));
+			}
 			
+			//鼠标移到单元，回调函数
+			private function rollOverChangeHandler(event:DataGridItemRendererMouseEvent):void 
+			{
+				if (event.rowIndex == rowIndex) {
+					setStyle("color",0xFFFFFF);
+				}
+			}
+			
+			//鼠标移出单元，回调函数
+			private function rollOutChangeHandler(event:DataGridItemRendererMouseEvent):void
+			{
+				if (event.rowIndex == rowIndex) {
+					var cssObj:CSSStyleDeclaration;
+					cssObj = styleManager.getStyleDeclaration("global");
+					if(cssObj != null){
+						setStyle("color", cssObj.getStyle("color"));
+					}else {
+						setStyle("color", 0x343434);
+					}
+				}
+			}
+			
+			
+			protected function dataChangeHandler():void
+			{
+				if (hasInitEvent == false ) {
+					hasInitEvent = true;
+					grid.addEventListener(DataGridItemRendererMouseEvent.ROLLOVER, rollOverChangeHandler);
+					grid.addEventListener(DataGridItemRendererMouseEvent.ROLLOUT, rollOutChangeHandler);
+				}
 			}
 			
 		]]>

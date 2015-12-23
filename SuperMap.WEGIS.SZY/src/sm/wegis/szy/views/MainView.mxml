@@ -369,7 +369,7 @@
 						</s:HGroup>
 					</s:Group>
 					<!--右侧下方布局面板,和地图在右侧上下分布 -->
-					<s:Group id="RightDownContainerID" width="100%" maxHeight="200"  bottom="0"/>
+					<s:BorderContainer id="RightDownContainerID" width="100%" minHeight="0"  bottom="0"/>
 				<s:HGroup left="0" top="0" height="100%" gap="0" horizontalAlign="left"
 						  verticalAlign="middle">
 					<s:Rect width="1" height="100%">

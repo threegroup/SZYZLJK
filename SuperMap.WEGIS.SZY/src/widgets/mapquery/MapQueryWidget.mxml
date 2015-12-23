@@ -62,6 +62,8 @@
 			private function queryTypesAndDetailListHandler(event:CairngormEvent):void
 			{
 				var data:Object = event.data;
+				conditionGroup.removeAllElements();
+				resultList.dataProvider = null;
 				if (data.success == true) 
 				{
 					if(!this.ResultContentPanel.visible)
