@@ -20,6 +20,15 @@ WeGIS.V = {
     baseLabelUrl: "http://tdt.mwr.gov.cn:81/sla_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sla&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
     baseImageMapUrl: "http://tdt.mwr.gov.cn:81/img_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
     baseImageLabelUrl: "http://tdt.mwr.gov.cn:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sia&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
+    wrvMapUrl:"http://localhost:8090/iserver/services/map-SZY/rest/maps/SZY_V",//水資源矢量
+    wrrMapUrl:"http://localhost:8090/iserver/services/map-SZY/rest/maps/SZY_R",//水資源影像
+    wbLayerList: [
+        {"label":"水库", "layerIds":"[4,5,6,7,23,24,28,29]"},
+        {"label":"河流", "layerIds":"[8,9,10,11,12,13,14,15,16,17,18,19,30,31,32,33,34,35,36,37]"},
+        {"label":"水文站","layerIds":"[3,25]"},
+        {"label":"雨量站","layerIds":"[2,26]"},
+        {"label":"高程线","layerIds":"[0,27]"}
+    ]
 };
 
 WeGIS.F = {
@@ -27,6 +36,7 @@ WeGIS.F = {
     initMap: function (mapid) {
         WeGIS.V.map = new SuperMap.Map(mapid, {
             controls: [
+                new SuperMap.Control.LayerSwitcher(),
                 new SuperMap.Control.MousePosition(),
                 new SuperMap.Control.ScaleLine(),
                 new SuperMap.Control.Zoom(),
@@ -42,11 +52,15 @@ WeGIS.F = {
         WeGIS.V.baseMaplayer = new SuperMap.Layer.Tianditu();
         WeGIS.V.baseMaplayer.url = WeGIS.V.baseMapUrl;
         WeGIS.V.baseMaplayer.zOffset = 4;
+        WeGIS.V.baseMaplayer.name = "天地图矢量";
+        WeGIS.V.baseMaplayer.displayInLayerSwitcher = false;
 
         //天地图矢量底图标注
         WeGIS.V.baseLabelLayer = new SuperMap.Layer.Tianditu();
         WeGIS.V.baseLabelLayer.url = WeGIS.V.baseLabelUrl;
         WeGIS.V.baseLabelLayer.zOffset = 4;
+        WeGIS.V.baseLabelLayer.name = "天地图标注";
+        WeGIS.V.baseLabelLayer.displayInLayerSwitcher = false;
 
         /*//天地图影像底图
          WeGIS.V.baseImageMaplayer = new SuperMap.Layer.Tianditu();
@@ -60,6 +74,7 @@ WeGIS.F = {
 
         //marker layer
         WeGIS.V.markerLayer = new SuperMap.Layer.Markers(WeGIS.V.markerLayerName);
+        WeGIS.V.markerLayer.displayInLayerSwitcher = false;
         //label layer
         WeGIS.V.strategy = new SuperMap.Strategy.GeoText();
         WeGIS.V.strategy.style = {
@@ -71,12 +86,14 @@ WeGIS.F = {
             labelYOffset: -5 //文本偏移保证图标指向坐标位置
         };
         WeGIS.V.vectorLayer = new SuperMap.Layer.Vector(WeGIS.V.vectorLayerName, {strategies: [WeGIS.V.strategy]});
+        WeGIS.V.vectorLayer.displayInLayerSwitcher = false;
         WeGIS.F.addLayerEx();
     },
     //地图初始化添加文本及图标
     addLayerEx: function () {
         //矢量底图
         WeGIS.V.map.addLayers([WeGIS.V.baseMaplayer, WeGIS.V.baseLabelLayer, WeGIS.V.markerLayer, WeGIS.V.vectorLayer]);
+        WeGIS.F.addWrLayerList();
         //影像底图
         //WeGIS.V.map.addLayers([WeGIS.V.baseImageMaplayer, WeGIS.V.baseImageLabelLayer, WeGIS.V.markerLayer, WeGIS.V.vectorLayer]);
         var searchObject = WeGIS.F.getSearchParam();
@@ -109,6 +126,28 @@ WeGIS.F = {
         WeGIS.V.geoText = new SuperMap.Geometry.GeoText(x, y, text);
         WeGIS.V.geoTextFeature = new SuperMap.Feature.Vector(WeGIS.V.geoText);
         WeGIS.V.vectorLayer.addFeatures([WeGIS.V.geoTextFeature]);
+    },
+    //水体要素服务
+    addWrLayerList:function(){
+        //强制多个图层
+       /* if(WeGIS.V.wbLayerList != null && WeGIS.V.wbLayerList.length>0)
+        {
+            var wrLayers = [];
+            var len = WeGIS.V.wbLayerList.length;
+            for(var i=0; i<len;i++)
+            {
+                var layerInfo = WeGIS.V.wbLayerList[i];
+                var wrLayer = new SuperMap.Layer.TiledDynamicRESTLayer(layerInfo["label"], WeGIS.V.wrvMapUrl,
+                    {transparent: true, cacheEnabled:true}, {maxResolution:"auto"});
+                wrLayer.layerIds = layerInfo["layerIds"];
+                wrLayers.push(wrLayer);
+            }
+            WeGIS.V.map.addLayers(wrLayers);
+        }*/
+        //作为一个图层处理
+        var wrLayer = new SuperMap.Layer.TiledDynamicRESTLayer("水体要素", WeGIS.V.wrvMapUrl,
+            {transparent: true, cacheEnabled:true});
+        WeGIS.V.map.addLayer(wrLayer);
     },
     //获取查询字符串参数
     getSearchParam: function () {
