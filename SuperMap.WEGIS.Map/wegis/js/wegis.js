@@ -20,8 +20,8 @@ WeGIS.V = {
     baseLabelUrl: "http://tdt.mwr.gov.cn:81/sla_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sla&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
     baseImageMapUrl: "http://tdt.mwr.gov.cn:81/img_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
     baseImageLabelUrl: "http://tdt.mwr.gov.cn:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sia&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
-    wrvMapUrl:"http://localhost:8090/iserver/services/map-SZY/rest/maps/SZY_V",//水資源矢量
-    wrrMapUrl:"http://localhost:8090/iserver/services/map-SZY/rest/maps/SZY_R",//水資源影像
+    wrvMapUrl:"http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_V",//水資源矢量
+    wrrMapUrl:"http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_R",//水資源影像
     wbLayerList: [
         {"label":"水库", "layerIds":"[4,5,6,7,23,24,28,29]"},
         {"label":"河流", "layerIds":"[8,9,10,11,12,13,14,15,16,17,18,19,30,31,32,33,34,35,36,37]"},
@@ -105,7 +105,9 @@ WeGIS.F = {
             WeGIS.V.map.setCenter(new SuperMap.LonLat(x, y), 0);//居中显示
             WeGIS.F.createMarker(x, y);//创建地图标签
             WeGIS.F.createGeoText(x, y, decodeURIComponent(searchObject["name"]));//创建文本标签
-        }
+        } else {
+			WeGIS.V.map.setCenter(new SuperMap.LonLat(123.46 , 42.04), 2);
+		}
     },
     //根据坐标创建点图标
     createMarker: function (x, y) {
@@ -145,9 +147,13 @@ WeGIS.F = {
             WeGIS.V.map.addLayers(wrLayers);
         }*/
         //作为一个图层处理
-        var wrLayer = new SuperMap.Layer.TiledDynamicRESTLayer("水体要素", WeGIS.V.wrvMapUrl,
-            {transparent: true, cacheEnabled:true});
+        var wrLayer = new SuperMap.Layer.TiledDynamicRESTLayer("szylayer", WeGIS.V.wrvMapUrl, {transparent: true});
         WeGIS.V.map.addLayer(wrLayer);
+		//wrLayer.events.on({"layerInitialized": addLayer});
+       // function addLayer() {
+       //  WeGIS.V.map.addLayer(wrLayer);
+		//}
+   
     },
     //获取查询字符串参数
     getSearchParam: function () {
