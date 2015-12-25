@@ -20,8 +20,8 @@ WeGIS.V = {
     baseLabelUrl: "http://tdt.mwr.gov.cn:81/sla_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sla&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
     baseImageMapUrl: "http://tdt.mwr.gov.cn:81/img_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
     baseImageLabelUrl: "http://tdt.mwr.gov.cn:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sia&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&TileMatrix=${z}&TileRow=${y}&TileCol=${x}",
-    wrvMapUrl:"http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_V",//水資源矢量
-    wrrMapUrl:"http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_R",//水資源影像
+    wrvMapUrl:"http://localhost:8090/iserver/services/map-SZY/rest/maps/SZY_V",//水資源矢量
+    wrrMapUrl:"http://localhost:8090/iserver/services/map-SZY/rest/maps/SZY_R",//水資源影像
     wbLayerList: [
         {"label":"水库", "layerIds":"[4,5,6,7,23,24,28,29]"},
         {"label":"河流", "layerIds":"[8,9,10,11,12,13,14,15,16,17,18,19,30,31,32,33,34,35,36,37]"},
@@ -93,7 +93,7 @@ WeGIS.F = {
     addLayerEx: function () {
         //矢量底图
         WeGIS.V.map.addLayers([WeGIS.V.baseMaplayer, WeGIS.V.baseLabelLayer, WeGIS.V.markerLayer, WeGIS.V.vectorLayer]);
-        WeGIS.F.addWrLayerList();
+        WeGIS.F.addWrLayer();
         //影像底图
         //WeGIS.V.map.addLayers([WeGIS.V.baseImageMaplayer, WeGIS.V.baseImageLabelLayer, WeGIS.V.markerLayer, WeGIS.V.vectorLayer]);
         var searchObject = WeGIS.F.getSearchParam();
@@ -102,12 +102,12 @@ WeGIS.F = {
             var xyArray = xyObject.split(',');
             var x = parseFloat(xyArray[0]);
             var y = parseFloat(xyArray[1]);
-            WeGIS.V.map.setCenter(new SuperMap.LonLat(x, y), 0);//居中显示
+            WeGIS.V.map.setCenter(new SuperMap.LonLat(x, y), 4);//居中显示
             WeGIS.F.createMarker(x, y);//创建地图标签
             WeGIS.F.createGeoText(x, y, decodeURIComponent(searchObject["name"]));//创建文本标签
         } else {
-			WeGIS.V.map.setCenter(new SuperMap.LonLat(123.46 , 42.04), 2);
-		}
+            WeGIS.V.map.setCenter(new SuperMap.LonLat(123.46 , 42.04), 4);
+        }
     },
     //根据坐标创建点图标
     createMarker: function (x, y) {
@@ -130,30 +130,10 @@ WeGIS.F = {
         WeGIS.V.vectorLayer.addFeatures([WeGIS.V.geoTextFeature]);
     },
     //水体要素服务
-    addWrLayerList:function(){
-        //强制多个图层
-       /* if(WeGIS.V.wbLayerList != null && WeGIS.V.wbLayerList.length>0)
-        {
-            var wrLayers = [];
-            var len = WeGIS.V.wbLayerList.length;
-            for(var i=0; i<len;i++)
-            {
-                var layerInfo = WeGIS.V.wbLayerList[i];
-                var wrLayer = new SuperMap.Layer.TiledDynamicRESTLayer(layerInfo["label"], WeGIS.V.wrvMapUrl,
-                    {transparent: true, cacheEnabled:true}, {maxResolution:"auto"});
-                wrLayer.layerIds = layerInfo["layerIds"];
-                wrLayers.push(wrLayer);
-            }
-            WeGIS.V.map.addLayers(wrLayers);
-        }*/
-        //作为一个图层处理
-        var wrLayer = new SuperMap.Layer.TiledDynamicRESTLayer("szylayer", WeGIS.V.wrvMapUrl, {transparent: true});
-        WeGIS.V.map.addLayer(wrLayer);
-		//wrLayer.events.on({"layerInitialized": addLayer});
-       // function addLayer() {
-       //  WeGIS.V.map.addLayer(wrLayer);
-		//}
-   
+    addWrLayer:function(){
+        var wrLayer = new SuperMap.Layer.TiledDynamicRESTLayer("水体要素", WeGIS.V.wrvMapUrl,
+            {transparent: true, cacheEnabled:true}, {maxResolution:"auto"});
+        wrLayer.events.on({"layerInitialized": function(){WeGIS.V.map.addLayer(wrLayer);}});
     },
     //获取查询字符串参数
     getSearchParam: function () {
