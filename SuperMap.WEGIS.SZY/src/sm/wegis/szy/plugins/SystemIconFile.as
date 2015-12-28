@@ -26,6 +26,17 @@ package sm.wegis.szy.plugins
 		private static var tzhlyPngKey:String = "TZHLY";
 		ResourceManagerEx.RegisterResource("",tzhlyPngKey, tzhlyPngCls);
 		
+		//顶部背景图片
+		[Embed(source="assets/image/top/bg.png")]
+		private static var bgPngCls:Class;
+		private static var bgPngKey:String = "bg";
+		ResourceManagerEx.RegisterResource("",bgPngKey, bgPngCls);
+		
+		[Embed(source="assets/image/top/back.png")]
+		private static var backPngCls:Class;
+		private static var backPngKey:String = "back";
+		ResourceManagerEx.RegisterResource("",backPngKey, backPngCls);
+		
 		[Embed(source="assets/image/system/system.png")]
 		private static var yqskPngCls:Class;
 		private static var yqskPngKey:String = "YQSK";
@@ -184,6 +195,13 @@ package sm.wegis.szy.plugins
 		private static var DownCls:Class;
 		private static var DownKey:String = "Down";
 		ResourceManagerEx.RegisterResource("",DownKey, DownCls);
+		
+		
+		//用户登录图标
+		[Embed(source="assets/image/login/user.png")]
+		private static var userIconCls:Class;
+		private static var userIconKey:String = "userIcon";
+		ResourceManagerEx.RegisterResource("",userIconKey, userIconCls);
 		
 		public function SystemIconFile()
 		{

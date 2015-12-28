@@ -302,28 +302,15 @@
 	
 	<s:VGroup id="mainPanelId" width="100%" height="100%" gap="0">
 		<s:BorderContainer id="TopContainerID" width="100%" height="80">
-			<!--<s:HGroup width="100%" height="100%" gap="0">
-			<s:Rect width="100%" height="100%">
-			<s:fill>
-			<s:BitmapFill fillMode="scale"
-			source="{ResourceManagerEx.FindResource('banner').cls}"/> 
-			</s:fill>
-			</s:Rect>
-			</s:HGroup>-->
-			<s:HGroup width="100%" height="100%" gap="0" paddingLeft="0" verticalAlign="middle">
-				<s:Rect width="40" height="40">
+			<s:Group width="100%" height="100%">
+				<s:Rect left="0" right="0" top="0" bottom="0">
 					<s:fill>
-						<s:BitmapFill fillMode="clip"
-									  source="{ResourceManagerEx.FindResource('logoIcon').cls}"/> 
+						<s:BitmapFill fillMode="repeat" source="{ResourceManagerEx.FindResource('bg').cls}"/>
 					</s:fill>
 				</s:Rect>
-				<s:Rect width="500" height="45">
-					<s:fill>
-						<s:BitmapFill fillMode="clip"
-									  source="{ResourceManagerEx.FindResource('titleIcon').cls}"/> 
-					</s:fill>
-				</s:Rect>	
-				<s:Spacer width="100%"/>
+			</s:Group>
+			<s:Image height="90%" left="10" verticalCenter="0" source="{ResourceManagerEx.FindResource('logoIcon').cls}"/> 
+			<s:HGroup right="0" height="100%" gap="0" paddingLeft="0" verticalAlign="middle">
 				<s:VGroup height="100%" horizontalAlign="right" paddingRight="5">
 					<s:HGroup gap="10" horizontalAlign="right" verticalAlign="middle">
 						<s:Label id="subSystemTitleId" height="100%" 
@@ -360,16 +347,16 @@
 			<s:BorderContainer id="BodyContainerID" width="300" height="100%">
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID" width="100%" height="100%">
-					<s:Group width="100%"   top="0"  bottom="{RightDownContainerID.height}">
-						<s:BorderContainer id="MapContainerID" width="100%" height="100%"/>
-						<s:HGroup id="CopyRightID" left="3" bottom="3" width="100%" gap="0"
-								  horizontalAlign="left" verticalAlign="middle">
-							<s:Label fontFamily="Times New Roman" text="©"/>
-							<s:Label text="{modelLocator.systemInfo.copyRight}"/>
-						</s:HGroup>
-					</s:Group>
-					<!--右侧下方布局面板,和地图在右侧上下分布 -->
-					<s:BorderContainer id="RightDownContainerID" width="100%" minHeight="0"  bottom="0"/>
+				<s:Group width="100%"   top="0"  bottom="{RightDownContainerID.height}">
+					<s:BorderContainer id="MapContainerID" width="100%" height="100%"/>
+					<s:HGroup id="CopyRightID" left="3" bottom="3" width="100%" gap="0"
+							  horizontalAlign="left" verticalAlign="middle">
+						<s:Label fontFamily="Times New Roman" text="©"/>
+						<s:Label text="{modelLocator.systemInfo.copyRight}"/>
+					</s:HGroup>
+				</s:Group>
+				<!--右侧下方布局面板,和地图在右侧上下分布 -->
+				<s:BorderContainer id="RightDownContainerID" width="100%" minHeight="0"  bottom="0"/>
 				<s:HGroup left="0" top="0" height="100%" gap="0" horizontalAlign="left"
 						  verticalAlign="middle">
 					<s:Rect width="1" height="100%">
@@ -399,7 +386,7 @@
 						  paddingLeft="10" paddingRight="10" paddingTop="10" verticalAlign="middle">
 					<s:HGroup width="100%" height="30" paddingLeft="10" paddingRight="10"
 							  verticalAlign="middle">
-						<s:Image source="{ResourceManagerEx.FindResource('logoIcon').cls}" 
+						<s:Image source="{ResourceManagerEx.FindResource('userIcon').cls}" 
 								 fillMode="scale"/>
 						<s:Label width="100%" styleName="LoginLabelStyle" text="登录系统账号"/>
 						<s:Button id="closeLoginId" buttonMode="true"
