@@ -7,6 +7,7 @@ package sm.wegis.szy.models
 	import sm.wegis.szy.vo.MenuVO;
 	import sm.wegis.szy.vo.SystemVO;
 	import sm.wegis.szy.vo.ToolVO;
+	import sm.wegis.szy.vo.UserVO;
 
 	[Bindable]
 	public class ApplicationModelLocator implements ModelLocator
@@ -45,5 +46,8 @@ package sm.wegis.szy.models
 		
 		/**系统底图信息*/
 		public var baseMapInfo:BaseMapVO;
+		
+		/**用户登录信息*/
+		public var userVo:UserVO;
 	}
 }

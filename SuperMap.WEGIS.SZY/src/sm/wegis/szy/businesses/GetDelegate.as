@@ -86,16 +86,13 @@ package sm.wegis.szy.businesses
 		}	
 		
 		/**改进版WebService请求*/
-		public function executeWebServiceEx(wsdl:String,
-											requestData:Object,
-											operation:String ="execute"):void
+		public function executeWebServiceEx(operation:String, requestData:Object):void
 		{
 			if(service != null)
 			{
 				if(service is WebService)
 				{
 					var webService:WebService = service as WebService;
-					webService.wsdl = wsdl;
 					
 					if (webService.canLoadWSDL())        
 					{
@@ -110,33 +107,6 @@ package sm.wegis.szy.businesses
 						}else if(requestData is Array){
 							token = (service.getOperation(operation) as AbstractOperation).send.apply(this,requestData) ;
 						}
-						token.addResponder(this.responder);
-					}
-				}
-			}
-		}
-		
-		/**
-		 * WebService请求
-		 * @param operation
-		 * @param requestData
-		 * */
-		public function executeWebServiceOperation(operation:String, requestData:Object):void
-		{
-			if(service != null)
-			{
-				if(service is WebService)
-				{
-					var webService:WebService = service as WebService;
-					
-					if (webService.canLoadWSDL())        
-					{
-						webService.loadWSDL();
-						
-						var token:AsyncToken;
-						var abstractOperation:AbstractOperation = service.getOperation(operation);
-						abstractOperation.arguments = requestData;
-						token = abstractOperation.send();
 						token.addResponder(this.responder);
 					}
 				}
