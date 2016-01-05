@@ -93,7 +93,7 @@ WeGIS.F = {
     addLayerEx: function () {
         //矢量底图
         WeGIS.V.map.addLayers([WeGIS.V.baseMaplayer, WeGIS.V.baseLabelLayer, WeGIS.V.markerLayer, WeGIS.V.vectorLayer]);
-        WeGIS.F.addWrLayer();
+        //WeGIS.F.addWrLayer();
         //影像底图
         //WeGIS.V.map.addLayers([WeGIS.V.baseImageMaplayer, WeGIS.V.baseImageLabelLayer, WeGIS.V.markerLayer, WeGIS.V.vectorLayer]);
         var searchObject = WeGIS.F.getSearchParam();
