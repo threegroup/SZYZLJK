@@ -115,5 +115,32 @@ package sm.wegis.szy.businesses
 				}
 			}
 		}
+		
+		/**
+		 * WebService请求
+		 * @param operation
+		 * @param requestData
+		 * */
+		public function executeWebServiceOperation(operation:String, requestData:Object):void
+		{
+			if(service != null)
+			{
+				if(service is WebService)
+				{
+					var webService:WebService = service as WebService;
+					
+					if (webService.canLoadWSDL())        
+					{
+						webService.loadWSDL();
+						
+						var token:AsyncToken;
+						var abstractOperation:AbstractOperation = service.getOperation(operation);
+						abstractOperation.arguments = requestData;
+						token = abstractOperation.send();
+						token.addResponder(this.responder);
+					}
+				}
+			}
+		}
 	}
 }
