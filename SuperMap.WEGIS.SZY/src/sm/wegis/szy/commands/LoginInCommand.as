@@ -1,6 +1,7 @@
 package sm.wegis.szy.commands
 {
 	import com.adobe.cairngorm.control.CairngormEvent;
+	import com.adobe.serialization.json.JSONDecoder;
 	import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 	
 	import mx.controls.Alert;
@@ -24,7 +25,15 @@ package sm.wegis.szy.commands
 		
 		override public function result(data:Object):void
 		{
-			trace(data);
+			if(data != null)
+			{
+				var result:String = data["result"];
+				var jsDec:JSONDecoder  = new JSONDecoder(result);
+				var value:Object = jsDec.getValue() as Object;
+				
+				//通过登录响应事件派发
+				
+			}
 		}
 		
 		override public function fault(info:Object):void
