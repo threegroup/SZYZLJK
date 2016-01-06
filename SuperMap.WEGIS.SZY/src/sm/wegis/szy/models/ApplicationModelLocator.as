@@ -48,6 +48,6 @@ package sm.wegis.szy.models
 		public var baseMapInfo:BaseMapVO;
 		
 		/**用户信息*/
-		public var userVo:UserVO;
+		public var userVo:UserVO = new UserVO();
 	}
 }

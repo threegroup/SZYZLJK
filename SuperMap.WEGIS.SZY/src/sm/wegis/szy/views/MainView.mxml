@@ -6,7 +6,8 @@
 					xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 					xmlns:supermap="http://www.supermap.com/iclient/2010"
 					xmlns:basemap="widgets.basemap.*"
-					width="100%" height="100%" creationComplete="creationCompleteHandler(event)">
+					width="100%" height="100%"
+					creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:Resize id="hideEffect" duration="1000" repeatCount="1" target="{BodyContainerID}"
@@ -18,6 +19,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.adobe.utils.StringUtil;
 			import com.supermap.wegis.common.components.events.MenuEventEx;
 			import com.supermap.wegis.common.components.events.ScrollPanelEvent;
 			import com.supermap.wegis.common.components.events.ToolEvent;
@@ -53,7 +55,10 @@
 				initListener();
 			}
 			
-			/**更改面板显示内容*/
+			/**更改面板显示内容
+			 * @param isLogin：登录面板
+			 * @param isNormal：系统面板
+			 * @param isChoose：系统选择面板*/
 			private function choosePanel(isLogin:Boolean=false, isNormal:Boolean=false, isChoose:Boolean=false):void
 			{
 				//登录面板
@@ -105,6 +110,16 @@
 				
 				//底图切换
 				CairngormEventDispatcher.getInstance().addEventListener(MapLayerEvent.BASE_MAP_CHANGE, basemapChangeHandler);
+				
+				//登录成功之后响应
+				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.LoginInResponse, loginInResponseHandler);
+			}
+			
+			//登录成功
+			private function loginInResponseHandler(event:SystemEvent):void
+			{
+				//进入系统选择面板，此处要注意，如果返回结果只有一个系统，直接进入，如果有多个，则显示系统选择面板。
+				this.choosePanel(false,false,true);
 			}
 			
 			private function mapToolHandler(e:ToolEvent):void
@@ -269,7 +284,24 @@
 			
 			protected function SubmitBtn_clickHandler(event:MouseEvent):void
 			{
-				this.choosePanel(false,false,true);
+				var name:String = StringUtil.trim(this.UserIdName.text.toString());
+				var pwd:String = StringUtil.trim(this.PwdValue.text.toString());
+				
+				if(name == "" || pwd == "")
+				{
+					this.LoginInfoLabel.text = "用户名或密码不能为空";
+				}
+				else
+				{
+					modelLocator.userVo.userName = name;
+					modelLocator.userVo.password = pwd;
+					this.LoginInfoLabel.text = "";//清空登录信息
+					
+					//派发登录请求
+					var loginInEvent:SystemEvent = new SystemEvent(SystemEvent.LoginIn);
+					loginInEvent.data = modelLocator.userVo;
+					loginInEvent.dispatch();
+				}
 			}
 			
 			protected function closeChooseId_clickHandler(event:MouseEvent):void

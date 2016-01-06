@@ -133,7 +133,7 @@ package sm.wegis.szy.plugins
 		ResourceManagerEx.RegisterResource("",LocationKey, LocationCls);
 		
 		//控制panel窗口展开和关闭图片
-		[Embed(source="assets/image/down.png")]
+		[Embed(source="assets/image/others/down.png")]
 		private static var DownCls:Class;
 		private static var DownKey:String = "Down";
 		ResourceManagerEx.RegisterResource("",DownKey, DownCls);
