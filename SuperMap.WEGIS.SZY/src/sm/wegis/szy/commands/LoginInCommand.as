@@ -9,6 +9,7 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.vo.ConstVO;
+	import sm.wegis.szy.vo.UserVO;
 	
 	public class LoginInCommand extends CommandBase
 	{
@@ -20,7 +21,14 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			IDelegate(this.businessDelegate).executeWebServiceEx(ConstVO.Login,["admin", "admin"]);
+			var userVo:UserVO = event.data as UserVO;
+			if(userVo != null)
+			{
+				var requestData:Array = [];
+				requestData.push(userVo.userName);
+				requestData.push(userVo.password);
+				IDelegate(this.businessDelegate).executeWebServiceEx(ConstVO.Login, requestData);
+			}
 		}
 		
 		override public function result(data:Object):void
