@@ -8,6 +8,7 @@ package sm.wegis.szy.commands
 	
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
+	import sm.wegis.szy.events.SystemEvent;
 	import sm.wegis.szy.vo.ConstVO;
 	import sm.wegis.szy.vo.UserVO;
 	
@@ -40,7 +41,12 @@ package sm.wegis.szy.commands
 				var value:Object = jsDec.getValue() as Object;
 				
 				//通过登录响应事件派发
-				
+				if(value != null)
+				{
+					var systemEvent:SystemEvent = new SystemEvent(SystemEvent.LoginInResponse);
+					systemEvent.data = value;
+					systemEvent.dispatch();
+				}
 			}
 		}
 		
