@@ -37,20 +37,22 @@ package  com.supermap.wegis.common.mappingEx
 		
 		private function loadLayerInfo():void
 		{
+			var resStart:int = 0;
+			var resLength:int = 0;
 			var lt:String = this._layerType;
 			if(lt=="vec"){
-				var resStart = 0;
-				var resLength = 17;
+				resStart = 0;
+				resLength = 17;
 				this._levelOffset = 1;
 			}
 			else if(lt=="img"){
-				var resStart = 1;
-				var resLength = 17;
+				resStart = 1;
+				resLength = 17;
 				this._levelOffset = 2;
 			}
 			else if(lt=="ter"){
-				var resStart = 0;
-				var resLength = 13;
+				resStart = 0;
+				resLength = 13;
 				this._levelOffset = 1;
 			}
 			if(this._projection == "4326"){
@@ -66,8 +68,8 @@ package  com.supermap.wegis.common.mappingEx
 				this.bounds = new Rectangle2D(-20037508.3392, -20037508.3392, 20037508.3392, 20037508.3392);
 				this.origin = new Point2D(-20037508.3392,20037508.3392);
 				this.resolutions = [];
-				for(var i:int=resStart;i<=resLength;i++){
-					this.resolutions.push(156543.0339/2/Math.pow(2,i));
+				for(var j:int=resStart;j<=resLength;j++){
+					this.resolutions.push(156543.0339/2/Math.pow(2,j));
 				}
 				this._proj = "w";
 			}

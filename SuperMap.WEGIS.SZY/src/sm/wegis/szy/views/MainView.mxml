@@ -42,17 +42,7 @@
 			private var systemArrCol:ArrayCollection = new ArrayCollection(
 				[
 					{name:"太子河流域",key:"TZHLY"},
-					{name:"于桥水库",key:"YQSK"},
-					{name:"太子河流域1",key:"TZHLY1"},
-					{name:"于桥水库1",key:"YQSK1"},
-					{name:"太子河流域2",key:"TZHLY2"},
-					{name:"于桥水库2",key:"YQSK2"},
-					{name:"太子河流域3",key:"TZHLY3"},
-					{name:"于桥水库3",key:"YQSK3"},
-					{name:"太子河流域4",key:"TZHLY4"},
-					{name:"于桥水库4",key:"YQSK4"},
-					{name:"太子河流域5",key:"TZHLY5"},
-					{name:"于桥水库5",key:"YQSK5"}
+					{name:"于桥水库",key:"YQSK"}
 				]
 			);
 			
@@ -309,7 +299,7 @@
 					</s:fill>
 				</s:Rect>
 			</s:Group>
-			<s:Image height="90%" left="10" verticalCenter="0" source="{ResourceManagerEx.FindResource('logoIcon').cls}"/> 
+			<s:Image height="90%" left="10" verticalCenter="0" source="{ResourceManagerEx.FindResource('logoTIcon').cls}"/> 
 			<s:HGroup right="0" height="100%" gap="0" paddingLeft="0" verticalAlign="middle">
 				<s:VGroup height="100%" horizontalAlign="right" paddingRight="5">
 					<s:HGroup gap="10" horizontalAlign="right" verticalAlign="middle">

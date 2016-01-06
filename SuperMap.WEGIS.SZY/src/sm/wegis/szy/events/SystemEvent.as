@@ -26,11 +26,15 @@ package sm.wegis.szy.events
 		/**初始化系统预加载模块*/
 		public static const INITIAL_WIDGET:String ="InitialWidget";
 		
-		
-		
 		/**加载图层配置文件*/
 		public static const GetLayerJson:String ="GetLayerJson";
 		public static const GetLayerJsonResponse:String ="GetLayerJsonResponse";
+		
+		/**
+		 *系统登录事件 
+		 */
+		public static const LoginIn:String = "LoginIn";
+		public static const LoginInResponse:String = "LoginInResponse";
 		
 		public function SystemEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
