@@ -19,7 +19,7 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			IDelegate(this.businessDelegate).executeWebServiceEx(ConstVO.Login,["admin", ""]);
+			IDelegate(this.businessDelegate).executeWebServiceEx(ConstVO.Login,["admin", "admin"]);
 		}
 		
 		override public function result(data:Object):void
