@@ -141,23 +141,23 @@ package  com.supermap.wegis.common.components.security
 				var typeInfo:XML = DescribeTypeCache.describeType(obj).typeDescription;
 				var md:XMLList = typeInfo.metadata.(@name == SecurityConstants.PROTECTED_ANNOTATION_NAME);				
 				for each (var metadata:XML in md) {
-					var securityAction:SecurityAction = SecurityAction.createActionFromAnnotation(metadata,defaultControlBy);
-					findComponentAndProcess(comp,securityAction);
+					var securityAction0:SecurityAction = SecurityAction.createActionFromAnnotation(metadata,defaultControlBy);
+					findComponentAndProcess(comp,securityAction0);
 				}
 				
 				//precess by styleName
-				var securityAction:SecurityAction = SecurityAction.createActionFromStyleName(comp,defaultControlBy);
-				if(securityAction != null) {
-					doActionAndAddToCache(securityAction);
+				var securityAction1:SecurityAction = SecurityAction.createActionFromStyleName(comp,defaultControlBy);
+				if(securityAction1 != null) {
+					doActionAndAddToCache(securityAction1);
 				}
 				
 				//process by ISecurityMetadata
 				if(comp is ISecurityMetadata) {
 					var securityMetadaa : ISecurityMetadata = comp as ISecurityMetadata;
 					for each (var item : Object in securityMetadaa.getSecurityActions()) {
-						var securityAction:SecurityAction = SecurityAction.createActionFromInterface(item,defaultControlBy);
-						if(securityAction != null) {
-							doActionAndAddToCache(securityAction);
+						var securityAction2:SecurityAction = SecurityAction.createActionFromInterface(item,defaultControlBy);
+						if(securityAction2 != null) {
+							doActionAndAddToCache(securityAction2);
 						}
 					}
 				}

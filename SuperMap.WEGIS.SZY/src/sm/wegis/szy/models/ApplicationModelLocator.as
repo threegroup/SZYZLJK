@@ -47,7 +47,7 @@ package sm.wegis.szy.models
 		/**系统底图信息*/
 		public var baseMapInfo:BaseMapVO;
 		
-		/**用户登录信息*/
-		public var userVo:UserVO;
+		/**用户信息*/
+		public var userVo:UserVO = new UserVO();
 	}
 }

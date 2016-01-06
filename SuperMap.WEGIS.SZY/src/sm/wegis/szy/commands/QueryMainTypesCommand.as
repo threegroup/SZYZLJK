@@ -4,6 +4,8 @@ package sm.wegis.szy.commands
 	import com.adobe.serialization.json.JSONDecoder;
 	import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 	
+	import flash.net.URLVariables;
+	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	
@@ -18,7 +20,15 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			IDelegate(this.businessDelegate).executeHttpService("testdata/getMainTypes.txt");
+			var urlRequest:URLVariables = new URLVariables();
+			urlRequest.userName = "admin";
+			urlRequest.password = "123";
+			var param:Array = [];
+			param.push("admin");
+			param.push("123");
+//			IDelegate(this.businessDelegate).executeHttpService("testdata/getMainTypes.txt");
+//			IDelegate(this.businessDelegate).executeWebServiceOperation("login",urlRequest);
+			IDelegate(this.businessDelegate).executeWebServiceEx("login",param);
 		}
 		
 		override public function result(data:Object):void

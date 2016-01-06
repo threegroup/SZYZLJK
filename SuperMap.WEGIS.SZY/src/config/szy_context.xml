@@ -120,19 +120,18 @@
 			<arg>
 				<array>
 					<value type="Class">sm.wegis.szy.commands.SystemInitCommand</value>
-					<value type="Class">sm.wegis.szy.commands.DataBindCreatedCommand
-					</value>
-					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand
-					</value>
+					<value type="Class">sm.wegis.szy.commands.DataBindCreatedCommand</value>
+					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand</value>
 					<!--切换底图 -->
 					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand</value>
-					<value type="Class">sm.wegis.szy.commands.MapToolItemClickCommand
-					</value>
+					<value type="Class">sm.wegis.szy.commands.MapToolItemClickCommand</value>
 					<!--水资源专题地图图层控制-->
 					<value type="Class">sm.wegis.szy.commands.WaterResourceLayerIdChangeCommand</value>
 					
 					<!--获取第一级分类-->
 					<value type="Class">sm.wegis.szy.commands.QueryMainTypesCommand</value>
+					<!-- 登录 -->
+					<value type="Class">sm.wegis.szy.commands.LoginInCommand</value>					
 				</array>
 			</arg>
 		</method-invocation>
@@ -150,6 +149,7 @@
 				
 				  <!--获取第一级分类-->
 				<property name="QueryMainTypes" value="QueryMainTypesCommand" />
+				<property name="LoginIn" value="LoginInCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />
