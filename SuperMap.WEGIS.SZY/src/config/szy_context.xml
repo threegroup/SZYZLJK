@@ -130,6 +130,9 @@
 					</value>
 					<!--水资源专题地图图层控制-->
 					<value type="Class">sm.wegis.szy.commands.WaterResourceLayerIdChangeCommand</value>
+					
+					<!--获取第一级分类-->
+					<value type="Class">sm.wegis.szy.commands.QueryMainTypesCommand</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -144,6 +147,9 @@
 				<property name="BaseMapChange" value="BaseMapChangeCommand" />
 				<property name="MapToolItemClick" value="MapToolItemClickCommand" />
 				<property name="WaterResourceLayerIdChange" value="WaterResourceLayerIdChangeCommand" />
+				
+				  <!--获取第一级分类-->
+				<property name="QueryMainTypes" value="QueryMainTypesCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />
@@ -176,8 +182,6 @@
 					<value type="Class">sm.wegis.szy.commands.GetFunctionCommand</value>
 						<!--获取图层Json文件-->
 					<value type="Class">sm.wegis.szy.commands.GetLayerJsonCommand</value>
-						<!--获取第一级分类-->
-					<value type="Class">sm.wegis.szy.commands.QueryMainTypesCommand</value>
 					<!--获取类型分类和要素列表-->
 					<value type="Class">sm.wegis.szy.commands.QueryTypesAndDetailListCommand</value>
 					<!--获取单个要素详细信息-->
@@ -196,8 +200,6 @@
 				<property name="GetFunction" value="GetFunctionCommand" />
 				<!--获取图层Json文件-->
 				<property name="GetLayerJson" value="GetLayerJsonCommand" />
-				  <!--获取第一级分类-->
-				<property name="QueryMainTypes" value="QueryMainTypesCommand" />
 				<!--获取类型分类和要素列表-->
 				<property name="QueryTypesAndDetailList" value="QueryTypesAndDetailListCommand" />
 				<!--获取单个要素详细信息-->
