@@ -14,30 +14,35 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.events.MapLayerEvent;
 	import sm.wegis.szy.events.QueryEvent;
 	import sm.wegis.szy.events.SystemEvent;
+	import sm.wegis.szy.vo.ConstVO;
+	import sm.wegis.szy.vo.WSMethod;
 	
 	public class QueryMainTypesCommand extends CommandBase
 	{
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			var urlRequest:URLVariables = new URLVariables();
-			urlRequest.userName = "admin";
-			urlRequest.password = "123";
 			var param:Array = [];
-			param.push("admin");
-			param.push("123");
-//			IDelegate(this.businessDelegate).executeHttpService("testdata/getMainTypes.txt");
-//			IDelegate(this.businessDelegate).executeWebServiceOperation("login",urlRequest);
-			IDelegate(this.businessDelegate).executeWebServiceEx("login",param);
+			param.push("-1");
+			param.push("1");
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetMainTypes, param);
 		}
 		
 		override public function result(data:Object):void
 		{
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
-			var value:Object = jsDec.getValue() as Object;
+			var resultValue:Object = jsDec.getValue() as Object;
+			for each (var item:Object in resultValue.attributes.mainTypes) {
+				if (item.id == "1") {
+					item.key = "ZYST";
+				} else if (item.id == "2"){ 
+					item.key = "MGMB";
+				}
+			}
+			
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MAIN_TYPES_RESPONSE);
-			queryEvent.data = value;
+			queryEvent.data = resultValue;
 			queryEvent.dispatch();
 		}
 		

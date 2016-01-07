@@ -131,7 +131,11 @@
 					<!--获取第一级分类-->
 					<value type="Class">sm.wegis.szy.commands.QueryMainTypesCommand</value>
 					<!-- 登录 -->
-					<value type="Class">sm.wegis.szy.commands.LoginInCommand</value>					
+					<value type="Class">sm.wegis.szy.commands.LoginInCommand</value>		
+					<!--获取类型分类和要素列表-->
+					<value type="Class">sm.wegis.szy.commands.QueryTypesAndDetailListCommand</value>
+					<!--获取单个要素详细信息-->
+					<value type="Class">sm.wegis.szy.commands.QuerySingleObjectInfoCommand</value>			
 				</array>
 			</arg>
 		</method-invocation>
@@ -150,6 +154,11 @@
 				  <!--获取第一级分类-->
 				<property name="QueryMainTypes" value="QueryMainTypesCommand" />
 				<property name="LoginIn" value="LoginInCommand" />
+				
+				<!--获取类型分类和要素列表-->
+				<property name="QueryTypesAndDetailList" value="QueryTypesAndDetailListCommand" />
+				<!--获取单个要素详细信息-->
+				<property name="QuerySingleObjectInfo" value="QuerySingleObjectInfoCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />
@@ -182,10 +191,6 @@
 					<value type="Class">sm.wegis.szy.commands.GetFunctionCommand</value>
 						<!--获取图层Json文件-->
 					<value type="Class">sm.wegis.szy.commands.GetLayerJsonCommand</value>
-					<!--获取类型分类和要素列表-->
-					<value type="Class">sm.wegis.szy.commands.QueryTypesAndDetailListCommand</value>
-					<!--获取单个要素详细信息-->
-					<value type="Class">sm.wegis.szy.commands.QuerySingleObjectInfoCommand</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -200,10 +205,6 @@
 				<property name="GetFunction" value="GetFunctionCommand" />
 				<!--获取图层Json文件-->
 				<property name="GetLayerJson" value="GetLayerJsonCommand" />
-				<!--获取类型分类和要素列表-->
-				<property name="QueryTypesAndDetailList" value="QueryTypesAndDetailListCommand" />
-				<!--获取单个要素详细信息-->
-				<property name="QuerySingleObjectInfo" value="QuerySingleObjectInfoCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

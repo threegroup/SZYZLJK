@@ -12,13 +12,23 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.events.MapLayerEvent;
 	import sm.wegis.szy.events.QueryEvent;
 	import sm.wegis.szy.events.SystemEvent;
+	import sm.wegis.szy.vo.MapQueryVO;
+	import sm.wegis.szy.vo.WSMethod;
 	
 	public class QueryTypesAndDetailListCommand extends CommandBase
 	{
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			IDelegate(this.businessDelegate).executeHttpService("testdata/getTypes.txt");
+			var mapQueryVO:MapQueryVO = event.data as MapQueryVO;
+			var params:Array = [];
+			params.push("-1");//waterBodyID
+			params.push(mapQueryVO.mainType);
+			if (mapQueryVO.typeIds != null) {
+				params.push(mapQueryVO.typeIds);
+			}
+			
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTypes, params);
 		}
 		
 		override public function result(data:Object):void

@@ -10,14 +10,19 @@
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.adobe.utils.StringUtil;
+			import com.supermap.wegis.common.components.scrollPanel.ButtonItem;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.events.ListCheckItemRendererEvent;
 			import sm.wegis.szy.events.QueryEvent;
+			import sm.wegis.szy.vo.MapQueryVO;
 			
 			import spark.components.DropDownList;
 			import spark.events.IndexChangeEvent;
@@ -41,10 +46,40 @@
 				queryMainTypes.dispatch();
 			}
 			
+			//查询分类和明细
 			private function queryTypesAndDetailList():void
 			{
+				if (scrollButtonPanel.currentButtonItem == null && StringUtil.trim(searchInput.text).length == 0 ) {
+					Alert.show("请选择查询类型或输入查询对象名称", "提示", Alert.OK, FlexGlobals.topLevelApplication as Sprite);
+					return;
+				}
+				var selectItem:ButtonItem = scrollButtonPanel.currentButtonItem;
+				var typeIds:Array = getTypeIds();
+				var mapQueryVO:MapQueryVO = new MapQueryVO();
+				mapQueryVO.mainType = selectItem.id;
+				
+				if (typeIds.length > 0 ) {
+					mapQueryVO.typeIds = typeIds.join(",");
+				}
+				
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST);
+				queryEvent.data = mapQueryVO;
 				queryEvent.dispatch();
+			}
+			
+			//获取下拉框选择的多个类型
+			private function getTypeIds():Array
+			{
+				var typeIds:Array = [];
+				for(var i:int = 0 ; i < conditionGroup.numElements ; i++)
+				{
+					var childElement:DropDownList = conditionGroup.getElementAt(i) as DropDownList;
+					//如果选项大于0，需要返回选择的type值
+					if (childElement.selectedIndex > 0 ) {
+						typeIds.push(childElement.selectedItem.typeId);
+					}
+				}
+				return typeIds;
 			}
 			
 			private function queryMainTypesHandler(event:CairngormEvent):void
@@ -52,8 +87,8 @@
 				var data:Object = event.data;
 				if (data.success == true) {
 					if (data.attributes) {
-						if (data.attributes.getMainTypes != null && data.attributes.getMainTypes.length > 0) {
-							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.getMainTypes);
+						if (data.attributes.mainTypes != null && data.attributes.mainTypes.length > 0) {
+							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.mainTypes);
 						}
 					}
 				}

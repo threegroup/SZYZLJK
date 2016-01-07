@@ -434,7 +434,7 @@ package com.supermap.wegis.common.components.scrollPanel
 								if(item.hasOwnProperty("key"))
 								{
 									labelItem.key = item.key;
-									labelItem.id = item.key;
+									labelItem.id = item.id;
 								}
 								labelItem.param = item;
 								labelItem.addEventListener(MouseEvent.CLICK, clickHandler);
@@ -518,7 +518,7 @@ package com.supermap.wegis.common.components.scrollPanel
 								if(item.hasOwnProperty("key"))
 								{
 									button.key = item.key;
-									button.id = item.key;
+									button.id = item.id;
 									var resinfo:ResourceInfo = ResourceManagerEx.FindResource(item.key);
 									if(resinfo != null)
 									{
