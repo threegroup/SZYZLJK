@@ -9,8 +9,8 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.events.SystemEvent;
-	import sm.wegis.szy.vo.ConstVO;
 	import sm.wegis.szy.vo.UserVO;
+	import sm.wegis.szy.vo.WSMethod;
 	
 	public class LoginInCommand extends CommandBase
 	{
@@ -28,7 +28,7 @@ package sm.wegis.szy.commands
 				var requestData:Array = [];
 				requestData.push(userVo.userName);
 				requestData.push(userVo.password);
-				IDelegate(this.businessDelegate).executeWebServiceEx(ConstVO.Login, requestData);
+				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.Login, requestData);
 			}
 		}
 		
