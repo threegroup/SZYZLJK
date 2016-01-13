@@ -26,12 +26,12 @@ package sm.wegis.szy.plugins
 		/**系统选择界面*/
 		[Embed(source="assets/image/system/system.png")]
 		private static var tzhlyPngCls:Class;
-		private static var tzhlyPngKey:String = "TZHLY";
+		private static var tzhlyPngKey:String = "aaaaaaa1";
 		ResourceManagerEx.RegisterResource("",tzhlyPngKey, tzhlyPngCls);
 		
 		[Embed(source="assets/image/system/system.png")]
 		private static var yqskPngCls:Class;
-		private static var yqskPngKey:String = "YQSK";
+		private static var yqskPngKey:String = "bbbbbb2";
 		ResourceManagerEx.RegisterResource("",yqskPngKey, yqskPngCls);
 		
 		/**底图矢量*/

@@ -67,6 +67,32 @@ package com.supermap.wegis.common.components.scrollPanel
 		/**是否显示tooltip*/
 		public var isShowToolTip:Boolean = false;
 		
+		private var _selectedIndex:int = -1;
+		
+		/**
+		 *当前选中的项目索引，-1为不选中
+		 */
+		public function get selectedIndex():int
+		{
+			return _selectedIndex;
+		}
+		
+		public function set selectedIndex(value:int):void
+		{
+			_selectedIndex = value;
+			
+			if(this.itemSum > 0)
+			{
+				//如果默认设置了选中索引，则默认选中
+				if(this.selectedIndex > -1 && this.selectedIndex < this.itemSum)
+				{
+					var selectedItem:DisplayObject = this.itemList.getItemAt(this.selectedIndex) as DisplayObject;
+					this.selectedItemHandler(selectedItem);
+				}
+			}
+		}
+		
+		
 		/**按钮样式*/
 		public function get buttonStyleName():String
 		{
@@ -227,6 +253,7 @@ package com.supermap.wegis.common.components.scrollPanel
 			this.itemSum = 0;
 			this.currentButtonItem = null;
 			this.currentTextItem = null;
+			this.selectedIndex = -1;
 		}
 		
 		/**根据索引获取项目*/
@@ -318,6 +345,13 @@ package com.supermap.wegis.common.components.scrollPanel
 				
 				//整体更新按钮颜色
 				updateStyle();
+				
+				//如果默认设置了选中索引，则默认选中
+				if(this.selectedIndex > -1 && this.selectedIndex < this.itemSum)
+				{
+					var selectedItem:DisplayObject = this.itemList.getItemAt(this.selectedIndex) as DisplayObject;
+					this.selectedItemHandler(selectedItem);
+				}
 			}
 		}
 		
@@ -553,14 +587,18 @@ package com.supermap.wegis.common.components.scrollPanel
 			}
 		}
 		
-		private function clickHandler(e:MouseEvent):void
+		/**
+		 * 执行选中功能
+		 * @param selectedItem 选中的对象
+		 * 
+		 */
+		private function selectedItemHandler(selectedItem:DisplayObject):void
 		{
 			if(type == "button")
 			{
-				var item:Object = e.target;
-				if(item is ButtonItem)
+				if(selectedItem is ButtonItem)
 				{
-					var buttonItem:ButtonItem = item as ButtonItem;
+					var buttonItem:ButtonItem = selectedItem as ButtonItem;
 					if(buttonItem != null)
 					{
 						if(_isUpdateStatus)
@@ -576,14 +614,12 @@ package com.supermap.wegis.common.components.scrollPanel
 						}
 					}
 				}
-				this.dispatchEvent(new ScrollPanelEvent(ScrollPanelEvent.CLICK, item, true));
 			}
 			else if(type == "label")
 			{
-				var item0:Object = e.target;
-				if(item0 is TextItem)
+				if(selectedItem is TextItem)
 				{
-					var textitem:TextItem = item0 as TextItem;
+					var textitem:TextItem = selectedItem as TextItem;
 					if(textitem != null)
 					{
 						if(currentTextItem != null)
@@ -594,8 +630,55 @@ package com.supermap.wegis.common.components.scrollPanel
 						currentTextItem.keepSelected(selectedColor);
 					}
 				}
-				this.dispatchEvent(new ScrollPanelEvent(ScrollPanelEvent.CLICK, item0, true));
 			}
+			this.dispatchEvent(new ScrollPanelEvent(ScrollPanelEvent.CLICK, selectedItem, true));
+		}
+		
+		private function clickHandler(e:MouseEvent):void
+		{
+			var item:Object = e.target;
+			this.selectedItemHandler(item as DisplayObject);
+			/*if(type == "button")
+			{
+			var item:Object = e.target;
+			if(item is ButtonItem)
+			{
+			var buttonItem:ButtonItem = item as ButtonItem;
+			if(buttonItem != null)
+			{
+			if(_isUpdateStatus)
+			{
+			if(currentButtonItem != null)
+			{
+			currentButtonItem.keepSelected = false;
+			currentButtonItem.invalidateSkinState();
+			}
+			currentButtonItem = buttonItem;
+			currentButtonItem.keepSelected = true;
+			currentButtonItem.invalidateSkinState();
+			}
+			}
+			}
+			this.dispatchEvent(new ScrollPanelEvent(ScrollPanelEvent.CLICK, item, true));
+			}
+			else if(type == "label")
+			{
+			var item0:Object = e.target;
+			if(item0 is TextItem)
+			{
+			var textitem:TextItem = item0 as TextItem;
+			if(textitem != null)
+			{
+			if(currentTextItem != null)
+			{
+			currentTextItem.keepSelected(textColor);
+			}
+			currentTextItem = textitem;
+			currentTextItem.keepSelected(selectedColor);
+			}
+			}
+			this.dispatchEvent(new ScrollPanelEvent(ScrollPanelEvent.CLICK, item0, true));
+			}*/
 		}
 		
 		private function updateStyle():void
