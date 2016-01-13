@@ -638,47 +638,6 @@ package com.supermap.wegis.common.components.scrollPanel
 		{
 			var item:Object = e.target;
 			this.selectedItemHandler(item as DisplayObject);
-			/*if(type == "button")
-			{
-			var item:Object = e.target;
-			if(item is ButtonItem)
-			{
-			var buttonItem:ButtonItem = item as ButtonItem;
-			if(buttonItem != null)
-			{
-			if(_isUpdateStatus)
-			{
-			if(currentButtonItem != null)
-			{
-			currentButtonItem.keepSelected = false;
-			currentButtonItem.invalidateSkinState();
-			}
-			currentButtonItem = buttonItem;
-			currentButtonItem.keepSelected = true;
-			currentButtonItem.invalidateSkinState();
-			}
-			}
-			}
-			this.dispatchEvent(new ScrollPanelEvent(ScrollPanelEvent.CLICK, item, true));
-			}
-			else if(type == "label")
-			{
-			var item0:Object = e.target;
-			if(item0 is TextItem)
-			{
-			var textitem:TextItem = item0 as TextItem;
-			if(textitem != null)
-			{
-			if(currentTextItem != null)
-			{
-			currentTextItem.keepSelected(textColor);
-			}
-			currentTextItem = textitem;
-			currentTextItem.keepSelected(selectedColor);
-			}
-			}
-			this.dispatchEvent(new ScrollPanelEvent(ScrollPanelEvent.CLICK, item0, true));
-			}*/
 		}
 		
 		private function updateStyle():void
