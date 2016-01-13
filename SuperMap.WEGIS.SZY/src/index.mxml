@@ -117,10 +117,10 @@
 				}
 				else
 				{
-					getSecurityControler();
+//					getSecurityControler();
 				}
 			}
-			
+			//获取权限，移到用户登录系统后获取
 			private function getSecurityControler():void
 			{
 				//获取权限后，在SystemSecurityCommand请求系统初始化菜单配置文件

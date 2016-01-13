@@ -6,6 +6,7 @@ package sm.wegis.szy.vo
 		{
 		}
 		
+		public var subSystemID:String = "";
 		public var mainType:String="";
 		public var typeIds:String="";
 		/**查询关键字*/

@@ -22,10 +22,10 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			var param:Array = [];
-			param.push("-1");
-			param.push("1");
-			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetMainTypes, param);
+			var params:Array = [];
+			params.push(modelLocator.userVo.userId);
+			params.push(modelLocator.systemInfo.subSystemID);
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetMainTypes, params);
 		}
 		
 		override public function result(data:Object):void

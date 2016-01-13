@@ -49,10 +49,8 @@
 
 	<!--Views -->
 	<!--MainView -->
-<!-- 	<object id="MainView" class="sm.wegis.szy.views.MainView" -->
-<!-- 		init-method="initMehthod"> -->
 	<object id="MainView" class="sm.wegis.szy.views.MainView"
-		init-method="initMehthod">
+		init-method="initSystemInitEventHandler">
 		<property name="modelLocator" ref="appModelInstance" />
 		<property name="percentHeight" value="100" />
 		<property name="percentWidth" value="100" />

@@ -28,6 +28,7 @@
 			import com.supermap.wegis.common.core.widget.WidgetManager;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			
@@ -65,7 +66,7 @@
 				this.choosePanelId.includeInLayout = isChoose;
 			}
 			
-			public function initMehthod():void 
+			public function initSystemInitEventHandler():void 
 			{ 
 				//初始化加载的widget 
 				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.INITIAL_WIDGET 
@@ -134,6 +135,7 @@
 					
 					this.ScrollButtonPanel.dataProvider = userVo.systemList;
 					
+					//如果只有一个系统，不在进行系统选择，直接进入系统
 					if(userVo.systemList.length == 1)
 					{
 						var param:Object = userVo.systemList[0];
@@ -141,12 +143,31 @@
 						modelLocator.systemInfo.subSystemID = param["key"];
 						
 						this.choosePanel(false,true,false);
+						systemInitControler();
 					}
 					else if(userVo.systemList.length > 1)
 					{
 						this.choosePanel(false, false, true);
+					} else if (userVo.systemList.length == 0) {
+						Alert.show("登录用户没有可以访问的系统","警告");
 					}
 				}
+			}
+			
+			//系统初始化，请求function.xml文件
+			private function systemInitControler():void
+			{
+				var systemEvent:SystemEvent
+				if (modelLocator.userVo.isSystemInited == false) {
+					//系统初始只进行一次
+					modelLocator.userVo.isSystemInited = true;
+					//系统初始化
+					systemEvent = new SystemEvent(SystemEvent.SYSTEM_INIT);
+				} else {
+					//切换用户或者子系统，派发重新加载数据的事件，针对已经初始化后的情景 
+					systemEvent = new SystemEvent(SystemEvent.SYSTEM_RELOAD);
+				}
+				systemEvent.dispatch();
 			}
 			
 			private function mapToolHandler(e:ToolEvent):void
@@ -172,6 +193,7 @@
 					modelLocator.systemInfo.subSystemTitle = param["name"];
 					modelLocator.systemInfo.subSystemID = param["key"];
 					choosePanel(false,true);
+					systemInitControler();
 				}
 			}
 			
@@ -310,7 +332,7 @@
 				this.choosePanel(false,true);
 			}
 			
-			protected function SubmitBtn_clickHandler(event:MouseEvent):void
+			protected function SubmitBtn_clickHandler():void
 			{
 				var name:String = StringUtil.trim(this.UserIdName.text.toString());
 				var pwd:String = StringUtil.trim(this.PwdValue.text.toString());
@@ -353,12 +375,12 @@
 	<s:VGroup id="mainPanelId" width="100%" height="100%" gap="0">
 		<s:BorderContainer id="TopContainerID" width="100%" height="80">
 			<!--<s:Group width="100%" height="100%">
-				<s:Rect left="0" right="0" top="0" bottom="0">
-					<s:fill>
-						<s:BitmapFill fillMode="repeat"
-									  source="{ResourceManagerEx.FindResource('bg').cls}"/>
-					</s:fill>
-				</s:Rect>
+			<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+			<s:BitmapFill fillMode="repeat"
+			source="{ResourceManagerEx.FindResource('bg').cls}"/>
+			</s:fill>
+			</s:Rect>
 			</s:Group>-->
 			<s:Image left="10" height="90%"
 					 source="{ResourceManagerEx.FindResource('logoTIcon').cls}" verticalCenter="0"/> 
@@ -449,12 +471,12 @@
 						</s:stroke>
 					</s:Line>
 					<s:TextInput id="UserIdName" width="355" height="40" prompt="用户名"
-								 styleName="UserIdStyle"/>
+								 styleName="UserIdStyle" enter="SubmitBtn_clickHandler()"/>
 					<s:TextInput id="PwdValue" width="355" height="40" displayAsPassword="true"
-								 prompt="密码" styleName="PasswordStyle"/>
+								 prompt="密码" styleName="PasswordStyle" enter="SubmitBtn_clickHandler()"/>
 					<s:HGroup width="355" horizontalAlign="right">
 						<s:Button id="SubmitBtn" width="60" height="30" label="登录" buttonMode="true"
-								  click="SubmitBtn_clickHandler(event)"
+								  click="SubmitBtn_clickHandler()"
 								  styleName="SubmitRegisterStyle"/>
 					</s:HGroup>
 					<s:Label id="LoginInfoLabel" width="355" styleName="SubmitRegisterInfo"/>

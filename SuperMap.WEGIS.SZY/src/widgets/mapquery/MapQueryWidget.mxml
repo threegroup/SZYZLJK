@@ -23,30 +23,34 @@
 			import sm.wegis.szy.events.ListCheckItemRendererEvent;
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
+			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.vo.MapQueryVO;
 			
 			import spark.components.DropDownList;
 			import spark.events.IndexChangeEvent;
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				initEventListener();
+				queryMainTypes();
 			}
 			
 			public function initEventListener():void{
-				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.USER_LOGIN_SUCCESS
-					, userLoginSuccessHandler);
+				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD
+					, systemReloadHandler);
 				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_MAIN_TYPES_RESPONSE
 					, queryMainTypesHandler);
 				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST_RESPONSE
 					, queryTypesAndDetailListHandler);
 			}
 			
-			//用户登录成功
-			private function userLoginSuccessHandler(event:CairngormEvent):void
+			//用户或子系统发生变化，刷新数据
+			private function systemReloadHandler(event:CairngormEvent):void
 			{
 				queryMainTypes();
 			}
+			
 			
 			//请求mainType
 			public function queryMainTypes():void
@@ -101,9 +105,8 @@
 					if (data.attributes) {
 						if (data.attributes.mainTypes != null && data.attributes.mainTypes.length > 0)
 						{
-							scrollButtonPanel.selectedIndex= 0;
 							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.mainTypes);
-							
+							scrollButtonPanel.selectedIndex = 0;//必须先设置数据源
 							//默认显示第一分类
 							queryTypesAndDetailList();
 						}

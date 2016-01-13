@@ -22,7 +22,8 @@ package sm.wegis.szy.commands
 			super.execute(event);
 			var mapQueryVO:MapQueryVO = event.data as MapQueryVO;
 			var params:Array = [];
-			params.push("-1");//waterBodyID
+			params.push(modelLocator.userVo.userId);
+			params.push(modelLocator.systemInfo.subSystemID);
 			params.push(mapQueryVO.mainType);
 			params.push(mapQueryVO.typeIds);
 			params.push(mapQueryVO.keyword);
