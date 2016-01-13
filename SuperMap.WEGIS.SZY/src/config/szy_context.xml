@@ -49,6 +49,8 @@
 
 	<!--Views -->
 	<!--MainView -->
+<!-- 	<object id="MainView" class="sm.wegis.szy.views.MainView" -->
+<!-- 		init-method="initMehthod"> -->
 	<object id="MainView" class="sm.wegis.szy.views.MainView"
 		init-method="initMehthod">
 		<property name="modelLocator" ref="appModelInstance" />

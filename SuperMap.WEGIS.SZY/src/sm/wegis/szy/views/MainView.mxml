@@ -6,14 +6,13 @@
 					xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 					xmlns:supermap="http://www.supermap.com/iclient/2010"
 					xmlns:basemap="widgets.basemap.*"
-					width="100%" height="100%"
-					creationComplete="creationCompleteHandler(event)">
+					width="100%" height="100%" creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:Resize id="hideEffect" duration="1000" repeatCount="1" target="{BodyContainerID}"
-				  widthFrom="300" widthTo="0" easer="{bounceEffect}"/>
-		<s:Resize id="showEffect" duration="1000" repeatCount="1" target="{BodyContainerID}"
-				  widthFrom="0" widthTo="300" easer="{bounceEffect}"/>
+		<s:Resize id="hideEffect" duration="1000" easer="{bounceEffect}" repeatCount="1"
+				  target="{BodyContainerID}" widthFrom="300" widthTo="0"/>
+		<s:Resize id="showEffect" duration="1000" easer="{bounceEffect}" repeatCount="1"
+				  target="{BodyContainerID}" widthFrom="0" widthTo="300"/>
 		<s:Bounce id="bounceEffect"/>
 	</fx:Declarations>
 	<fx:Script>
@@ -38,15 +37,7 @@
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.events.ToolItemEvent;
 			import sm.wegis.szy.skins.MenuItemSkinEx;
-			
-			/**应用系统选择项，仅测试之用*/
-			[Bindable]
-			private var systemArrCol:ArrayCollection = new ArrayCollection(
-				[
-					{name:"太子河流域",key:"TZHLY"},
-					{name:"于桥水库",key:"YQSK"}
-				]
-			);
+			import sm.wegis.szy.vo.UserVO;
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
@@ -119,7 +110,43 @@
 			private function loginInResponseHandler(event:SystemEvent):void
 			{
 				//进入系统选择面板，此处要注意，如果返回结果只有一个系统，直接进入，如果有多个，则显示系统选择面板。
-				this.choosePanel(false,false,true);
+				var data:Object = event.data;
+				if(data != null)
+				{
+					var attrs:Object = data["attributes"];
+					var userVo:UserVO = new UserVO();
+					userVo.isLogin = true;
+					
+					userVo.name = attrs["user"]["name"];
+					userVo.userId = attrs["user"]["id"];
+					
+					var tempAarray:Array = attrs["waterBodys"] as Array;
+					if(tempAarray != null && tempAarray.length > 0)
+					{
+						for(var i:int=0; i<tempAarray.length; i++)
+						{
+							var item:Object = tempAarray[i];
+							tempAarray[i]["key"] = item["mapId"] + item["id"];
+						}
+					}
+					userVo.systemList = new ArrayCollection(tempAarray);
+					modelLocator.userVo = userVo;
+					
+					this.ScrollButtonPanel.dataProvider = userVo.systemList;
+					
+					if(userVo.systemList.length == 1)
+					{
+						var param:Object = userVo.systemList[0];
+						modelLocator.systemInfo.subSystemTitle = param["name"];
+						modelLocator.systemInfo.subSystemID = param["key"];
+						
+						this.choosePanel(false,true,false);
+					}
+					else if(userVo.systemList.length > 1)
+					{
+						this.choosePanel(false, false, true);
+					}
+				}
 			}
 			
 			private function mapToolHandler(e:ToolEvent):void
@@ -236,7 +263,8 @@
 				if(menuItemData.hasOwnProperty("subitems")
 					&& menuItemData["subitems"] != null){
 					var subitems:Object = menuItemData["subitems"];
-					var subWidgets:ArrayCollection =  subitems["subitem"] is  ArrayCollection ? subitems["subitem"] as  ArrayCollection
+					var subWidgets:ArrayCollection =  subitems["subitem"] is  ArrayCollection 
+						? subitems["subitem"] as  ArrayCollection
 						: new ArrayCollection([subitems["subitem"]]);
 					if(subWidgets != null && subWidgets.length > 0) {
 						for each (var item:Object in subWidgets) {
@@ -327,23 +355,23 @@
 			<s:Group width="100%" height="100%">
 				<s:Rect left="0" right="0" top="0" bottom="0">
 					<s:fill>
-						<s:BitmapFill fillMode="repeat" source="{ResourceManagerEx.FindResource('bg').cls}"/>
+						<s:BitmapFill fillMode="repeat"
+									  source="{ResourceManagerEx.FindResource('bg').cls}"/>
 					</s:fill>
 				</s:Rect>
 			</s:Group>
-			<s:Image height="90%" left="10" verticalCenter="0" source="{ResourceManagerEx.FindResource('logoTIcon').cls}"/> 
+			<s:Image left="10" height="90%"
+					 source="{ResourceManagerEx.FindResource('logoTIcon').cls}" verticalCenter="0"/> 
 			<s:HGroup right="0" height="100%" gap="0" paddingLeft="0" verticalAlign="middle">
 				<s:VGroup height="100%" horizontalAlign="right" paddingRight="5">
 					<s:HGroup gap="10" horizontalAlign="right" verticalAlign="middle">
-						<s:Label id="subSystemTitleId" height="100%" 
-								 text="{modelLocator.systemInfo.subSystemTitle}"
-								 styleName="SubSystemTitleStyle"/>
+						<s:Label id="subSystemTitleId" height="100%" styleName="SubSystemTitleStyle"
+								 text="{modelLocator.systemInfo.subSystemTitle}"/>
 						<s:Button id="changeSystemId" width="60" height="100%" label="[切换系统]"
-								  buttonMode="true"
-								  skinClass="sm.wegis.szy.skins.LoginButtonSkin"
-								  click="changeSystemId_clickHandler(event)"/>
-						<s:Label id="userInfoId" height="100%" text="管理员"
-								 styleName="SubSystemTitleStyle"/>
+								  buttonMode="true" click="changeSystemId_clickHandler(event)"
+								  skinClass="sm.wegis.szy.skins.LoginButtonSkin"/>
+						<s:Label id="userInfoId" height="100%" styleName="SubSystemTitleStyle"
+								 text="管理员"/>
 						<s:Button id="userLoginId" width="40" height="100%" label="[登录]"
 								  buttonMode="true" click="userLoginId_clickHandler(event)"
 								  skinClass="sm.wegis.szy.skins.LoginButtonSkin"/>
@@ -369,7 +397,7 @@
 			<s:BorderContainer id="BodyContainerID" width="300" height="100%">
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID" width="100%" height="100%">
-				<s:Group width="100%"   top="0"  bottom="{RightDownContainerID.height}">
+				<s:Group top="0" bottom="{RightDownContainerID.height}" width="100%">
 					<s:BorderContainer id="MapContainerID" width="100%" height="100%"/>
 					<s:HGroup id="CopyRightID" left="3" bottom="3" width="100%" gap="0"
 							  horizontalAlign="left" verticalAlign="middle">
@@ -378,7 +406,7 @@
 					</s:HGroup>
 				</s:Group>
 				<!--右侧下方布局面板,和地图在右侧上下分布 -->
-				<s:BorderContainer id="RightDownContainerID" width="100%" minHeight="0"  bottom="0"/>
+				<s:BorderContainer id="RightDownContainerID" bottom="0" width="100%" minHeight="0"/>
 				<s:HGroup left="0" top="0" height="100%" gap="0" horizontalAlign="left"
 						  verticalAlign="middle">
 					<s:Rect width="1" height="100%">
@@ -400,16 +428,16 @@
 		</s:HGroup>
 	</s:VGroup>
 	
-	<s:BorderContainer id="loginPanelId" width="100%" height="100%"
-					   backgroundAlpha="1" backgroundColor="#D9D9D9">
+	<s:BorderContainer id="loginPanelId" width="100%" height="100%" backgroundAlpha="1"
+					   backgroundColor="#D9D9D9">
 		<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
 			<s:BorderContainer>
 				<s:VGroup width="400" gap="10" horizontalAlign="center" paddingBottom="10"
 						  paddingLeft="10" paddingRight="10" paddingTop="10" verticalAlign="middle">
 					<s:HGroup width="100%" height="30" paddingLeft="10" paddingRight="10"
 							  verticalAlign="middle">
-						<s:Image source="{ResourceManagerEx.FindResource('userIcon').cls}" 
-								 fillMode="scale"/>
+						<s:Image fillMode="scale"
+								 source="{ResourceManagerEx.FindResource('userIcon').cls}"/>
 						<s:Label width="100%" styleName="LoginLabelStyle" text="登录系统账号"/>
 						<s:Button id="closeLoginId" buttonMode="true"
 								  click="closeLoginId_clickHandler(event)"
@@ -426,7 +454,8 @@
 								 prompt="密码" styleName="PasswordStyle"/>
 					<s:HGroup width="355" horizontalAlign="right">
 						<s:Button id="SubmitBtn" width="60" height="30" label="登录" buttonMode="true"
-								  styleName="SubmitRegisterStyle" click="SubmitBtn_clickHandler(event)"/>
+								  click="SubmitBtn_clickHandler(event)"
+								  styleName="SubmitRegisterStyle"/>
 					</s:HGroup>
 					<s:Label id="LoginInfoLabel" width="355" styleName="SubmitRegisterInfo"/>
 				</s:VGroup>
@@ -434,35 +463,31 @@
 		</s:VGroup>
 	</s:BorderContainer>
 	
-	<s:VGroup id="choosePanelId" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-		<s:BorderContainer width="100%" height="100%"
-						   backgroundAlpha="1" backgroundColor="#D9D9D9">
+	<s:VGroup id="choosePanelId" width="100%" height="100%" horizontalAlign="center"
+			  verticalAlign="middle">
+		<s:BorderContainer width="100%" height="100%" backgroundAlpha="1" backgroundColor="#D9D9D9">
 			<s:VGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-				<s:BorderContainer  minWidth="100">
-					<s:VGroup gap="10" horizontalAlign="center" paddingBottom="10"
-							  paddingLeft="10" paddingRight="10" paddingTop="10" verticalAlign="middle">
+				<s:BorderContainer minWidth="100">
+					<s:VGroup gap="10" horizontalAlign="center" paddingBottom="10" paddingLeft="10"
+							  paddingRight="10" paddingTop="10" verticalAlign="middle">
 						<s:HGroup width="100%" height="30" paddingLeft="10" paddingRight="10"
 								  verticalAlign="middle">
-							<s:Image source="{ResourceManagerEx.FindResource('logoIcon').cls}" 
-									 fillMode="scale"/>
+							<s:Image fillMode="scale"
+									 source="{ResourceManagerEx.FindResource('logoIcon').cls}"/>
 							<s:Label width="100%" styleName="LoginLabelStyle" text="选择应用系统"/>
 							<s:Button id="closeChooseId" buttonMode="true"
-									  styleName="CloseLoginButtonStyle"
-									  click="closeChooseId_clickHandler(event)"/>
+									  click="closeChooseId_clickHandler(event)"
+									  styleName="CloseLoginButtonStyle"/>
 						</s:HGroup>
 						<s:Line width="100%">
 							<s:stroke>
 								<s:SolidColorStroke color="#ABDBFC" weight="1"/>
 							</s:stroke>
 						</s:Line>
-						<ns:ScrollPanel id="ScrollButtonPanel" 
-										dataProvider="{systemArrCol}" hGap="3"
-										itemHeight="90" itemWidth="90"
-										contentBackgroundAlpha="0.8" alpha="0.8"
-										labelField="name"
-										rowCount="6" columnCount="4"
-										type="button"
-										buttonStyleName="ScrollPanelItemStyle"/>
+						<ns:ScrollPanel id="ScrollButtonPanel" alpha="0.8"
+										buttonStyleName="ScrollPanelItemStyle" columnCount="4"
+										contentBackgroundAlpha="0.8" hGap="3" itemHeight="90"
+										itemWidth="90" labelField="name" rowCount="6" type="button"/>
 					</s:VGroup>
 				</s:BorderContainer>
 			</s:VGroup>

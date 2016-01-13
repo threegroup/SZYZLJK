@@ -40,13 +40,17 @@ package sm.wegis.szy.commands
 				var jsDec:JSONDecoder  = new JSONDecoder(result);
 				var value:Object = jsDec.getValue() as Object;
 				
-				//通过登录响应事件派发
-				if(value != null)
+				//成功登录，则通过登录响应事件派发登录用户信息
+				var systemEvent:SystemEvent = new SystemEvent(SystemEvent.LoginInResponse);
+				if(value != null && value["success"])
 				{
-					var systemEvent:SystemEvent = new SystemEvent(SystemEvent.LoginInResponse);
 					systemEvent.data = value;
-					systemEvent.dispatch();
 				}
+				else
+				{
+					systemEvent.data = null;
+				}
+				systemEvent.dispatch();
 			}
 		}
 		
