@@ -24,9 +24,8 @@ package sm.wegis.szy.commands
 			var params:Array = [];
 			params.push("-1");//waterBodyID
 			params.push(mapQueryVO.mainType);
-			if (mapQueryVO.typeIds != null) {
-				params.push(mapQueryVO.typeIds);
-			}
+			params.push(mapQueryVO.typeIds);
+			params.push(mapQueryVO.keyword);
 			
 			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTypes, params);
 		}
