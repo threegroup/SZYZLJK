@@ -212,7 +212,6 @@
 							labelField="name"
 							rowCount="6" columnCount="4"
 							type="button"
-							isUpdateStatus="true"
 							buttonStyleName="ScrollPanelItemStyle"/>
 		</s:HGroup>
 		<line:HLine />
