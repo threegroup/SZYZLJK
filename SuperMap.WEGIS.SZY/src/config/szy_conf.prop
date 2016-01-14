@@ -17,8 +17,8 @@ TDTImageLabel=http://tdt.mwr.gov.cn:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&V
 ﻿#水资源地图地址--矢量、影像两个版本地图
 waterResourceVectorMapUrl=http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_V
 waterResourceRasterMapUrl=http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_R
-#waterResourceVectorMapUrl=http://192.168.117.199:8080/iserver/services/map-SZY/rest/maps/SZY_V
-#waterResourceRasterMapUrl=http://192.168.117.199:8080/iserver/services/map-SZY/rest/maps/SZY_R
+#waterResourceVectorMapUrl=http://192.168.117.199:8090/iserver/services/map-SZY/rest/maps/SZY_V
+#waterResourceRasterMapUrl=http://192.168.117.199:8090/iserver/services/map-SZY/rest/maps/SZY_R
 
 waterResourceBaseLayerIds=20,21,38,39
 #系统标识
