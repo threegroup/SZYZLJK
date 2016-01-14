@@ -130,25 +130,25 @@
 							tempAarray[i]["key"] = item["mapId"] + item["id"];
 						}
 					}
-					userVo.systemList = new ArrayCollection(tempAarray);
+					modelLocator.systemInfo.systemList = new ArrayCollection(tempAarray);
 					modelLocator.userVo = userVo;
 					
-					this.ScrollButtonPanel.dataProvider = userVo.systemList;
+					this.ScrollButtonPanel.dataProvider = modelLocator.systemInfo.systemList;
 					
 					//如果只有一个系统，不在进行系统选择，直接进入系统
-					if(userVo.systemList.length == 1)
+					if(modelLocator.systemInfo.systemList.length == 1)
 					{
-						var param:Object = userVo.systemList[0];
+						var param:Object = modelLocator.systemInfo.systemList[0];
 						modelLocator.systemInfo.subSystemTitle = param["name"];
-						modelLocator.systemInfo.subSystemID = param["key"];
+						modelLocator.systemInfo.subSystemID = param["id"];
 						
 						this.choosePanel(false,true,false);
 						systemInitControler();
 					}
-					else if(userVo.systemList.length > 1)
+					else if(modelLocator.systemInfo.systemList.length > 1)
 					{
 						this.choosePanel(false, false, true);
-					} else if (userVo.systemList.length == 0) {
+					} else if (modelLocator.systemInfo.systemList.length == 0) {
 						Alert.show("登录用户没有可以访问的系统","警告");
 					}
 				}
@@ -158,9 +158,9 @@
 			private function systemInitControler():void
 			{
 				var systemEvent:SystemEvent
-				if (modelLocator.userVo.isSystemInited == false) {
+				if (modelLocator.systemInfo.isSystemInited == false) {
 					//系统初始只进行一次
-					modelLocator.userVo.isSystemInited = true;
+					modelLocator.systemInfo.isSystemInited = true;
 					//系统初始化
 					systemEvent = new SystemEvent(SystemEvent.SYSTEM_INIT);
 				} else {
@@ -191,7 +191,7 @@
 				{
 					var param:Object = data.param;
 					modelLocator.systemInfo.subSystemTitle = param["name"];
-					modelLocator.systemInfo.subSystemID = param["key"];
+					modelLocator.systemInfo.subSystemID = param["id"];
 					choosePanel(false,true);
 					systemInitControler();
 				}
@@ -322,9 +322,25 @@
 				}
 			}
 			
+			//注销用户
 			protected function userLoginId_clickHandler(event:MouseEvent):void
 			{
+				this.resetSystem();
+			}
+			
+			/**初始化系统，以及派发清除事件通知相关模块*/
+			private function resetSystem():void
+			{
 				this.choosePanel(true);
+				modelLocator.userVo = new UserVO();
+				modelLocator.systemInfo.subSystemID = "";
+				modelLocator.systemInfo.subSystemTitle = "";
+				this.UserIdName.text = "";
+				this.PwdValue.text = "";
+				
+				//派发清除事件
+				
+				
 			}
 			
 			protected function closeLoginId_clickHandler(event:MouseEvent):void
@@ -393,8 +409,8 @@
 								  buttonMode="true" click="changeSystemId_clickHandler(event)"
 								  skinClass="sm.wegis.szy.skins.LoginButtonSkin"/>
 						<s:Label id="userInfoId" height="100%" styleName="SubSystemTitleStyle"
-								 text="管理员"/>
-						<s:Button id="userLoginId" width="40" height="100%" label="[登录]"
+								 text="{modelLocator.userVo.name}"/>
+						<s:Button id="userLoginId" width="40" height="100%" label="[注销]"
 								  buttonMode="true" click="userLoginId_clickHandler(event)"
 								  skinClass="sm.wegis.szy.skins.LoginButtonSkin"/>
 					</s:HGroup>

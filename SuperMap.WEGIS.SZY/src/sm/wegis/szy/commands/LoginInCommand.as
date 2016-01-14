@@ -5,6 +5,7 @@ package sm.wegis.szy.commands
 	import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 	
 	import mx.controls.Alert;
+	import mx.managers.CursorManager;
 	
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
@@ -30,6 +31,8 @@ package sm.wegis.szy.commands
 				requestData.push(userVo.password);
 				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.Login, requestData);
 			}
+			
+			CursorManager.setBusyCursor();
 		}
 		
 		override public function result(data:Object):void
@@ -52,12 +55,14 @@ package sm.wegis.szy.commands
 				}
 				systemEvent.dispatch();
 			}
+			CursorManager.removeBusyCursor();
 		}
 		
 		override public function fault(info:Object):void
 		{
 			Alert.show("登录异常，请联系管理员！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
+			CursorManager.removeBusyCursor();
 		}
 	}
 }

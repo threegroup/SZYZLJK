@@ -12,41 +12,12 @@ package sm.wegis.szy.vo
 			super();
 		}
 		
-		private var _userName:String;
-		private var _password:String;
-		private var _userId:String;
-		private var _name:String;
+		private var _userName:String="";
+		private var _password:String="";
+		private var _userId:String="";
+		private var _name:String="";
 		private var _isLogin:Boolean = false;
-		private var _systemList:ArrayCollection = null;
-		private var _isSystemInited:Boolean = false;
 
-		/**
-		 *系统是否已经初始化
-		 */
-		public function get isSystemInited():Boolean
-		{
-			return _isSystemInited;
-		}
-
-		public function set isSystemInited(value:Boolean):void
-		{
-			_isSystemInited = value;
-		}
-
-		/**
-		 * 当前用户对应的系统列表
-		 */
-		public function get systemList():ArrayCollection
-		{
-			return _systemList;
-		}
-
-		public function set systemList(value:ArrayCollection):void
-		{
-			_systemList = value;
-		}
-
-		
 		/**
 		 *登录状态，false表示未登录 
 		 */

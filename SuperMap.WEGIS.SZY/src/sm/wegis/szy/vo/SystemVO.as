@@ -2,6 +2,8 @@ package sm.wegis.szy.vo
 {
 	import com.supermap.web.core.Rectangle2D;
 	
+	import mx.collections.ArrayCollection;
+	
 	import sm.wegis.szy.core.baseclass.ValueObjectBase;
 
 	[Bindable]
@@ -26,6 +28,34 @@ package sm.wegis.szy.vo
 		private var _isNeedAuthorization:Boolean = false;
 		
 		private var _layerBounds:Rectangle2D;
+		
+		private var _systemList:ArrayCollection = null;
+		private var _isSystemInited:Boolean = false;
+		/**
+		 *系统是否已经初始化
+		 */
+		public function get isSystemInited():Boolean
+		{
+			return _isSystemInited;
+		}
+		
+		public function set isSystemInited(value:Boolean):void
+		{
+			_isSystemInited = value;
+		}
+		
+		/**
+		 * 当前用户对应的系统列表
+		 */
+		public function get systemList():ArrayCollection
+		{
+			return _systemList;
+		}
+		
+		public function set systemList(value:ArrayCollection):void
+		{
+			_systemList = value;
+		}
 
 		/**子系统ID*/
 		public function get subSystemID():String

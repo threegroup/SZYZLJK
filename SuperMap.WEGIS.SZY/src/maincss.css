@@ -158,3 +158,25 @@ s|DataGrid
 	rollOverColor:#3385FF;
 }
 
+mx|VScrollBar
+{
+	downArrowDownSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinDownButtonSkin");
+	downArrowOverSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinDownButtonSkin");
+	downArrowUpSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinDownButtonSkin");
+	downArrowSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinDownButtonSkin");
+	thumbDownSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinThumbDownSkin");
+	thumbSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinThumbSkin");
+	thumbOverSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinThumbOverSkin");
+	thumbUpSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinThumbSkin");
+	trackSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinTrackSkin");
+	upArrowSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinUpButtonSkin");
+	upArrowDownSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinUpButtonSkin");
+	upArrowOverSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinUpButtonSkin");
+	upArrowUpSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinUpButtonSkin");
+}
+
+s|Scroller
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.scroller.Scrollbar");
+}
+

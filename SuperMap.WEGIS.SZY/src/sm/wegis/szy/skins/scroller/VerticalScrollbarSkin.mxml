@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:fc="http://ns.adobe.com/flashcatalyst/2009"
+		 maxWidth="16"  maxHeight="200" >
+	
+	<fx:Metadata>
+		[HostComponent("spark.components.VScrollBar")]
+	</fx:Metadata> 
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+		<s:State name="inactive" />
+	</s:states>
+	
+	<s:Button id="track" x="0" top="0"  
+			  bottom="0" horizontalCenter="0" focusEnabled="false"
+			  skinClass="sm.wegis.szy.skins.scroller.VerticalScrollbarSkinTrackSkin"
+			  alpha.disabled="0.5"
+			  alpha.inactive="0.5"/>
+
+	<s:Button id="thumb" x="0" y="0" horizontalCenter="0" focusEnabled="false" 
+			  skinClass="sm.wegis.szy.skins.scroller.VerticalScrollbarSkinThumbSkin" minHeight="20"
+			  alpha.disabled="0.5"
+			  alpha.inactive="0.5" 
+			  visible.inactive="false"/>
+	
+	<!--<s:Button id="decrementButton" top="2" horizontalCenter="0" enabled.inactive="false" alpha.disabled="0.5" alpha.inactive="0.5"
+			  skinClass="skins.scrollbar.VerticalScrollbarSkinUpButtonSkin" focusEnabled="false"/>
+	
+	<s:Button id="incrementButton" bottom="0" horizontalCenter="0" focusEnabled="false"
+			  skinClass="skins.scrollbar.VerticalScrollbarSkinDownButtonSkin"
+			  alpha.disabled="0.5"
+			  alpha.inactive="0.5" enabled.inactive="false" />-->
+	
+</s:Skin>
