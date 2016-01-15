@@ -117,8 +117,10 @@
 			private function queryTypesAndDetailListHandler(event:CairngormEvent):void
 			{
 				var data:Object = event.data;
-				conditionGroup.removeAllElements();
 				resultList.dataProvider = null;
+				if (resultList.scrollRect) {
+					resultList.scrollRect.y = 0;
+				}
 				if (data.success == true) 
 				{
 					if(!this.ResultContentPanel.visible)

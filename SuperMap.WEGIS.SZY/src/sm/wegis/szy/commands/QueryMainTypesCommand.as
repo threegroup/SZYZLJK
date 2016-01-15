@@ -8,6 +8,7 @@ package sm.wegis.szy.commands
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.managers.CursorManager;
 	
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
@@ -26,10 +27,12 @@ package sm.wegis.szy.commands
 			params.push(modelLocator.userVo.userId);
 			params.push(modelLocator.systemInfo.subSystemID);
 			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetMainTypes, params);
+			CursorManager.setBusyCursor();
 		}
 		
 		override public function result(data:Object):void
 		{
+			CursorManager.removeBusyCursor();
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var resultValue:Object = jsDec.getValue() as Object;
@@ -48,6 +51,7 @@ package sm.wegis.szy.commands
 		
 		override public function fault(info:Object):void
 		{
+			CursorManager.removeBusyCursor();
 			Alert.show("获取第一级分类失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MAIN_TYPES_RESPONSE);

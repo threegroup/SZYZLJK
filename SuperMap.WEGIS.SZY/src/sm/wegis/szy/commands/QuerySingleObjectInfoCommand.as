@@ -5,6 +5,7 @@ package sm.wegis.szy.commands
 	import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 	
 	import mx.controls.Alert;
+	import mx.managers.CursorManager;
 	
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
@@ -25,11 +26,12 @@ package sm.wegis.szy.commands
 				queryEvent.data = requestData;
 				queryEvent.dispatch();
 			}
-			
+			CursorManager.setBusyCursor();
 		}
 		
 		override public function result(data:Object):void
 		{
+			CursorManager.removeBusyCursor();
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var value:Object = jsDec.getValue() as Object;
@@ -44,6 +46,7 @@ package sm.wegis.szy.commands
 		
 		override public function fault(info:Object):void
 		{
+			CursorManager.removeBusyCursor();
 			Alert.show("获取目标对象详细信息失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE);
