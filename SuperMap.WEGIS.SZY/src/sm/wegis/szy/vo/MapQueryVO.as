@@ -11,5 +11,8 @@ package sm.wegis.szy.vo
 		public var typeIds:String="";
 		/**查询关键字*/
         public var keyword:String="";	
+		
+		/**目标对象Id  */
+		public var targetId:String = "";
 	}
 }

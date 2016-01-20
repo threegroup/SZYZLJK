@@ -10,6 +10,7 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.events.QueryEvent;
+	import sm.wegis.szy.vo.WSMethod;
 	
 	public class QuerySingleObjectInfoCommand extends CommandBase
 	{
@@ -20,7 +21,10 @@ package sm.wegis.szy.commands
 			requestData = event.data;
 			//如果左侧checkbox选择=true，请求数据，否则删除数据
 			if (requestData.selected == true) {
-				IDelegate(this.businessDelegate).executeHttpService("testdata/getTarget.txt");
+				var params:Array = [];
+				params.push(modelLocator.userVo.userId);
+				params.push(requestData.id);
+				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTarget, params)
 			} else {
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE);
 				queryEvent.data = requestData;
