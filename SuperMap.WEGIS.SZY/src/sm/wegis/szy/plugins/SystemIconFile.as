@@ -145,6 +145,12 @@ package sm.wegis.szy.plugins
 		private static var userIconKey:String = "userIcon";
 		ResourceManagerEx.RegisterResource("",userIconKey, userIconCls);
 		
+		
+		[Embed(source="assets/image/tip.png")]
+		private static var tipCls:Class;
+		private static var tipKey:String = "TIP";
+		ResourceManagerEx.RegisterResource("",tipKey, tipCls);
+		
 		public function SystemIconFile()
 		{
 			super();
