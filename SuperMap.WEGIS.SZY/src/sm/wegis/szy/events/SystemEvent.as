@@ -6,7 +6,7 @@ package sm.wegis.szy.events
 	
 	public class SystemEvent extends CairngormEvent
 	{
-		/**点击清除按钮或各功能模块重置派发此事件*/
+		/**系统清除事件*/
 		public static const CLEAR_SYSTEM:String = "ClearSystem";
 		/**系统view，主体创建完成*/
 		public static const SYSTEM_CREATION_COMPLETE:String = "SystemCreationComplete";

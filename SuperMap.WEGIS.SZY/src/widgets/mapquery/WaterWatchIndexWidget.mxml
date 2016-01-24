@@ -9,6 +9,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.Point2D;
 			import com.supermap.web.core.geometry.GeoPoint;
@@ -64,14 +65,33 @@
 				
 				//响应系统清除功能
 				CairngormEventManager.getInstance().attachSingleEvent(new CairngormEventClass(SystemEvent.CLEAR_SYSTEM, clearSystemHandler));
+				
+				//切换系统
+				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD
+					, systemReloadHandler);
 			}
 			
+			//用户或子系统发生变化，刷新数据
+			private function systemReloadHandler(event:CairngormEvent):void
+			{
+				//此处添加模块UI及逻辑初始化功能
+				this.resetUI();
+			}
+			
+			//系统初始化或系统切换之后重置UI
+			private function resetUI():void
+			{
+				if(this.currentState != HIDE)
+				{
+					this.currentState = HIDE;
+				}
+				clearAllResult();
+			}
 			
 			//响应系统清除
 			private function clearSystemHandler(event:CairngormEvent):void
 			{
-				this.currentState = HIDE;
-				clearAllResult();
+				this.resetUI();
 			}
 			
 			/**清除所有结果*/
@@ -167,7 +187,15 @@
 			//显示或隐藏数据展示
 			override public function set visible(value:Boolean):void
 			{
-				this.currentState = value == true ? SHOW : HIDE;
+				if(resultGrid.dataProvider != null)
+				{
+					this.currentState = SHOW;
+				}
+				else
+				{
+					this.currentState = HIDE;
+				}
+				
 				var map:MapCtrl = modelLocator.mapCtrl;
 				if(value == false)
 				{

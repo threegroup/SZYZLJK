@@ -49,10 +49,22 @@
 			private function systemReloadHandler(event:CairngormEvent):void
 			{
 				//此处添加模块UI及逻辑初始化功能
+				this.resetUI();
 				
 				queryMainTypes();
 			}
 			
+			//系统初始化或系统切换之后重置UI
+			private function resetUI():void
+			{
+				if(this.conditionGroup != null && this.conditionGroup.numElements >0)
+				{
+					this.conditionGroup.removeAllElements();
+				}
+				
+				this.ResultContentPanel.visible = false;
+				this.resultList.dataProvider = null;
+			}
 			
 			//请求mainType
 			public function queryMainTypes():void

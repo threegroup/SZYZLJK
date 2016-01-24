@@ -6,7 +6,8 @@
 					xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 					xmlns:supermap="http://www.supermap.com/iclient/2010"
 					xmlns:basemap="widgets.basemap.*"
-					width="100%" height="100%" creationComplete="creationCompleteHandler(event)">
+					width="100%" height="100%"
+					creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:Resize id="hideEffect" duration="1000" easer="{bounceEffect}" repeatCount="1"
@@ -17,6 +18,7 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.adobe.utils.StringUtil;
 			import com.supermap.wegis.common.components.events.MenuEventEx;
@@ -105,6 +107,27 @@
 				
 				//登录成功之后响应
 				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.LoginInResponse, loginInResponseHandler);
+				
+				//切换系统
+				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD
+					, systemReloadHandler);
+			}
+			
+			//用户或子系统发生变化，刷新数据
+			private function systemReloadHandler(event:CairngormEvent):void
+			{
+				//此处添加模块UI及逻辑初始化功能
+				this.resetUI();
+			}
+			
+			//系统初始化或系统切换之后重置UI
+			private function resetUI():void
+			{
+				if(this.systemMenuId != null && this.systemMenuId.dataProvider != null)
+				{
+					this.systemMenuId.dataProvider = null;
+					this.systemMenuId.dataProvider = modelLocator.menuInfo.mapMenuList;
+				}
 			}
 			
 			//登录成功
@@ -135,7 +158,7 @@
 					
 					this.ScrollButtonPanel.dataProvider = modelLocator.systemInfo.systemList;
 					
-					//如果只有一个系统，不在进行系统选择，直接进入系统
+					//如果只有一个系统，不再进行系统选择，直接进入系统
 					if(modelLocator.systemInfo.systemList.length == 1)
 					{
 						var param:Object = modelLocator.systemInfo.systemList[0];
