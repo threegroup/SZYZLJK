@@ -150,14 +150,14 @@
 						ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);
 						panel.contentGroup.visible = panel.contentGroup.includeInLayout = true;
 						this.currentState = SHOW;
-					}
-				} else if (resultData.selected == false) {
-					var dataProvider:ArrayCollection = resultGrid.dataProvider as ArrayCollection;
-					for each(var itemData:Object in dataProvider)
-					{
-						if (resultData.id == itemData.id) {
-							dataProvider.removeItemAt(dataProvider.getItemIndex(itemData));
-							break;
+					} else if (resultData.selected == false) {
+						var dataProvider:ArrayCollection = resultGrid.dataProvider as ArrayCollection;
+						for each(var itemData:Object in dataProvider)
+						{
+							if (resultData.id == itemData.id) {
+								dataProvider.removeItemAt(dataProvider.getItemIndex(itemData));
+								break;
+							}
 						}
 					}
 				}
