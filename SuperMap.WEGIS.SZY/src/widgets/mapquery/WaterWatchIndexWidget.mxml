@@ -107,12 +107,10 @@
 						{
 							resultGrid.dataProvider = resultGrid.dataProvider == null ? new ArrayCollection() : resultGrid.dataProvider;
 							var item:Object = {};
-							var resultTarget:Object = resultData.attributes.target;
+							var resultTarget:Object = resultData.attributes.targets[0];
 							item.id = resultTarget.id;
 							item.name = resultTarget.name;
-							item.index = resultTarget.index;
-							item.x = resultTarget.x;
-							item.y = resultTarget.y;
+							item.index = resultData.index;
 							var newColumn:GridColumn;
 							//如果为空或者length=0，添加名称列
 							if (resultGrid.columns == null || resultGrid.columns.length == 0) {
@@ -123,7 +121,15 @@
 								resultGrid.columns.addItem(newColumn);
 							}
 							//遍历，添加不包含的列
-							for (var propKey:String in resultTarget.attributes) {
+							for each(var attribute:Object in resultTarget.attributes)
+							for (var propKey:String in attribute) {
+								if (propKey == "坐标" && attribute[propKey] != null) {
+									var pointStr:String = attribute["坐标"];
+									var pointArr:Array = pointStr.split(",");
+									item.x = Number(pointArr[0]);
+									item.y = Number(pointArr[1]);
+									continue;
+								}
 								var hasContain:Boolean = false;
 								for (var index:int = 0 ; index < resultGrid.columns.length; index++) {
 									var colmn:GridColumn = resultGrid.columns.getItemAt(index) as GridColumn;
