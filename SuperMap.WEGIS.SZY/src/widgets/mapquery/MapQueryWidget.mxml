@@ -48,6 +48,8 @@
 			//用户或子系统发生变化，刷新数据
 			private function systemReloadHandler(event:CairngormEvent):void
 			{
+				//此处添加模块UI及逻辑初始化功能
+				
 				queryMainTypes();
 			}
 			
@@ -224,8 +226,11 @@
 		</s:HGroup>
 		<s:VGroup id="ResultContentPanel" width="100%" height="100%" gap="10" visible="false">
 			<s:Panel title="水体类型" width="100%" maxHeight="200" minHeight="80">
-				<s:VGroup id="conditionGroup" width="100%" 
-						  paddingLeft="5" paddingRight="5" paddingBottom="5" paddingTop="5"/>
+				<s:Scroller width="100%" height="100%" 
+							verticalScrollPolicy="auto" horizontalScrollPolicy="off">
+					<s:VGroup id="conditionGroup" width="100%" 
+							  paddingLeft="5" paddingRight="5" paddingBottom="5" paddingTop="5"/>
+				</s:Scroller>
 			</s:Panel>
 			<s:Panel title="水体对象" width="100%" height="100%">
 				<s:List id="resultList" width="100%" height="100%"  labelField="name"  

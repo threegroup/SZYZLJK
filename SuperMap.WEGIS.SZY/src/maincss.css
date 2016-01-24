@@ -180,3 +180,18 @@ s|Scroller
 	skinClass:ClassReference("sm.wegis.szy.skins.scroller.Scrollbar");
 }
 
+mx|Alert
+{
+	modal-transparency:0.5;
+	modal-transparency-color:#C0C0C0;
+	modal-transparency-blur:3;
+	drop-shadow-visible:true;
+	border-color:#C0C0C0;
+	title-style-name:title-style-name;
+	header-height:28;
+	title-background-skin:ClassReference("sm.wegis.szy.skins.titlewindow.TitleWindowTitleBackgroundSkin");
+	headerColors:#42A2DB,#3B78BD;
+	highlightAlphas:0.66,0;
+	corner-radius:5
+}
+
