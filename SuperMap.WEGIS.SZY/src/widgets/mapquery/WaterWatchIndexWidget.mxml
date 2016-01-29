@@ -67,8 +67,7 @@
 				CairngormEventManager.getInstance().attachSingleEvent(new CairngormEventClass(SystemEvent.CLEAR_SYSTEM, clearSystemHandler));
 				
 				//切换系统
-				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD
-					, systemReloadHandler);
+				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD	, systemReloadHandler);
 			}
 			
 			//用户或子系统发生变化，刷新数据
@@ -126,50 +125,52 @@
 						if ( resultData.success == true)
 						{
 							resultGrid.dataProvider = resultGrid.dataProvider == null ? new ArrayCollection() : resultGrid.dataProvider;
-							var item:Object = {};
 							var resultTarget:Object = resultData.attributes.targets[0];
-							item.id = resultTarget.id;
-							item.name = resultTarget.name;
-							item.index = resultData.index;
-							var newColumn:GridColumn;
-							//如果为空或者length=0，添加名称列
-							if (resultGrid.columns == null || resultGrid.columns.length == 0) {
-								resultGrid.columns =new ArrayList();
-								newColumn = new GridColumn();
-								newColumn.dataField = "name";
-								newColumn.headerText = "名称";
-								resultGrid.columns.addItem(newColumn);
-							}
-							//遍历，添加不包含的列
-							for each(var attribute:Object in resultTarget.attributes)
-							for (var propKey:String in attribute) {
-								if (propKey == "坐标" && attribute[propKey] != null) {
-									var pointStr:String = attribute["坐标"];
-									var pointArr:Array = pointStr.split(",");
-									item.x = Number(pointArr[0]);
-									item.y = Number(pointArr[1]);
-									continue;
-								}
-								var hasContain:Boolean = false;
-								for (var index:int = 0 ; index < resultGrid.columns.length; index++) {
-									var colmn:GridColumn = resultGrid.columns.getItemAt(index) as GridColumn;
-									if (colmn.dataField == propKey) {
-										hasContain = true;
-										break;
-									}
-								}
-								if (hasContain == false) {
+							if (resultTarget != null) {
+								var item:Object = {};
+								item.id = resultTarget.id;
+								item.name = resultTarget.name;
+								item.index = resultData.index;
+								var newColumn:GridColumn;
+								//如果为空或者length=0，添加名称列
+								if (resultGrid.columns == null || resultGrid.columns.length == 0) {
+									resultGrid.columns =new ArrayList();
 									newColumn = new GridColumn();
-									newColumn.dataField = propKey;
+									newColumn.dataField = "name";
+									newColumn.headerText = "名称";
 									resultGrid.columns.addItem(newColumn);
 								}
-								item[propKey] = resultTarget.attributes[propKey];
+								//遍历，添加不包含的列
+								for each(var attribute:Object in resultTarget.attributes)
+								for (var propKey:String in attribute) {
+									if (propKey == "坐标" && attribute[propKey] != null) {
+										var pointStr:String = attribute["坐标"];
+										var pointArr:Array = pointStr.split(",");
+										item.x = Number(pointArr[0]);
+										item.y = Number(pointArr[1]);
+										continue;
+									}
+									var hasContain:Boolean = false;
+									for (var index:int = 0 ; index < resultGrid.columns.length; index++) {
+										var colmn:GridColumn = resultGrid.columns.getItemAt(index) as GridColumn;
+										if (colmn.dataField == propKey) {
+											hasContain = true;
+											break;
+										}
+									}
+									if (hasContain == false) {
+										newColumn = new GridColumn();
+										newColumn.dataField = propKey;
+										resultGrid.columns.addItem(newColumn);
+									}
+									item[propKey] = resultTarget.attributes[propKey];
+								}
+								resultGrid.dataProvider.addItem(item);
+								ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);
+								panel.contentGroup.visible = panel.contentGroup.includeInLayout = true;
+								this.currentState = SHOW;
 							}
 						}
-						resultGrid.dataProvider.addItem(item);
-						ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);
-						panel.contentGroup.visible = panel.contentGroup.includeInLayout = true;
-						this.currentState = SHOW;
 					} else if (resultData.selected == false) {
 						var dataProvider:ArrayCollection = resultGrid.dataProvider as ArrayCollection;
 						for each(var itemData:Object in dataProvider)

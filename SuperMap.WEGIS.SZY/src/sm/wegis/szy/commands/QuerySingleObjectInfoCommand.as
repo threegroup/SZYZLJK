@@ -24,13 +24,13 @@ package sm.wegis.szy.commands
 				var params:Array = [];
 				params.push(modelLocator.userVo.userId);
 				params.push(requestData.id);
-				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTarget, params)
+				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTarget, params);
+				CursorManager.setBusyCursor();
 			} else {
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE);
 				queryEvent.data = requestData;
 				queryEvent.dispatch();
 			}
-			CursorManager.setBusyCursor();
 		}
 		
 		override public function result(data:Object):void

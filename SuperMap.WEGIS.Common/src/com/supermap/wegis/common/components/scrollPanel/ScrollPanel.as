@@ -16,6 +16,7 @@ package com.supermap.wegis.common.components.scrollPanel
 	import spark.components.Image;
 	import spark.components.NavigatorContent;
 	import spark.components.VGroup;
+	[Event(name="ScrollPanelClick", type="com.supermap.wegis.common.components.events.ScrollPanelEvent")]
 	
 	public class ScrollPanel extends Group
 	{

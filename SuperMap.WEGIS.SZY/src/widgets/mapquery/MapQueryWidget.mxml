@@ -11,6 +11,7 @@
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.adobe.utils.StringUtil;
+			import com.supermap.wegis.common.components.events.ScrollPanelEvent;
 			import com.supermap.wegis.common.components.scrollPanel.ButtonItem;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			
@@ -64,6 +65,7 @@
 				
 				this.ResultContentPanel.visible = false;
 				this.resultList.dataProvider = null;
+				this.searchInput.text = null;
 			}
 			
 			//请求mainType
@@ -95,6 +97,9 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST);
 				queryEvent.data = mapQueryVO;
 				queryEvent.dispatch();
+				resultList.dataProvider = null;
+				var waterWatchEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_WATCH_WIDGET);
+				waterWatchEvent.dispatch();
 			}
 			
 			//获取下拉框选择的多个类型
@@ -120,9 +125,7 @@
 						if (data.attributes.mainTypes != null && data.attributes.mainTypes.length > 0)
 						{
 							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.mainTypes);
-							scrollButtonPanel.selectedIndex = 0;//必须先设置数据源
-							//默认显示第一分类
-							queryTypesAndDetailList();
+							scrollButtonPanel.selectedIndex = 0;//必须先设置数据源，查询第一级分类，在scrollButtonPanel的click事件里进行查询
 						}
 					}
 				}
@@ -173,20 +176,24 @@
 				return dropDownList;
 			}
 			
+			//各级分类条件选择发生变化
 			private function selectChangeHandler(event:IndexChangeEvent):void
 			{
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_WATCH_WIDGET);
-				queryEvent.dispatch();
 				var currentDrop:DropDownList = event.currentTarget as DropDownList;
 				//将要删除的下拉框，删除当前选择后面所有下拉框
 				var removeDDs:Array = [];
 				for(var i:int = 0 ; i < conditionGroup.numElements ; i++)
 				{
 					var childElement:DropDownList = conditionGroup.getElementAt(i) as DropDownList;
-					if (currentDrop == childElement &&  i < conditionGroup.numElements - 1) {
-						for (i = i+1; i < conditionGroup.numElements ; i++)
+					if (currentDrop == childElement) {
+						var j:int = i+1;
+						//如果选择了第一项(全部)，需要把选择的水体类型也删除，因为后台返回的结果类型就是当前选择的水体类型
+						if (currentDrop.selectedIndex == 0) {
+							j = i ;
+						}
+						for ( ; j < conditionGroup.numElements ; j++)
 						{
-							removeDDs.push(conditionGroup.getElementAt(i));
+							removeDDs.push(conditionGroup.getElementAt(j));
 						}
 						break;
 					}
@@ -194,9 +201,7 @@
 				for each(var item:IVisualElement in removeDDs) {
 					conditionGroup.removeElement(item);
 				}
-				if (currentDrop.selectedIndex != 0 ) {
 					queryTypesAndDetailList();
-				}
 			}
 			
 			
@@ -212,6 +217,13 @@
 				queryEvent.data = data;
 				queryEvent.dispatch();
 			}
+			
+			private function searchBt_clickHandler():void
+			{
+				conditionGroup.removeAllElements();
+				queryTypesAndDetailList();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -228,13 +240,14 @@
 							labelField="name"
 							rowCount="6" columnCount="4"
 							type="button"
-							buttonStyleName="ScrollPanelItemStyle"/>
+							buttonStyleName="ScrollPanelItemStyle"
+							ScrollPanelClick="searchBt_clickHandler()"/>
 		</s:HGroup>
 		<line:HLine />
 		<s:HGroup width="100%" height="30" gap="10" verticalAlign="middle">
-			<s:TextInput id="searchInput"  height="100%" prompt="请输入关键字" width="100%"/> 
+			<s:TextInput id="searchInput"  height="100%" prompt="请输入关键字" width="100%" enter="searchBt_clickHandler()"/> 
 			<s:Button id="searchBt" height="100%" width="60" buttonMode="true" label="查询" 
-					  styleName="SubmitRegisterStyle"  click="queryTypesAndDetailList()"/>
+					  styleName="SubmitRegisterStyle"  click="searchBt_clickHandler()"/>
 		</s:HGroup>
 		<s:VGroup id="ResultContentPanel" width="100%" height="100%" gap="10" visible="false">
 			<s:Panel title="水体类型" width="100%" maxHeight="200" minHeight="80">
