@@ -9,11 +9,16 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
-			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.adobe.utils.StringUtil;
-			import com.supermap.wegis.common.components.events.ScrollPanelEvent;
+			import com.supermap.web.core.Feature;
+			import com.supermap.web.core.Point2D;
+			import com.supermap.web.core.geometry.GeoPoint;
+			import com.supermap.web.core.styles.CompositeStyle;
+			import com.supermap.web.core.styles.PictureMarkerStyle;
+			import com.supermap.web.core.styles.TextStyle;
 			import com.supermap.wegis.common.components.scrollPanel.ButtonItem;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
@@ -25,6 +30,10 @@
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.utils.CairngormEventClass;
+			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.utils.FeatureLayerUtil;
+			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.MapQueryVO;
 			
 			import spark.components.DropDownList;
@@ -38,12 +47,47 @@
 			}
 			
 			public function initEventListener():void{
-				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD
-					, systemReloadHandler);
-				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_MAIN_TYPES_RESPONSE
-					, queryMainTypesHandler);
-				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST_RESPONSE
-					, queryTypesAndDetailListHandler);
+				var eList:ArrayCollection = new ArrayCollection([
+					[QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE, querySingleObjectInfoResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
+					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
+					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler],
+					[QueryEvent.QUERY_MAIN_TYPES_RESPONSE, queryMainTypesHandler],
+					[QueryEvent.QUERY_TYPES_AND_DETAIL_LIST_RESPONSE, queryTypesAndDetailListHandler]
+				]);
+				var eventObject:CairngormEventClass = new CairngormEventClass();
+				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			private function querySingleObjectInfoResponseHandler(event:CairngormEvent):void
+			{
+				// 打开遮罩面板
+				maskGroup.visible = false;
+				var result:Object = event.data;
+				var index:int =  result.index as int;
+				var selectItem:Object = resultList.dataProvider.getItemAt(index);
+				//查询失败
+				if (result.message == false) {
+					selectItem.selected = false;
+					resultList.dataProvider.itemUpdated(selectItem);
+				}
+				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
+				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
+				for each(var feature:Feature in featuresLayer.features) {
+					if (selectItem.id == feature.id) {
+						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 32, 47, 0, 23); 
+						if (selectItem.selected == true){
+							picStyle.source = ResourceManagerEx.FindResource("lcsel").cls;
+						} else {
+							picStyle.source = ResourceManagerEx.FindResource("lcnor").cls;
+						}
+						feature.style = picStyle;
+					}
+				}
+			}
+			
+			private function clearSystemHandler(event:CairngormEvent):void
+			{
+				
 			}
 			
 			//用户或子系统发生变化，刷新数据
@@ -51,7 +95,6 @@
 			{
 				//此处添加模块UI及逻辑初始化功能
 				this.resetUI();
-				
 				queryMainTypes();
 			}
 			
@@ -65,7 +108,9 @@
 				
 				this.ResultContentPanel.visible = false;
 				this.resultList.dataProvider = null;
+				creationMapMarks();
 				this.searchInput.text = null;
+				maskGroup.visible = false;
 			}
 			
 			//请求mainType
@@ -98,6 +143,7 @@
 				queryEvent.data = mapQueryVO;
 				queryEvent.dispatch();
 				resultList.dataProvider = null;
+				creationMapMarks();
 				var waterWatchEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_WATCH_WIDGET);
 				waterWatchEvent.dispatch();
 			}
@@ -152,6 +198,7 @@
 						if (data.attributes.targetList != null && data.attributes.targetList.length > 0) 
 						{
 							resultList.dataProvider = new ArrayCollection(data.attributes.targetList);
+							creationMapMarks(data.attributes.targetList);
 						}
 					}
 				}
@@ -159,6 +206,52 @@
 				{
 					this.ResultContentPanel.visible = false;
 					//此处面板做相应的初始化
+				}
+			}
+			
+			//创建地图mark,如果传空，清除
+			private function creationMapMarks(results:Array = null):void
+			{
+				var markLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
+				markLayer.clear();
+				var markTextLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURETEXT_LAYER, modelLocator.mapCtrl);
+				markTextLayer.clear();
+				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[4];
+				if (results != null) {
+					var temx:Number = modelLocator.mapCtrl.center.x;
+					var temy:Number = modelLocator.mapCtrl.center.y;
+					var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 32, 47,0 ,23);
+					picMarkStyle.source = ResourceManagerEx.FindResource("lcnor").cls;
+					for each(var item:Object in results) {
+						//现在的返回结果没有坐标，先程序添加几个点
+						item.x = temx + Math.random();
+						item.y = temy + Math.random();
+						var feature:Feature = new Feature(new GeoPoint(item.x, item.y), picMarkStyle, item);
+						feature.addEventListener(MouseEvent.CLICK, featureClickHandler);
+						feature.id = item.id;
+						feature.buttonMode = true;
+						markLayer.addFeature(feature);
+						
+						var textType:TextStyle =  FeatureLayerUtil.getTextStyle(item.name);
+						var textFeature:Feature = new Feature(new GeoPoint(item.x, item.y), textType);
+						textFeature.id = "lab"+item.id;
+						textFeature.buttonMode = true;
+						textFeature.maxVisibleResolution = modelLocator.mapCtrl.resolutions[3];
+						markTextLayer.addFeature(textFeature);
+					}
+				}
+			}
+			
+			//点击要素，结果列表定位显示
+			private function featureClickHandler(event:MouseEvent):void
+			{
+				var feature:Feature = event.currentTarget as Feature;
+				var id:String = feature.id;
+				for each(var item:Object in resultList.dataProvider) {
+					if (item.id == id) {
+						resultList.selectedItem = item;
+						resultList.ensureIndexIsVisible( resultList.dataProvider.getItemIndex(item));
+					}
 				}
 			}
 			
@@ -201,7 +294,7 @@
 				for each(var item:IVisualElement in removeDDs) {
 					conditionGroup.removeElement(item);
 				}
-					queryTypesAndDetailList();
+				queryTypesAndDetailList();
 			}
 			
 			
@@ -210,18 +303,34 @@
 				resultList.addEventListener(ListCheckItemRendererEvent.SELECT_CHANGED, selectChangedHandler);
 			}
 			
+			//结果列表，选择框选择和取消
 			private function selectChangedHandler(event:ListCheckItemRendererEvent):void
 			{
+				// 打开遮罩面板
+				maskGroup.visible = true;
 				var data:Object = event.data;
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO);
 				queryEvent.data = data;
 				queryEvent.dispatch();
+				
 			}
 			
 			private function searchBt_clickHandler():void
 			{
 				conditionGroup.removeAllElements();
 				queryTypesAndDetailList();
+			}
+			
+			//点击结果列表，根据当前对象是否在屏幕显示范围内，如果在，不移动地图，如果不在，居中显示
+			protected function resultList_clickHandler(event:MouseEvent):void
+			{
+				var selectItem:Object = resultList.selectedItem;
+				var x:Number = selectItem.x;
+				var y:Number = selectItem.y;
+				var point:Point2D = new Point2D(x, y);
+				if (modelLocator.mapCtrl.viewBounds.containsPoint(point) == false) {
+					modelLocator.mapCtrl.panTo(point);
+				}
 			}
 			
 		]]>
@@ -261,7 +370,16 @@
 				<s:List id="resultList" width="100%" height="100%"  labelField="name"  
 						creationComplete="resultList_creationCompleteHandler(event)"
 						borderVisible="false" 
-						itemRenderer="sm.wegis.szy.renders.MapQueryListItemRenderer"/>
+						itemRenderer="sm.wegis.szy.renders.MapQueryListItemRenderer"
+						click="resultList_clickHandler(event)"/>
+				<s:Group id="maskGroup" width="100%" height="100%" visible="false">
+					<s:Rect left="0" right="0" top="0" bottom="0" >
+						<s:fill>
+							<s:SolidColor color="0x979797" alpha="0.5"/>
+						</s:fill>
+					</s:Rect>
+					<s:Label text="查询中..." color="0xFFFFFF" horizontalCenter="0" verticalCenter="0"/>
+				</s:Group>
 			</s:Panel>
 		</s:VGroup>
 	</s:VGroup>

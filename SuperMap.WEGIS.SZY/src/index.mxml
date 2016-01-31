@@ -12,6 +12,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.supermap.web.core.styles.CompositeStyle;
 			import com.supermap.wegis.common.core.plugin.PluginClass;
 			import com.supermap.wegis.common.core.plugin.PluginManager;
 			import com.supermap.wegis.common.utils.Property;
@@ -34,6 +35,7 @@
 			private var isReadCreateSpring:Boolean = false;
 			//spring和view都创建完成
 			private var allCreateComplete:Boolean =false;
+			private var lostCls:Array = [CompositeStyle];
 			
 			protected function preinitializeHandler(event:FlexEvent):void
 			{

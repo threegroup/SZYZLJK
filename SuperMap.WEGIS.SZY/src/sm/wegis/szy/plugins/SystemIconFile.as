@@ -126,11 +126,17 @@ package sm.wegis.szy.plugins
 		private static var MGMBKey:String = "MGMB";
 		ResourceManagerEx.RegisterResource("",MGMBKey, MGMBCls);
 		
-		//地图定位图片
-		[Embed(source="assets/image/location/location.png")]
-		private static var LocationCls:Class;
-		private static var LocationKey:String = "Location";
-		ResourceManagerEx.RegisterResource("",LocationKey, LocationCls);
+		//地图标识mark图片
+		[Embed(source="assets/image/location/lcnor.png")]
+		private static var LcNorCls:Class;
+		private static var LcNorKey:String = "lcnor";
+		ResourceManagerEx.RegisterResource("",LcNorKey, LcNorCls);
+		
+		//地图标识mark选择图片
+		[Embed(source="assets/image/location/lcsel.png")]
+		private static var LcSelCls:Class;
+		private static var LcSelKey:String = "lcsel";
+		ResourceManagerEx.RegisterResource("",LcSelKey, LcSelCls);
 		
 		//控制panel窗口展开和关闭图片
 		[Embed(source="assets/image/others/down.png")]
@@ -150,6 +156,8 @@ package sm.wegis.szy.plugins
 		private static var tipCls:Class;
 		private static var tipKey:String = "TIP";
 		ResourceManagerEx.RegisterResource("",tipKey, tipCls);
+		
+		
 		
 		public function SystemIconFile()
 		{

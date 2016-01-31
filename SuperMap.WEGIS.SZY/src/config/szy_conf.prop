@@ -47,10 +47,10 @@ initRight=180
 initTop=90
 
 #地图显示范围-设置为XXXX范围-待定
-viewLeft=118.84 
-viewBottom=38.72 
-viewRight=125.79 
-viewTop=43.49 
+viewLeft=121.7404 
+viewBottom=40.4814 
+viewRight=125.3412
+viewTop=41.8437
 
 
 

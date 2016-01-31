@@ -54,6 +54,9 @@ package sm.wegis.szy.commands
 			Alert.show("获取目标对象详细信息失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE);
+			var faultObject:Object = new Object();
+			faultObject.success = false;
+			faultObject.index = requestData.index;
 			queryEvent.dispatch();
 		}
 	}
