@@ -20,7 +20,8 @@ waterResourceRasterMapUrl=http://localhost:8080/iserver/services/map-SZY/rest/ma
 #waterResourceVectorMapUrl=http://192.168.117.199:8090/iserver/services/map-SZY/rest/maps/SZY_V
 #waterResourceRasterMapUrl=http://192.168.117.199:8090/iserver/services/map-SZY/rest/maps/SZY_R
 
-waterResourceBaseLayerIds=0,3,22,23,24,30,42,43
+#--底图
+waterResourceBaseLayerIds=0,3,22,23,24,30,40,41
 #系统标识
 systemID=SZYZLJK
 

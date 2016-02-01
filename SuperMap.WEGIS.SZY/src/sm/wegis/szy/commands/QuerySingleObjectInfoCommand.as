@@ -43,6 +43,8 @@ package sm.wegis.szy.commands
 			value.index = requestData.index;
 			//用于右侧表格是添加、还是删除
 			value.selected = true;
+			value.x = requestData.x;
+			value.y = requestData.y;
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE);
 			queryEvent.data = value;
 			queryEvent.dispatch();

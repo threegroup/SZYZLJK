@@ -131,6 +131,8 @@
 								item.id = resultTarget.id;
 								item.name = resultTarget.name;
 								item.index = resultData.index;
+								item.x = resultData.x;
+								item.y = resultData.y;
 								var newColumn:GridColumn;
 								//如果为空或者length=0，添加名称列
 								if (resultGrid.columns == null || resultGrid.columns.length == 0) {
@@ -143,17 +145,10 @@
 								//遍历，添加不包含的列
 								for each(var attribute:Object in resultTarget.attributes)
 								for (var propKey:String in attribute) {
-									if (propKey == "坐标" && attribute[propKey] != null) {
-										var pointStr:String = attribute["坐标"];
-										var pointArr:Array = pointStr.split(",");
-										item.x = Number(pointArr[0]);
-										item.y = Number(pointArr[1]);
-										continue;
-									}
 									var hasContain:Boolean = false;
 									for (var index:int = 0 ; index < resultGrid.columns.length; index++) {
 										var colmn:GridColumn = resultGrid.columns.getItemAt(index) as GridColumn;
-										if (colmn.dataField == propKey) {
+										if (propKey == "名称" || colmn.dataField == propKey) {
 											hasContain = true;
 											break;
 										}
@@ -215,16 +210,6 @@
 					var selectedItem:Object = grid.selectedItem;
 					var point2D:Point2D = new Point2D(selectedItem.x, selectedItem.y);
 					modelLocator.mapCtrl.panTo(point2D);
-					
-					//添加地图定位点图片
-					var importFeatureLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
-					importFeatureLayer.clear();
-					var feature:Feature = new Feature();
-					feature.geometry = new GeoPoint(point2D.x, point2D.y);
-					var picStyle:PictureMarkerStyle = new PictureMarkerStyle(ResourceManagerEx.FindResource("Location").cls);
-					picStyle.yOffset = 11;
-					feature.style = picStyle;
-					importFeatureLayer.addFeature(feature);
 				}
 			}
 			

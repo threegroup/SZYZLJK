@@ -74,7 +74,7 @@
 				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
 				for each(var feature:Feature in featuresLayer.features) {
 					if (selectItem.id == feature.id) {
-						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 32, 47, 0, 23); 
+						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 21, 31, 0, 15);
 						if (selectItem.selected == true){
 							picStyle.source = ResourceManagerEx.FindResource("lcsel").cls;
 						} else {
@@ -215,29 +215,30 @@
 				var markLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
 				markLayer.clear();
 				var markTextLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURETEXT_LAYER, modelLocator.mapCtrl);
+				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[2];
 				markTextLayer.clear();
-				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[4];
 				if (results != null) {
-					var temx:Number = modelLocator.mapCtrl.center.x;
-					var temy:Number = modelLocator.mapCtrl.center.y;
-					var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 32, 47,0 ,23);
+					var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 21, 31,0 ,15);
 					picMarkStyle.source = ResourceManagerEx.FindResource("lcnor").cls;
 					for each(var item:Object in results) {
 						//现在的返回结果没有坐标，先程序添加几个点
-						item.x = temx + Math.random();
-						item.y = temy + Math.random();
-						var feature:Feature = new Feature(new GeoPoint(item.x, item.y), picMarkStyle, item);
-						feature.addEventListener(MouseEvent.CLICK, featureClickHandler);
-						feature.id = item.id;
-						feature.buttonMode = true;
-						markLayer.addFeature(feature);
-						
-						var textType:TextStyle =  FeatureLayerUtil.getTextStyle(item.name);
-						var textFeature:Feature = new Feature(new GeoPoint(item.x, item.y), textType);
-						textFeature.id = "lab"+item.id;
-						textFeature.buttonMode = true;
-						textFeature.maxVisibleResolution = modelLocator.mapCtrl.resolutions[3];
-						markTextLayer.addFeature(textFeature);
+						var positionStr:String = item.location;
+						if (positionStr != null && positionStr.split(",").length == 2) {
+							var positions:Array = positionStr.split(",");
+							item.x = Number(positions[0]);
+							item.y = Number(positions[1]);
+							var feature:Feature = new Feature(new GeoPoint(item.x, item.y), picMarkStyle, item);
+							feature.addEventListener(MouseEvent.CLICK, featureClickHandler);
+							feature.id = item.id;
+							feature.buttonMode = true;
+							markLayer.addFeature(feature);
+							
+							var textType:TextStyle =  FeatureLayerUtil.getTextStyle(item.name);
+							var textFeature:Feature = new Feature(new GeoPoint(item.x, item.y), textType);
+							textFeature.id = "lab"+item.id;
+							textFeature.buttonMode = true;
+							markTextLayer.addFeature(textFeature);
+						}
 					}
 				}
 			}
