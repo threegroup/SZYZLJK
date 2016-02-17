@@ -20,6 +20,9 @@ package sm.wegis.szy.events
 		/**系统获取功能参数时派发此事件*/
 		public static const GET_FUNCTION:String = "GetFunction";
 		
+		/**系统获取应用系统相关参数时派发此事件*/
+		public static const GET_SYSTEM_PARAM:String = "GetSystemParam";
+		
 		/**数据绑定完成时派发此事件*/
 		public static const DATA_BIND_CREATED:String = "DataBindCreated";
 		
@@ -29,13 +32,13 @@ package sm.wegis.szy.events
 		/**系统用户，或者子系统重新选择，派发reload事件，针对需要刷新数据模块*/
 		public static const SYSTEM_RELOAD:String = "SystemReload";
 		
-		/**加载图层配置文件*/
-		public static const GetLayerJson:String ="GetLayerJson";
-		public static const GetLayerJsonResponse:String ="GetLayerJsonResponse";
+		/**应用系统选择或者切换，派发更新应用系统参数事件*/
+		public static const SYSTEM_SELECT:String = "SystemSelect";
 		
 		/**系统登录事件*/
 		public static const LoginIn:String = "LoginIn";
 		public static const LoginInResponse:String = "LoginInResponse";
+		
 		
 		public function SystemEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

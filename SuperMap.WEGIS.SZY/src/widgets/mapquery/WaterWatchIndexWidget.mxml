@@ -158,7 +158,7 @@
 										newColumn.dataField = propKey;
 										resultGrid.columns.addItem(newColumn);
 									}
-									item[propKey] = resultTarget.attributes[propKey];
+									item[propKey] = attribute[propKey];
 								}
 								resultGrid.dataProvider.addItem(item);
 								ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);

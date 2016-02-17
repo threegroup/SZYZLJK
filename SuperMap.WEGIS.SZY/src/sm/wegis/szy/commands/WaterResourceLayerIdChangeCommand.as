@@ -25,6 +25,15 @@ package sm.wegis.szy.commands
 			}
 			//水资源地图显示
 			var waterResourceLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer(ConstVO.WaterResourceLayerId) as TiledDynamicRESTLayerEx;
+			if (waterResourceLayer == null){
+				waterResourceLayer = new TiledDynamicRESTLayerEx();
+				waterResourceLayer.id = ConstVO.WaterResourceLayerId;
+				waterResourceLayer.layerType = 1;
+				waterResourceLayer.layerIndex = 1;
+				waterResourceLayer.transparent = true;
+				mapCtrl.addLayer(waterResourceLayer);
+				mapCtrl.sortLayers();
+			}
 			waterResourceLayer.layersID = lastLayerIds;
 			waterResourceLayer.refresh();
 		}

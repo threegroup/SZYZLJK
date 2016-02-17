@@ -1,6 +1,7 @@
 package sm.wegis.szy.vo
 {
 	import com.supermap.web.core.Rectangle2D;
+	import com.supermap.wegis.common.core.hashTable.HashTable;
 	
 	import mx.collections.ArrayCollection;
 	
@@ -19,7 +20,11 @@ package sm.wegis.szy.vo
 		
 		private var _subSystemID:String;
 		
+		private var _subSystemMapID:String;
+		
 		private var _systemFunctionUrl:String;
+		
+		private var _systemParamUrl:String;
 		
 		private var _systemID:String;
 		
@@ -31,6 +36,83 @@ package sm.wegis.szy.vo
 		
 		private var _systemList:ArrayCollection = null;
 		private var _isSystemInited:Boolean = false;
+		
+		private var _systemParams:HashTable;
+		
+		private var _themeLayers:ArrayCollection;
+		
+		private var _baseMap:BaseMapVO;
+
+		/**当前底图状态，矢量/影像*/
+		public function get baseMap():BaseMapVO
+		{
+			return _baseMap;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set baseMap(value:BaseMapVO):void
+		{
+			_baseMap = value;
+		}
+
+		/**图层控制列表数据 */
+		public function get themeLayers():ArrayCollection
+		{
+			return _themeLayers;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set themeLayers(value:ArrayCollection):void
+		{
+			_themeLayers = value;
+		}
+
+		/**应用系统MapID，配置文件采用MapID作为键*/
+		public function get subSystemMapID():String
+		{
+			return _subSystemMapID;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set subSystemMapID(value:String):void
+		{
+			_subSystemMapID = value;
+		}
+
+		/**各应用系统配置参数*/
+		public function get systemParams():HashTable
+		{
+			return _systemParams;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set systemParams(value:HashTable):void
+		{
+			_systemParams = value;
+		}
+
+		/**各应用系统相关参数，包括地图地址，图层控制，显示范围，对应的配置文件路径*/
+		public function get systemParamUrl():String
+		{
+			return _systemParamUrl;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set systemParamUrl(value:String):void
+		{
+			_systemParamUrl = value;
+		}
+
 		/**
 		 *系统是否已经初始化
 		 */

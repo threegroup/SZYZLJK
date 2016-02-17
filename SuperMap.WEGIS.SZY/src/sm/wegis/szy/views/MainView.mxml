@@ -21,6 +21,7 @@
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.adobe.utils.StringUtil;
+			import com.supermap.web.core.Rectangle2D;
 			import com.supermap.wegis.common.components.events.MenuEventEx;
 			import com.supermap.wegis.common.components.events.ScrollPanelEvent;
 			import com.supermap.wegis.common.components.events.ToolEvent;
@@ -153,7 +154,7 @@
 						for(var i:int=0; i<tempAarray.length; i++)
 						{
 							var item:Object = tempAarray[i];
-							tempAarray[i]["key"] = item["mapId"] + item["id"];
+							tempAarray[i]["key"] = item["mapId"] != null ? item["mapId"] : "defaultSystem";
 						}
 					}
 					modelLocator.systemInfo.systemList = new ArrayCollection(tempAarray);
@@ -167,6 +168,7 @@
 						var param:Object = modelLocator.systemInfo.systemList[0];
 						modelLocator.systemInfo.subSystemTitle = param["name"];
 						modelLocator.systemInfo.subSystemID = param["id"];
+						modelLocator.systemInfo.subSystemMapID = param["key"];
 						
 						this.choosePanel(false,true,false);
 						systemInitControler();
@@ -198,6 +200,8 @@
 				} else {
 					//切换用户或者子系统，派发重新加载数据的事件，针对已经初始化后的情景 
 					systemEvent = new SystemEvent(SystemEvent.SYSTEM_RELOAD);
+					var systemSelectEvent:SystemEvent = new SystemEvent(SystemEvent.SYSTEM_SELECT);
+					systemSelectEvent.dispatch();
 				}
 				systemEvent.dispatch();
 			}
@@ -224,6 +228,7 @@
 					var param:Object = data.param;
 					modelLocator.systemInfo.subSystemTitle = param["name"];
 					modelLocator.systemInfo.subSystemID = param["id"];
+					modelLocator.systemInfo.subSystemMapID = param["key"];
 					choosePanel(false,true);
 					systemInitControler();
 				}

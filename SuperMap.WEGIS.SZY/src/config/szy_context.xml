@@ -13,26 +13,17 @@
 		<constructor-arg type="number" value="${initRight}"></constructor-arg>
 		<constructor-arg type="number" value="${initTop}"></constructor-arg>
 	</object>
-	<!-- 地图显示范围 -->
-	<object id="viewBoundsEx" class="com.supermap.web.core.Rectangle2D">
-		<constructor-arg type="number" value="${viewLeft}"></constructor-arg>
-		<constructor-arg type="number" value="${viewBottom}"></constructor-arg>
-		<constructor-arg type="number" value="${viewRight}"></constructor-arg>
-		<constructor-arg type="number" value="${viewTop}"></constructor-arg>
-	</object>
+	
 	<!-- 地图显示比例尺 -->
 	<object id="LayerScales" class="com.supermap.wegis.common.core.ArrayEx">
 		<constructor-arg value="${layerScales}" />
 	</object>
 	<!--地图控件 -->
 	<object id="MapCtrl"
-		class="com.supermap.wegis.common.components.mapCtrl.MapCtrl"
-		depends-on="viewBoundsEx">
+		class="com.supermap.wegis.common.components.mapCtrl.MapCtrl">
 		<property name="percentHeight" value="100" />
 		<property name="percentWidth" value="100" />
-		<property name="viewBoundsEx" ref="viewBoundsEx" />
 		<property name="scales" ref="LayerScales" />
-		<!--<property name="restrictedBounds" ref="viewBoundsEx" /> -->
 	</object>
 
 	<!--所有view，通过这个对象添加到界面上 -->
@@ -62,6 +53,7 @@
 	<!-- SystemVo -->
 	<object id="SystemVO" class="sm.wegis.szy.vo.SystemVO">
 		<property name="systemFunctionUrl" value="${systemFunctionUrl}" />
+		<property name="systemParamUrl" value="${systemParamUrl}" />
 		<property name="systemTitle" value="${systemTitle}" />
 		<property name="systemID" value="${systemID}" />
 		<property name="isNeedAuthorization" value="${isNeedAuthorization}" />
@@ -75,9 +67,6 @@
 		<property name="tdtVectorLabel" value="${TDTVectorLabel}" />
 		<property name="tdtImage" value="${TDTImage}" />
 		<property name="tdtImageLabel" value="${TDTImageLabel}" />
-		<property name="waterResourceVectorMapUrl" value="${waterResourceVectorMapUrl}" />
-		<property name="waterResourceRasterMapUrl" value="${waterResourceRasterMapUrl}" />
-		<property name="waterResourceBaseLayerIds" value="${waterResourceBaseLayerIds}" />
 	</object>
 
 	<!--ModelLocator -->
@@ -122,6 +111,8 @@
 					<value type="Class">sm.wegis.szy.commands.SystemInitCommand</value>
 					<value type="Class">sm.wegis.szy.commands.DataBindCreatedCommand</value>
 					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand</value>
+					<value type="Class">sm.wegis.szy.commands.SystemSelectCommand</value>
+					
 					<!--切换底图 -->
 					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand</value>
 					<value type="Class">sm.wegis.szy.commands.MapToolItemClickCommand</value>
@@ -147,6 +138,8 @@
 				<property name="SystemInit" value="SystemInitCommand" />
 				<property name="DataBindCreated" value="DataBindCreatedCommand" />
 				<property name="SystemSecurity" value="SystemSecurityCommand" />
+			    <property name="SystemSelect" value="SystemSelectCommand" />
+				
 				<property name="BaseMapChange" value="BaseMapChangeCommand" />
 				<property name="MapToolItemClick" value="MapToolItemClickCommand" />
 				<property name="WaterResourceLayerIdChange" value="WaterResourceLayerIdChangeCommand" />
@@ -189,8 +182,8 @@
 				<array>
 					<!--获取系统功能 -->
 					<value type="Class">sm.wegis.szy.commands.GetFunctionCommand</value>
-						<!--获取图层Json文件-->
-					<value type="Class">sm.wegis.szy.commands.GetLayerJsonCommand</value>
+					<!--获取应用系统相关参数配置文件-->
+					<value type="Class">sm.wegis.szy.commands.GetSystemParamCommand</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -203,8 +196,7 @@
 			<object>
 				<!--获取系统功能 -->
 				<property name="GetFunction" value="GetFunctionCommand" />
-				<!--获取图层Json文件-->
-				<property name="GetLayerJson" value="GetLayerJsonCommand" />
+				<property name="GetSystemParam" value="GetSystemParamCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

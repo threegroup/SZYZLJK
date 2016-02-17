@@ -119,6 +119,8 @@
 				}
 				else
 				{
+//					var systemParamEvent:SystemEvent = new SystemEvent(SystemEvent.GET_SYSTEM_PARAM);
+//					systemParamEvent.dispatch();
 //					getSecurityControler();
 				}
 			}

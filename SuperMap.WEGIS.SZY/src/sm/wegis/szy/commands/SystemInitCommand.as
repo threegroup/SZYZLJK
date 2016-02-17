@@ -21,6 +21,9 @@ package sm.wegis.szy.commands
 					var functionEvent:SystemEvent = new SystemEvent(SystemEvent.GET_FUNCTION);
 					functionEvent.dispatch();
 					
+					var systemParamEvent:SystemEvent = new SystemEvent(SystemEvent.GET_SYSTEM_PARAM);
+					systemParamEvent.dispatch();
+					
 					//设置系统标题
 					BrowserManager.getInstance().setTitle(modelLocator.systemInfo.systemTitle);
 					break;

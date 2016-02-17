@@ -25,7 +25,7 @@
 				this.currentState = "normal";
 			}
 			
-			protected function layerList_changeHandler(event:LayerListEvent):void
+			private function layerList_changeHandler(event:LayerListEvent):void
 			{
 				var layerIds:String = "";
 				for each (var item:Object in layerList.dataProvider) 

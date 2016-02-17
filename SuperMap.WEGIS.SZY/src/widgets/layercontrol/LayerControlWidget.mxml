@@ -18,58 +18,43 @@
 			
 			import sm.wegis.szy.events.MapLayerEvent;
 			import sm.wegis.szy.events.SystemEvent;
-			private function updateLayerCtrolList(event:CairngormEvent):void
-			{
-				if (layerControl.dataProvider == null)
-				{
-					layerControl.dataProvider = new ArrayCollection();
-				}
-				if (event.type == MapLayerEvent.MAP_SERVICE_LAYER_ADD)
-				{
-					//如果不存在则添加到显示列表
-					if(layerControl.dataProvider.getItemIndex(event.data) == -1)
-					{
-						layerControl.dataProvider.addItem(event.data);
-					}
-				}
-				else if (event.type == MapLayerEvent.MAP_SERVICE_LAYER_REMOVE)
-				{
-					for (var index:int = 0 ; index < layerControl.dataProvider.length ; index++)
-					{
-						if (layerControl.dataProvider[index] == event.data)
-						{
-							layerControl.dataProvider.removeItemAt(index);	
-							break;
-						}
-					}
-				}
-				layerControl.dataProvider.refresh();
-			}
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.vo.LayerInfo;
+			
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
-				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.GetLayerJsonResponse, getLayerHandler);
-				var getLayerEvent:SystemEvent = new SystemEvent(SystemEvent.GetLayerJson);
-				getLayerEvent.dispatch();
-			
+				getLayerHandler(null);
+				CairngormEventDispatcher.getInstance().addEventListener(MapLayerEvent.THEME_LAYER_CHANGE, getLayerHandler);
 			}
 			
 			private function getLayerHandler(event:CairngormEvent):void
 			{
-				var data:Array = event.data as Array;
-				for each(var item:Object in data) {
-					item.selected = 1;
+				if (modelLocator.systemInfo.themeLayers != null) {
+					layerControl.dataProvider = modelLocator.systemInfo.themeLayers;
+					refreshLayerIds(layerControl.dataProvider);
 				}
-				layerControl.dataProvider = new ArrayCollection(data as Array);
 			}
 			
-			protected function layerControl_changedHandler(event:MapLayerEvent):void
+			private function refreshLayerIds(layerList:ArrayCollection):void
 			{
-				for each(var item:Object in layerControl.dataProvider) {
-					
+				var layerIds:String = "";
+				for each (var item:Object in layerList) 
+				{
+					if (item.selected == 1) {
+						layerIds = layerIds + item.layerIds + ",";
+					}
+				}
+				if (layerIds.length > 0) {
+					layerIds = layerIds.substr(0 ,layerIds.length -1);
+					var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.Water_Resource_LayerId_Change);
+					var layerInfo:LayerInfo = new LayerInfo();
+					layerInfo.layerIds = layerIds;
+					mapLayerEvent.data = layerInfo;
+					mapLayerEvent.dispatch();
 				}
 			}
-			
 		]]>
 	</fx:Script>
 	<layercontrol:LayerList id="layerControl"/>

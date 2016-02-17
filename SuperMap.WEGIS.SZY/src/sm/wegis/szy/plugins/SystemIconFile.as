@@ -26,13 +26,19 @@ package sm.wegis.szy.plugins
 		/**系统选择界面*/
 		[Embed(source="assets/image/system/system.png")]
 		private static var tzhlyPngCls:Class;
-		private static var tzhlyPngKey:String = "aaaaaaa1";
+		private static var tzhlyPngKey:String = "ABA27006";
 		ResourceManagerEx.RegisterResource("",tzhlyPngKey, tzhlyPngCls);
 		
 		[Embed(source="assets/image/system/system.png")]
 		private static var yqskPngCls:Class;
-		private static var yqskPngKey:String = "bbbbbb2";
+		private static var yqskPngKey:String = "于桥水库";
 		ResourceManagerEx.RegisterResource("",yqskPngKey, yqskPngCls);
+		
+		//如果系统mapId为null,使用默认图片
+		[Embed(source="assets/image/system/system.png")]
+		private static var defaultPngCls:Class;
+		private static var defaultPngKey:String = "defaultSystem";
+		ResourceManagerEx.RegisterResource("",defaultPngKey, defaultPngCls);
 		
 		/**底图矢量*/
 		[Embed(source="assets/image/basemap/vector.png")]

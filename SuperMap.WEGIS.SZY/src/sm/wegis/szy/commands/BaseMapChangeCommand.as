@@ -17,7 +17,10 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			var baseMapVO:BaseMapVO = event.data as BaseMapVO;
+			if (modelLocator.systemInfo.baseMap == null) {
+				return;
+			}
+			var baseMapVO:BaseMapVO = modelLocator.systemInfo.baseMap;
 			var mapCtrl:MapCtrl = modelLocator.mapCtrl;
 			//底图和注记两个图层
 			var baseLayer:TiledWMTSLayerEx = mapCtrl.getLayer( ConstVO.BaseMapLayerId) as TiledWMTSLayerEx;

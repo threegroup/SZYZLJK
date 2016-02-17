@@ -13,10 +13,11 @@
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.events.MapLayerEvent;
+			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.vo.BaseMapVO;
 			import sm.wegis.szy.vo.ConstVO;
 			
-			
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			protected function baseMapType_clickHandler(event:MouseEvent):void
 			{
 				if (this.currentState == ConstVO.VectorMapState) {
@@ -29,10 +30,11 @@
 			
 			private function dispatchBaseMapChangeEvent():void
 			{
-				var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE);
 				var baseMapVO:BaseMapVO = new BaseMapVO();
 				baseMapVO.baseMapState = this.currentState;
-				mapLayerEvent.data = baseMapVO;
+				modelLocator.systemInfo.baseMap = baseMapVO;
+				
+				var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE);
 				mapLayerEvent.dispatch();
 			}
 			
