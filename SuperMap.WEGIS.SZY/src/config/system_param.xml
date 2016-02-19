@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <system>
-	<subSystem name="ABA27006">
+	<subSystem name="taizihe">
 		<viewBounds>121.7404, 40.4814, 125.3412, 41.8437</viewBounds>
 		<vectorMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_V</vectorMapUrl>
 		<rasterMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_R</rasterMapUrl>
