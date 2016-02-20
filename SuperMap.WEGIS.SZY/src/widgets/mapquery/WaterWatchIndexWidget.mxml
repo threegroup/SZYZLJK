@@ -10,13 +10,9 @@
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
-			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.Point2D;
-			import com.supermap.web.core.geometry.GeoPoint;
-			import com.supermap.web.core.styles.PictureMarkerStyle;
 			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
-			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			import com.supermap.wegis.common.utils.ArrayCollectionUtils;
 			
 			import mx.collections.ArrayCollection;
@@ -28,8 +24,6 @@
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
-			import sm.wegis.szy.utils.FeatureLayerUtil;
-			import sm.wegis.szy.vo.ConstVO;
 			
 			import spark.components.gridClasses.GridColumn;
 			import spark.events.GridEvent;
@@ -90,7 +84,8 @@
 			//响应系统清除
 			private function clearSystemHandler(event:CairngormEvent):void
 			{
-				this.resetUI();
+				//暂定不重置UI
+				//this.resetUI();
 			}
 			
 			/**清除所有结果*/
@@ -166,7 +161,8 @@
 								this.currentState = SHOW;
 							}
 						}
-					} else if (resultData.selected == false) {
+					} else if (resultData.selected == false) 
+					{
 						var dataProvider:ArrayCollection = resultGrid.dataProvider as ArrayCollection;
 						for each(var itemData:Object in dataProvider)
 						{
@@ -174,6 +170,13 @@
 								dataProvider.removeItemAt(dataProvider.getItemIndex(itemData));
 								break;
 							}
+						}
+						
+						//如果表格不再有记录，则清除表格列，并隐藏模块。
+						if(dataProvider.length == 0)
+						{
+							resultGrid.columns.removeAll();
+							this.currentState = HIDE;
 						}
 					}
 				}

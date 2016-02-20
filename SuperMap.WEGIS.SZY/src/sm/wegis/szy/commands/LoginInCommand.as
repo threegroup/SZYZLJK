@@ -45,14 +45,18 @@ package sm.wegis.szy.commands
 				
 				//成功登录，则通过登录响应事件派发登录用户信息
 				var systemEvent:SystemEvent = new SystemEvent(SystemEvent.LoginInResponse);
-				if(value != null && value["success"])
+				if(value != null)
+				{
+					systemEvent.data = value;
+				}
+				/*if(value != null && value["success"])
 				{
 					systemEvent.data = value;
 				}
 				else
 				{
 					systemEvent.data = null;
-				}
+				}*/
 				systemEvent.dispatch();
 			}
 			CursorManager.removeBusyCursor();

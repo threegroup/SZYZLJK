@@ -134,9 +134,10 @@
 			//登录成功
 			private function loginInResponseHandler(event:SystemEvent):void
 			{
+				this.LoginInfoLabel.text = "";
 				//进入系统选择面板，此处要注意，如果返回结果只有一个系统，直接进入，如果有多个，则显示系统选择面板。
 				var data:Object = event.data;
-				if(data != null)
+				if(data != null  && data["success"])
 				{
 					//默认启用系统切换功能
 					this.changeSystemId.enabled = true;
@@ -185,6 +186,10 @@
 					} else if (modelLocator.systemInfo.systemList.length == 0) {
 						Alert.show("登录用户没有可以访问的系统","警告");
 					}
+				}
+				else
+				{
+					this.LoginInfoLabel.text = data["message"];
 				}
 			}
 			
@@ -317,6 +322,9 @@
 				if(menuItemData == null) {
 					return;
 				}
+				
+				//模块切换时，清除浮动及其他模块面板
+				WidgetManager.getInstance().removeModuleFromContainer([BodyContainerID,RightDownContainerID]);
 				
 				//若有多个子模块
 				if(menuItemData.hasOwnProperty("subitems")
