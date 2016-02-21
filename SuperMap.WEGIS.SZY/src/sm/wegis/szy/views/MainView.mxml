@@ -155,10 +155,6 @@
 						for(var i:int=0; i<tempAarray.length; i++)
 						{
 							var item:Object = tempAarray[i];
-							//临时添加，判断于桥水库
-							if(item.mapId == null) {
-								item.mapId = "yuqiao";
-							}
 							tempAarray[i]["key"] = item["mapId"] != null ? item["mapId"] : "defaultSystem";
 						}
 					}

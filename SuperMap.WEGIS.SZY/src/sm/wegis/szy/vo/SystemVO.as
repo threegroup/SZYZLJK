@@ -42,6 +42,22 @@ package sm.wegis.szy.vo
 		private var _themeLayers:ArrayCollection;
 		
 		private var _baseMap:BaseMapVO;
+		
+		private var _lastLayerIds:String;
+
+		/**应用系统图层控制LayersId*/
+		public function get lastLayerIds():String
+		{
+			return _lastLayerIds;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set lastLayerIds(value:String):void
+		{
+			_lastLayerIds = value;
+		}
 
 		/**当前底图状态，矢量/影像*/
 		public function get baseMap():BaseMapVO

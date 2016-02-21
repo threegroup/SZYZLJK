@@ -23,19 +23,13 @@ package sm.wegis.szy.commands
 			} else {
 				lastLayerIds = lastLayerIds + modelLocator.baseMapInfo.waterResourceBaseLayerIds + "," + layerInfo.layerIds +"]";
 			}
+			modelLocator.systemInfo.lastLayerIds = lastLayerIds;
 			//水资源地图显示
 			var waterResourceLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer(ConstVO.WaterResourceLayerId) as TiledDynamicRESTLayerEx;
-			if (waterResourceLayer == null){
-				waterResourceLayer = new TiledDynamicRESTLayerEx();
-				waterResourceLayer.id = ConstVO.WaterResourceLayerId;
-				waterResourceLayer.layerType = 1;
-				waterResourceLayer.layerIndex = 1;
-				waterResourceLayer.transparent = true;
-				mapCtrl.addLayer(waterResourceLayer);
-				mapCtrl.sortLayers();
+			if (waterResourceLayer != null){
+				waterResourceLayer.layersID = lastLayerIds;
+				waterResourceLayer.refresh();
 			}
-			waterResourceLayer.layersID = lastLayerIds;
-			waterResourceLayer.refresh();
 		}
 	}
 }

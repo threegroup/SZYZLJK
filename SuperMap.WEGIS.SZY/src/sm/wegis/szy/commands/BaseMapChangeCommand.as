@@ -47,12 +47,22 @@ package sm.wegis.szy.commands
 			
 			//水资源地图显示
 			var waterResourceLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer(ConstVO.WaterResourceLayerId) as TiledDynamicRESTLayerEx;
-			if (waterResourceLayer == null){
+			if (waterResourceLayer != null) {
+				mapCtrl.removeLayer(waterResourceLayer);
+				waterResourceLayer = null;
+			}
+			if (modelLocator.baseMapInfo.waterResourceVectorMapUrl != null && modelLocator.baseMapInfo.waterResourceRasterMapUrl != null){
 				waterResourceLayer = new TiledDynamicRESTLayerEx();
 				waterResourceLayer.id = ConstVO.WaterResourceLayerId;
 				waterResourceLayer.layerType = 1;
 				waterResourceLayer.layerIndex = 1;
 				waterResourceLayer.transparent = true;
+				waterResourceLayer.layersID = modelLocator.systemInfo.lastLayerIds;
+				if (baseMapVO.baseMapState == ConstVO.VectorMapState) {
+					waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceVectorMapUrl;
+				} else {
+					waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceRasterMapUrl;
+				}
 				mapCtrl.addLayer(waterResourceLayer);
 			}
 			mapCtrl.sortLayers();
@@ -61,11 +71,9 @@ package sm.wegis.szy.commands
 			if (baseMapVO.baseMapState == ConstVO.VectorMapState) {
 				baseLayer.url = modelLocator.baseMapInfo.tdtVector;
 				baseLabelLayer.url = modelLocator.baseMapInfo.tdtVectorLabel;
-				waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceVectorMapUrl;
 			} else {
 				baseLayer.url = modelLocator.baseMapInfo.tdtImage;
 				baseLabelLayer.url = modelLocator.baseMapInfo.tdtImageLabel;
-				waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceRasterMapUrl;
 			}
 		}
 	}
