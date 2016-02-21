@@ -21,6 +21,10 @@ package sm.wegis.szy.utils
 				map.addLayer(featureLayer);
 			} else{
 				map.moveLayer(layerId,map.layerIds.length-1);
+				if(!featureLayer.visible)
+				{
+					featureLayer.visible = true;
+				}
 			}
 			return featureLayer;
 		}
