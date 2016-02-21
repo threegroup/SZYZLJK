@@ -183,6 +183,7 @@
 			
 			private function queryTypesAndDetailListHandler(event:CairngormEvent):void
 			{
+				searchBt.enabled = true;
 				var data:Object = event.data;
 				resultList.dataProvider = null;
 				if (resultList.scrollRect) {
@@ -322,8 +323,11 @@
 			
 			private function searchBt_clickHandler():void
 			{
-				conditionGroup.removeAllElements();
-				queryTypesAndDetailList();
+				if (searchBt.enabled == true){
+					searchBt.enabled = false;
+					conditionGroup.removeAllElements();
+					queryTypesAndDetailList();
+				}
 			}
 			
 			//点击结果列表，根据当前对象是否在屏幕显示范围内，如果在，不移动地图，如果不在，居中显示
