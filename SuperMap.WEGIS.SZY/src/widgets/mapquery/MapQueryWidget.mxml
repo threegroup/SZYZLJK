@@ -73,7 +73,8 @@
 				if (result.message == false) {
 					selectItem.selected = false;
 					resultList.dataProvider.itemUpdated(selectItem);
-				}
+					LoginInfoLabel.text = result.message;
+				} 
 				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
 				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
 				for each(var feature:Feature in featuresLayer.features) {
@@ -115,11 +116,13 @@
 				creationMapMarks();
 				this.searchInput.text = null;
 				maskGroup.visible = false;
+				LoginInfoLabel.text = "";
 			}
 			
 			//请求mainType
 			public function queryMainTypes():void
 			{
+				LoginInfoLabel.text = "";
 				var queryMainTypes:QueryEvent = new QueryEvent(QueryEvent.QUERY_MAIN_TYPES);
 				queryMainTypes.dispatch();
 			}
@@ -128,7 +131,7 @@
 			private function queryTypesAndDetailList():void
 			{
 				if (scrollButtonPanel.currentButtonItem == null && StringUtil.trim(searchInput.text).length == 0 ) {
-					Alert.show("请选择查询类型或输入查询对象名称", "提示", Alert.OK, FlexGlobals.topLevelApplication as Sprite);
+					LoginInfoLabel.text = "请选择查询类型或输入查询对象名称";
 					return;
 				}
 				var selectItem:ButtonItem = scrollButtonPanel.currentButtonItem;
@@ -142,7 +145,7 @@
 				if (typeIds.length > 0 ) {
 					mapQueryVO.typeIds = typeIds.join(",");
 				}
-				
+				LoginInfoLabel.text = "";
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST);
 				queryEvent.data = mapQueryVO;
 				queryEvent.dispatch();
@@ -178,6 +181,8 @@
 							scrollButtonPanel.selectedIndex = 0;//必须先设置数据源，查询第一级分类，在scrollButtonPanel的click事件里进行查询
 						}
 					}
+				}else{
+					LoginInfoLabel.text = data.message;
 				}
 			}
 			
@@ -211,6 +216,7 @@
 				{
 					this.ResultContentPanel.visible = false;
 					//此处面板做相应的初始化
+					LoginInfoLabel.text = data.message;
 				}
 			}
 			
@@ -312,6 +318,7 @@
 			//结果列表，选择框选择和取消
 			private function selectChangedHandler(event:ListCheckItemRendererEvent):void
 			{
+				LoginInfoLabel.text = "";
 				// 打开遮罩面板
 				maskGroup.visible = true;
 				var data:Object = event.data;
@@ -397,6 +404,7 @@
 			<s:Button id="searchBt" height="100%" width="60" buttonMode="true" label="查询" 
 					  styleName="SubmitRegisterStyle"  click="searchBt_clickHandler()"/>
 		</s:HGroup>
+		<s:Label id="LoginInfoLabel"  styleName="SubmitRegisterInfo"/>
 		<s:VGroup id="ResultContentPanel" width="100%" height="100%" gap="10" visible="false">
 			<s:Panel title="水体类型" width="100%" maxHeight="200" minHeight="80">
 				<s:Scroller width="100%" height="100%" 
