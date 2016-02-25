@@ -330,7 +330,7 @@
 			protected function watchList_changeHandler(event:CheckBoxSelectEvent):void
 			{
 				createGridColumn();
-				showSelectItemLabelFunction();
+//				showSelectItemLabelFunction();
 			}
 			
 			private function showSelectItemLabelFunction():void

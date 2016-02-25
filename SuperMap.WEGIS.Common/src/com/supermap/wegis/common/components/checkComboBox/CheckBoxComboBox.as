@@ -71,7 +71,7 @@ package  com.supermap.wegis.common.components.checkComboBox
 			promptText=value;
 		}
 		
-		override  public function itemToLabel(item:Object, ...rest):String
+		private function createSelectLabel():String
 		{
 			var text:String = "";
 			var datas:ArrayCollection = dataProvider as ArrayCollection;
@@ -86,8 +86,12 @@ package  com.supermap.wegis.common.components.checkComboBox
 					}
 				}
 			}
-			trace(text);
 			return text;
+		}
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			textInput.text = createSelectLabel();
 		}
 	}
 }
