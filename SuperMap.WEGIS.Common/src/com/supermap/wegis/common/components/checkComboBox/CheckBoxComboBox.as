@@ -3,10 +3,12 @@ package  com.supermap.wegis.common.components.checkComboBox
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import mx.collections.ArrayCollection;
 	import mx.controls.ComboBox;
 	import mx.core.ClassFactory;
 	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
+	
 	[Event(name="selectChanged", type="com.supermap.wegis.common.components.checkComboBox.CheckBoxSelectEvent")]
 	public class CheckBoxComboBox extends ComboBox{
 		private var mouseOut:Boolean=true;
@@ -34,8 +36,8 @@ package  com.supermap.wegis.common.components.checkComboBox
 		private function onRollOutHandle(event:MouseEvent):void{
 			mouseOut=true;
 			close();
-//			changeEvent= new ListEvent( ListEvent.CHANGE )
-//			dispatchEvent( changeEvent);
+			//			changeEvent= new ListEvent( ListEvent.CHANGE )
+			//			dispatchEvent( changeEvent);
 		}
 		
 		public function set selectedItems(value:Array):void{
@@ -62,11 +64,30 @@ package  com.supermap.wegis.common.components.checkComboBox
 			initListener();
 			if (mouseOut)
 				super.close(trigger);
-//			if(promptText)
-//				this.textInput.text=promptText;
+			//			if(promptText)
+			//				this.textInput.text=promptText;
 		}
 		override public function set prompt(value:String):void{
 			promptText=value;
+		}
+		
+		override  public function itemToLabel(item:Object, ...rest):String
+		{
+			var text:String = "";
+			var datas:ArrayCollection = dataProvider as ArrayCollection;
+			if (datas != null && datas.length > 0) {
+				for (var index:int = 0; index < datas.length ;index++){
+					var item:Object = datas.getItemAt(index);
+					if (item.selected == true){
+						if (text.length != 0) {
+							text = text + ",";
+						}
+						text = text + item.dataField;
+					}
+				}
+			}
+			trace(text);
+			return text;
 		}
 	}
 }

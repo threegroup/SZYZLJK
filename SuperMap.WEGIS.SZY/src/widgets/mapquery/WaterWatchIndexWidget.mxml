@@ -280,8 +280,12 @@
 				{
 					//地图定位
 					var selectedItem:Object = grid.selectedItem;
-					var point2D:Point2D = new Point2D(selectedItem.x, selectedItem.y);
-					modelLocator.mapCtrl.panTo(point2D);
+					var point:Point2D = new Point2D(selectedItem.x, selectedItem.y);
+					if (modelLocator.mapCtrl.level < 3) {
+						modelLocator.mapCtrl.zoomToLevel(3, point);
+					} else {
+						modelLocator.mapCtrl.panTo(point);
+					}
 				}
 			}
 			
@@ -337,10 +341,10 @@
 					for (var index:int = 0; index < datas.length ;index++){
 						var item:Object = datas.getItemAt(index);
 						if (item.selected == true){
-							text = text + item.dataField;
-							if (index != datas.length - 1) {
+							if (text.length != 0) {
 								text = text + ",";
 							}
+							text = text + item.dataField;
 						}
 					}
 				}

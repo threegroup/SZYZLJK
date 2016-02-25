@@ -20,6 +20,7 @@
 			import com.supermap.web.core.styles.TextStyle;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
 			import com.supermap.wegis.common.components.scrollPanel.ButtonItem;
+			import com.supermap.wegis.common.core.resourceManager.ResourceInfo;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
@@ -80,10 +81,22 @@
 				for each(var feature:Feature in featuresLayer.features) {
 					if (selectItem.id == feature.id) {
 						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 24, 32, 0, 15);
+						var resourceInfo:ResourceInfo;
 						if (selectItem.selected == true){
-							picStyle.source = ResourceManagerEx.FindResource("lcsel").cls;
+							
+							resourceInfo = ResourceManagerEx.FindResource(feature.attributes.typeIDs+"_S");
+							if (resourceInfo != null) {
+								picStyle.source = resourceInfo.cls;
+							} else {
+								picStyle.source = ResourceManagerEx.FindResource("lcsel").cls;
+							}
 						} else {
-							picStyle.source = ResourceManagerEx.FindResource("lcnor").cls;
+							resourceInfo = ResourceManagerEx.FindResource(feature.attributes.typeIDs);
+							if (resourceInfo != null) {
+								picStyle.source = resourceInfo.cls;
+							} else {
+								picStyle.source = ResourceManagerEx.FindResource("lcnor").cls;
+							}
 						}
 						feature.style = picStyle;
 					}
@@ -238,6 +251,12 @@
 							var positions:Array = positionStr.split(",");
 							item.x = Number(positions[0]);
 							item.y = Number(positions[1]);
+							if ("typeIDs" in item && item.typeIDs != null){
+								var resourceInfo:ResourceInfo = ResourceManagerEx.FindResource(item.typeIDs);
+								if (resourceInfo != null) {
+									picMarkStyle.source = resourceInfo.cls;
+								}
+							}
 							var feature:Feature = new Feature(new GeoPoint(item.x, item.y), picMarkStyle, item);
 							feature.addEventListener(MouseEvent.CLICK, featureClickHandler);
 							feature.id = item.id;
@@ -344,7 +363,9 @@
 				var x:Number = selectItem.x;
 				var y:Number = selectItem.y;
 				var point:Point2D = new Point2D(x, y);
-				if (modelLocator.mapCtrl.viewBounds.containsPoint(point) == false) {
+				if (modelLocator.mapCtrl.level < 3) {
+					modelLocator.mapCtrl.zoomToLevel(3, point);
+				} else {
 					modelLocator.mapCtrl.panTo(point);
 				}
 			}
