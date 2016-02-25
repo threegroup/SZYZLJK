@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				minHeight="25"
+				width="100%"  click="ckBox_changeHandler(event)"
+				dataChange="this_dataChangeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.vo.GridColumnInfo;
+			public var watchIndexs:ArrayCollection;
+			public var maxCount:int;
+			
+			protected function this_dataChangeHandler(event:FlexEvent):void
+			{
+				ckBox.selected = false;
+				ckBox.enabled = true;
+				ckBox.label = "";
+				if (data != null) {
+					var gridColumnInfo:GridColumnInfo = data as GridColumnInfo;
+					ckBox.label = gridColumnInfo.dataField;
+					if (gridColumnInfo.mustColumn == true) {
+						ckBox.selected = true;
+						ckBox.enabled = false;
+					} else if (gridColumnInfo.selected == true) {
+						ckBox.selected = true;
+					}
+				}
+			}
+			
+			protected function ckBox_changeHandler(event:Event):void
+			{
+				event.stopImmediatePropagation();
+				var gridColumnInfo:GridColumnInfo = data as GridColumnInfo;
+				if (gridColumnInfo.selected == true) {
+					var selectCount:int = 0;
+					for each (gridColumnInfo in watchIndexs) {
+						if (gridColumnInfo.selected == true) {
+							selectCount++;
+						}
+					}
+					if (maxCount >= selectCount) {
+						gridColumnInfo.selected = ckBox.selected;
+					} else {
+						ckBox.selected = false;
+					}
+				} else {
+					gridColumnInfo.selected = ckBox.selected;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+		<s:CheckBox id="ckBox" verticalCenter="0"  click="ckBox_changeHandler(event)"/>
+</s:ItemRenderer>

@@ -79,7 +79,7 @@
 				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
 				for each(var feature:Feature in featuresLayer.features) {
 					if (selectItem.id == feature.id) {
-						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 21, 31, 0, 15);
+						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 24, 32, 0, 15);
 						if (selectItem.selected == true){
 							picStyle.source = ResourceManagerEx.FindResource("lcsel").cls;
 						} else {
@@ -229,7 +229,7 @@
 				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[2];
 				markTextLayer.clear();
 				if (results != null) {
-					var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 21, 31,0 ,15);
+					var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 24, 32,0 ,15);
 					picMarkStyle.source = ResourceManagerEx.FindResource("lcnor").cls;
 					for each(var item:Object in results) {
 						//现在的返回结果没有坐标，先程序添加几个点

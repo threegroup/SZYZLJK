@@ -13,11 +13,13 @@
 			import sm.wegis.szy.events.DataGridItemRendererMouseEvent;
 			protected function rollOverHandler():void
 			{
+				if (grid != null)
 				grid.dispatchEvent(new DataGridItemRendererMouseEvent(DataGridItemRendererMouseEvent.ROLLOVER, rowIndex));
 			}
 			
 			protected function rollOutHandler():void
 			{
+				if (grid != null)
 				grid.dispatchEvent(new DataGridItemRendererMouseEvent(DataGridItemRendererMouseEvent.ROLLOUT, rowIndex));
 			}
 			

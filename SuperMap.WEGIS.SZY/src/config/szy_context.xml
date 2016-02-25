@@ -59,6 +59,8 @@
 		<property name="isNeedAuthorization" value="${isNeedAuthorization}" />
 		<property name="copyRight" value="${copyRight}" />
 		<property name="layerBounds" ref="bounds" />
+		<property name="normalCols" value="${normalCols}" type="number" />
+		<property name="maxCols" value="${maxCols}"  type="number"/>
 	</object>
 
 	<!-- baseMapVo -->

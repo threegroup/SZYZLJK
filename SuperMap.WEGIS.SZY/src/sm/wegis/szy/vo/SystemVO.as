@@ -44,6 +44,38 @@ package sm.wegis.szy.vo
 		private var _baseMap:BaseMapVO;
 		
 		private var _lastLayerIds:String;
+		
+		private var _normalCols:int;
+		
+		private var _maxCols:int;
+
+		/**监测指标最大显示列数*/
+		public function get maxCols():int
+		{
+			return _maxCols;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set maxCols(value:int):void
+		{
+			_maxCols = value;
+		}
+
+		/**监测指标默认显示列数*/
+		public function get normalCols():int
+		{
+			return _normalCols;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set normalCols(value:int):void
+		{
+			_normalCols = value;
+		}
 
 		/**应用系统图层控制LayersId*/
 		public function get lastLayerIds():String

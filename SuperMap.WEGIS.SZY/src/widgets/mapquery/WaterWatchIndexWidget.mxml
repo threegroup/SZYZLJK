@@ -11,19 +11,24 @@
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.web.core.Point2D;
+			import com.supermap.wegis.common.components.checkComboBox.CheckBoxSelectEvent;
 			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
+			import com.supermap.wegis.common.core.hashTable.HashTable;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.utils.ArrayCollectionUtils;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
 			
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.renders.WatchColumnDropDownItemRenderer;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.vo.GridColumnInfo;
 			
 			import spark.components.gridClasses.GridColumn;
 			import spark.events.GridEvent;
@@ -35,6 +40,10 @@
 			
 			private const CONTRACT:String = "收缩";
 			private const EXPAND:String = "展开";
+			
+			/**当前所有监测指标*/
+			[Bindable]
+			private var watchIndexs:ArrayCollection = new ArrayCollection();
 			
 			[Bindable]
 			/**模型定位器*/
@@ -114,6 +123,7 @@
 			private function querySingleObjectInfoResponseHandler(event:QueryEvent):void
 			{
 				var resultData:Object = event.data;
+				var gridColumnInfo:GridColumnInfo;
 				if (resultData != null)
 				{
 					if (resultData.selected == true) {
@@ -128,38 +138,39 @@
 								item.index = resultData.index;
 								item.x = resultData.x;
 								item.y = resultData.y;
-								var newColumn:GridColumn;
-								//如果为空或者length=0，添加名称列
-								if (resultGrid.columns == null || resultGrid.columns.length == 0) {
-									resultGrid.columns =new ArrayList();
-									newColumn = new GridColumn();
-									newColumn.dataField = "name";
-									newColumn.headerText = "名称";
-									resultGrid.columns.addItem(newColumn);
-								}
-								//遍历，添加不包含的列
+								//遍历，更新watchIndexs数据
 								for each(var attribute:Object in resultTarget.attributes)
-								for (var propKey:String in attribute) {
-									var hasContain:Boolean = false;
-									for (var index:int = 0 ; index < resultGrid.columns.length; index++) {
-										var colmn:GridColumn = resultGrid.columns.getItemAt(index) as GridColumn;
-										if (propKey == "名称" || colmn.dataField == propKey) {
-											hasContain = true;
-											break;
+								{
+									for (var propKey:String in attribute) {
+										item[propKey] = attribute[propKey];
+										var hasContain:Boolean = false;
+										for each(gridColumnInfo in watchIndexs) {
+											if (gridColumnInfo.dataField == propKey) {
+												gridColumnInfo.count++;
+												hasContain = true;
+												break;
+											}
+										}
+										if (hasContain == false) {
+											gridColumnInfo = new GridColumnInfo();
+											gridColumnInfo.dataField = propKey;
+											gridColumnInfo.count++;
+											watchIndexs.addItem(gridColumnInfo);
 										}
 									}
-									if (hasContain == false) {
-										newColumn = new GridColumn();
-										newColumn.dataField = propKey;
-										resultGrid.columns.addItem(newColumn);
-									}
-									item[propKey] = attribute[propKey];
 								}
-								resultGrid.dataProvider.addItem(item);
-								ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);
-								panel.contentGroup.visible = panel.contentGroup.includeInLayout = true;
-								this.currentState = SHOW;
 							}
+							
+							//第一次插入记录，设置默认显示列
+							if (resultGrid.dataProvider.length == 0) {
+								initDefaultWatchIndex();
+							}
+							resultGrid.dataProvider.addItem(item);
+							createGridColumn();
+							
+							ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);
+							panel.contentGroup.visible = panel.contentGroup.includeInLayout = true;
+							this.currentState = SHOW;
 						}
 					} else if (resultData.selected == false) 
 					{
@@ -168,6 +179,23 @@
 						{
 							if (resultData.id == itemData.id) {
 								dataProvider.removeItemAt(dataProvider.getItemIndex(itemData));
+								//属性列计数器减小，删除count==0的属性列
+								var removes:Array = [];
+								for (var key:String in itemData) {
+									for each (gridColumnInfo in watchIndexs) {
+										if (gridColumnInfo.dataField == key) {
+											gridColumnInfo.count--;
+											if (gridColumnInfo.count == 0){
+												removes.push(gridColumnInfo);
+											}
+											break;
+										}
+									}
+								}
+								for each(gridColumnInfo in removes) {
+									watchIndexs.removeItemAt(watchIndexs.getItemIndex(gridColumnInfo));
+								}
+								createGridColumn();
 								break;
 							}
 						}
@@ -182,6 +210,47 @@
 				}
 			}
 			
+			/**第一次显示类，按照默认配置列显示列数*/
+			private function initDefaultWatchIndex():void
+			{
+				//如果没有列被选，按照默认列数，设置
+				var selectCount:int = 0;
+				var gridColumnInfo:GridColumnInfo;
+				for each(gridColumnInfo in watchIndexs) {
+					if (gridColumnInfo.selected == true) {
+						selectCount++;
+					}
+				}
+				if (selectCount == 0) {
+					var normalCols:int =  modelLocator.systemInfo.normalCols;
+					normalCols =  normalCols > watchIndexs.length ? watchIndexs.length : normalCols;
+					for (var index:int = 0; index < normalCols; index++) {
+						gridColumnInfo = watchIndexs.getItemAt(index) as GridColumnInfo;
+						gridColumnInfo.selected = true;
+					}
+				}
+			}
+			
+			/**创建表格列*/
+			private function createGridColumn():void
+			{
+				//清空表格列
+				resultGrid.columns = new ArrayCollection(); 
+				var gridColumnInfo:GridColumnInfo;
+				var column:GridColumn;
+				for each(gridColumnInfo in watchIndexs) {
+					if (gridColumnInfo.selected == true) {
+						column = new GridColumn();
+						column.dataField = gridColumnInfo.dataField;
+						column.headerText = gridColumnInfo.dataField;
+						resultGrid.columns.addItem(column);
+					}
+				}
+				column = new GridColumn();
+				column.dataField = "name";
+				column.headerText = "名称";
+				resultGrid.columns.addItemAt(column, 0);
+			}
 			
 			//显示或隐藏数据展示
 			override public function set visible(value:Boolean):void
@@ -232,6 +301,51 @@
 				animateEffect.stop();
 				animateEffect.play();
 			}
+			
+			protected function watchList_creationCompleteHandler(event:FlexEvent):void
+			{
+				var classFactory:ClassFactory = new ClassFactory(WatchColumnDropDownItemRenderer);
+				classFactory.properties = {watchIndexs:watchIndexs, maxCount:modelLocator.systemInfo.maxCols};
+				watchList.itemRenderer = classFactory;
+			}
+			
+			private function watchListLabelFunction(item:Object):String
+			{
+				var selectColumn:String = "";
+				for each(var gridColumnInfo:GridColumnInfo in watchIndexs) {
+					if (gridColumnInfo.selected == true) {
+						selectColumn = selectColumn + gridColumnInfo.dataField;
+						if (watchIndexs.getItemIndex(gridColumnInfo) != watchIndexs.length -1) {
+							selectColumn = selectColumn + ",";
+						}
+					}
+				}
+				return selectColumn;
+			}
+			
+			protected function watchList_changeHandler(event:CheckBoxSelectEvent):void
+			{
+				createGridColumn();
+				showSelectItemLabelFunction();
+			}
+			
+			private function showSelectItemLabelFunction():void
+			{
+				var text:String = "";
+				var datas:ArrayCollection = watchList.dataProvider as ArrayCollection;
+				if (datas != null && datas.length > 0) {
+					for (var index:int = 0; index < datas.length ;index++){
+						var item:Object = datas.getItemAt(index);
+						if (item.selected == true){
+							text = text + item.dataField;
+							if (index != datas.length - 1) {
+								text = text + ",";
+							}
+						}
+					}
+				}
+				watchList.text = text;
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -250,6 +364,11 @@
 	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" title="对象监测数据列表" bottom.show="5" bottom.hide="0"
 			 height.hide="0">
 		<s:controlBarContent>
+			<s:Label text="设置监测指标列:"/>
+			<ns:CheckBoxComboBox id="watchList" width="80"  
+								 dataProvider="{watchIndexs}" 
+								 selectChanged="watchList_changeHandler(event)"/>
+			<s:Spacer width="10"/>
 			<s:Image id="stateImage" width="16" height="16" buttonMode="true" 
 					 click="stateImage_clickHandler(event)"
 					 source="{ResourceManagerEx.FindResource('Down').cls}" toolTip="收缩"/>

@@ -20,6 +20,7 @@
 	
 	<component id="ImageEx" class="com.supermap.wegis.common.components.imageEx.ImageEx"/>
 	<component id="ArrayEx" class="com.supermap.wegis.common.core.ArrayEx"/>
+	
 	<!-- 	layerEx -->
 	<component id="SuperMapWMTSLayer" class="com.supermap.wegis.common.mappingEx.SuperMapWMTSLayer"/>
 	<component id="TiledRestLayer" class="com.supermap.wegis.common.mappingEx.TiledRestLayer"/>
@@ -75,6 +76,7 @@
 	<component id ="ZoomContainer" class="com.supermap.wegis.common.components.zoomPanel.ZoomContainer"/>
 	<component id ="ScaleBar" class="com.supermap.wegis.common.components.scalebar.ScaleBar"/>
 	<component id ="DateFieldEx" class="com.supermap.wegis.common.components.datefield.DateFieldEx"/>
+	<component id ="CheckBoxComboBox" class="com.supermap.wegis.common.components.checkComboBox.CheckBoxComboBox"/>
 	
 	<!-- itemrenders -->
 	<component id="CheckTreeItemRenderer" class="com.supermap.wegis.common.components.treeEx.CheckTreeItemRenderer"/>
