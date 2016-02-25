@@ -18,9 +18,9 @@ package sm.wegis.szy.plugins
 		ResourceManagerEx.RegisterResource("",logoIconKey, logoIconCls);
 		
 		//顶部背景图片
-		[Embed(source="assets/image/top/bg.png")]
+		[Embed(source="assets/image/top/banner.png")]
 		private static var bgPngCls:Class;
-		private static var bgPngKey:String = "bg";
+		private static var bgPngKey:String = "banner";
 		ResourceManagerEx.RegisterResource("",bgPngKey, bgPngCls);
 		
 		/**系统选择界面*/
@@ -131,6 +131,30 @@ package sm.wegis.szy.plugins
 		private static var MGMBCls:Class;
 		private static var MGMBKey:String = "MGMB";
 		ResourceManagerEx.RegisterResource("",MGMBKey, MGMBCls);
+		
+		//高亮重要水体
+		[Embed(source="assets/image/type/water.png")]
+		private static var HZYSTCls:Class;
+		private static var HZYSTKey:String = "HZYST";
+		ResourceManagerEx.RegisterResource("",HZYSTKey, HZYSTCls);
+		
+		//高亮敏感目标
+		[Embed(source="assets/image/type/target.png")]
+		private static var HMGMBCls:Class;
+		private static var HMGMBKey:String = "HMGMB";
+		ResourceManagerEx.RegisterResource("",HMGMBKey, HMGMBCls);
+		
+		//地图标识mark图片
+		[Embed(source="assets/image/location/lcnor.png")]
+		private static var LcNorCls:Class;
+		private static var LcNorKey:String = "lcnor";
+		ResourceManagerEx.RegisterResource("",LcNorKey, LcNorCls);
+		
+		//地图标识mark选择图片
+		[Embed(source="assets/image/location/lcsel.png")]
+		private static var LcSelCls:Class;
+		private static var LcSelKey:String = "lcsel";
+		ResourceManagerEx.RegisterResource("",LcSelKey, LcSelCls);
 		
 		//控制panel窗口展开和关闭图片
 		[Embed(source="assets/image/others/down.png")]

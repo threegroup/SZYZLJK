@@ -92,7 +92,7 @@
 			 color.over="#FFFFFF"
 			 color.down="#FFFFFF"
 			 color.keepSelected="#FFFFFF"
-			 color="#000000"
+			 color="#FFFFFF"
 			 showTruncationTip="false">
 	</s:Label>
     

@@ -60,7 +60,7 @@
 			 verticalAlign="middle"
 			 color.over="#FFFFFF"
 			 color.down="#FFFFFF"
-			 color="#000000"
+			 color="#FFFFFF"
 			 left="0" right="0" 
 			 top="2" bottom="2">
     </s:Label>
