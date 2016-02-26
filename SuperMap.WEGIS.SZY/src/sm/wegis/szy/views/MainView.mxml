@@ -136,6 +136,7 @@
 			{
 				//进入系统选择面板，此处要注意，如果返回结果只有一个系统，直接进入，如果有多个，则显示系统选择面板。
 				SubmitBtn.enabled = true;
+				this.LoginInfoLabel.text = "";
 				var data:Object = event.data;
 				if(data != null && data["success"] == true)
 				{
@@ -164,7 +165,7 @@
 					this.ScrollButtonPanel.dataProvider = modelLocator.systemInfo.systemList;
 					
 					//如果只有一个系统，不再进行系统选择，直接进入系统
-					if(modelLocator.systemInfo.systemList.length == 1)
+					 if(modelLocator.systemInfo.systemList.length == 1)
 					{
 						var param:Object = modelLocator.systemInfo.systemList[0];
 						modelLocator.systemInfo.subSystemTitle = param["name"];
@@ -184,10 +185,10 @@
 						//启用系统切换功能
 						this.changeSystemId.enabled = true;
 					} else if (modelLocator.systemInfo.systemList.length == 0) {
-						Alert.show("登录用户没有可以访问的系统","警告");
-					}
+						this.LoginInfoLabel.text = "登录用户没有可以访问的系统!";
+					} 
 				} else {
-					Alert.show(data["message"],"错误");
+					this.LoginInfoLabel.text = data["message"];
 				}
 			}
 			
