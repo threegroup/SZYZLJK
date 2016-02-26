@@ -370,7 +370,7 @@
 	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" title="对象监测数据列表" bottom.show="5" bottom.hide="0"
 			 height.hide="0">
 		<s:controlBarContent>
-			<s:Label text="设置监测指标列:"/>
+			<s:Label text="设置监测指标:" color="#FFFFFF"/>
 			<ns:CheckBoxComboBox id="watchList" width="80"  
 								 dataProvider="{watchIndexs}" 
 								 selectChanged="watchList_changeHandler(event)"/>
