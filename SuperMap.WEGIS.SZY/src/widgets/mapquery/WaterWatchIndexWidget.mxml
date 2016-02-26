@@ -94,7 +94,7 @@
 			private function clearSystemHandler(event:CairngormEvent):void
 			{
 				//暂定不重置UI
-				//this.resetUI();
+				this.resetUI();
 			}
 			
 			/**清除所有结果*/
@@ -280,11 +280,13 @@
 				{
 					//地图定位
 					var selectedItem:Object = grid.selectedItem;
-					var point:Point2D = new Point2D(selectedItem.x, selectedItem.y);
-					if (modelLocator.mapCtrl.level < 3) {
-						modelLocator.mapCtrl.zoomToLevel(3, point);
-					} else {
-						modelLocator.mapCtrl.panTo(point);
+					if ("x" in selectedItem && "y" in selectedItem) {
+						var point:Point2D = new Point2D(selectedItem.x, selectedItem.y);
+						if (modelLocator.mapCtrl.level < 3) {
+							modelLocator.mapCtrl.zoomToLevel(3, point);
+						} else {
+							modelLocator.mapCtrl.panTo(point);
+						}
 					}
 				}
 			}
@@ -330,7 +332,7 @@
 			protected function watchList_changeHandler(event:CheckBoxSelectEvent):void
 			{
 				createGridColumn();
-//				showSelectItemLabelFunction();
+				//				showSelectItemLabelFunction();
 			}
 			
 			private function showSelectItemLabelFunction():void

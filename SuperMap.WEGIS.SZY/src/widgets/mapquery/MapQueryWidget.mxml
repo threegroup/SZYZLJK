@@ -143,6 +143,7 @@
 			//查询分类和明细
 			private function queryTypesAndDetailList():void
 			{
+				clearLastQuery();
 				if (scrollButtonPanel.currentButtonItem == null && StringUtil.trim(searchInput.text).length == 0 ) {
 					LoginInfoLabel.text = "请选择查询类型或输入查询对象名称";
 					return;
@@ -162,8 +163,20 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST);
 				queryEvent.data = mapQueryVO;
 				queryEvent.dispatch();
+				
+			}
+			
+			private function clearLastQuery():void
+			{
+				//清空对象列表
 				resultList.dataProvider = null;
-				creationMapMarks();
+				//清除地图标绘的feature
+				var markLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
+				markLayer.clear();
+				var markTextLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURETEXT_LAYER, modelLocator.mapCtrl);
+				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[2];
+				markTextLayer.clear();
+				//隐藏右下对象监测数据面板
 				var waterWatchEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_WATCH_WIDGET);
 				waterWatchEvent.dispatch();
 			}
@@ -360,13 +373,15 @@
 			protected function resultList_clickHandler(event:MouseEvent):void
 			{
 				var selectItem:Object = resultList.selectedItem;
-				var x:Number = selectItem.x;
-				var y:Number = selectItem.y;
-				var point:Point2D = new Point2D(x, y);
-				if (modelLocator.mapCtrl.level < 3) {
-					modelLocator.mapCtrl.zoomToLevel(3, point);
-				} else {
-					modelLocator.mapCtrl.panTo(point);
+				if ("x" in selectItem && "y" in selectItem) {
+					var x:Number = selectItem.x;
+					var y:Number = selectItem.y;
+					var point:Point2D = new Point2D(x, y);
+					if (modelLocator.mapCtrl.level < 3) {
+						modelLocator.mapCtrl.zoomToLevel(3, point);
+					} else {
+						modelLocator.mapCtrl.panTo(point);
+					}
 				}
 			}
 			
