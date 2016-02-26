@@ -24,12 +24,12 @@ package sm.wegis.szy.plugins
 		ResourceManagerEx.RegisterResource("",bgPngKey, bgPngCls);
 		
 		/**系统选择界面*/
-		[Embed(source="assets/image/system/system.png")]
+		[Embed(source="assets/image/system/tzh.png")]
 		private static var tzhlyPngCls:Class;
 		private static var tzhlyPngKey:String = "taizihe";
 		ResourceManagerEx.RegisterResource("",tzhlyPngKey, tzhlyPngCls);
 		
-		[Embed(source="assets/image/system/system.png")]
+		[Embed(source="assets/image/system/yqsk.png")]
 		private static var yqskPngCls:Class;
 		private static var yqskPngKey:String = "yuqiao";
 		ResourceManagerEx.RegisterResource("",yqskPngKey, yqskPngCls);
