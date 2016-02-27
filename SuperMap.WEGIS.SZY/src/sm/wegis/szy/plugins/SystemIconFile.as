@@ -208,7 +208,7 @@ package sm.wegis.szy.plugins
 		private static var C1_1_2_SCls:Class;
 		private static var  C1_1_2_SKey:String = "1,1,2_S";
 		ResourceManagerEx.RegisterResource("",C1_1_2_SKey, C1_1_2_SCls);
-		//	1_1_3	湖泊
+//			1_1_3	湖泊
 		[Embed(source="assets/image/location/1_1_3.png")]
 		private static var C1_1_3Cls:Class;
 		private static var  C1_1_3Key:String = "1,1,3";

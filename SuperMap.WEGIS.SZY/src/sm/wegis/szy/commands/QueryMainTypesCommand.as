@@ -36,11 +36,13 @@ package sm.wegis.szy.commands
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var resultValue:Object = jsDec.getValue() as Object;
-			for each (var item:Object in resultValue.attributes.mainTypes) {
-				if (item.id == "1") {
-					item.key = "ZYST";
-				} else if (item.id == "2"){ 
-					item.key = "MGMB";
+			if (resultValue.success == true) {
+				for each (var item:Object in resultValue.attributes.mainTypes) {
+					if (item.id == "1") {
+						item.key = "ZYST";
+					} else if (item.id == "2"){ 
+						item.key = "MGMB";
+					}
 				}
 			}
 			

@@ -5,7 +5,7 @@
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 			   xmlns:line="sm.wegis.szy.components.line.*"
 			   width="100%" 
-			   creationComplete="initWidget(event)">
+			   creationComplete="initWidget(event)" xmlns:drodown="sm.wegis.szy.components.drodown.*">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
@@ -22,10 +22,11 @@
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
 			
+			import sm.wegis.szy.events.DropDownPanelEvent;
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
-			import sm.wegis.szy.renders.WatchColumnDropDownItemRenderer;
+			import sm.wegis.szy.renders.DataGroupCheckItemrenderer;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
 			import sm.wegis.szy.vo.GridColumnInfo;
@@ -207,6 +208,7 @@
 							this.currentState = HIDE;
 						}
 					}
+//					watchList.dataProvider = watchIndexs;
 				}
 			}
 			
@@ -243,12 +245,14 @@
 						column = new GridColumn();
 						column.dataField = gridColumnInfo.dataField;
 						column.headerText = gridColumnInfo.dataField;
+						column.minWidth = 100;
 						resultGrid.columns.addItem(column);
 					}
 				}
 				column = new GridColumn();
 				column.dataField = "name";
 				column.headerText = "名称";
+				column.minWidth = 120;
 				resultGrid.columns.addItemAt(column, 0);
 			}
 			
@@ -310,7 +314,7 @@
 			
 			protected function watchList_creationCompleteHandler(event:FlexEvent):void
 			{
-				var classFactory:ClassFactory = new ClassFactory(WatchColumnDropDownItemRenderer);
+				var classFactory:ClassFactory = new ClassFactory(DataGroupCheckItemrenderer);
 				classFactory.properties = {watchIndexs:watchIndexs, maxCount:modelLocator.systemInfo.maxCols};
 				watchList.itemRenderer = classFactory;
 			}
@@ -329,28 +333,9 @@
 				return selectColumn;
 			}
 			
-			protected function watchList_changeHandler(event:CheckBoxSelectEvent):void
+			protected function watchList_changeHandler(event:DropDownPanelEvent):void
 			{
 				createGridColumn();
-				//				showSelectItemLabelFunction();
-			}
-			
-			private function showSelectItemLabelFunction():void
-			{
-				var text:String = "";
-				var datas:ArrayCollection = watchList.dataProvider as ArrayCollection;
-				if (datas != null && datas.length > 0) {
-					for (var index:int = 0; index < datas.length ;index++){
-						var item:Object = datas.getItemAt(index);
-						if (item.selected == true){
-							if (text.length != 0) {
-								text = text + ",";
-							}
-							text = text + item.dataField;
-						}
-					}
-				}
-				watchList.text = text;
 			}
 		]]>
 	</fx:Script>
@@ -371,10 +356,12 @@
 			 height.hide="0">
 		<s:controlBarContent>
 			<s:Label text="设置监测指标:" color="#FFFFFF"/>
-			<ns:CheckBoxComboBox id="watchList" width="80"  
+			<!--<ns:CheckBoxComboBox id="watchList" width="80"  
 								 dataProvider="{watchIndexs}" 
-								 selectChanged="watchList_changeHandler(event)"/>
-			<s:Spacer width="10"/>
+								 selectChanged="watchList_changeHandler(event)"/>-->
+			<drodown:DropDownPanel id="watchList"  dataProvider="{watchIndexs}" 
+								   selectChanged="watchList_changeHandler(event)"/>
+ 			<s:Spacer width="10"/>
 			<s:Image id="stateImage" width="16" height="16" buttonMode="true" 
 					 click="stateImage_clickHandler(event)"
 					 source="{ResourceManagerEx.FindResource('Down').cls}" toolTip="收缩"/>

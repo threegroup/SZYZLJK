@@ -2,14 +2,17 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				minHeight="25"
+				minHeight="25" minWidth="100"
 				width="100%"  click="ckBox_changeHandler(event)"
-				dataChange="this_dataChangeHandler(event)">
+				dataChange="this_dataChangeHandler(event)" xmlns:line="sm.wegis.szy.components.line.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.controls.List;
 			import mx.events.FlexEvent;
 			
+			import sm.wegis.szy.components.drodown.DropDownPanel;
+			import sm.wegis.szy.events.DropDownPanelEvent;
 			import sm.wegis.szy.vo.GridColumnInfo;
 			public var watchIndexs:ArrayCollection;
 			public var maxCount:int;
@@ -33,6 +36,7 @@
 			
 			protected function ckBox_changeHandler(event:Event):void
 			{
+				
 				event.stopImmediatePropagation();
 				var gridColumnInfo:GridColumnInfo = data as GridColumnInfo;
 				if (gridColumnInfo.selected == true) {
@@ -50,9 +54,24 @@
 				} else {
 					gridColumnInfo.selected = ckBox.selected;
 				}
+				var dropDownPanel:DropDownPanel = this.owner as DropDownPanel;
+				var dropDownPanelEvent:DropDownPanelEvent = new DropDownPanelEvent(DropDownPanelEvent.SELECT_CHANGED);
+				dropDownPanel.dispatchEvent(dropDownPanelEvent);
 			}
 			
 		]]>
 	</fx:Script>
-		<s:CheckBox id="ckBox" verticalCenter="0"  click="ckBox_changeHandler(event)"/>
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+	</s:states>
+	<s:Rect left="0" right="0" top="0" bottom="0">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF" color.hovered="0x3385FF"/>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup width="100%" height="100%" verticalAlign="middle" left="5" right="5">
+		<s:CheckBox id="ckBox"  color="0x000000" color.hovered="0xFFFFFF" change="ckBox_changeHandler(event)"/>
+	</s:HGroup>
+	<line:HLine bottom="0" />
 </s:ItemRenderer>

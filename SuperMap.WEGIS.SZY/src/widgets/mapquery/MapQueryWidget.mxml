@@ -80,7 +80,7 @@
 				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
 				for each(var feature:Feature in featuresLayer.features) {
 					if (selectItem.id == feature.id) {
-						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 24, 32, 0, 15);
+						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 32, 34, 0, 15);
 						var resourceInfo:ResourceInfo;
 						if (selectItem.selected == true){
 							
@@ -255,10 +255,9 @@
 				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[2];
 				markTextLayer.clear();
 				if (results != null) {
-					var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 24, 32,0 ,15);
-					picMarkStyle.source = ResourceManagerEx.FindResource("lcnor").cls;
 					for each(var item:Object in results) {
 						//现在的返回结果没有坐标，先程序添加几个点
+						var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 32, 34,0 ,15);
 						var positionStr:String = item.location;
 						if (positionStr != null && positionStr.split(",").length == 2) {
 							var positions:Array = positionStr.split(",");
@@ -269,6 +268,9 @@
 								if (resourceInfo != null) {
 									picMarkStyle.source = resourceInfo.cls;
 								}
+							} 
+							if (picMarkStyle.source == null){
+								picMarkStyle.source = ResourceManagerEx.FindResource("lcnor").cls;
 							}
 							var feature:Feature = new Feature(new GeoPoint(item.x, item.y), picMarkStyle, item);
 							feature.addEventListener(MouseEvent.CLICK, featureClickHandler);

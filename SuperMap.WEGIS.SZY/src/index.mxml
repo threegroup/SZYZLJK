@@ -11,6 +11,7 @@
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import sm.wegis.szy.skins.DropDownPanelSkin;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.web.core.styles.CompositeStyle;
 			import com.supermap.wegis.common.core.plugin.PluginClass;
@@ -36,6 +37,8 @@
 			//spring和view都创建完成
 			private var allCreateComplete:Boolean =false;
 			private var lostCls:Array = [CompositeStyle];
+			
+			private var sm_wegis_szy_skins_DropDownPanelSkin_obj:sm.wegis.szy.skins.DropDownPanelSkin;
 			
 			protected function preinitializeHandler(event:FlexEvent):void
 			{
@@ -119,9 +122,9 @@
 				}
 				else
 				{
-//					var systemParamEvent:SystemEvent = new SystemEvent(SystemEvent.GET_SYSTEM_PARAM);
-//					systemParamEvent.dispatch();
-//					getSecurityControler();
+					//					var systemParamEvent:SystemEvent = new SystemEvent(SystemEvent.GET_SYSTEM_PARAM);
+					//					systemParamEvent.dispatch();
+					//					getSecurityControler();
 				}
 			}
 			//获取权限，移到用户登录系统后获取
