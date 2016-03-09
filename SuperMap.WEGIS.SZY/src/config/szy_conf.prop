@@ -48,6 +48,10 @@ normalCols=4
 maxCols=8
 
 
+#点符号，文本注记可见最大比例尺级别
+maxLevel=3
+
+
 
 
 

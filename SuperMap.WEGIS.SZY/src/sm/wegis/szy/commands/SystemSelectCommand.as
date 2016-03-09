@@ -26,6 +26,11 @@ package sm.wegis.szy.commands
 					//设置应用系统矢量，影像地图服务地址
 					modelLocator.baseMapInfo.waterResourceVectorMapUrl = systemParam.vectorMapUrl;
 					modelLocator.baseMapInfo.waterResourceRasterMapUrl = systemParam.rasterMapUrl;
+					
+					//设置遮罩地图
+					modelLocator.baseMapInfo.waterResourceMaskVectorMapUrl = systemParam.maskVectorMapUrl;
+					modelLocator.baseMapInfo.waterResourceMaskRasterMapUrl = systemParam.maskRasterMapUrl;
+					
 					var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE);
 					mapLayerEvent.dispatch();
 					//设置专题地图基础layerIds

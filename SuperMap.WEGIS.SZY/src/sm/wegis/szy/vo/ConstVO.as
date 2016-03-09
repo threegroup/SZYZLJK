@@ -13,6 +13,9 @@ package sm.wegis.szy.vo
 		/**水资源底图图层名称*/
 		public static const WaterResourceLayerId:String = "waterResourceLayerId";
 		
+		/**水资源遮罩底图图层名称*/
+		public static const WaterResourceMaskLayerId:String = "waterResourceMaskLayerId";
+		
 		/**重要水体，敏感目标地图定位*/
 		public static const LOCATION_FEATURE_LAYER:String = "importWaterLocationFeatureLayer";
 		

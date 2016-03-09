@@ -4,6 +4,8 @@
 		<viewBounds>121.7404, 40.4814, 125.3412, 41.8437</viewBounds>
 		<vectorMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_V</vectorMapUrl>
 		<rasterMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_R</rasterMapUrl>
+		<maskVectorMapUrl>http://localhost:8080/iserver/services/map-SZY-Mask/rest/maps/SZY_V</maskVectorMapUrl>
+		<maskRasterMapUrl>http://localhost:8080/iserver/services/map-SZY-Mask/rest/maps/SZY_R</maskRasterMapUrl>
 		<baseLayerId layerIds="0,3,28,29,30,36,49,50"/>
 		<themeLayerId>
 			<layer label="水库"  selected="true" layerIds="6,7,8,9,32,33,38,39" />

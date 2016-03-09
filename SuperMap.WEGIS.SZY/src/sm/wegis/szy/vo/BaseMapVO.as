@@ -31,6 +31,12 @@ package sm.wegis.szy.vo
 		/**水资源影像底图url*/
 		public var waterResourceRasterMapUrl:String;
 		
+		/**水资源矢量遮罩底地图url*/
+		public var waterResourceMaskVectorMapUrl:String;
+		
+		/**水资源影像遮罩底图url*/
+		public var waterResourceMaskRasterMapUrl:String;
+		
 		/**水资源地图默认显示图层LayerIDS*/
 		public var waterResourceBaseLayerIds:String
 	}

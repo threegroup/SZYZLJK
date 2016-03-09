@@ -48,6 +48,18 @@ package sm.wegis.szy.vo
 		private var _normalCols:int;
 		
 		private var _maxCols:int;
+		
+		private var _maxLevel:int = 2;
+
+		public function get maxLevel():int
+		{
+			return _maxLevel;
+		}
+
+		public function set maxLevel(value:int):void
+		{
+			_maxLevel = value;
+		}
 
 		/**监测指标最大显示列数*/
 		public function get maxCols():int

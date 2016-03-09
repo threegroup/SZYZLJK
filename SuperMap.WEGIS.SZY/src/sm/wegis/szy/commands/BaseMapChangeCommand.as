@@ -51,6 +51,13 @@ package sm.wegis.szy.commands
 				mapCtrl.removeLayer(waterResourceLayer);
 				waterResourceLayer = null;
 			}
+			
+			var waterResourceMaskLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer(ConstVO.WaterResourceMaskLayerId) as TiledDynamicRESTLayerEx;
+			if (waterResourceMaskLayer != null) {
+				mapCtrl.removeLayer(waterResourceMaskLayer);
+				waterResourceMaskLayer = null;
+			}
+			
 			if (modelLocator.baseMapInfo.waterResourceVectorMapUrl != null && modelLocator.baseMapInfo.waterResourceRasterMapUrl != null){
 				waterResourceLayer = new TiledDynamicRESTLayerEx();
 				waterResourceLayer.id = ConstVO.WaterResourceLayerId;
@@ -65,6 +72,21 @@ package sm.wegis.szy.commands
 				}
 				mapCtrl.addLayer(waterResourceLayer);
 			}
+			
+			if (modelLocator.baseMapInfo.waterResourceMaskVectorMapUrl != null && modelLocator.baseMapInfo.waterResourceMaskRasterMapUrl != null){
+				waterResourceMaskLayer = new TiledDynamicRESTLayerEx();
+				waterResourceMaskLayer.id = ConstVO.WaterResourceMaskLayerId;
+				waterResourceMaskLayer.layerType = 0;
+				waterResourceMaskLayer.layerIndex = 2;
+				waterResourceMaskLayer.transparent = true;
+				if (baseMapVO.baseMapState == ConstVO.VectorMapState) {
+					waterResourceMaskLayer.url = modelLocator.baseMapInfo.waterResourceMaskVectorMapUrl;
+				} else {
+					waterResourceMaskLayer.url = modelLocator.baseMapInfo.waterResourceMaskRasterMapUrl;
+				}
+				mapCtrl.addLayer(waterResourceMaskLayer);
+			}
+			
 			mapCtrl.sortLayers();
 			
 			//显示矢量底图

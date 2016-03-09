@@ -15,18 +15,14 @@
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.Point2D;
 			import com.supermap.web.core.geometry.GeoPoint;
-			import com.supermap.web.core.styles.CompositeStyle;
 			import com.supermap.web.core.styles.PictureMarkerStyle;
 			import com.supermap.web.core.styles.TextStyle;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
-			import com.supermap.wegis.common.components.scrollPanel.ButtonItem;
 			import com.supermap.wegis.common.core.resourceManager.ResourceInfo;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
 			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
-			import mx.core.FlexGlobals;
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			
@@ -48,7 +44,8 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				initEventListener();
-				queryMainTypes();
+//				queryMainTypes();
+				queryTypesAndDetailList();
 			}
 			
 			public function initEventListener():void{
@@ -56,7 +53,7 @@
 					[QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE, querySingleObjectInfoResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler],
-					[QueryEvent.QUERY_MAIN_TYPES_RESPONSE, queryMainTypesHandler],
+//					[QueryEvent.QUERY_MAIN_TYPES_RESPONSE, queryMainTypesHandler],
 					[QueryEvent.QUERY_TYPES_AND_DETAIL_LIST_RESPONSE, queryTypesAndDetailListHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
@@ -80,7 +77,7 @@
 				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
 				for each(var feature:Feature in featuresLayer.features) {
 					if (selectItem.id == feature.id) {
-						var picStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 32, 34, 0, 15);
+						var picStyle:PictureMarkerStyle = new PictureMarkerStyle();
 						var resourceInfo:ResourceInfo;
 						if (selectItem.selected == true){
 							
@@ -90,6 +87,7 @@
 							} else {
 								picStyle.source = ResourceManagerEx.FindResource("lcsel").cls;
 							}
+							picStyle.yOffset = 10;
 						} else {
 							resourceInfo = ResourceManagerEx.FindResource(feature.attributes.typeIDs);
 							if (resourceInfo != null) {
@@ -144,14 +142,14 @@
 			private function queryTypesAndDetailList():void
 			{
 				clearLastQuery();
-				if (scrollButtonPanel.currentButtonItem == null && StringUtil.trim(searchInput.text).length == 0 ) {
-					LoginInfoLabel.text = "请选择查询类型或输入查询对象名称";
-					return;
-				}
-				var selectItem:ButtonItem = scrollButtonPanel.currentButtonItem;
+//				if (scrollButtonPanel.currentButtonItem == null && StringUtil.trim(searchInput.text).length == 0 ) {
+//					LoginInfoLabel.text = "请选择查询类型或输入查询对象名称";
+//					return;
+//				}
+//				var selectItem:ButtonItem = scrollButtonPanel.currentButtonItem;
 				var typeIds:Array = getTypeIds();
 				var mapQueryVO:MapQueryVO = new MapQueryVO();
-				mapQueryVO.mainType = selectItem.id;
+//				mapQueryVO.mainType = selectItem.id;
 				if (StringUtil.trim(searchInput.text).length != 0) {
 					mapQueryVO.keyword = StringUtil.trim(searchInput.text);
 				}
@@ -198,18 +196,18 @@
 			
 			private function queryMainTypesHandler(event:CairngormEvent):void
 			{
-				var data:Object = event.data;
-				if (data.success == true) {
-					if (data.attributes) {
-						if (data.attributes.mainTypes != null && data.attributes.mainTypes.length > 0)
-						{
-							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.mainTypes);
-							scrollButtonPanel.selectedIndex = 0;//必须先设置数据源，查询第一级分类，在scrollButtonPanel的click事件里进行查询
-						}
-					}
-				}else{
-					LoginInfoLabel.text = data.message;
-				}
+//				var data:Object = event.data;
+//				if (data.success == true) {
+//					if (data.attributes) {
+//						if (data.attributes.mainTypes != null && data.attributes.mainTypes.length > 0)
+//						{
+//							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.mainTypes);
+//							scrollButtonPanel.selectedIndex = 0;//必须先设置数据源，查询第一级分类，在scrollButtonPanel的click事件里进行查询
+//						}
+//					}
+//				}else{
+//					LoginInfoLabel.text = data.message;
+//				}
 			}
 			
 			private function queryTypesAndDetailListHandler(event:CairngormEvent):void
@@ -252,12 +250,13 @@
 				var markLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
 				markLayer.clear();
 				var markTextLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURETEXT_LAYER, modelLocator.mapCtrl);
-				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[2];
+				var maxLevel:int = modelLocator.systemInfo.maxLevel;
+				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[maxLevel];
 				markTextLayer.clear();
 				if (results != null) {
 					for each(var item:Object in results) {
 						//现在的返回结果没有坐标，先程序添加几个点
-						var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle(null, 32, 34,0 ,15);
+						var picMarkStyle:PictureMarkerStyle = new PictureMarkerStyle();
 						var positionStr:String = item.location;
 						if (positionStr != null && positionStr.split(",").length == 2) {
 							var positions:Array = positionStr.split(",");
@@ -278,7 +277,8 @@
 							feature.buttonMode = true;
 							markLayer.addFeature(feature);
 							
-							var textType:TextStyle =  FeatureLayerUtil.getTextStyle(item.name);
+							var textType:TextStyle =  FeatureLayerUtil.getTextStyle(" " + item.name + " ");
+							textType.yOffset = -10;
 							var textFeature:Feature = new Feature(new GeoPoint(item.x, item.y), textType);
 							textFeature.id = "lab"+item.id;
 							textFeature.buttonMode = true;
@@ -286,6 +286,7 @@
 						}
 					}
 				}
+				markTextLayer.refresh();
 			}
 			
 			//点击要素，结果列表定位显示
@@ -422,9 +423,9 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:VGroup width="100%" height="100%" gap="10" 
-			  paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5">
-		<s:HGroup width="100%" horizontalAlign="center">
+	<s:VGroup width="100%" height="100%" gap="5" 
+			  paddingTop="10" paddingBottom="5" paddingLeft="5" paddingRight="5">
+		<!--<s:HGroup width="100%" horizontalAlign="center">
 			<ns:ScrollPanel id="scrollButtonPanel" 
 							horizontalCenter="0"
 							hGap="15"  
@@ -436,7 +437,7 @@
 							buttonStyleName="ScrollPanelItemStyle"
 							ScrollPanelClick="searchBt_clickHandler()"/>
 		</s:HGroup>
-		<line:HLine />
+		<line:HLine />-->
 		<s:HGroup width="100%" height="30" gap="10" verticalAlign="middle">
 			<s:TextInput id="searchInput"  height="100%" prompt="请输入关键字" width="100%" enter="searchBt_clickHandler()"/> 
 			<s:Button id="searchBt" height="100%" width="60" buttonMode="true" label="查询" 
