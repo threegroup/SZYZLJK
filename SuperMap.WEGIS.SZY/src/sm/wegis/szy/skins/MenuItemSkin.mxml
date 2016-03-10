@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+    ADOBE SYSTEMS INCORPORATED
+    Copyright 2008 Adobe Systems Incorporated
+    All Rights Reserved.
+
+    NOTICE: Adobe permits you to use, modify, and distribute this file
+    in accordance with the terms of the license agreement accompanying it.
+
+-->
+
+<!--- The default skin class for the Spark Button component.  
+
+       @see spark.components.Button
+        
+      @langversion 3.0
+      @playerversion Flash 10
+      @playerversion AIR 1.5
+      @productversion Flex 4
+-->
+<s:SparkButtonSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+             xmlns:s="library://ns.adobe.com/flex/spark" 
+             xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+             minWidth="21" minHeight="21" 
+             alpha.disabled="0.5">
+     
+	<fx:Metadata>[HostComponent("com.supermap.wegis.common.components.menuBar.MenuItem")]</fx:Metadata>
+    
+    <!-- states -->
+    <s:states>
+        <s:State name="up" />
+        <s:State name="over" />
+        <s:State name="down" />
+        <s:State name="disabled" />
+		<s:State name="keepSelected" />
+    </s:states>
+	
+	<!-- layer 6: highlight stroke (down state only) -->
+	<!--- @private -->
+	<s:Rect id="hldownstroke1" left="0" right="0" top="0" bottom="0" topLeftRadiusX="3" topRightRadiusX="3">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="#F7F7F7"/>
+				<s:GradientEntry color="#D7D7D7"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<!--- @private -->
+	<s:Rect id="hldownstroke2" left="0" right="0" top="0" bottom="0" topLeftRadiusX="3" topRightRadiusX="3" includeIn="over,down,keepSelected">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="#6FB2F6"/>
+				<s:GradientEntry color="#1F6CCD"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<!-- layer 7: border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
+	<!--- @private -->
+	<s:Rect id="border" left="0" right="0" top="0" bottom="0" topLeftRadiusX="3" topRightRadiusX="3">
+		<s:stroke>
+			<s:SolidColorStroke color="#85b3d8"/>
+		</s:stroke>
+	</s:Rect>
+    
+	<!-- layer 8: text -->
+	<!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay  -->
+	<s:Label id="labelDisplay"
+			 textAlign="center"
+			 maxDisplayedLines="1"
+			 fontSize="12"
+			 horizontalCenter="0" 
+			 verticalCenter="1" 
+			 verticalAlign="middle"
+			 left="2" right="2" 
+			 top="2" bottom="2"
+			 color.keepSelected="0xFFFFFF"
+			 showTruncationTip="false">
+	</s:Label>
+    
+</s:SparkButtonSkin>

@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--基础查询，要素详细信息显示面板-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:ns="library://ns.supermap.com/flex/wegis/common" 
+		 width="100%" height="100%" 
+		 creationComplete="initInfoPanel(event)">
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.components.events.MenuEventEx;
+			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
+			import com.supermap.wegis.common.components.menuBar.MenuItem;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.LinkButton;
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.renders.ElementDetailInfoRenderer;
+			import sm.wegis.szy.renders.GridItemRendererEx;
+			import sm.wegis.szy.skins.InfoDataGridSkinEx;
+			import sm.wegis.szy.skins.MenuItemSkin;
+			
+			import spark.components.DataGrid;
+			import spark.components.DataGroup;
+			import spark.components.NavigatorContent;
+			import spark.components.gridClasses.GridColumn;
+			import spark.components.gridClasses.GridSelectionMode;
+			import spark.events.GridEvent;
+			import spark.layouts.VerticalLayout;
+			private var _detailAttribute:ArrayCollection;
+			private var elementChanged:Boolean = false;
+			private var _titleField:String ="RS_NAME";
+			private var _parentAttribute:Object;
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
+			private var map:MapCtrl = modelLocator.mapCtrl;
+			private var _layerName:String;
+			[Bindable]
+			private var linkBtVisible:Boolean = true;
+			
+			/**用于存储各个面板中DataGrid组件对象*/
+			private var dataGridSets:Array = [];
+			
+			/**用于存储各个面板中DataGrid组件数据源对象*/
+			private var dataGridDataSets:Array = [];
+			
+			/**基本信息显示的项目数*/
+			public var ITEM_COUNT:int = 8;
+			
+			[Bindable]
+			/**当前视窗是否为更多数据,默认为false（基本数据视窗）*/
+			private var isMoreDatas:Boolean = false;
+			
+			/**要素图层名称*/
+			public function get layerName():String
+			{
+				return _layerName;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set layerName(value:String):void
+			{
+				_layerName = value;
+			}
+			
+			/**要素相关信息*/
+			public function get detailAttribute():ArrayCollection
+			{
+				return _detailAttribute;
+			}
+			public function set detailAttribute(value:ArrayCollection):void
+			{
+				if(_detailAttribute != value)
+				{
+					_detailAttribute = value;
+					elementChanged = true;
+					invalidateProperties();
+				}
+			}
+			
+			/**标题显示字段*/
+			[Bindable]
+			public function get titleField():String
+			{
+				return _titleField;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set titleField(value:String):void
+			{
+				_titleField = value;
+			}
+			
+			//获取command返回的要素详细类型
+			private function createElemetInfoContent(item:Object):void
+			{
+				switch(item["detailType"])
+				{
+					case "detailInfo":
+						addDetailInfo(item);
+						break;
+					case "linkObject":
+						addLinkObject(item);
+						break;
+					case "linkDoc":
+						addLinkDocument(item);
+						break;
+					case "realInfo":
+						addRealInfo(item);
+						break;
+					case "linkRv":
+						addLinkRvlInfo(item);
+						break;
+				}
+			}
+			
+			//添加实时信息
+			private function addRealInfo(data:Object):void
+			{
+				/* var infoNav:NavigatorContent = new NavigatorContent();
+				infoNav.percentHeight = 100;
+				infoNav.percentWidth = 100;
+				infoNav.label = data["label"];
+				var realInfoPanel:RealInfoPanel = new RealInfoPanel();
+				realInfoPanel.data=data;
+				realInfoPanel.percentHeight=100;
+				realInfoPanel.percentWidth=100;
+				infoNav.addElement(realInfoPanel);
+				infoViewStack.addItem(infoNav); */
+			}
+			
+			//添加详细信息
+			private function addDetailInfo(data:Object):void
+			{
+				var infoNav:NavigatorContent = new NavigatorContent();
+				infoNav.percentHeight = 100;
+				infoNav.percentWidth = 100;
+				infoNav.label = data["label"];
+				var dataGrid:DataGrid = createDataGrid(data,GridItemRendererEx);
+				dataGrid.selectionMode = GridSelectionMode.NONE;
+				dataGrid.resizableColumns = true;
+				dataGrid.showDataTips = true;
+				infoNav.addElement(dataGrid);
+				infoViewStack.addItem(infoNav);
+			}
+			
+			//添加关联对象
+			private function addLinkObject(data:Object):void
+			{
+				var infoNav:NavigatorContent = new NavigatorContent();
+				infoNav.percentHeight = 100;
+				infoNav.percentWidth = 100;
+				infoNav.label = data["label"];
+				var dataGrid:DataGrid = createDataGrid(data,GridItemRendererEx);
+				dataGrid.selectionMode = GridSelectionMode.SINGLE_ROW;
+				dataGrid.resizableColumns = true;
+				dataGrid.showDataTips = true;
+				dataGrid.requestedColumnCount = -1;
+				dataGrid.addEventListener(GridEvent.GRID_CLICK,showLinkObject);
+				infoNav.addElement(dataGrid);
+				infoViewStack.addItem(infoNav);
+			}
+			
+			//添加关联文档
+			private function addLinkDocument(data:Object):void
+			{
+				var infoNav:NavigatorContent = new NavigatorContent();
+				infoNav.percentHeight = 100;
+				infoNav.percentWidth = 100;
+				infoNav.label = data["label"];
+				var dataGrid:DataGrid = createDataGrid(data,GridItemRendererEx);
+				dataGrid.selectionMode = GridSelectionMode.SINGLE_ROW;
+				dataGrid.resizableColumns = true;
+				dataGrid.showDataTips = true;
+				dataGrid.requestedColumnCount = -1;
+				dataGrid.addEventListener(GridEvent.GRID_CLICK,openLinkDocument);
+				infoNav.addElement(dataGrid);
+				infoViewStack.addItem(infoNav);
+			}
+			
+			//添加河段信息
+			private function addLinkRvlInfo(data:Object):void
+			{
+				var infoNav:NavigatorContent = new NavigatorContent();
+				infoNav.percentHeight = 100;
+				infoNav.percentWidth = 100;
+				infoNav.label = data["label"];
+				var dataGrid:DataGrid = createDataGrid(data,GridItemRendererEx);
+				dataGrid.selectionMode = GridSelectionMode.NONE;
+				dataGrid.resizableColumns = true;
+				dataGrid.showDataTips = true;
+				infoNav.addElement(dataGrid);
+				infoViewStack.addItem(infoNav);
+			}
+			
+			
+			
+			//获取表格
+			public function createDataGroup(data:Array,elementItemRender:Class=null, layout:VerticalLayout = null):DataGroup
+			{
+				var dataGroup:DataGroup = new DataGroup();
+				dataGroup.percentWidth = 100;
+				if(elementItemRender == null)
+				{
+					elementItemRender = ElementDetailInfoRenderer;
+				}
+				dataGroup.itemRenderer = new ClassFactory(elementItemRender);
+				if(layout == null)
+				{
+					layout = new VerticalLayout();
+					layout.gap = 0;
+				}
+				dataGroup.layout = layout;
+				dataGroup.dataProvider = new ArrayCollection(data);
+				return dataGroup;
+			}
+			
+			/**创建DataGrid内容
+			 * @param dataGrid 需要创建列的表格
+			 * @param data 数据实体
+			 * */
+			public function createDataGrid(data:Object,itemrender:Class):DataGrid
+			{
+				var dataGrid:DataGrid = new DataGrid();
+				dataGrid.setStyle("skinClass",InfoDataGridSkinEx);
+				dataGrid.percentHeight = 100;
+				dataGrid.percentWidth = 100;
+				dataGrid.selectionMode = GridSelectionMode.SINGLE_ROW;
+				dataGrid.sortableColumns = false;
+				//				dataGrid.resizableColumns = false;
+				dataGrid.requestedColumnCount = -1;
+				dataGrid.requestedRowCount = 5;
+				if(itemrender != null)
+				{
+					dataGrid.itemRenderer = new ClassFactory(itemrender);
+				}
+				//根据字段列表创建列
+				if(dataGrid.columns != null)
+				{
+					dataGrid.columns.removeAll();
+				}
+				else
+				{
+					dataGrid.columns = new ArrayCollection([]);
+				}
+				
+				//根据返回结果创建需要显示的列
+				if(data.hasOwnProperty("resultInfoHeaderList"))
+				{
+					var tempArrCol:ArrayCollection = new ArrayCollection(data["resultInfoHeaderList"]);
+					if(tempArrCol != null && tempArrCol.length > 0)
+					{
+						for each (var item:Object in tempArrCol) 
+						{
+							if(item != null)
+							{
+								var column:GridColumn = new GridColumn();
+								column.sortable = false;
+								column.dataField = item["code"];
+								if(item["code"] == "THEME")
+									column.width = 70;
+								column.headerText = item["showValue"];
+								dataGrid.columns.addItem(column);
+							}
+						}
+					}
+				}
+				
+				//绑定数据源
+				if(dataGrid.dataProvider != null)
+				{
+					dataGrid.dataProvider = null;
+				}
+				
+				if(data.hasOwnProperty("resultInfoDetailList"))
+				{
+					var statisticCol:ArrayCollection = new ArrayCollection(data["resultInfoDetailList"]);
+					if(statisticCol != null && statisticCol.length > 0 && !isMoreDatas)//基本数据
+					{
+						dataGrid.dataProvider = getSimpleArrayCol(statisticCol, ITEM_COUNT);
+						isMoreDatas = false;
+					}
+					else
+					{
+						dataGrid.dataProvider = statisticCol;
+						isMoreDatas = true;
+					}
+					
+					dataGridSets.push(dataGrid);
+					dataGridDataSets.push(statisticCol);
+				}
+				
+				return dataGrid;
+			}
+			
+			
+			//点击相关文档，打开相关资料，可能图片，可能是视频，可能是pdf
+			private function openLinkDocument(event:GridEvent):void
+			{
+				var dataGrid:DataGrid = event.currentTarget as DataGrid;
+				var baseDataLinkDocPanel:ObjectLinkDocPanel = new ObjectLinkDocPanel();
+				baseDataLinkDocPanel.selectIndex = event.rowIndex;
+				baseDataLinkDocPanel.linkDataProvider = dataGrid.dataProvider as ArrayCollection;
+				PopUpManager.addPopUp(baseDataLinkDocPanel,FlexGlobals.topLevelApplication as UIComponent,false);
+//				PopUpManager.addPopUp(baseDataLinkDocPanel,modelLocator.popupGroup as UIComponent,false);
+			}
+			
+			//在FeatureLayer显示关联对象
+			private function showLinkObject(event:GridEvent):void
+			{
+				var dataGrid:DataGrid = event.currentTarget as DataGrid;
+				var item:Object = dataGrid.dataProvider.getItemAt(event.rowIndex);
+				
+				/* var baseDataEvent:BaseDataEvent = new BaseDataEvent(BaseDataEvent.BASEDATA_LINK_OBJECT_CONTROL);
+				var baseDataLinkObjectVO:BaseDataLinkObjectVO = new BaseDataLinkObjectVO();
+				baseDataLinkObjectVO.parentAttribute = parentAttribute;
+				baseDataLinkObjectVO.detailAttribute = item;
+				baseDataLinkObjectVO.layerName = layerName;
+				baseDataEvent.data = baseDataLinkObjectVO;
+				baseDataEvent.dispatch(); */
+			}
+			
+			override  protected function commitProperties():void 
+			{
+				super.commitProperties();
+				//要素发生变化,获取要素窗口类型
+				if(elementChanged)
+				{	
+					//infoTypeBar.dataProvider = detailAttribute;
+					infoTypeBar.labelField = "label";
+					infoTypeBar.dataProvider = detailAttribute;
+					elementChanged = false;
+				}
+			}
+			
+			protected function initInfoPanel(event:FlexEvent):void
+			{
+				/**初始化查询数据参数*/
+				dataGridSets = [];
+				dataGridDataSets = [];
+				isMoreDatas = false;
+				
+				if(infoTypeBar.itemList != null && infoTypeBar.itemList.length > 0)
+				{
+					//初始化创建第一个详情信息导航面板
+					var item:MenuItem = infoTypeBar.itemList.getItemAt(0) as MenuItem;
+					if(item != null)
+					{
+						if(infoTypeBar.itemList.length > 1)
+						{
+							infoTypeBar.isUpdateStatus = true;
+							infoTypeBar.updateStatus(item);
+						}
+						else
+						{
+							infoTypeBar.isUpdateStatus = false;
+						}
+						createNavigationPanel(item);
+					}
+					infoTypeBar.addEventListener(MenuEventEx.MENU_CLICK, mencClickHandler);
+				}
+			}
+			
+			private function mencClickHandler(e:MenuEventEx):void
+			{
+				if(e.Message is MenuItem)
+				{
+					var item:MenuItem = e.Message as MenuItem;
+					createNavigationPanel(item);
+				}
+			}
+			
+			/**创建导航面板*/
+			private function createNavigationPanel(item:MenuItem=null):void
+			{
+				if(item.data != null)
+				{
+					switch(item.data["detailType"])
+					{
+						case "detailInfo":
+						case "linkObject":
+						case "linkDoc":
+						case "linkRv":
+							linkBtVisible = true;
+							break;
+						case "realInfo":
+							linkBtVisible = false;
+							break;
+					}
+					
+					var index:int = getIndexInViewStack(item["label"]);
+					//如果为-1 ，则还未添加
+					if (index == -1)
+					{
+						createElemetInfoContent(item.data);
+						infoViewStack.selectedIndex = infoViewStack.numElements -1;
+						
+					}else{
+						infoViewStack.selectedIndex = index;
+					}
+				}
+			}
+			
+			//检测是否已经创建
+			private function getIndexInViewStack(label:String):int
+			{
+				var index:int = -1;
+				for (var i:int = 0 ; i < infoViewStack.numElements ;i++)
+				{
+					var content:NavigatorContent = infoViewStack.getElementAt(i) as NavigatorContent;
+					if(content.label == label)
+					{
+						index = i;
+						break;
+					}
+				}
+				return index;
+			}
+			
+			public function get parentAttribute():Object
+			{
+				return _parentAttribute;
+			}
+			
+			public function set parentAttribute(value:Object):void
+			{
+				_parentAttribute = value;
+			}
+			
+			/**显示基本数据或更多数据*/
+			protected function moreDataHandler(event:MouseEvent):void
+			{
+				if(isMoreDatas)
+				{
+					showBasicDatas();
+				}
+				else
+				{
+					showMoreDatas();
+				}
+				isMoreDatas = !isMoreDatas;
+			}
+			
+			/**显示更多数据*/
+			private function showMoreDatas():void
+			{
+				if(dataGridSets.length > 0 && dataGridDataSets.length > 0)
+				{
+					for (var i:int = 0; i < dataGridSets.length; i++) 
+					{
+						var dg:DataGrid = dataGridSets[i] as DataGrid;
+						//dg.dataProvider.removeAll();
+						dg.dataProvider = dataGridDataSets[i] as ArrayCollection;
+					}
+				}
+			}
+			
+			/**显示基本数据*/
+			private function showBasicDatas():void
+			{
+				if(dataGridSets.length > 0 && dataGridDataSets.length > 0)
+				{
+					for (var i:int = 0; i < dataGridSets.length; i++) 
+					{
+						var dg:DataGrid = dataGridSets[i] as DataGrid;
+						//dg.dataProvider.removeAll();
+						dg.dataProvider = getSimpleArrayCol(dataGridDataSets[i] as ArrayCollection, ITEM_COUNT);
+					}
+				}
+			}
+			
+			/**获取基本数据*/
+			private function getSimpleArrayCol(col:ArrayCollection=null, count:int=0):ArrayCollection
+			{
+				if(col == null || count == 0)
+					return null;
+				var tempCol:ArrayCollection = new ArrayCollection();
+				for (var i:int = 0; i < col.length; i++) 
+				{
+					if(i < count)
+					{
+						tempCol.addItemAt(col.getItemAt(i),i);
+					}
+					else
+						break;
+				}
+				
+				return tempCol;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:VGroup  width="100%" height="100%" gap="0" horizontalAlign="right">
+		<s:HGroup horizontalAlign="left" width="100%">
+			<ns:MenuBar id="infoTypeBar" 
+						itemWidth="60"
+						itemHeight="25"
+						itemHorizontalGap="0"
+						isUpdateStatus="true"
+						menuItemSkinClass="{MenuItemSkin}"/>
+		</s:HGroup>
+		<mx:ViewStack id="infoViewStack" width="100%" height="100%"/>
+		<mx:LinkButton id="moreDataLink" width="100%"  
+					   visible="{linkBtVisible}"  includeInLayout="{linkBtVisible}"
+					   label="{isMoreDatas?'基本数据':'更多数据'}"
+					   color="#276aae"
+					   click="moreDataHandler(event)"/>		
+	</s:VGroup>
+</s:Group>

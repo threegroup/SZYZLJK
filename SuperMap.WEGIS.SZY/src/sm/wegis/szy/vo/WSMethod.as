@@ -22,5 +22,8 @@ package sm.wegis.szy.vo
 		
 		/**获取当个对象监测详细信息*/
 		public static const GetTarget:String = "getTarget";
+		
+		/**获取对象详情信息*/
+		public static const GetObjDetailInfo:String = "getObjDetailInfo";
 	}
 }

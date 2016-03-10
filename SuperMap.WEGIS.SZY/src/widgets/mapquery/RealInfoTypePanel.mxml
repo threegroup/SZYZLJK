@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="290" height="225"
+		 creationComplete="completeHandler(event)" xmlns:basedataquery="widgets.basedataquery.*">
+	<fx:Script>
+		<![CDATA[
+			import assets.renders.GridItemRendererEx;
+			
+			import com.adobe.serialization.json.JSONDecoder;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.charts.AxisRenderer;
+			import mx.charts.CategoryAxis;
+			import mx.charts.ColumnChart;
+			import mx.charts.GridLines;
+			import mx.charts.LineChart;
+			import mx.charts.LinearAxis;
+			import mx.charts.chartClasses.CartesianChart;
+			import mx.charts.renderers.CircleItemRenderer;
+			import mx.charts.series.ColumnSeries;
+			import mx.charts.series.LineSeries;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Spacer;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.formatters.DateFormatter;
+			import mx.graphics.SolidColor;
+			import mx.graphics.SolidColorStroke;
+			import mx.managers.CursorManager;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectProxy;
+			
+			import spark.collections.Sort;
+			import spark.collections.SortField;
+			import spark.components.DataGrid;
+			import spark.components.VGroup;
+			import spark.components.gridClasses.GridColumn;
+			import spark.components.gridClasses.GridSelectionMode;
+			
+			import widgets.basedataquery.Items.CheckBoxItem;
+			import widgets.realdata.DashedLines;
+			//实时数据
+			private var _data:Object=null;
+			//警戒线是否显示
+			private var warningLineOK:Boolean=false;
+			//展示类型
+			private var lookType:String="Line";
+			//折线图
+			private var lineChart:VGroup;
+			//柱状图
+			private var columnChart:VGroup;
+			//警戒线图例
+			private var warningLineListOk:Array;
+			//警戒线图例
+			private var warningLineListb:Boolean=false;
+			private var warningLineListClack:Array = new Array();
+			
+			[Embed(source="assets/image/legend/down.png")]
+			private var downImage:Class;
+			
+			
+			[Embed(source="assets/image/legend/up.png")]
+			private var upImage:Class;
+			
+			/**图例面板顶部菜单项目高度*/
+			[Bindable]
+			public var menuHeight:Number = 24;
+			
+			/**图例面板顶部菜单项目宽度*/
+			[Bindable]
+			public var menuWidth:Number = 24;
+			
+			public function get data():Object
+			{
+				return _data;
+			}
+			public function set data(value:Object):void
+			{
+				_data = value;
+			}
+			
+			protected function warningLineVg(warningLineList:Array):void
+			{
+				warningLineListOk= new Array();
+				for each(var warningLineOj:Object in warningLineList){
+					if(warningLineOj.value != null && warningLineOj.value != -1 && warningLineOj.name != null)
+						warningLineListOk.push(warningLineOj);
+				}
+				
+				if(warningLineListOk.length>0){
+					warningLineListb=true;
+					this.tuliData.visible=warningLineListb;
+					this.tuliData.includeInLayout=warningLineListb;
+					for (var i:int=0;i<warningLineListOk.length;i++){
+						var checkbox:CheckBoxItem = new CheckBoxItem();
+						checkbox.data=data.warningLineList[i];
+						var unit:String=data.warningLineList[i].hasOwnProperty("unit") ? data.warningLineList[i].unit : ""
+						checkbox.label=data.warningLineList[i].name+"("+data.warningLineList[i].value+unit+")";
+						checkbox.setStyle("color",data.warningLineList[i].color);
+						warningLine.addElementAt(checkbox,i);
+					}
+				}
+				changeHandler(lookType);
+			}
+			
+			protected function completeHandler(event:FlexEvent):void
+			{
+				this.currentState="HIDE";
+				this.controlBtn.setStyle("icon", downImage);
+				
+				if(data.commonArray.length<2){
+					lookType="TableChart";
+					TableChart.selected=true;
+					Line.enabled=false;
+				}
+				warningLineVg(data.warningLineList as Array);
+			}
+			//显示方式切换
+			protected function changeHandler(type:String):void
+			{
+				mainChartContainer.removeAllElements();
+				lookType=type;
+				var commonArrays:ArrayCollection= data.commonArray;
+				if(type == "Line" && commonArrays[0].hasOwnProperty("VALUE")){
+					var startdate:Date = DateFormatter.parseDateString(commonArrays[0]["TM"].toString());
+					var startTimeoj:Object=new Object();
+					startTimeoj.TM=startdate.fullYear+"-"+(startdate.month>8 ? (startdate.month+1)+"-" : "0"+(startdate.month+1)+"-")+(startdate.date>8 ? startdate.date+" " : "0"+startdate.date+" ")+((startdate.hours-1)>8 ? (startdate.hours-1) : "0"+(startdate.hours-1))+":30:00";
+					var enddate:Date = DateFormatter.parseDateString(commonArrays[commonArrays.length-1]["TM"].toString());
+					var endTimeoj:Object=new Object();
+					endTimeoj.TM=enddate.fullYear+"-"+(enddate.month>8 ? (enddate.month+1)+"-" : "0"+(enddate.month+1)+"-")+(enddate.date>8 ? enddate.date+" " : "0"+enddate.date+" ")+(enddate.hours>8 ? enddate.hours : "0"+enddate.hours)+":30:00";
+					commonArrays.addItemAt(startTimeoj,0);
+					commonArrays.addItem(endTimeoj);
+				}else if(type == "TableChart" || type == "Column3D"){
+					if(!commonArrays[0].hasOwnProperty("VALUE")){
+						commonArrays.removeItemAt(0);
+						commonArrays.removeItemAt(commonArrays.length-1);
+					}
+				}
+				if(type == "TableChart")
+				{
+					btnQueryPower.enabled=false;
+					warningLine.enabled=false;
+					datagrid(data);
+				}else{
+					btnQueryPower.enabled=true;
+					warningLine.enabled=true;
+					if(type == "Line")
+					{
+						if(lineChart == null)
+						{
+							var lineCharts:CartesianChart = new LineChart();
+							showAttribureInfo(type,data, lineCharts);
+						}else{
+							mainChartContainer.addElement(lineChart);
+						}
+					}else if(type == "Column3D"){
+						if(columnChart == null)
+						{
+							var columnCharts:CartesianChart = new ColumnChart();
+							showAttribureInfo(type,data, columnCharts);
+						}else{
+							mainChartContainer.addElement(columnChart);
+						}
+					}
+				}
+			}
+			
+			//表格显示
+			private function datagrid(tempArrCol:Object):void
+			{
+				var commonArrayCollection:ArrayCollection= tempArrCol.commonArray;
+				var header:String=tempArrCol.legend.yName+"("+tempArrCol.legend.unit+")";
+				var resultInfoHeaderList:Array=new Array({"code":"TM","showValue":"时间"},{"code":"VALUE","showValue":header});
+				var bs:BaseDataInfoPanel=new BaseDataInfoPanel();
+				bs.ITEM_COUNT=commonArrayCollection.length;
+				var commonArrays:Array=new Array();
+				for each (var Item:Object in commonArrayCollection) 
+				{
+					commonArrays.push(Item);
+				}
+				var datas:Object=new Object();
+				datas.resultInfoHeaderList=resultInfoHeaderList;
+				datas.resultInfoDetailList=commonArrays;
+				var dataGrid:DataGrid = bs.createDataGrid(datas,GridItemRendererEx);
+				dataGrid.selectionMode = GridSelectionMode.NONE;
+				dataGrid.resizableColumns = true;
+				mainChartContainer.addElement(dataGrid);
+			}
+			//展示过程图
+			private function showAttribureInfo(type:String, tempArrCol:Object, chart:CartesianChart):void
+			{
+				var vGroup:VGroup = new VGroup();
+				vGroup.percentWidth = 95;
+				vGroup.percentHeight = 100;
+				vGroup.horizontalAlign = "center";
+				vGroup.gap = 1;
+				
+				chart.dataProvider = tempArrCol.commonArray;
+				chart.top = 2;
+				chart.percentWidth=100;
+				chart.percentHeight = 100;
+				chart.showDataTips = true;
+				chart.seriesFilters = [];//去除阴影效果
+				
+				//x轴
+				var ca:CategoryAxis = new CategoryAxis();
+				ca.categoryField = "TM";
+				ca.displayName = "时间";
+				ca.labelFunction = horizontalAxis_labelFunc;
+				var xar:AxisRenderer = new AxisRenderer();
+				var xscs:SolidColorStroke = new SolidColorStroke();
+				xscs.weight = 1;
+				xscs.color = 0xa0a0a0;
+				xar.axis = ca;
+				xar.setStyle("axisStroke",xscs);
+				xar.setStyle("fontSize",10);
+				xar.setStyle("canDropLabels",true);//自动调整label显示
+				var axisRendererXArr:Array = new Array();
+				axisRendererXArr.push(xar);
+				chart.horizontalAxisRenderers = axisRendererXArr;
+				chart.horizontalAxis = ca;
+				
+				//y轴
+				var la:LinearAxis = new LinearAxis();
+				la.baseAtZero = false;
+				var yar:AxisRenderer = new AxisRenderer();
+				yar.axis = la;
+				var yscs:SolidColorStroke = new SolidColorStroke();
+				yscs.weight = 1;
+				yscs.color = 0xa0a0a0;
+				yar.setStyle("axisStroke",yscs);//渲染轴
+				yar.setStyle("tickPlacement","none"); 
+				yar.setStyle("autoAdjust",true); 
+				var axisRendererYArr:Array = new Array();
+				axisRendererYArr.push(yar);
+				chart.verticalAxisRenderers = axisRendererYArr;
+				var columnName:String = null;
+				var series:Array = new Array();
+				var header:String=tempArrCol.legend.yName+"("+tempArrCol.legend.unit+")";
+				if(type == "Line"){
+					columnName = "VALUE";
+					la.title = header;
+					la.displayName = header;
+					var l2:LineSeries = new LineSeries();
+					var s2:SolidColorStroke = new SolidColorStroke();
+					s2.color = 0x1478be;
+					s2.weight = 1;
+					l2.yField = columnName;
+					l2.setStyle("form","curve");
+					l2.setStyle("lineStroke",s2);
+					l2.setStyle("itemRenderer", new ClassFactory(CircleItemRenderer));//显示节点
+					series.push(l2);
+					chart.series = series;
+				}else if(type == "Column3D"){
+					columnName = "VALUE";
+					la.title = header;
+					la.displayName = header;
+					var c:ColumnSeries = new ColumnSeries();
+					var sc:SolidColor = new SolidColor();
+					sc.color = 0xe48701;
+					sc.alpha = .8;
+					var s4:SolidColorStroke = new SolidColorStroke();
+					s4.color = 0xe48701;
+					s4.weight = 1;
+					c.yField = columnName;
+					c.setStyle("fill",sc);//填充
+					c.setStyle("stroke",s4);//边框
+					series.push(c);
+					chart.series = series;
+				}
+				var coll:ArrayCollection = new ArrayCollection(tempArrCol.commonArray.source);
+				var maximumber:Number = getMaxValue(coll,columnName);
+				var minimumber:Number = getMinValue(coll,columnName);
+				var numberXZ:Number = maximumber-minimumber;
+				if(numberXZ>1){
+					la.padding=0.1;
+				}else{
+					la.padding=0.01;
+				}
+				la.maximum = maximumber*10%1==0 ? maximumber : (Math.ceil(maximumber*10))/10;
+				la.minimum = minimumber*10%1==0 ? minimumber : (Math.floor(minimumber*10))/10;
+				la.autoAdjust=true;
+				
+				if(warningLineListClack.length>0){
+					var maxwarningLines:Number=la.maximum;
+					var minwarningLines:Number=la.minimum;
+					for each(var warningLineOBJ:Object in warningLineListClack){
+						var warningLinej:Number=Number(warningLineOBJ.value);
+						maxwarningLines = warningLinej > maxwarningLines ? warningLinej : maxwarningLines;
+						minwarningLines = warningLinej > minwarningLines ? minwarningLines : warningLinej;
+					}
+					if(la.maximum<maxwarningLines){
+						la.maximum=maxwarningLines+0.1;
+					}
+					if(la.minimum>minwarningLines){
+						la.minimum=minwarningLines-0.1;
+					}
+				}
+				if(la.minimum < 0){
+					la.minimum = 0;
+				}
+				
+				chart.verticalAxis = la;
+				
+				if(warningLineListClack.length>0){
+					//添加水平网格和水位警戒线
+					var tempLineArr:Array = new Array();
+					var gridLine:GridLines = new GridLines();
+					gridLine.setStyle("gridDirection","horizontal");
+					tempLineArr.push(gridLine);
+					for each(var warningLineOBJ:Object in warningLineListClack){
+						var dashedLine:DashedLines = new DashedLines();
+						dashedLine.lineColor = warningLineOBJ.color.toString();
+						dashedLine.yValue = warningLineOBJ.value;
+						tempLineArr.push(dashedLine);
+					}
+					chart.backgroundElements = tempLineArr;
+				}
+				
+				var space:Spacer = new Spacer();
+				space.height = 3;
+				vGroup.addElement(space);
+				vGroup.addElement(chart);
+				if(type == "Line"){
+					lineChart=vGroup;
+				}else{
+					columnChart=vGroup;
+				}
+				mainChartContainer.addElement(vGroup);
+			}
+			
+			//获取水位最大值
+			private function getMaxValue(coll:ArrayCollection,column:String):Number{
+				if(coll.length > 0)
+				{
+					var sort:Sort = new Sort();
+					sort.fields=[new SortField(column)];
+					coll.sort = sort;
+					coll.refresh();
+					return coll[coll.length-3][column];
+				}else {
+					return 0;	
+				}
+			}
+			
+			//获取水位最小值
+			private function getMinValue(coll:ArrayCollection,column:String):Number{
+				var sort:Sort = new Sort();
+				sort.fields=[new SortField(column)];
+				coll.sort = sort;
+				coll.refresh();
+				return coll[0][column];
+			}
+			
+			//处理x轴label
+			private function horizontalAxis_labelFunc(item:Object, prevValue:Object, axis:CategoryAxis, categoryItem:Object):String{
+				if(item.toString().indexOf("时") != -1){
+					return item.toString().substring(3);
+				}else{
+					var date:Date = DateFormatter.parseDateString(item.toString());
+					return date.date + "日" + date.hours + "时";
+				}
+			}
+			
+			//获取时间
+			protected function queryFunction(startTime:String,endTime:String):Object
+			{
+				var timeOj:Object=new Object();
+				timeOj.startTime=startTime;
+				timeOj.endTime=endTime;
+				return timeOj;
+			}
+			
+			/**警戒线*/
+			private function switchPanel():void
+			{
+				if(this.currentState=="HIDE")
+				{
+					this.currentState="SHOW";
+					this.controlBtn.setStyle("icon",upImage);
+				}
+				else
+				{
+					this.currentState="HIDE";
+					this.controlBtn.setStyle("icon", downImage);
+				}
+			}
+			
+			/**警戒线*/
+			private function chart_changeHandler():void
+			{
+				warningLineListClack=new Array();
+				for (var i:int=0;i<warningLineListOk.length;i++){
+					var checkbox:CheckBoxItem = this.warningLine.getElementAt(i) as CheckBoxItem;
+					if(checkbox.selected){
+						warningLineListClack.push(checkbox.data);
+					}
+				}
+				lineChart=null;
+				if(lookType=="Line"){
+					changeHandler(lookType);
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:states>
+		<s:State name="HIDE"/>
+		<s:State name="SHOW"/>
+	</s:states>
+	<s:VGroup id="mainChartVG" width="100%" height="100%" gap="0" horizontalAlign="center" verticalAlign="middle">
+		<s:HGroup id="dataType" width="100%" height="22" gap="5">
+			<s:Spacer width="100%"/>
+			<s:RadioButton id="Line" selected="true" label="折线图" change="changeHandler(this.Line.id)"/>
+			<!--<s:RadioButton id="Column3D" label="柱形图" change="changeHandler(this.Column3D.id)"/>-->
+			<s:RadioButton id="TableChart" label="表格" change="changeHandler(this.TableChart.id)"/>
+		</s:HGroup>
+		<s:Label id="dataName" color="#276aae"/>
+		<s:VGroup id="mainChartContainer" width="100%" height="100%"/>
+	</s:VGroup>
+	<s:Group id="tuliData" top="0" left="0" width.HIDE="{menuWidth}" height.HIDE="{menuHeight}" visible="{warningLineListb}" includeInLayout="{warningLineListb}">
+		<s:BorderContainer id="warningLineB" width.HIDE="{menuWidth}" height.HIDE="{menuHeight}" borderColor="0xa4a4a4" borderVisible="true" alpha="1">
+			<s:VGroup id="warningLine" gap="0" paddingLeft="2" paddingTop="2" paddingRight="2" paddingBottom="27"
+					  visible.HIDE="false" includeInLayout.HIDE="false" visible.SHOW="true" includeInLayout.SHOW="true"/>
+			<s:Button id="btnQueryPower" label="确定" height="{menuHeight}" buttonMode="true" click="chart_changeHandler()"
+					  icon="{ResourceManagerEx.FindResource('QUERY').cls}"
+					  visible.HIDE="false" includeInLayout.HIDE="false" visible.SHOW="true" includeInLayout.SHOW="true" bottom="0" right="{menuWidth+3}"/>
+			<s:Button id="controlBtn" width="{menuWidth}" height="{menuHeight}" 
+					  buttonMode="true" toolTip.HIDE="展开警戒线" toolTip.SHOW="关闭警戒线" click="switchPanel()" bottom="0" right="0"/>
+		</s:BorderContainer>
+	</s:Group>
+</s:Group>

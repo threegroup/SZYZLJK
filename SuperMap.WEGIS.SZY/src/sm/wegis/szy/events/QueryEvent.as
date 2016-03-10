@@ -34,5 +34,11 @@ package sm.wegis.szy.events
 			
 		/**响应查询单个要素，监测数据查询*/
 		public static const QUERY_SINGLE_OBJECT_INFO_RESPONSE:String = "QuerySingleObjectInfoResponse";
+		
+		/**查询要素详情*/
+		public static const QUERY_OBJECT_DETAIL:String = "QueryObjectDetail";
+		
+		/**显示要素详情*/
+		public static const SHOW_OBJECT_DETAIL:String = "ShowObjectDetail";
 	}
 }
