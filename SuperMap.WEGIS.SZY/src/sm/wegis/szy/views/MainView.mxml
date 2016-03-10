@@ -519,9 +519,9 @@
 						<s:Image fillMode="scale"
 								 source="{ResourceManagerEx.FindResource('userIcon').cls}"/>
 						<s:Label width="100%" styleName="LoginLabelStyle" text="登录系统账号"/>
-						<s:Button id="closeLoginId" buttonMode="true"
+						<!--<s:Button id="closeLoginId" buttonMode="true"
 								  click="closeLoginId_clickHandler(event)"
-								  styleName="CloseLoginButtonStyle"/>
+								  styleName="CloseLoginButtonStyle"/>-->
 					</s:HGroup>
 					<s:Line width="100%">
 						<s:stroke>

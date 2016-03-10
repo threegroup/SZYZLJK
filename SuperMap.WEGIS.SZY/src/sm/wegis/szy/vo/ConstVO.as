@@ -2,6 +2,9 @@ package sm.wegis.szy.vo
 {
 	public class ConstVO
 	{
+		/**要素图片Y轴偏移值*/
+		public static const PICTURE_FEATURE_YOFFSET:int = 12;
+		
 		public  static const  VectorMapState:String = "vectorMapState";
 		public  static const  ImageMapState:String = "imageMapState";
 		

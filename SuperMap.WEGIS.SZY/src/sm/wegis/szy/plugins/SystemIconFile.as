@@ -5,6 +5,12 @@ package sm.wegis.szy.plugins
 	
 	public class SystemIconFile extends Plugin
 	{
+		/**infowindwo  linkdoc 关闭按钮*/
+		[Embed(source="assets/image/infoclose.png")]
+		private static var infocloseCls:Class;
+		private static var infocloseKey:String = "infoclose";
+		ResourceManagerEx.RegisterResource("",infocloseKey, infocloseCls);
+		
 		/**logo and title*/
 		[Embed(source="assets/image/top/logoT.png")]
 		private static var logoTIconCls:Class;

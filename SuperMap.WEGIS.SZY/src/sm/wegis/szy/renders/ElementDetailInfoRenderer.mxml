@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="false" minHeight="20" width="100%"
+				dataChange="itemrenderer_dataChangeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.utils.NumberUnit;
+			
+			import mx.events.FlexEvent;
+			
+			protected function itemrenderer_dataChangeHandler(event:FlexEvent):void
+			{
+				var len:int;
+				for (var key:String in  data )
+				{
+					LabelItem.text=len >6 ? String(key).substr(0,6)+'...' : key ;
+					LabelItem.toolTip = len > 6?key:"";
+					len = String(data[key]).length;
+					if(NumberUnit.isNumber(data[key]))
+					{
+						ValueItem.text=len >16 ? String(data[key]).substr(0,16)+'...' : data[key] ;
+						ValueItem.toolTip = len > 16?data[key]:"";
+					}else
+					{
+						ValueItem.text=len >8 ? String(data[key]).substr(0,8)+'...' : data[key] ;
+						ValueItem.toolTip = len > 8?data[key]:"";
+					}
+				}
+			
+				
+				
+			}
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				backGround.alpha = isNaN(getStyle('fillAlpha'))  ? 1 : getStyle('fillAlpha');
+				if (itemIndex % 2 == 0)//偶数行颜色
+				{
+					backGround.color = isNaN(getStyle("evenLineColor")) ? 0xC4DCF9 : getStyle("evenLineColor");
+				}else { //基数行颜色
+					backGround.color = isNaN(getStyle("radixLineColor")) ? 0xFFFFFF : getStyle("radixLineColor");
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor id="backGround" />
+		</s:fill>
+	</s:Rect>
+	
+	<s:HGroup width="100%" height="100%" verticalAlign="middle" gap="0" left="6" buttonMode="true">
+		<s:Label id="LabelItem" width="100" fontSize="13"
+				 textAlign="left" verticalAlign="middle"  color="#0000FF" />
+		<s:Spacer width="6"/>
+		<s:Line height="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="#000000" weight="1"/>
+			</s:stroke>
+		</s:Line>
+		<s:Spacer width="6"/>
+		<s:Label id="ValueItem" width="140"
+				 fontSize="13"
+				 textAlign="left" verticalAlign="middle"
+				 color="#000000"/>
+	</s:HGroup>
+</s:ItemRenderer>

@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler(event)">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.devaldi.controls.flexpaper.FlexPaperViewer;
+			import com.devaldi.events.DocumentLoadedEvent;
+			import com.supermap.wegis.common.components.ButtonScrollingCanvas.ButtonScrollingCanvas;
+			import com.supermap.wegis.common.components.imageBrowse.ImageItem;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.LinkButton;
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.graphics.BitmapScaleMode;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.HGroup;
+			import spark.components.NavigatorContent;
+			import spark.components.VideoPlayer;
+			import spark.filters.GlowFilter;
+			//质料打开图片默认图标
+			private var iMageIcon:String="assets/image/pictureB.png";
+			//质料打开视频默认图标
+			private var vIdeoIcon:String="assets/image/videoB.png";
+			//质料打开文件默认图标
+			private var fIleIcon:String="assets/image/documentB.png";
+			private var ImageGroups:HGroup;
+			/**容器管理器界面布局管理*/
+			[Bindable]
+			private var _buttonwidth:Number = 68;
+			[Bindable]
+			private var _buttonheight:Number = 72;
+			private var _linkDataProvider:ArrayCollection;
+			private var linkDataChanged:Boolean = false;
+			private var _selectIndex:int;
+			private var selectIndexChanged:Boolean = false;
+			/**上一次选择的要素*/
+			private var preThumbnail:UIComponent;
+			
+			/**正常模式*/
+			public static const NORMAL:String = "normal";
+			/**精简模式，不显示缩略图*/
+			public static const SIMPLIFY:String ="simplify";
+			
+			/**展现表格数据的数组*/
+			public function get linkDataProvider():ArrayCollection
+			{
+				return _linkDataProvider;
+			}
+			
+			public function set linkDataProvider(value:ArrayCollection):void
+			{
+				if(_linkDataProvider != value)
+				{
+					_linkDataProvider = value;
+					linkDataChanged = true;
+					invalidateProperties();
+				}
+			}
+			
+			/**当前选择索引*/
+			public function get selectIndex():int
+			{
+				return _selectIndex;
+			}
+			
+			public function set selectIndex(value:int):void
+			{
+				if(_selectIndex != value)
+				{
+					_selectIndex = value;
+					selectIndexChanged = true;
+					invalidateProperties();
+				}
+			}
+			
+			// 创建缩略图面板
+			private function createThumbnailPanel():void
+			{
+				var btnScrollCanvas:ButtonScrollingCanvas = new ButtonScrollingCanvas();
+				btnScrollCanvas.percentWidth = 100;
+				btnScrollCanvas.percentHeight = 100;
+				btnScrollCanvas.horizontalScrollPolicy = "auto";
+				btnScrollCanvas.verticalScrollPolicy = "off";
+				btnScrollCanvas.buttonWidth = 10;
+				btnScrollCanvas.styleName = "btnScrollCanvas";
+				
+				var ImageGroup:HGroup = new HGroup();
+				ImageGroup.percentWidth = 100;
+				ImageGroup.percentHeight = 100;
+				ImageGroup.paddingTop = 5;
+				ImageGroup.paddingBottom = 5;
+				ImageGroup.horizontalAlign =  "center";
+				ImageGroup.verticalAlign = "middle";
+				
+				for each(var item:Object in linkDataProvider)
+				{
+					var imageItem:ImageItem =new ImageItem();
+					imageItem.removedOK=false;
+					imageItem.imageInfo = item;
+					imageItem.width = _buttonwidth;
+					imageItem.height = _buttonheight;
+					imageItem.scaleMode = BitmapScaleMode.STRETCH;
+					switch(item["FILE_FORMAT"].toString().toLowerCase())
+					{
+						case "jpg":
+							imageItem.url =iMageIcon;
+							break;
+						case "video":
+							imageItem.url = vIdeoIcon;
+							break;
+						default:
+							imageItem.url = fIleIcon;
+							break;
+					}
+					imageItem.url = item["PREVIEW_URL"];
+					imageItem.buttonMode = true;
+					imageItem.toolTip= item["FILE_NAME"];
+					imageItem.addEventListener(MouseEvent.CLICK,showPreviewPanel);
+					if((linkDataProvider.getItemIndex(item) == selectIndex || 
+						
+						linkDataProvider.length == 1)
+						&& "FILE_FORMAT" in item)
+					{
+						createPreviewPanel(imageItem);
+						ImageGroup.addElement(imageItem);
+					}
+					ImageGroup.addElement(imageItem);
+				}
+				ImageGroups=ImageGroup;
+				btnScrollCanvas.addElement(ImageGroup);
+				thumbnailPanel.addElement(btnScrollCanvas);
+			}
+			
+			private function showPreviewPanel(event:MouseEvent):void
+			{
+				var selectImage:ImageItem = event.currentTarget as ImageItem;
+				if(	"FILE_FORMAT" in selectImage.imageInfo)
+				{
+					createPreviewPanel(selectImage);
+				}
+			}
+			
+			//创建选择的要素预览窗口
+			private function createPreviewPanel(selectImage:ImageItem):void
+			{
+				var thumbIndex:int = linkDataProvider.getItemIndex(selectImage.imageInfo);
+				var index:int = getPreviewIndex(thumbIndex.toString()); 
+				if( index == -1)
+				{
+					var previewUI:UIComponent = new UIComponent();
+					var selectItem:Object = selectImage.imageInfo;
+					var naviagtorContent:NavigatorContent = new NavigatorContent();
+					naviagtorContent.id = thumbIndex.toString();
+					naviagtorContent.percentWidth = 100;
+					naviagtorContent.percentHeight = 100;
+					switch(selectItem["FILE_FORMAT"].toString().toLowerCase())
+					{
+						case "jpg":
+							previewUI =	createPreviewImage(selectItem);
+							break;
+						 case "pdf":
+							previewUI = createPreviewPdf(selectItem);
+							break; 
+						case "video":
+							previewUI = createPreviewVideo(selectItem);
+							break;
+						default:
+							previewUI = downloadBaseData(selectItem);
+							break;
+						
+					}
+					naviagtorContent.addElement(previewUI);
+					previewStack.addElement(naviagtorContent);
+					index = previewStack.numElements -1;
+				}
+				previewStack.selectedIndex = index;
+				setSelectThumbnailState(selectImage);
+				preThumbnail = selectImage;
+			}
+			
+			//检测是否已经加载过
+			private function getPreviewIndex(id:String):int
+			{
+				var index:int = -1;
+				for (var i:int = 0 ;i<previewStack.numElements ; i++)
+				{
+					var navigtorcontent:NavigatorContent = previewStack.getElementAt(i) as 
+						
+						NavigatorContent;
+					if(navigtorcontent.id == id)
+					{
+						index = i;
+						break;
+					}
+				}
+				return index;	
+			}
+			
+			//创建图片预览图
+			private function createPreviewImage(info:Object):UIComponent
+			{
+				var preImage:ImageItems = new ImageItems();
+				preImage.percentHeight = 100;
+				preImage.percentWidth = 100; 
+				preImage.url = info["PREVIEW_URL"];
+				var centerContent:Group = createCenterContent();
+				centerContent.addElement(preImage);
+				return centerContent;
+			}
+			
+			//创建pdf预览图
+			private function createPreviewPdf(info:Object):UIComponent
+			{
+				loadingLb.visible = true;
+				var flexpaper:FlexPaperViewer = new FlexPaperViewer();
+				flexpaper.SwfFile = info["PREVIEW_URL"];
+				flexpaper.FitPageOnLoad=true;
+				flexpaper.FitWidthOnLoad=true;
+				flexpaper.addEventListener("onLoadingProgress" ,loadingHandler);
+				flexpaper.addEventListener(DocumentLoadedEvent.DOCUMENT_LOADED ,loadedHandler);
+				flexpaper.percentHeight = 100;
+				flexpaper.percentWidth = 100;
+				var centerContent:Group = createCenterContent();
+				centerContent.addElement(flexpaper);
+				centerContent.percentHeight = 100;
+				centerContent.percentWidth = 100;
+				return centerContent;
+			}
+			
+			//文件下载
+			private function downloadBaseData(event:Object):UIComponent
+			{
+				downloadDataOK(event);
+				var hV:VGroup = new VGroup();
+				hV.percentHeight=100;
+				hV.percentWidth=100;
+				hV.verticalAlign="middle";
+				hV.horizontalAlign="center";
+				var lableText:Label = new Label();
+				lableText.text = "《"+event["FILE_NAME"]+"》下载完成后再浏览！";
+				lableText.setStyle("color","#FFFFFF");
+				lableText.setStyle("fontSize",16);
+				lableText.setStyle("fontWeight","bold");
+				var buttonText:LinkButton =new LinkButton();
+				buttonText.data=event;
+				buttonText.label="下 载";
+				buttonText.setStyle("color","#FFFFFF");
+				buttonText.setStyle("fontSize",18);
+				buttonText.setStyle("fontWeight","bold");
+				buttonText.addEventListener(MouseEvent.CLICK,downloadData)
+				hV.addElement(lableText);
+				hV.addElement(buttonText);
+				var centerContent:Group = createCenterContent();
+				centerContent.addElement(hV);
+				return centerContent;
+			}
+			
+			//文件下载
+			private function downloadData(event:MouseEvent):void
+			{
+				var buttonText:LinkButton = event.currentTarget as LinkButton;
+				downloadDataOK(buttonText.data);
+			}
+			
+			//文件下载
+			private function downloadDataOK(data:Object):void
+			{
+				navigateToURL(new URLRequest(data["PREVIEW_URL"]),"_top");
+			}
+			
+			private function loadingHandler(event:ProgressEvent):void
+			{	
+				loadingLb.text ="文档已加载"+ String(Math.round
+					
+					(event.bytesLoaded/event.bytesTotal*100))+"%";
+				loadingLb.invalidateDisplayList();
+			}
+			
+			private function loadedHandler(event:Event):void
+			{
+				loadingLb.visible = false;
+				loadingLb.text = "";
+			}
+			
+			//创建视频预览
+			private function createPreviewVideo(info:Object):UIComponent
+			{
+				var videoPlayer:VideoPlayer = new VideoPlayer();
+				videoPlayer.source =encodeURI( info["PREVIEW_URL"]);
+				var centerContent:Group = createCenterContent();
+				centerContent.addElement(videoPlayer);
+				centerContent.percentHeight = 100;
+				centerContent.percentWidth = 100;
+				return centerContent;
+			}
+			
+			private function createCenterContent():Group
+			{
+				var hGroup:HGroup = new HGroup();
+				hGroup.percentHeight = 100;
+				hGroup.percentWidth = 100;
+				hGroup.horizontalAlign = "center";
+				hGroup.verticalAlign = "middle";
+				return hGroup;
+			}
+			
+			private function setSelectThumbnailState(thumbnailImage:UIComponent):void
+			{
+				if(preThumbnail)
+				{
+					preThumbnail.filters = null;
+				}
+				thumbnailImage.filters = getFilters();
+			}
+			
+			private function getFilters():Array
+			{
+				var filters:Array = [];
+				var glower:GlowFilter = new GlowFilter();
+				glower.color = 0xFF33FF;
+				glower.alpha = 0.8; 
+				glower.blurX = 6; 
+				glower.blurY = 6;
+				glower.strength = 0.65
+				glower.inner = false;
+				glower.knockout = false;
+				filters.push(glower);
+				return filters;
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				height = (FlexGlobals.topLevelApplication as UIComponent).height;
+				width =(FlexGlobals.topLevelApplication as UIComponent).width;
+				
+				if(linkDataChanged)
+				{
+					createThumbnailPanel();
+					linkDataChanged = false;
+				}
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				PopUpManager.centerPopUp(this);
+				stage.addEventListener(Event.RESIZE,resizePanel);
+			}
+			
+			private function resizePanel(event:Event):void
+			{
+				invalidateProperties();
+			}
+			
+			protected function closeImg_clickHandler(event:MouseEvent):void
+			{
+				stage.removeEventListener(Event.RESIZE,resizePanel);
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="simplify"/>
+	</s:states>
+	<!--定义外观皮肤-->
+	<s:Group id="bg" width="100%" height="100%">
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor alpha="0.8" color="0x9A9E9B"/>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<s:VGroup id="contentPanel" width="100%" height="100%">
+		<s:Group id="previewPanel" width="100%" height="100%">
+			<mx:ViewStack id="previewStack" width="100%" height="100%"/>
+			<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+				<s:Label id="loadingLb" fontSize="13" color="0xFFFFFF" />	
+			</s:HGroup>
+		</s:Group>
+		<s:Group  width="100%" height="{_buttonheight}">
+			<s:Rect top="0" bottom="0" left="0" right="0">
+				<s:fill>
+					<s:SolidColor color="0x414246" alpha="0.9"/>
+				</s:fill>
+			</s:Rect>
+			<s:HGroup id="thumbnailPanel" width="100%" height="100%" horizontalAlign="center"
+					  paddingLeft="30" paddingRight="30" verticalAlign="middle">
+			</s:HGroup>
+		</s:Group>
+	</s:VGroup>
+	<s:Group width="100%" height="100%">
+		<s:Image id="closeImg" buttonMode="true" right="0"  top="0"
+				 rotation="-90" source="{ResourceManagerEx.FindResource('infoclose').cls}" 
+				 click="closeImg_clickHandler(event)"/>
+	</s:Group>
+</s:Group>

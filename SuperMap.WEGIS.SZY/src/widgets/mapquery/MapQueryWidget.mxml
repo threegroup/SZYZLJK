@@ -273,6 +273,8 @@
 							}
 							var feature:Feature = new Feature(new GeoPoint(item.x, item.y), picMarkStyle, item);
 							feature.addEventListener(MouseEvent.CLICK, featureClickHandler);
+							feature.addEventListener(MouseEvent.MOUSE_OVER, featureOverHander);
+							feature.addEventListener(MouseEvent.MOUSE_OUT,featureOutHandler);
 							feature.id = item.id;
 							feature.buttonMode = true;
 							markLayer.addFeature(feature);
@@ -300,6 +302,25 @@
 						resultList.ensureIndexIsVisible(resultList.dataProvider.getItemIndex(item));
 					}
 				}
+			}
+			
+			private function featureOverHander(event:MouseEvent):void
+			{
+				var feature:Feature = event.currentTarget as Feature;
+				showFeatureDetail(feature);
+			}
+			
+			private function featureOutHandler(event:MouseEvent):void
+			{
+				//移除弹出框及清除相应的内容
+				
+			}
+			
+			private function showFeatureDetail(feature:Feature):void
+			{
+				var queryObjectEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_OBJECT_DETAIL);
+				queryObjectEvent.data = feature;
+				queryObjectEvent.dispatch();
 			}
 			
 			//创建新下拉框

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--图片浏览-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 mouseWheel="mouseWheelHandler(event)">
+	<s:layout>
+		<s:BasicLayout clipAndEnableScrolling="true"/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			[Embed(source="assets/image/pan.png")]
+			private var BugdeleteIcon:Class;
+			
+			private var cursorID:int;
+			//图片地址
+			private var _url:String;
+			//加载
+			public var loaderurl:Loader;
+			/**图片连接地址*/
+			public function get url():String
+			{
+				return _url;
+			}
+			
+			public function set url(value:String):void
+			{
+//				this.addEventListener(Event.DEACTIVATE,removeds);
+				_url = value;
+				loaderurl = new Loader(); 
+				loaderurl.contentLoaderInfo.addEventListener(Event.COMPLETE, loaderCompleteHandlerByURL); 
+				loaderurl.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, loaderProgress);
+				loaderurl.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, loaderError);
+				loaderurl.contentLoaderInfo.addEventListener(Event.OPEN, openData);
+				var content:LoaderContext = new LoaderContext(true, ApplicationDomain.currentDomain, SecurityDomain.currentDomain);
+				loaderurl.load(new URLRequest(encodeURI(_url)), content); 
+			}
+			
+			private function openData(event:Event):void
+			{
+				
+			}
+			protected function removeds(event:Event):void
+			{
+				if(loaderurl != null)
+				{
+					loaderurl.unload();
+					loaderurl.contentLoaderInfo.removeEventListener(Event.COMPLETE, loaderCompleteHandlerByURL); 
+					loaderurl.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, loaderProgress);
+					loaderurl.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, loaderError);
+					loaderurl = null;
+					this.img.source=null;
+				}
+			}
+			
+			private function loaderCompleteHandlerByURL(event:Event):void 
+			{ 
+				loadingLb.visible = false;
+				loadingLb.text = "已加载  0%";
+				var loader:Loader = (event.target as LoaderInfo).loader; 
+				var bmp:Bitmap = Bitmap(loader.content); 
+				this.img.source = bmp;
+			} 
+			private function loaderProgress(e:ProgressEvent):void
+			{
+				var total:Number = e.bytesTotal;
+				var current:Number = e.bytesLoaded;
+				var progress:String ="已加载  " + parseInt(((current/total) * 100).toString()) + "%";
+				loadingLb.text = progress;
+			}
+			private function loaderError(e:IOErrorEvent):void
+			{
+				loadingLb.text = "图片加载失败!";
+				return;
+			}
+			//缩放
+			private var index:int=0;
+			protected function mouseWheelHandler(event:MouseEvent):void
+			{
+				if(event.delta>0)
+				{
+					if(index>=10)
+					{
+						return;
+					}
+					else
+					{
+						img.width *=1.2;
+						img.height *=1.2;
+						img.x -= event.localX*0.2;
+						img.y -= event.localY*0.2;
+						index++;
+					}
+				}
+				else
+				{
+					if(index <=-4)
+					{
+						return;
+					}
+					else
+					{
+						img.width *=1/1.2;
+						img.height *=1/1.2;
+						img.x += event.localX*(1-1/1.2);
+						img.y += event.localY*(1-1/1.2);
+						index--;
+					}
+				}
+			}
+			
+			protected function mouseDownHandler(event:MouseEvent):void
+			{
+				cursorManager.removeAllCursors();
+				cursorID = cursorManager.setCursor(BugdeleteIcon);
+				event.currentTarget.startDrag();
+			}
+			
+			protected function mouseUpHandler(event:MouseEvent):void
+			{
+				cursorManager.removeAllCursors();
+				event.currentTarget.stopDrag();
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Image id="img" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle"
+			  mouseDown="mouseDownHandler(event)"
+			  mouseUp="mouseUpHandler(event)"/>
+	<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		<s:Label id="loadingLb" color="0xFFFFFF" fontSize="16" fontWeight="bold"/>
+	</s:HGroup>
+</s:Group>
