@@ -13,7 +13,7 @@
 		<constructor-arg type="number" value="${initRight}"></constructor-arg>
 		<constructor-arg type="number" value="${initTop}"></constructor-arg>
 	</object>
-	
+
 	<!-- 地图显示比例尺 -->
 	<object id="LayerScales" class="com.supermap.wegis.common.core.ArrayEx">
 		<constructor-arg value="${layerScales}" />
@@ -60,8 +60,8 @@
 		<property name="copyRight" value="${copyRight}" />
 		<property name="layerBounds" ref="bounds" />
 		<property name="normalCols" value="${normalCols}" type="number" />
-		<property name="maxCols" value="${maxCols}"  type="number"/>
-		<property name="maxLevel" value="${maxLevel}"  type="number"/>
+		<property name="maxCols" value="${maxCols}" type="number" />
+		<property name="maxLevel" value="${maxLevel}" type="number" />
 	</object>
 
 	<!-- baseMapVo -->
@@ -112,24 +112,37 @@
 			<arg>
 				<array>
 					<value type="Class">sm.wegis.szy.commands.SystemInitCommand</value>
-					<value type="Class">sm.wegis.szy.commands.DataBindCreatedCommand</value>
-					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand</value>
+					<value type="Class">sm.wegis.szy.commands.DataBindCreatedCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.SystemSecurityCommand
+					</value>
 					<value type="Class">sm.wegis.szy.commands.SystemSelectCommand</value>
-					
+
 					<!--切换底图 -->
-					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand</value>
-					<value type="Class">sm.wegis.szy.commands.MapToolItemClickCommand</value>
-					<!--水资源专题地图图层控制-->
-					<value type="Class">sm.wegis.szy.commands.WaterResourceLayerIdChangeCommand</value>
-					
-					<!--获取第一级分类-->
-					<value type="Class">sm.wegis.szy.commands.QueryMainTypesCommand</value>
+					<value type="Class">sm.wegis.szy.commands.BaseMapChangeCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.MapToolItemClickCommand
+					</value>
+					<!--水资源专题地图图层控制 -->
+					<value type="Class">sm.wegis.szy.commands.WaterResourceLayerIdChangeCommand
+					</value>
+
+					<!--获取第一级分类 -->
+					<value type="Class">sm.wegis.szy.commands.QueryMainTypesCommand
+					</value>
 					<!-- 登录 -->
-					<value type="Class">sm.wegis.szy.commands.LoginInCommand</value>		
-					<!--获取类型分类和要素列表-->
-					<value type="Class">sm.wegis.szy.commands.QueryTypesAndDetailListCommand</value>
-					<!--获取单个要素详细信息-->
-					<value type="Class">sm.wegis.szy.commands.QuerySingleObjectInfoCommand</value>			
+					<value type="Class">sm.wegis.szy.commands.LoginInCommand</value>
+					<!--获取类型分类和要素列表 -->
+					<value type="Class">sm.wegis.szy.commands.QueryTypesAndDetailListCommand
+					</value>
+					<!--获取单个要素详细信息 -->
+					<value type="Class">sm.wegis.szy.commands.QuerySingleObjectInfoCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryObjectDetailCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.ShowObjectDetailCommand
+					</value>
+
 				</array>
 			</arg>
 		</method-invocation>
@@ -141,20 +154,22 @@
 				<property name="SystemInit" value="SystemInitCommand" />
 				<property name="DataBindCreated" value="DataBindCreatedCommand" />
 				<property name="SystemSecurity" value="SystemSecurityCommand" />
-			    <property name="SystemSelect" value="SystemSelectCommand" />
-				
+				<property name="SystemSelect" value="SystemSelectCommand" />
+
 				<property name="BaseMapChange" value="BaseMapChangeCommand" />
 				<property name="MapToolItemClick" value="MapToolItemClickCommand" />
 				<property name="WaterResourceLayerIdChange" value="WaterResourceLayerIdChangeCommand" />
-				
-				  <!--获取第一级分类-->
+
+				<!--获取第一级分类 -->
 				<property name="QueryMainTypes" value="QueryMainTypesCommand" />
 				<property name="LoginIn" value="LoginInCommand" />
-				
-				<!--获取类型分类和要素列表-->
+
+				<!--获取类型分类和要素列表 -->
 				<property name="QueryTypesAndDetailList" value="QueryTypesAndDetailListCommand" />
-				<!--获取单个要素详细信息-->
+				<!--获取单个要素详细信息 -->
 				<property name="QuerySingleObjectInfo" value="QuerySingleObjectInfoCommand" />
+				<property name="QueryObjectDetail" value="QueryObjectDetailCommand" />
+				<property name="ShowObjectDetail" value="ShowObjectDetailCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />
@@ -185,8 +200,9 @@
 				<array>
 					<!--获取系统功能 -->
 					<value type="Class">sm.wegis.szy.commands.GetFunctionCommand</value>
-					<!--获取应用系统相关参数配置文件-->
-					<value type="Class">sm.wegis.szy.commands.GetSystemParamCommand</value>
+					<!--获取应用系统相关参数配置文件 -->
+					<value type="Class">sm.wegis.szy.commands.GetSystemParamCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
