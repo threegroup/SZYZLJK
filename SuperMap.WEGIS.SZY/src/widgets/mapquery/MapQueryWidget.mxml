@@ -397,7 +397,7 @@
 			protected function resultList_clickHandler(event:MouseEvent):void
 			{
 				var selectItem:Object = resultList.selectedItem;
-				if ("x" in selectItem && "y" in selectItem) {
+				if (selectItem != null && "x" in selectItem && "y" in selectItem) {
 					var x:Number = selectItem.x;
 					var y:Number = selectItem.y;
 					var point:Point2D = new Point2D(x, y);
