@@ -62,7 +62,7 @@
 			<s:Graphic >
 				<s:Path  data="M 7.5  2.5 L 12.5 7.5  L 7.5 12.5 M 17.5 2.5 L 12.5 7.5 L 17.5 12.5 " >
 					<s:stroke>
-						<s:SolidColorStroke color.normal="#000000" color.over="#FF0000" color.down="#FF0000" weight="2"/>
+						<s:SolidColorStroke color.normal="#FFFFFF" color.over="#FF0000" color.down="#FF0000" weight="2"/>
 					</s:stroke>
 				</s:Path>
 			</s:Graphic>

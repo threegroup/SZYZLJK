@@ -47,9 +47,6 @@ in accordance with the terms of the license agreement accompanying it.
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 			{
 				super.updateDisplayList(unscaledWidth,unscaledHeight);
-				stateColorTo.alpha = stateColorFrom.alpha = titleColorFrom.alpha = titleColorFrom.alpha = getStyle('alpha')  ? getStyle('alpha') : 0.9;
-				stateColorFrom.color = titleColorFrom.color = getStyle('titleColorFrom')  ? getStyle('titleColorFrom') : 0x66DBF5;
-				stateColorTo.color = titleColorTo.color = getStyle('titleColorTo')  ? getStyle('titleColorTo') : 0x0584EF;
 			}
 			
 		]]>
@@ -98,7 +95,7 @@ in accordance with the terms of the license agreement accompanying it.
 	
 	<!-- the widget template wireframe -->
 	<s:Group id="widgetFrame" left="0" right="0" top="0" bottom="0">
-		<s:Rect left="0" right="0" top="0" bottom="0" radiusX="3" radiusY="3"
+		<s:Rect left="0" right="0" top="0" bottom="0" radiusX="0" radiusY="0"
 				visible.minimized="false">
 			<s:fill>
 				<!--<s:SolidColor alpha="1" color="#D0E5FE"
@@ -107,21 +104,15 @@ in accordance with the terms of the license agreement accompanying it.
 							  alpha.minimized="0"/>
 			</s:fill>
 		</s:Rect>
-		<s:Rect left="-1" right="-1" top="-1" bottom="-1"  radiusX="3" radiusY="3"
+		<s:Rect left="0" right="0" top="0" bottom="0"  radiusX="0" radiusY="0"
 				visible.minimized="false">
 			<s:stroke>
-				<s:SolidColorStroke color="0xB3B3B3" weight="2"/>
+				<s:SolidColorStroke color="0xB3B3B3" weight="0"/>
 			</s:stroke>
 		</s:Rect>
-		<s:Rect left="0" right="0" top="0" width="100%" height="{header.height}" topLeftRadiusX="3"
-				topLeftRadiusY="3" topRightRadiusX="3" topRightRadiusY="3"
-				bottomLeftRadiusX.minimized="3" bottomLeftRadiusY.minimized="3"
-				bottomRightRadiusX.minimized="3" bottomRightRadiusY.minimized="3">
+		<s:Rect left="0" right="0" top="0" width="100%" height="{header.height}" radiusX="0" radiusY="0">
 			<s:fill>
-				<s:LinearGradient rotation="90">
-					<s:GradientEntry id="titleColorFrom"/>
-					<s:GradientEntry id="titleColorTo" />
-				</s:LinearGradient>
+				<s:SolidColor color="#3385FF"/>
 			</s:fill>
 		</s:Rect>
 	</s:Group>
@@ -231,6 +222,7 @@ in accordance with the terms of the license agreement accompanying it.
 				 maxDisplayedLines="1"
 				 showTruncationTip="true" 
 				 styleName="ContentTitle"
+				 color="#FFFFFF"
 				 verticalCenter="0"
 				 alpha.closed="0"
 				 alpha.minimized="0"

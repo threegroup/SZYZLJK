@@ -149,7 +149,7 @@
 				var dataGrid:DataGrid = createDataGrid(data,GridItemRendererEx);
 				dataGrid.selectionMode = GridSelectionMode.NONE;
 				dataGrid.resizableColumns = true;
-				dataGrid.showDataTips = true;
+				dataGrid.showDataTips = false;
 				infoNav.addElement(dataGrid);
 				infoViewStack.addItem(infoNav);
 			}
@@ -164,7 +164,7 @@
 				var dataGrid:DataGrid = createDataGrid(data,GridItemRendererEx);
 				dataGrid.selectionMode = GridSelectionMode.SINGLE_ROW;
 				dataGrid.resizableColumns = true;
-				dataGrid.showDataTips = true;
+				dataGrid.showDataTips = false;
 				dataGrid.requestedColumnCount = -1;
 				dataGrid.addEventListener(GridEvent.GRID_CLICK,showLinkObject);
 				infoNav.addElement(dataGrid);
@@ -181,7 +181,7 @@
 				var dataGrid:DataGrid = createDataGrid(data,GridItemRendererEx);
 				dataGrid.selectionMode = GridSelectionMode.SINGLE_ROW;
 				dataGrid.resizableColumns = true;
-				dataGrid.showDataTips = true;
+				dataGrid.showDataTips = false;
 				dataGrid.requestedColumnCount = -1;
 				dataGrid.addEventListener(GridEvent.GRID_CLICK,openLinkDocument);
 				infoNav.addElement(dataGrid);
@@ -198,7 +198,7 @@
 				var dataGrid:DataGrid = createDataGrid(data,GridItemRendererEx);
 				dataGrid.selectionMode = GridSelectionMode.NONE;
 				dataGrid.resizableColumns = true;
-				dataGrid.showDataTips = true;
+				dataGrid.showDataTips = false;
 				infoNav.addElement(dataGrid);
 				infoViewStack.addItem(infoNav);
 			}
@@ -308,11 +308,14 @@
 			private function openLinkDocument(event:GridEvent):void
 			{
 				var dataGrid:DataGrid = event.currentTarget as DataGrid;
-				var baseDataLinkDocPanel:ObjectLinkDocPanel = new ObjectLinkDocPanel();
-				baseDataLinkDocPanel.selectIndex = event.rowIndex;
-				baseDataLinkDocPanel.linkDataProvider = dataGrid.dataProvider as ArrayCollection;
-				PopUpManager.addPopUp(baseDataLinkDocPanel,FlexGlobals.topLevelApplication as UIComponent,false);
-//				PopUpManager.addPopUp(baseDataLinkDocPanel,modelLocator.popupGroup as UIComponent,false);
+				if(dataGrid != null && dataGrid.selectedIndex > -1)
+				{
+					var baseDataLinkDocPanel:ObjectLinkDocPanel = new ObjectLinkDocPanel();
+					baseDataLinkDocPanel.selectIndex = event.rowIndex;
+					baseDataLinkDocPanel.linkDataProvider = dataGrid.dataProvider as ArrayCollection;
+					PopUpManager.addPopUp(baseDataLinkDocPanel,FlexGlobals.topLevelApplication as UIComponent,false);
+					//PopUpManager.addPopUp(baseDataLinkDocPanel,modelLocator.popupGroup as UIComponent,false);
+				}
 			}
 			
 			//在FeatureLayer显示关联对象
@@ -507,6 +510,7 @@
 						itemHeight="25"
 						itemHorizontalGap="0"
 						isUpdateStatus="true"
+						left="1"
 						menuItemSkinClass="{MenuItemSkin}"/>
 		</s:HGroup>
 		<mx:ViewStack id="infoViewStack" width="100%" height="100%"/>

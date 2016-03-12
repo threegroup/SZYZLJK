@@ -277,6 +277,7 @@
 							feature.addEventListener(MouseEvent.MOUSE_OUT,featureOutHandler);
 							feature.id = item.id;
 							feature.buttonMode = true;
+							feature.attributes = item;
 							markLayer.addFeature(feature);
 							
 							var textType:TextStyle =  FeatureLayerUtil.getTextStyle(" " + item.name + " ");

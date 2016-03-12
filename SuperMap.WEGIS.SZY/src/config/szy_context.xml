@@ -131,7 +131,7 @@
 					<value type="Class">sm.wegis.szy.commands.QueryMainTypesCommand
 					</value>
 					<!-- 登录 -->
-<<<<<<< HEAD
+
 					<value type="Class">sm.wegis.szy.commands.LoginInCommand</value>
 					<!--获取类型分类和要素列表 -->
 					<value type="Class">sm.wegis.szy.commands.QueryTypesAndDetailListCommand
@@ -143,16 +143,6 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.ShowObjectDetailCommand
 					</value>
-
-=======
-					<value type="Class">sm.wegis.szy.commands.LoginInCommand</value>		
-					<!--获取类型分类和要素列表-->
-					<value type="Class">sm.wegis.szy.commands.QueryTypesAndDetailListCommand</value>
-					<!--获取单个要素详细信息-->
-					<value type="Class">sm.wegis.szy.commands.QuerySingleObjectInfoCommand</value>			
-					<value type="Class">sm.wegis.szy.commands.QueryObjectDetailCommand</value>		
-					<value type="Class">sm.wegis.szy.commands.ShowObjectDetailCommand</value>		
->>>>>>> origin/master
 				</array>
 			</arg>
 		</method-invocation>
