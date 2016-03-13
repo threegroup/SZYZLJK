@@ -361,7 +361,7 @@ and <code>sortIndicator</code> properties.</p>
 	
 	<!-- layer 1: shadow -->
 	<!--- @private -->
-	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
+<!--	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0x000000" 
@@ -370,7 +370,7 @@ and <code>sortIndicator</code> properties.</p>
 								 alpha="0.07" />
 			</s:LinearGradient>
 		</s:fill>
-	</s:Rect>
+	</s:Rect>-->
 	
 	<!-- layer 2: fill -->
 	<!--- @private -->
@@ -385,7 +385,7 @@ and <code>sortIndicator</code> properties.</p>
 	
 	<!-- layer 3: fill lowlight -->
 	<!--- @private -->
-	<s:Rect id="lowlight" left="0" right="0" top="0" bottom="0">
+	<!--<s:Rect id="lowlight" left="0" right="0" top="0" bottom="0">
 		<s:fill>
 			<s:LinearGradient rotation="270">
 				<s:GradientEntry color="0x000000" ratio="0.0" alpha="0.0627" />
@@ -393,11 +393,11 @@ and <code>sortIndicator</code> properties.</p>
 				<s:GradientEntry color="0x000000" ratio="0.48001" alpha="0" />
 			</s:LinearGradient>
 		</s:fill>
-	</s:Rect>
+	</s:Rect>-->
 	
 	<!-- layer 4: fill highlight -->
 	<!--- @private -->
-	<s:Rect id="highlight" left="0" right="0" top="0" bottom="0">
+	<!--<s:Rect id="highlight" left="0" right="0" top="0" bottom="0">
 		<s:fill>
 			<s:LinearGradient rotation="90">
 				<s:GradientEntry color="0xFFFFFF"
@@ -411,18 +411,18 @@ and <code>sortIndicator</code> properties.</p>
 								 alpha="0" />
 			</s:LinearGradient>
 		</s:fill>
-	</s:Rect>  
+	</s:Rect> --> 
 	
 	<!-- layer 5: highlight stroke (all states except down) -->
 	<!--- @private -->
-	<s:Rect id="highlightStroke" left="0" right="0" top="0" bottom="0" >
+	<!--<s:Rect id="highlightStroke" left="0" right="0" top="0" bottom="0" >
 		<s:stroke>
 			<s:LinearGradientStroke rotation="90" weight="1">
 				<s:GradientEntry color="0xFFFFFF"  />
 				<s:GradientEntry color="0xD8D8D8" />
 			</s:LinearGradientStroke>
 		</s:stroke>
-	</s:Rect>
+	</s:Rect>-->
 	
 	<s:HGroup left="7" right="7" top="5" bottom="5" gap="2" verticalAlign="middle">
 		

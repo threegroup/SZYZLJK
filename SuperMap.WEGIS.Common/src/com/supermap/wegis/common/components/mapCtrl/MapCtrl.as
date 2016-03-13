@@ -27,15 +27,20 @@ package com.supermap.wegis.common.components.mapCtrl
 		{
 			var infoWindow:InfoWindow = this.infoWindow;
 			infoWindow.setStyle("dropshadowvisible",false);
+			infoWindow.setStyle("shadowAlpha",0);
 			infoWindow.setStyle("backgroundAlpha",1);
-			infoWindow.setStyle("backgroundColor",0xE4EEE7); 
+			infoWindow.setStyle("backgroundColor",0x3385FF); 
 			infoWindow.setStyle("borderVisible",false);
 			infoWindow.setStyle("borderColor",0xE4EEE7);
-			infoWindow.setStyle("borderThickness",1);
+			infoWindow.setStyle("borderThickness",0);
 			infoWindow.setStyle("paddingTop",0);
 			infoWindow.setStyle("paddingRight",0);
 			infoWindow.setStyle("paddingLeft",0);
 			infoWindow.setStyle("paddingBottom",0);
+			infoWindow.setStyle("lowerLeftRadius",0);
+			infoWindow.setStyle("lowerRightRadius",0);
+			infoWindow.setStyle("upperLeftRadius",0);
+			infoWindow.setStyle("upperRightRadius",0);
 			infoWindow.closeButtonVisible =false;
 			infoWindow.infoWindowLabelVisible =false;
 		}
