@@ -39,6 +39,9 @@ package sm.wegis.szy.events
 		public static const LoginIn:String = "LoginIn";
 		public static const LoginInResponse:String = "LoginInResponse";
 		
+		/**添加图例模块*/
+		public static const SYSTEM_WIDGET_ADD:String = "Schema_Legend_Add";
+		
 		
 		public function SystemEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

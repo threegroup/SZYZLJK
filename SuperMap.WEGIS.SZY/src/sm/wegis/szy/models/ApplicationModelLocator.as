@@ -5,6 +5,7 @@ package sm.wegis.szy.models
 	
 	import sm.wegis.szy.vo.BaseMapVO;
 	import sm.wegis.szy.vo.MenuVO;
+	import sm.wegis.szy.vo.SpecialWidgetVO;
 	import sm.wegis.szy.vo.SystemVO;
 	import sm.wegis.szy.vo.ToolVO;
 	import sm.wegis.szy.vo.UserVO;
@@ -49,5 +50,8 @@ package sm.wegis.szy.models
 		
 		/**用户信息*/
 		public var userVo:UserVO = new UserVO();
+		
+		/**需要特殊处理的参数*/
+		public var specialWidgetInfo:SpecialWidgetVO = new SpecialWidgetVO();
 	}
 }

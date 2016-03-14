@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<services>		
+		<service label="交通" type="list"/>
+		<service label="铁路" 	 legendid="tl" />
+		<service  label="高速路"   legendid="gs" />
+		<service label="国道" 	 legendid="gd" />
+		<service label="省道"  legendid="gd2" />
+		<service label="县道" legendid="xd" />
+		<service  label="街道"   legendid="jd" />
+		<service label=" " type="list"/>
+		<service label="河湖" type="list"/>
+		<service label="河流" legendid="HL" />
+		<service label="湖泊" legendid="HP" />
+		<service  label="水文站" legendid="swz1" />
+		<service label="水位站"  legendid="sweiz2" />
+		<service label=" " type="list"/>
+		<service label="水利工程" type="list"/>
+		<service label="水库"  legendid="SK" />
+		<service  label="大（2）型水电站"  legendid="sdz1" />
+		<service label="中型水电站"	 legendid="sdz2" />
+		<service label="小型水电站" legendid="sdz3" />
+		<service label="大型水闸" legendid="sz1" />
+		<service label="中型水闸" 	 legendid="sz2" />
+		<service label="小型水闸"   legendid="sz3" />
+		<service   label="橡胶坝" legendid="xjb" />
+		<service   label="泵站"  legendid="泵站" />
+		<service  label="引调水工程" legendid="yds" />
+		<service   label="一级堤防"  legendid="df1" />
+		<service 	 label="二级堤防"	 legendid="df2" />
+		<service 	 label="三级堤防"  legendid="df3" />
+		<service	 label="四级堤防"  legendid="df4" />
+		<service  label="农村供水"	 legendid="农村供水工程" />
+		<service label="大坝"  legendid="水库大坝" />
+		<service label="灌区" 	legendid="gq" />
+		<service 	label="渠道" legendid="qd" />
+		<service  label="机电井" legendid="sj" />
+		<service  label="畜禽养殖场" legendid="规模化养殖场" />
+		<service  label="公共供水企业"  legendid="公共供水企业" />
+		<service   label="工业企业用水"  legendid="公共供水企业" />
+		<service label="建筑第三产业"  legendid="公共供水企业" />
+		<service  label="河湖取水口"  legendid="河湖取水口" />
+		<service label="地表水源地"  legendid="地表水水源地" />
+		<service  label="排污口"  legendid="入河湖排污口" />
+		<service  label="水利行政机关"  legendid="水利行政机关" />
+		<service   label="水利事业单位" legendid="水利事业单位" />
+		<service  label="水利企业" legendid="水利企业" />
+		<service   label="水利社会团体" legendid="水利社会团体" />
+		<service label="乡镇水利管理单位" legendid="乡镇水利管理单位" />
+</services>

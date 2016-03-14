@@ -11,6 +11,16 @@
 			<right>5</right>
 		</item>
 		<item>
+			<name>图例管理器</name>
+			<key>MapLegend</key>
+			<url>widgets/legend/LegendWidget.swf</url>
+			<mutex>false</mutex>
+			<width>280</width>
+			<height>180</height>
+			<bottom>0</bottom>
+			<right>0</right>
+		</item>
+		<item>
 			<name>显示控制</name>
 			<key>BaseMapControl</key>
 			<url>widgets/basemap/BaseMapWidget.swf</url>
