@@ -51,16 +51,16 @@
 				</subitems>
 			</item>
 			<item>
-				<name>水体预警</name>
-				<key>WaterBodyWarn</key>
-				<url></url>
+				<name>水质评价</name>
+				<key>WaterQualityEvaluation</key>
+				<url>widgets/waterevaluation/WaterEvaluationWidget.swf</url>
 				<mutex>true</mutex>
 				<init></init>
 				<selected></selected>
 			</item>
 			<item>
-				<name>水体管理</name>
-				<key>WaterBodyManager</key>
+				<name>水体预警</name>
+				<key>WaterBodyWarn</key>
 				<url></url>
 				<mutex>true</mutex>
 				<init></init>
@@ -83,18 +83,18 @@
 				<securitycontroler>false</securitycontroler>
 				<securitytype>visible</securitytype>
 			</item>
-<!-- 			<item> -->
-<!-- 				<name>放大</name> -->
-<!-- 				<key>ZoomIn</key> -->
-<!-- 				<securitycontroler>false</securitycontroler> -->
-<!-- 				<securitytype>visible</securitytype> -->
-<!-- 			</item> -->
-<!-- 			<item> -->
-<!-- 				<name>缩小</name> -->
-<!-- 				<key>ZoomOut</key> -->
-<!-- 				<securitycontroler>false</securitycontroler> -->
-<!-- 				<securitytype>visible</securitytype> -->
-<!-- 			</item> -->
+			<!-- <item> -->
+			<!-- <name>放大</name> -->
+			<!-- <key>ZoomIn</key> -->
+			<!-- <securitycontroler>false</securitycontroler> -->
+			<!-- <securitytype>visible</securitytype> -->
+			<!-- </item> -->
+			<!-- <item> -->
+			<!-- <name>缩小</name> -->
+			<!-- <key>ZoomOut</key> -->
+			<!-- <securitycontroler>false</securitycontroler> -->
+			<!-- <securitytype>visible</securitytype> -->
+			<!-- </item> -->
 			<item>
 				<name>全幅</name>
 				<key>FullExtent</key>
