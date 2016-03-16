@@ -273,8 +273,8 @@
 							}
 							var feature:Feature = new Feature(new GeoPoint(item.x, item.y), picMarkStyle, item);
 							feature.addEventListener(MouseEvent.CLICK, featureClickHandler);
-							feature.addEventListener(MouseEvent.MOUSE_OVER, featureOverHander);
-							feature.addEventListener(MouseEvent.MOUSE_OUT,featureOutHandler);
+//							feature.addEventListener(MouseEvent.CLICK, featureOverHander);
+//							feature.addEventListener(MouseEvent.MOUSE_OUT,featureOutHandler);
 							feature.id = item.id;
 							feature.buttonMode = true;
 							feature.attributes = item;
@@ -303,6 +303,7 @@
 						resultList.ensureIndexIsVisible(resultList.dataProvider.getItemIndex(item));
 					}
 				}
+				showFeatureDetail(feature);
 			}
 			
 			private function featureOverHander(event:MouseEvent):void

@@ -303,12 +303,12 @@
 				{
 					for each(var obj:Object in initWidgetConfig)
 					{
-						obj.parent = MainBodyContainerID;
+						obj.parent = MapContainerID;
 					}
 				}
 				else if(initWidgetConfig is Object)
 				{
-					initWidgetConfig.parent = MainBodyContainerID;
+					initWidgetConfig.parent = MapContainerID;
 				}
 				WidgetManager.getInstance().loadWidget(initWidgetConfig);
 			}
