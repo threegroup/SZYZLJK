@@ -25,6 +25,10 @@ package sm.wegis.szy.vo
 		 */
 		public var tdtImageLabel:String;
 		
+		public  var vectorMap:String;
+		
+		public  var imageMap:String;
+		
 		/**水资源矢量底地图url*/
 		public var waterResourceVectorMapUrl:String;
 		
@@ -39,5 +43,7 @@ package sm.wegis.szy.vo
 		
 		/**水资源地图默认显示图层LayerIDS*/
 		public var waterResourceBaseLayerIds:String
+		
+
 	}
 }

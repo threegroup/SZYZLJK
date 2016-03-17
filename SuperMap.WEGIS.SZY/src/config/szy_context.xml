@@ -66,6 +66,8 @@
 
 	<!-- baseMapVo -->
 	<object id="BaseMapVO" class="sm.wegis.szy.vo.BaseMapVO">
+		<property name="vectorMap" value="${vectorMap}" />
+		<property name="imageMap" value="${imageMap}" />
 		<property name="tdtVector" value="${TDTVector}" />
 		<property name="tdtVectorLabel" value="${TDTVectorLabel}" />
 		<property name="tdtImage" value="${TDTImage}" />
