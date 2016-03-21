@@ -79,7 +79,7 @@
 			 left="0" right="0" 
 			 top="0" bottom="0"
 			 color.keepSelected="0xFFFFFF"
-			 showTruncationTip="false">
+			 showTruncationTip="true">
 	</s:Label>
     
 </s:SparkButtonSkin>

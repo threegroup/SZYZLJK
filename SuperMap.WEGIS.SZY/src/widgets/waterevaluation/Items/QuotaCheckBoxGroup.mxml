@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Items:CommonGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:Items="widgets.waterevaluation.Items.*"
+				   creationComplete="initGroup(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.transData.search.SearchConditionsData;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			protected function initGroup(event:FlexEvent):void
+			{
+				if(content == null)
+				{
+					content = new SearchConditionsData();
+				}
+				
+				if(selectContent == null)
+				{
+					selectContent = new ArrayCollection([]);
+				}
+				
+				// TODO Auto-generated method stub
+				generateUI();
+			}
+			
+			/**生成界面*/
+			override public function generateUI():void
+			{
+				if(data != null)
+				{
+					var firstItem:int = 0;
+					var tempArr:Array = data as Array;
+					if(tempArr != null && tempArr.length > 0)
+					{
+						//重设条件指标宽度
+						resetLayout(tempArr, "sumName", container, true, itemWidth);
+						
+						for each (var item:Object in tempArr) 
+						{
+							if(item.hasOwnProperty("sumName") 
+								&& StringUtil.trim(item["sumName"]) != "")
+							{
+								var c:CheckBoxItem = new CheckBoxItem();
+								c.width = itemWidth;
+								c.data = item;
+								c.label = item["sumName"];
+								c.toolTip = item["sumName"];
+								c.addEventListener(MouseEvent.CLICK, clickHandler);
+								container.addElement(c);
+								
+								if(firstItem == 0 && isFirstItemSelected)
+								{
+									c.selected = isFirstItemSelected;
+									//保存选中项
+									selectContent.addItem(c);
+									isSelected = true;
+									firstItem = -1;
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			/**获取条件内容*/
+			override public function getContent():SearchConditionsData
+			{
+				if(selectContent != null && selectContent.length > 0)
+				{
+					//获取选中项内容
+					for (var i:int = 0; i < selectContent.length; i++) 
+					{
+						if(i == 0)
+							content.value = selectContent[i]["data"]["sumField"];
+						else
+							content.value += "," + selectContent[i]["data"]["sumField"];
+					}
+				}
+				
+				return content;
+			}
+			
+			//单选项单击事件
+			private function clickHandler(event:MouseEvent):void
+			{
+				var c:CheckBoxItem = event.currentTarget as CheckBoxItem;
+				if(c != null)
+				{
+					if(c.selected == true)
+					{
+						//保存选中项
+						selectContent.addItem(c);
+					}
+					else
+					{
+						//删除选中项
+						var index:int = selectContent.getItemIndex(c);
+						if(index != -1)
+							selectContent.removeItemAt(index);
+					}
+					
+					if(selectContent.length > 0)
+					{
+						isSelected = true;
+						if(selectContent.length == container.numChildren)
+						{
+							AllSelected.selected = true;
+						}
+						else
+						{
+							AllSelected.selected = false;
+						}
+					}
+					else
+					{
+						isSelected = false;
+						AllSelected.selected = false;
+					}
+				}
+			}
+			
+			//全选或反选
+			protected function AllSelected_clickHandler(event:MouseEvent):void
+			{
+				//获取所有指标选项
+				var num:int = container.numChildren;
+				if(num >= 1)
+				{
+					var checkBoxList:Array = [];
+					for (var i:int = 0; i < num; i++) 
+					{
+						var c:CheckBoxItem = container.getChildAt(i) as CheckBoxItem;
+						checkBoxList.push(c);
+					}
+					
+					selectContent.removeAll();
+					
+					//全选
+					if(AllSelected.selected)
+					{
+						for each (var j:CheckBoxItem in checkBoxList) 
+						{
+							j.selected = true;
+							selectContent.addItem(j);
+						}
+					}
+					else//反选
+					{
+						for each (var k:CheckBoxItem in checkBoxList) 
+						{
+							k.selected = false;
+						}
+					}
+					
+					if(selectContent.length > 0)
+						isSelected = true;
+					else
+						isSelected = false;
+				}
+			}
+		]]>
+	</fx:Script> 
+	<s:HGroup width="100%" paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2" gap="{hGap}"
+			  horizontalAlign="left" verticalAlign="middle">
+		<s:Label text="统计指标:" styleName="ConditionTitle" width="{itemWidth}" buttonMode="true"/>
+		<s:CheckBox id="AllSelected" label="全选" width="{itemWidth}" buttonMode="true"
+					styleName="AllSelected"
+					click="AllSelected_clickHandler(event)"/>
+		<s:TileGroup id="container" horizontalGap="{hGap}">
+		</s:TileGroup>
+	</s:HGroup>
+</Items:CommonGroup>

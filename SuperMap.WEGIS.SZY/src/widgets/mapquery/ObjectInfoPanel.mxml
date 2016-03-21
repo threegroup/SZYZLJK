@@ -511,6 +511,7 @@
 						itemHorizontalGap="0"
 						isUpdateStatus="true"
 						left="1"
+						isToolTip="false"
 						menuItemSkinClass="{MenuItemSkin}"/>
 		</s:HGroup>
 		<mx:ViewStack id="infoViewStack" width="100%" height="100%"/>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Items:CommonGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:Items="widgets.waterevaluation.Items.*" 
+				   creationComplete="initGroup(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			import com.supermap.wegis.transData.search.SearchConditionsData;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			import spark.events.TextOperationEvent;
+			
+			/**自定义框间隔，如果没有预定义选项只有自定义框则为0，如果前面有预定义值则为预定义值设定间隔值*/
+			[Bindable]
+			private var tempGap:Number = 0;
+			
+			protected function initGroup(event:FlexEvent):void
+			{
+				if(content == null)
+				{
+					content = new SearchConditionsData();
+					content.type = data["propertyType"];
+					content.fields = data["surveyFields"];
+					content.propertyDisplayType = data["propertyDisplayType"];
+				}
+				
+				if(selectContent == null)
+				{
+					selectContent = new ArrayCollection([]);
+				}
+				
+				// TODO Auto-generated method stub
+				generateUI();
+			}
+			
+			/**生成界面*/
+			override public function generateUI():void
+			{
+				if(data != null)
+				{
+					var firstItem:int = 0;
+					var tempArr:Array = data["optionList"] as Array;
+					if(tempArr != null && tempArr.length > 0)
+					{
+						for each (var item:Object in tempArr) 
+						{
+							if(item.hasOwnProperty("optionName") && StringUtil.trim(item["optionName"]) != "")
+							{
+								var r:RadioButtonItem = new RadioButtonItem();
+								r.width = itemWidth;
+								r.data = item;
+								r.label = item["optionName"];
+								r.toolTip = item["tip"];
+								r.addEventListener(MouseEvent.CLICK, clickHandler);
+								container.addElement(r);
+								
+								if(firstItem == 0 && isFirstItemSelected)
+								{
+									r.selected = isFirstItemSelected;
+									//保存选中项
+									selectContent.addItem(r);
+									isSelected = true;
+									firstItem = -1;
+								}
+							}
+						}
+					}
+					
+					if(data.hasOwnProperty("hasCustom") && data["hasCustom"])
+					{
+						if(data.hasOwnProperty("propertyType"))
+						{
+							switch(data["propertyType"])
+							{
+								case "2"://数值
+								{
+									this.currentState = "NumberState";
+									break;
+								}
+								case "3"://日期
+								{
+									this.currentState = "DateState";
+									break;
+								}	
+								default:
+								{
+									break;
+								}
+							}
+						}
+						
+						//重设条件指标宽度
+						resetLayout(true, this.width, tempArr, "optionName", container, true);
+					}
+					else
+					{
+						this.currentState = "NoCustomState";
+						
+						//重设条件指标宽度
+						resetLayout(true, this.width, tempArr, "optionName", container);
+					}
+				}
+			}
+			
+			/**获取条件内容*/
+			override public function getContent():SearchConditionsData
+			{
+				if(selectContent.length > 0)
+				{
+					//获取选中项内容
+					for (var i:int = 0; i < selectContent.length; i++) 
+					{
+						if(i == 0)
+							content.value = selectContent[i]["data"]["optionValue"];
+						else
+							content.value += "," + selectContent[i]["data"]["optionValue"];
+					}
+				}
+				else
+				{
+					if(this.currentState == "NumberState")//数字
+					{
+						content.value = startNumber.text;
+						content.maxValue = endNumber.text;
+					}
+					else if(this.currentState == "DateState")//日期
+					{
+						content.value = startDate.text;
+						content.maxValue = endDate.text;
+					}
+				}
+				
+				return content;
+			}
+			
+			//单选项单击事件
+			private function clickHandler(event:MouseEvent):void
+			{
+				var r:RadioButtonItem = event.currentTarget as RadioButtonItem;
+				if(r != null)
+				{
+					if(r.selected == true)
+					{
+						//清空自定义数据
+						if(this.currentState == "NumberState")//数字
+						{
+							startNumber.text = "";
+							endNumber.text = "";
+						}
+						else if(this.currentState == "DateState")//日期
+						{
+							startDate.text = "";
+							endDate.text = "";
+						}
+						content.maxValue = "";
+						content.hasCustom = "0";
+						
+						//保存选中项
+						selectContent.removeAll();
+						selectContent.addItem(r);
+					}
+					
+					if(selectContent.length > 0)
+						isSelected = true;
+					else
+						isSelected = false;
+				}
+			}
+			
+			//自定义文本内容发生改变
+			protected function changeHandler(event:TextOperationEvent):void
+			{
+				// TODO Auto-generated method stub
+				var t:TextInput = event.currentTarget as TextInput;
+				if(t != null)
+				{
+					if(StringUtil.trim(t.text) != "")
+					{
+						//首先判断是否为数字，采用正则表达式
+						if(!isNaN(parseFloat(t.text)))
+						{
+							//清除前面已经选择的项目
+							clearAllSelected(container);
+							if(selectContent != null && selectContent.length > 0)
+							{
+								selectContent.removeAll();
+							}
+							isSelected = true;
+							content.hasCustom = "1";
+						}
+						else
+						{
+							Alert.okLabel = "确定";
+							Alert.show("请输入数字！", "提示", Alert.OK, null, null, 
+								ResourceManagerEx.FindResource("TIP").cls);
+							t.text = "";
+						}
+					}
+					
+					if(startNumber.text == "" && endNumber.text == "")
+					{
+						isSelected = false;
+					}
+				}
+			}
+			
+			//自定义日期内容改变
+			protected function dateChangeHandler(event:CalendarLayoutChangeEvent):void
+			{
+				var d:DateField = event.currentTarget as DateField;
+				if(d != null)
+				{
+					if(d.text != "")
+					{
+						//这里暂时没有处理字符串是否为日期
+						clearAllSelected(container);
+						if(selectContent != null && selectContent.length > 0)
+						{
+							selectContent.removeAll();
+						}
+						isSelected = true;
+						content.hasCustom = "1";
+					}
+					
+					if(startDate.text == "" && endDate.text == "")
+					{
+						isSelected = false;
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<Items:states>
+		<s:State name="NoCustomState"/>
+		<s:State name="DateState"/>
+		<s:State name="NumberState"/>
+	</Items:states>
+	
+	<s:VGroup width="100%" gap="0" 
+			  verticalAlign="middle" horizontalAlign="left"
+			  paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2" >
+		<s:VGroup gap="{hGap}"
+				  horizontalAlign="left" verticalAlign="middle">
+			<s:Label text="{data.propertyName}" toolTip="{data.tip}" 
+					 styleName="ConditionTitle" width="{itemWidth}" buttonMode="true"/>
+			<s:TileGroup id="container" horizontalGap="{hGap}">
+			</s:TileGroup>
+		</s:VGroup>
+		<s:HGroup includeIn="NumberState" gap="0" paddingLeft="{tempGap}" horizontalAlign="left" verticalAlign="middle">
+			<s:TextInput id="startNumber" prompt="请输入数字" borderVisible="true"
+						 paddingBottom="3" paddingTop="3"
+						 paddingLeft="3" paddingRight="3"
+						 width="{itemWidth}" change="changeHandler(event)"/>
+			<s:Label text="-" textAlign="center" verticalAlign="middle"/>
+			<s:TextInput id="endNumber" prompt="请输入数字" borderVisible="true"
+						 paddingBottom="3" paddingTop="3"
+						 paddingLeft="3" paddingRight="3"
+						 width="{itemWidth}" change="changeHandler(event)"/>
+		</s:HGroup>
+		<s:Spacer height="5" width="100%"/>
+		<s:HGroup includeIn="DateState" gap="0" paddingLeft="{tempGap}" horizontalAlign="center" verticalAlign="middle">
+			<mx:DateField id="startDate" width="{itemWidth}" dayNames="{dayNamesArray}"
+						  monthNames="{monthNamesArray}" 
+						  formatString="{formatString}" yearNavigationEnabled="true"
+						  maxYear="2100" minYear="1900" 
+						  dateChooserStyleName="dateFieldPopup" 
+						  buttonMode="true" rollOverColor="#b1d1ea"
+						  selectionColor="#b1d1ea" locale="zh-CN" editable="true"
+						  change="dateChangeHandler(event)"/>
+			<s:Label text="-" textAlign="center" verticalAlign="middle"/>
+			<mx:DateField id="endDate" width="{itemWidth}" dayNames="{dayNamesArray}" 
+						  monthNames="{monthNamesArray}" 
+						  formatString="{formatString}" yearNavigationEnabled="true"
+						  maxYear="2100" minYear="1900"
+						  dateChooserStyleName="dateFieldPopup" 
+						  buttonMode="true" rollOverColor="#b1d1ea"
+						  selectionColor="#b1d1ea" locale="zh-CN" editable="true"
+						  change="dateChangeHandler(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+</Items:CommonGroup>

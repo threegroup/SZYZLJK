@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" styleName="ConditionValue">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.transData.search.SearchConditionsData;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			import mx.core.UIComponent;
+			import mx.utils.StringUtil;
+			
+			import spark.components.CheckBox;
+			import spark.components.TileGroup;
+			/**是否选中*/
+			public var isSelected:Boolean = false;
+			/**项目内容*/
+			protected var content:SearchConditionsData = null;
+			/**存储选中项目*/
+			public var selectContent:ArrayCollection = null;
+			/**星期*/
+			[Bindable]
+			public var dayNamesArray:Array=["日", "一", "二", "三", "四", "五", "六"];
+			/**月份*/
+			[Bindable]
+			public var monthNamesArray:Array=["一月", "二月", "三月", "四月", "五月","六月", "七月", "八月", "九月", "十月", "十一月","十二月"];
+			/**日期格式*/
+			[Bindable]
+			public var formatString:String = "YYYYMM";
+			[Bindable]
+			/**容器中项目间隔*/
+			public var hGap:Number = 5;
+			[Bindable]
+			/**项目宽度*/
+			public var itemWidth:Number = 120;
+			
+			/**是否默认选择第一项，默认值不选择(false)*/
+			public var isFirstItemSelected:Boolean = false;
+			
+			private var _data:Object = null;
+			[Bindable]
+			/**容器数据源*/
+			public function get data():Object
+			{
+				return _data;
+			}
+			
+			/**
+			 * 容器数据源
+			 */
+			public function set data(value:Object):void
+			{
+				_data = value;
+			}
+			
+			/**解释界面*/
+			public function generateUI():void
+			{
+				
+			}
+			
+			/**获取条件内容*/
+			public function getContent():SearchConditionsData
+			{
+				return null;
+			}
+			
+			/**指标布局重设*/
+			public function resetLayout(isSpecial:Boolean,
+										parentWidth:Number,
+										arr:Array,
+										prop:String, 
+										con:TileGroup, 
+										special:Boolean=false, 
+										otherWidth:Number=0):void
+			{
+				var w:Number = 0;
+				if(isSpecial && parentWidth > 0)
+				{
+					w = parentWidth - 4 - otherWidth;
+				}
+				else if(stage != null)
+				{
+					w = stage.stageWidth - 250 - 4 - otherWidth;
+				}
+				var tempArr:Array = [];
+				for each (var item:Object in arr) 
+				{
+					if(item != null && item.hasOwnProperty(prop) 
+						&& StringUtil.trim(item[prop]) != "")
+					{
+						tempArr.push(item);
+					}
+				}
+				
+				if(tempArr != null && tempArr.length > 0)
+				{
+					var num:int = tempArr.length + 2;
+					for (var i:int = num; i > 0; i--) 
+					{
+						var tempW:Number = i * itemWidth + (i - 1) * hGap;
+						if(tempW <= w)
+						{
+							//是否有全选按钮
+							/* if(special)
+							{
+								con.requestedColumnCount = i - 1;
+							}
+							else
+							{
+								con.requestedColumnCount = i
+							} */
+							con.requestedColumnCount = i
+							break;
+						}
+					}
+				}
+			}
+			
+			/**清除所有选择的项目*/
+			public function clearAllSelected(com:UIComponent):void
+			{
+				if(com is TileGroup)
+				{
+					var tileGroup:TileGroup = com as TileGroup;
+					var cNum:int = tileGroup.numChildren;
+					if(cNum > 0)
+					{
+						for (var i:int = 0; i < cNum; i++) 
+						{
+							var el:IVisualElement = tileGroup.getElementAt(i);
+							if(el is CheckBoxItem)
+							{
+								(el as CheckBoxItem).selected = false;
+							}
+							else if(el is RadioButtonItem)
+							{
+								(el as RadioButtonItem).selected = false;
+							}
+							else 
+							{
+								(el as CheckBox).selected = false;
+							}
+						}
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+</s:Group>
