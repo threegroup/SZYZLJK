@@ -145,6 +145,9 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.ShowObjectDetailCommand
 					</value>
+						<!--水质评价-->
+					<value type="Class">sm.wegis.szy.commands.QueryDefaultPointCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -172,6 +175,10 @@
 				<property name="QuerySingleObjectInfo" value="QuerySingleObjectInfoCommand" />
 				<property name="QueryObjectDetail" value="QueryObjectDetailCommand" />
 				<property name="ShowObjectDetail" value="ShowObjectDetailCommand" />
+				
+				<!--水质评价-->
+				<property name="QueryDefaultPoint" value="QueryDefaultPointCommand" />
+				
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

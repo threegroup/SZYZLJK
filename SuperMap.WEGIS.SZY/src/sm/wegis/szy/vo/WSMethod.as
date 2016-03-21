@@ -25,5 +25,10 @@ package sm.wegis.szy.vo
 		
 		/**获取对象详情信息*/
 		public static const GetObjDetailInfo:String = "getObjDetailInfo";
+		
+		/**--------------水质评价查询接口------------*/
+		/**查询水质评价模型点列表*/
+		public static const GetSZPJDefaultObj:String = "getSZPJDefaultObj";
+		
 	}
 }

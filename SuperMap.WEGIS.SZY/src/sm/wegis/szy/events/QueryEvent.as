@@ -40,5 +40,9 @@ package sm.wegis.szy.events
 		
 		/**显示要素详情*/
 		public static const SHOW_OBJECT_DETAIL:String = "ShowObjectDetail";
+		
+		/**查询默认断面，测站，功能区点*/
+		public static  const QUERY_DEFAULT_POINT:String = "QueryDefaultPoint";
+		public static  const QUERY_DEFAULT_POINT_RESPONSE:String = "QueryDefaultPointResponse";
 	}
 }
