@@ -24,6 +24,7 @@ package sm.wegis.szy.commands
 				var params:Array = [];
 				params.push(modelLocator.userVo.userId);
 				params.push(requestData.id);
+				params.push("1");//查询实施监测数据
 				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTarget, params);
 				CursorManager.setBusyCursor();
 			} else {

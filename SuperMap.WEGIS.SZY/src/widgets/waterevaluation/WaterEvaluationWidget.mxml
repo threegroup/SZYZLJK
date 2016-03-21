@@ -3,8 +3,405 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
-			   width="100%" height="100%">
+			   width="100%" height="100%"
+			   currentState="ConditionState"
+			   creationComplete="creationCompleteHandler(event)"
+			   addedToStage="addToStageHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.core.baseclass.DottedLineClass;
+			
+			import widgets.waterevaluation.Items.CheckBoxGroup;
+			import widgets.waterevaluation.Items.RadioButtonGroup;
+			import widgets.waterevaluation.Items.TextGroup;
+			[Bindable]
+			/**条件面板高度*/
+			private var conditionPanelHeight:Number = 0;
+			
+			[Bindable]
+			/**统计指标面板高度*/
+			private var searchTypePanelHeight:Number = 0;
+			
+			/**默认显示字数*/
+			private const LENGTH:Number = 30;
+			
+			/**复选*/
+			private static const CHECKBOX:String ="0";      
+			/**单选*/
+			private static const RADIOBUTTON:String ="1";  
+			/**文本*/
+			private static const TEXT:String ="2"; 
+			
+			/**指标*/
+			private var searchType:RadioButtonGroup = null;
+			
+			/**项目列表*/
+			private var items:Array = [];
+			
+			/**状态*/
+			private const CONDITIONSTATE:String = "ConditionState";
+			private const LISTSTATE:String = "ListState";
+			
+			//计算条件面板高度
+			protected function addToStageHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				if(stage != null)
+				{
+					conditionPanelHeight = stage.stageHeight - 100;
+					//searchTypePanelHeight = 240;
+				}
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				var data:Object = {
+					"message": "信息查询成功。",
+					"nodeListSelect": [
+						{
+							"initialDisplay": "1",
+							"isSelect": "1",
+							"isShow": "1",
+							"optionList": [
+								{
+									"dicOrder": "支流1",
+									"optionName": "支流1",
+									"optionValue": "r1"
+								},
+								{
+									"dicOrder": "支流2",
+									"optionName": "支流2",
+									"optionValue": "r2"
+								},
+								{
+									"dicOrder": "支流3",
+									"optionName": "支流3",
+									"optionValue": "r3"
+								},
+								{
+									"dicOrder": "支流4",
+									"optionName": "支流4",
+									"optionValue": "r4"
+								},
+								{
+									"dicOrder": "支流5",
+									"optionName": "支流5",
+									"optionValue": "r5"
+								},
+								{
+									"dicOrder": "支流6",
+									"optionName": "支流6",
+									"optionValue": "r6"
+								}],
+							"orderIndex": "1",
+							"propertyDisplayType": "0",
+							"propertyId": "",
+							"propertyName": "评价河流",
+							"propertyType": "1",
+							"surveyFields": "",
+							"surveyTable": ""
+						},
+						{
+							"initialDisplay": "1",
+							"isSelect": "1",
+							"isShow": "1",
+							"optionList": [
+								{
+									"dicOrder": "2010",
+									"optionName": "2010",
+									"optionValue": "2010"
+								},
+								{
+									"dicOrder": "2011",
+									"optionName": "2011",
+									"optionValue": "2011"
+								},
+								{
+									"dicOrder": "2012",
+									"optionName": "2012",
+									"optionValue": "2012"
+								},
+								{
+									"dicOrder": "2013",
+									"optionName": "2013",
+									"optionValue": "2013"
+								},
+								{
+									"dicOrder": "2014",
+									"optionName": "2014",
+									"optionValue": "2014"
+								}],
+							"orderIndex": "2",
+							"propertyDisplayType": "1",
+							"propertyId": "",
+							"propertyName": "评价年份"
+						},
+						{
+							"hasCustom": "1",
+							"initialDisplay": "1",
+							"isSelect": "1",
+							"isShow": "1",
+							"optionList": [
+								{
+									"dicOrder": "周",
+									"optionName": "周",
+									"optionValue": "week"
+								},
+								{
+									"dicOrder": "旬",
+									"optionName": "旬",
+									"optionValue": "tenDays"
+								},
+								{
+									"dicOrder": "月",
+									"optionName": "月",
+									"optionValue": "month"
+								},
+								{
+									"dicOrder": "季度",
+									"optionName": "季度",
+									"optionValue": "quarterly"
+								},
+								{
+									"dicOrder": "年",
+									"optionName": "年",
+									"optionValue": "fengShui"
+								},
+								{
+									"dicOrder": "丰水期 ",
+									"optionName": "丰水期 ",
+									"optionValue": "fengShui"
+								},
+								{
+									"dicOrder": "枯水期 ",
+									"optionName": "枯水期 ",
+									"optionValue": "kuShui"
+								},
+								{
+									"dicOrder": "平水期",
+									"optionName": "平水期",
+									"optionValue": "pingShui"
+								}],
+							"orderIndex": "3",
+							"propertyDisplayType": "1",
+							"propertyType": "3",
+							"propertyId": "",
+							"propertyName": "评价周期"
+						}],
+					"responseSts": 0
+				}
+				decodeUI(data);
+			}
+			
+			/**清空条件内容*/
+			public function clear():void
+			{
+				this.conditionContainer.removeAllElements();
+			}
+			
+			//解释界面数据 ,data包含：显示类型,属性类型,预定义列表信息
+			private function decodeUI(data:Object=null):void
+			{
+				if(data == null)
+					return;
+				
+//				//重置查询类型
+//				searchTypeContainer.removeAllElements();
+//				if(searchType != null)
+//					searchType = null;
+//				
+//				//生成常用查询统计指标
+//				if(data.hasOwnProperty("sumFieldList")
+//					&& data["sumFieldList"] is Array
+//					&&(data["sumFieldList"] as Array).length > 0)
+//				{
+//					searchType = new RadioButtonGroup();
+//					searchType.data = data["sumFieldList"];
+//					searchType.isFirstItemSelected = true;
+//					searchTypeContainer.addElement(searchType);
+//				}
+				
+				//生成常用查询条件
+				if(data.hasOwnProperty("nodeListSelect") 
+					&& data["nodeListSelect"] is Array 
+					&& (data["nodeListSelect"] as Array).length >0)
+				{
+					conditionContainer.removeAllElements();
+					items = [];
+					
+					var tempArr:Array = data["nodeListSelect"];
+					//格式化条件组名
+					tempArr = formatData(tempArr, "propertyName", false);
+					
+					//遍历数组，生成界面
+					for (var i:int = 0; i < tempArr.length; i++) 
+					{
+						var item:Object = tempArr[i];
+						
+						//格式化预定义条件值
+						if(item != null && item.hasOwnProperty("optionList")
+							&& item["optionList"] is Array && (item["optionList"] as Array).length > 0)
+						{
+							item["optionList"] = formatData(item["optionList"], "optionName", true);
+						}
+						
+						var gapLine:DottedLineClass = null;
+						if(i <= tempArr.length - 2)
+						{
+							gapLine = new DottedLineClass();
+							gapLine.percentWidth = 100;
+							gapLine.height = 1;
+						} 
+						
+						switch(item["propertyDisplayType"])
+						{
+							case TEXT:
+							{
+								var t:TextGroup = new TextGroup();
+								t.data = item;
+								items.push(t);
+								conditionContainer.addElement(t);
+								if(gapLine)
+									conditionContainer.addElement(gapLine as IVisualElement);
+								break;
+							}
+							case CHECKBOX:
+							{
+								var c:CheckBoxGroup = new CheckBoxGroup();
+								c.data = item;
+								items.push(c);
+								conditionContainer.addElement(c);
+								if(gapLine)
+									conditionContainer.addElement(gapLine as IVisualElement);
+								break;
+							}
+							case RADIOBUTTON:
+							{
+								var r:RadioButtonGroup = new RadioButtonGroup();
+								r.data = item;
+								items.push(r);
+								conditionContainer.addElement(r);
+								if(gapLine)
+									conditionContainer.addElement(gapLine as IVisualElement);
+								break;
+							}
+							default:
+							{
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			//常用条件字段格式化
+			public function formatData(dObj:Object, field:String="", isValue:Boolean=false):Array
+			{
+				if(dObj != null && dObj is Array)
+				{
+					var tempArray:Array = dObj as Array;
+					if(tempArray != null)
+					{
+						var len:int = tempArray.length;
+						if(len > 0)
+						{
+							for each (var item:Object in tempArray) 
+							{
+								if(item != null)
+								{
+									var value:String  = item[field]==null?" ":item[field];
+									var strLen:int = value.length;
+									if(strLen <= LENGTH)
+									{
+										if(isValue)
+										{
+											var dLen:Number = LENGTH - strLen;
+											for (var i:int = 0; i < dLen; i++) 
+											{
+												value = value + "  ";
+											} 
+											
+											item[field] = value;
+										}
+										else
+										{
+											item[field] = value + ":";
+										}
+									}
+									else
+									{
+										if(isValue)
+										{
+											item["tip"] = value;
+											item[field] = value.substr(0,LENGTH-1) + "..";
+										}
+										else
+										{
+											item["tip"] = value;
+											item[field] = value.substr(0,LENGTH-1) + ":";
+										}
+									}
+								}
+							}
+						}
+						
+						return tempArray;
+					}
+				}
+				
+				return null;
+			}
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	<ns:states>
+		<s:State name="ConditionState"/>
+		<s:State name="ListState"/>
+	</ns:states>
+	<s:VGroup x="0" y="0" width="100%" gap="2"
+			  includeIn="ConditionState" itemCreationPolicy="immediate"
+			  paddingBottom="5" paddingTop="5" paddingLeft="5" paddingRight="5">
+		<s:HGroup width="100%"
+				  horizontalAlign="left" verticalAlign="middle">
+			<s:Label text="水质评价条件设置：" width="100%" height="30" 
+					 backgroundColor="#3385FF" fontSize="14" color="#FFFFFF"/>
+		</s:HGroup>
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="#ACAB96" weight="1"/>
+			</s:stroke>
+		</s:Line>
+		<!--<s:Scroller verticalScrollPolicy="auto" width="100%" maxHeight="{searchTypePanelHeight}">
+			<s:Group id="searchTypeContainer" width="100%">
+			</s:Group>
+		</s:Scroller>
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="#ACAB96" weight="1"/>
+			</s:stroke>
+		</s:Line>-->
+		<s:Scroller verticalScrollPolicy="auto" width="100%" maxHeight="{conditionPanelHeight}">
+			<s:VGroup id="conditionContainer" width="100%" height="100%" gap="5" paddingBottom="5" paddingTop="5">  
+			</s:VGroup>
+		</s:Scroller>
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="#ACAB96" weight="1"/>
+			</s:stroke>
+		</s:Line>
+		<s:HGroup width="100%" 
+				  horizontalAlign="center" verticalAlign="middle">
+			<s:Button width="60" height="30" buttonMode="true" label="查询" 
+					  styleName="SubmitRegisterStyle"/>
+			<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000"/>
+		</s:HGroup>
+	</s:VGroup>
+	<s:VGroup includeIn="ListState" itemCreationPolicy="immediate">
+		
+	</s:VGroup>
 </ns:WidgetBase>

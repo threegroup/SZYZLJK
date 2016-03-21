@@ -71,7 +71,8 @@
 				if (result.message == false) {
 					selectItem.selected = false;
 					resultList.dataProvider.itemUpdated(selectItem);
-					LoginInfoLabel.text = result.message;
+					QueryInfoLabel.includeInLayout = true;
+					QueryInfoLabel.text = result.message;
 				} 
 				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
 				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
@@ -127,13 +128,15 @@
 				creationMapMarks();
 				this.searchInput.text = null;
 				maskGroup.visible = false;
-				LoginInfoLabel.text = "";
+				QueryInfoLabel.includeInLayout = false;
+				QueryInfoLabel.text = "";
 			}
 			
 			//请求mainType
 			public function queryMainTypes():void
 			{
-				LoginInfoLabel.text = "";
+				QueryInfoLabel.includeInLayout = false;
+				QueryInfoLabel.text = "";
 				var queryMainTypes:QueryEvent = new QueryEvent(QueryEvent.QUERY_MAIN_TYPES);
 				queryMainTypes.dispatch();
 			}
@@ -143,7 +146,7 @@
 			{
 				clearLastQuery();
 //				if (scrollButtonPanel.currentButtonItem == null && StringUtil.trim(searchInput.text).length == 0 ) {
-//					LoginInfoLabel.text = "请选择查询类型或输入查询对象名称";
+//					QueryInfoLabel.text = "请选择查询类型或输入查询对象名称";
 //					return;
 //				}
 //				var selectItem:ButtonItem = scrollButtonPanel.currentButtonItem;
@@ -157,7 +160,8 @@
 				if (typeIds.length > 0 ) {
 					mapQueryVO.typeIds = typeIds.join(",");
 				}
-				LoginInfoLabel.text = "";
+				QueryInfoLabel.includeInLayout = false;
+				QueryInfoLabel.text = "";
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_TYPES_AND_DETAIL_LIST);
 				queryEvent.data = mapQueryVO;
 				queryEvent.dispatch();
@@ -206,7 +210,7 @@
 //						}
 //					}
 //				}else{
-//					LoginInfoLabel.text = data.message;
+//					QueryInfoLabel.text = data.message;
 //				}
 			}
 			
@@ -240,7 +244,8 @@
 				{
 					this.ResultContentPanel.visible = false;
 					//此处面板做相应的初始化
-					LoginInfoLabel.text = data.message;
+					QueryInfoLabel.includeInLayout = true;
+					QueryInfoLabel.text = data.message;
 				}
 			}
 			
@@ -376,7 +381,8 @@
 			//结果列表，选择框选择和取消
 			private function selectChangedHandler(event:ListCheckItemRendererEvent):void
 			{
-				LoginInfoLabel.text = "";
+				QueryInfoLabel.includeInLayout = false;
+				QueryInfoLabel.text = "";
 				// 打开遮罩面板
 				maskGroup.visible = true;
 				var data:Object = event.data;
@@ -466,7 +472,7 @@
 			<s:Button id="searchBt" height="100%" width="60" buttonMode="true" label="查询" 
 					  styleName="SubmitRegisterStyle"  click="searchBt_clickHandler()"/>
 		</s:HGroup>
-		<s:Label id="LoginInfoLabel"  styleName="SubmitRegisterInfo"/>
+		<s:Label id="QueryInfoLabel"  styleName="SubmitRegisterInfo" includeInLayout="false"/>
 		<s:VGroup id="ResultContentPanel" width="100%" height="100%" gap="10" visible="false">
 			<s:Panel title="水体类型" width="100%" maxHeight="200" minHeight="80">
 				<s:Scroller width="100%" height="100%" 
