@@ -209,7 +209,7 @@
 							this.currentState = HIDE;
 						}
 					}
-//					watchList.dataProvider = watchIndexs;
+					//					watchList.dataProvider = watchIndexs;
 				}
 			}
 			
@@ -317,7 +317,6 @@
 			{
 				var classFactory:ClassFactory = new ClassFactory(DataGroupCheckItemrenderer);
 				classFactory.properties = {watchIndexs:watchIndexs, maxCount:modelLocator.systemInfo.maxCols};
-				watchList.itemRenderer = classFactory;
 			}
 			
 			private function watchListLabelFunction(item:Object):String
@@ -353,22 +352,21 @@
 		<s:State name="hide"/>
 		<s:State name="show"/>
 	</ns:states>
-	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" title="对象监测数据列表" bottom.show="5" bottom.hide="0"
+	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" title="多个指标测量值列表" bottom.show="5" bottom.hide="0"
 			 height.hide="0">
 		<s:controlBarContent>
-			<s:Label text="设置监测指标:" color="#FFFFFF"/>
-			<!--<ns:CheckBoxComboBox id="watchList" width="80"  
-								 dataProvider="{watchIndexs}" 
-								 selectChanged="watchList_changeHandler(event)"/>-->
-			<drodown:DropDownPanel id="watchList"  dataProvider="{watchIndexs}" 
-								   selectChanged="watchList_changeHandler(event)"/>
- 			<s:Spacer width="10"/>
 			<s:Image id="stateImage" width="16" height="16" buttonMode="true" 
 					 click="stateImage_clickHandler(event)"
 					 source="{ResourceManagerEx.FindResource('Down').cls}" toolTip="收缩"/>
 			<s:Spacer width="10"/>
 		</s:controlBarContent>
 		<s:DataGrid id="resultGrid" width="100%" height="100%" maxHeight="200"  borderVisible="false"
-					gridClick="resultGrid_gridClickHandler(event)" sortableColumns="false"/>
+					gridClick="resultGrid_gridClickHandler(event)" sortableColumns="false">
+			<s:columns>
+				<s:ArrayList>
+					
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
 	</s:Panel>
 </ns:WidgetBase>

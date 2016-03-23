@@ -6,7 +6,7 @@ global
 {
 	color: #000000;
 	fontFamily:宋体;
-	fontSize:12;
+	fontSize:13;
 	backgroundAlpha:1;
 	titleColorFrom:#FBFBFA;
 	titleColorTo:#E1DFDA;
@@ -117,7 +117,7 @@ s|BorderContainer
 
 .SubmitRegisterStyle
 {
-	fontFamily:微软雅黑;
+	fontFamily:宋体;
 	skinClass:ClassReference("sm.wegis.szy.skins.SubmitRegisterSkin");
 	fontSize:16;
 	fontWeight:normal;
@@ -132,7 +132,7 @@ s|BorderContainer
 .SystemSelectorStyle
 {
 	textAlign:left;
-	fontFamily:微软雅黑;
+	fontFamily:宋体;
 	skinClass:ClassReference("sm.wegis.szy.skins.DropDownListSkinEx")
 }
 

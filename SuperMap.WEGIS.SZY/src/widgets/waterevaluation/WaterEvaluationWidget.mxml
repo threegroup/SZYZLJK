@@ -373,6 +373,7 @@
 					[QueryEvent.QUERY_RIVER_YEAR_RESPONSE, queryRiverYearResponseHandler]//评价年份
 					[QueryEvent.QUERY_RIVER_PERIOD_RESPONSE, queryRiverPeriodResponseHandler]//评价周期
 					[QueryEvent.QUERY_DEFAULT_POINT_RESPONSE, queryDefaultPointResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
+					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler], // 获取对象信息和下方面板信息
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
@@ -380,20 +381,47 @@
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
 			}
 			
-			//查询评价河流列表
+			
+			//查明河流列表
+			private function queryRiverList():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_LIST);
+				queryEvent.dispatch();
+			}
+			
+			//查明河流评价年份
+			private function queryRiverYear():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_YEAR);
+				queryEvent.dispatch();
+			}
+			
+			//查明河流评价周期列表
+			private function queryRiverPeriod():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD);
+				queryEvent.dispatch();
+			}
+			
+			//查询评价河流列表响应
 			private function queryRiverListResponseHandler(event:CairngormEvent):void
 			{
 				
 			}
 			
-			//查询评价河流年份列表
+			//查询评价河流年份列表响应
 			private function queryRiverYearResponseHandler(event:CairngormEvent):void
 			{
 				
 			}
 			
-			//查询评价河流周期列表
+			//查询评价河流周期列表响应
 			private function queryRiverPeriodResponseHandler(event:CairngormEvent):void
+			{
+			
+			}
+			
+			private function queryStationEvalutionInfoResponseHandler(event:CairngormEvent):void
 			{
 				
 			}
@@ -417,12 +445,23 @@
 							item.x = Number(positions[0]);
 							item.y = Number(positions[1]);
 							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
-							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle);
+							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle, item);
+							feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
 							feature.buttonMode = true;
 							featuresLayer.addFeature(feature);
 						}
 					}
 				}
+			}
+			
+			private function featureMouseClickHandler(event:MouseEvent):void
+			{
+				var feature:Feature = event.currentTarget as Feature;
+				var attribute:Object = feature.attributes;
+				var requestParam:Object = attribute;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO);
+				queryEvent.data = requestParam;
+				queryEvent.dispatch();
 			}
 			
 			//清除
@@ -441,27 +480,6 @@
 			private function queryDefaultStation():void
 			{
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DEFAULT_POINT);
-				queryEvent.dispatch();
-			}
-			
-			//查明河流列表
-			private function queryRiverList():void
-			{
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_LIST);
-				queryEvent.dispatch();
-			}
-			
-			//查明河流评价年份
-			private function queryRiverYear():void
-			{
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_YEAR);
-				queryEvent.dispatch();
-			}
-			
-			//查明河流评价周期列表
-			private function queryRiverPeriod():void
-			{
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD);
 				queryEvent.dispatch();
 			}
 		]]>

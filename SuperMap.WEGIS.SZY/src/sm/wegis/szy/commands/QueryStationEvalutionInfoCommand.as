@@ -12,7 +12,7 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.events.QueryEvent;
 	import sm.wegis.szy.vo.WSMethod;
 	
-	public class QuerySingleObjectInfoCommand extends CommandBase
+	public class QueryStationEvalutionInfoCommand extends CommandBase
 	{
 		private var requestData:Object;
 		override public function execute(event:CairngormEvent):void
@@ -20,18 +20,12 @@ package sm.wegis.szy.commands
 			super.execute(event);
 			requestData = event.data;
 			//如果左侧checkbox选择=true，请求数据，否则删除数据
-			if (requestData.selected == true) {
 				var params:Array = [];
 				params.push(modelLocator.userVo.userId);
 				params.push(requestData.id);
-				params.push("1");//查询实施监测数据
+				params.push("2");//评价指标
 				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTarget, params);
 				CursorManager.setBusyCursor();
-			} else {
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE);
-				queryEvent.data = requestData;
-				queryEvent.dispatch();
-			}
 		}
 		
 		override public function result(data:Object):void
@@ -40,13 +34,10 @@ package sm.wegis.szy.commands
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var value:Object = jsDec.getValue() as Object;
-			//用于前台表格排序，根据左侧列表选择顺序
-			value.index = requestData.index;
 			//用于右侧表格是添加、还是删除
-			value.selected = true;
 			value.x = requestData.x;
 			value.y = requestData.y;
-			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE);
 			queryEvent.data = value;
 			queryEvent.dispatch();
 		}
@@ -56,7 +47,7 @@ package sm.wegis.szy.commands
 			CursorManager.removeBusyCursor();
 			Alert.show("获取目标对象详细信息失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
-			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE);
 			var faultObject:Object = new Object();
 			faultObject.success = false;
 			faultObject.index = requestData.index;

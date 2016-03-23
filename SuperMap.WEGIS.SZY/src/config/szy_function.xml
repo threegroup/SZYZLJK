@@ -57,6 +57,17 @@
 				<mutex>true</mutex>
 				<init></init>
 				<selected></selected>
+				<subitems>
+					<subitem>
+						<key>WaterEvalutionWidget</key>
+						<name>评价指标数据展示面板</name>
+						<url>widgets/waterevaluation/WaterEvalutionInfoWidget.swf</url>
+						<mutex>true</mutex>
+						<cover>true</cover>
+						<bottom>0</bottom>
+						<left>0</left>
+					</subitem>
+				</subitems>
 			</item>
 			<item>
 				<name>水体预警</name>
