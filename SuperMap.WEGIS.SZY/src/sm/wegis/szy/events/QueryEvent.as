@@ -30,10 +30,10 @@ package sm.wegis.szy.events
 		public static const QUERY_TYPES_AND_DETAIL_LIST_RESPONSE:String = "QueryTypesAndDetailListResponse";
 		
 		/**查询单个要素，监测数据*/
-		public static const QUERY_SINGLE_OBJECT_INFO:String = "QuerySingleObjectInfo"
+		public static const QUERY_STATION_REAL_INFO:String = "QueryStationRealInfo"
 			
 		/**响应查询单个要素，监测数据查询*/
-		public static const QUERY_SINGLE_OBJECT_INFO_RESPONSE:String = "QuerySingleObjectInfoResponse";
+		public static const QUERY_STATION_REAL_INFO_RESPONSE:String = "QueryStationRealInfoResponse";
 		
 		/**查询要素详情*/
 		public static const QUERY_OBJECT_DETAIL:String = "QueryObjectDetail";
@@ -44,5 +44,12 @@ package sm.wegis.szy.events
 		/**查询默认断面，测站，功能区点*/
 		public static  const QUERY_DEFAULT_POINT:String = "QueryDefaultPoint";
 		public static  const QUERY_DEFAULT_POINT_RESPONSE:String = "QueryDefaultPointResponse";
+		
+		/**----------------------水质评价----------------*/
+		/**水质评价查询单个要素，监测数据*/
+		public static const QUERY_STATION_EVALUTION_INFO:String = "QueryStationEvalutionInfo"
+		
+		/**水质评价响应查询单个要素，监测数据查询*/
+		public static const QUERY_STATION_EVALUTION_INFO_RESPONSE:String = "QueryStationEvalutionInfoResponse";
 	}
 }

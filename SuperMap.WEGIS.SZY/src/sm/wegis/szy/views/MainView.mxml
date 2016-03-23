@@ -340,7 +340,6 @@
 					}
 				}
 				
-				this.BodyContainerID.removeAllElements();
 				menuItemData.parent = this.BodyContainerID;
 				WidgetManager.getInstance().loadWidget(menuItemData);
 			}

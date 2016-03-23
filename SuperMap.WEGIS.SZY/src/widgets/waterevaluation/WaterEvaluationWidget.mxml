@@ -375,11 +375,17 @@
 			public function initEventListener():void{
 				var eList:ArrayCollection = new ArrayCollection([
 					[QueryEvent.QUERY_DEFAULT_POINT_RESPONSE, queryDefaultPointResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
+					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler], // 获取对象信息和下方面板信息
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			private function queryStationEvalutionInfoResponseHandler(event:CairngormEvent):void
+			{
+				
 			}
 			
 			//查询默认点成功
@@ -401,12 +407,23 @@
 							item.x = Number(positions[0]);
 							item.y = Number(positions[1]);
 							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
-							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle);
+							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle, item);
+							feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
 							feature.buttonMode = true;
 							featuresLayer.addFeature(feature);
 						}
 					}
 				}
+			}
+			
+			private function featureMouseClickHandler(event:MouseEvent):void
+			{
+				var feature:Feature = event.currentTarget as Feature;
+				var attribute:Object = feature.attributes;
+				var requestParam:Object = attribute;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO);
+				queryEvent.data = requestParam;
+				queryEvent.dispatch();
 			}
 			
 			//清除

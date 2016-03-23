@@ -171,13 +171,12 @@ package com.supermap.wegis.common.core.widget
 				if(parentContainer != null)
 				{
 					var len:int = parentContainer.numElements;
-					if(len > 0)
+					for (var i:int = 0; i < len; i++) 
 					{
-						for (var i:int = 0; i < len; i++) 
-						{
-							var childElement:WidgetBase = parentContainer.getElementAt(i) as WidgetBase;
+						var childElement:WidgetBase = parentContainer.getElementAt(i) as WidgetBase;
+						if (childElement != null){
 							//对添加进来的模块，控制是否需要设置其他模块可见，通过single控制,false为不需要移除其他模块
-							if((!(["single"]  in ctl) || ctl["single"] == true) && childElement.widgetId != ctl.key)
+							if ("mutex"  in ctl && ctl["mutex"] == true && childElement.widgetId != ctl.key)
 							{
 								childElement.visible = false;
 								childElement.includeInLayout = false;
@@ -350,15 +349,13 @@ package com.supermap.wegis.common.core.widget
 				var element:IVisualElementContainer = (moduleData.parent as IVisualElementContainer);
 				if(element != null)
 				{
-					//与其他模块切换互斥
-					if(!(moduleData.hasOwnProperty("mutex") && moduleData.mutex == false))
+					var len:int = element.numElements;
+					for (var i:int = 0; i < len; i++) 
 					{
-						var len:int = element.numElements;
-						for (var i:int = 0; i < len; i++) 
-						{
-							var childElement:WidgetBase = element.getElementAt(i) as WidgetBase;
-							//对添加进来的模块，控制是否需要设置其他模块可见，通过single控制,false为不需要移除其他模块
-							if((!(["single"]  in moduleData) || moduleData["single"] == true) && childElement.widgetId != widgetBase.widgetId)
+						var childElement:WidgetBase = element.getElementAt(i) as WidgetBase;
+						if (childElement != null){
+							//对添加进来的模块，控制是否需要设置其他模块可见
+							if ("mutex" in moduleData && moduleData.mutex == true && childElement.widgetId != widgetBase.widgetId)
 							{
 								childElement.visible = false;
 								childElement.includeInLayout = false;
@@ -373,10 +370,10 @@ package com.supermap.wegis.common.core.widget
 							}
 						}
 					}
-				}
-				if(!isExist)
-				{
-					element.addElement(widgetBase);
+					if(!isExist)
+					{
+						element.addElement(widgetBase);
+					}
 				}
 			}
 			widgetTable.add(moduleData.key, widgetBase);

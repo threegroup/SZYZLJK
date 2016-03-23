@@ -50,7 +50,7 @@
 			
 			public function initEventListener():void{
 				var eList:ArrayCollection = new ArrayCollection([
-					[QueryEvent.QUERY_SINGLE_OBJECT_INFO_RESPONSE, querySingleObjectInfoResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
+					[QueryEvent.QUERY_STATION_REAL_INFO_RESPONSE, queryStationRealInfoResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler],
 //					[QueryEvent.QUERY_MAIN_TYPES_RESPONSE, queryMainTypesHandler],
@@ -60,7 +60,7 @@
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
 			}
 			
-			private function querySingleObjectInfoResponseHandler(event:CairngormEvent):void
+			private function queryStationRealInfoResponseHandler(event:CairngormEvent):void
 			{
 				// 打开遮罩面板
 				maskGroup.visible = false;
@@ -385,11 +385,11 @@
 				QueryInfoLabel.text = "";
 				// 打开遮罩面板
 				maskGroup.visible = true;
-				var data:Object = event.data;
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SINGLE_OBJECT_INFO);
-				queryEvent.data = data;
+				var requestParam:Object = event.data;
+				requestParam.type = "1";
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_REAL_INFO);
+				queryEvent.data = requestParam;
 				queryEvent.dispatch();
-				
 			}
 			
 			private function searchBt_clickHandler():void
