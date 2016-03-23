@@ -4,7 +4,6 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 			   width="100%" height="100%"
-			   currentState="ConditionState"
 			   creationComplete="creationCompleteHandler(event)"
 			   addedToStage="addToStageHandler(event)">
 	<fx:Script>
@@ -56,17 +55,13 @@
 			/**项目列表*/
 			private var items:Array = [];
 			
-			/**状态*/
-			private const CONDITIONSTATE:String = "ConditionState";
-			private const LISTSTATE:String = "ListState";
-			
 			//计算条件面板高度
 			protected function addToStageHandler(event:Event):void
 			{
 				// TODO Auto-generated method stub
 				if(stage != null)
 				{
-					conditionPanelHeight = stage.stageHeight - 100;
+					conditionPanelHeight = stage.stageHeight - 120 - this.periodContainer.height;
 					//searchTypePanelHeight = 240;
 				}
 			}
@@ -374,12 +369,33 @@
 			
 			public function initEventListener():void{
 				var eList:ArrayCollection = new ArrayCollection([
+					[QueryEvent.QUERY_RIVER_LIST_RESPONSE, queryRiverListResponseHandler]//评价河流
+					[QueryEvent.QUERY_RIVER_YEAR_RESPONSE, queryRiverYearResponseHandler]//评价年份
+					[QueryEvent.QUERY_RIVER_PERIOD_RESPONSE, queryRiverPeriodResponseHandler]//评价周期
 					[QueryEvent.QUERY_DEFAULT_POINT_RESPONSE, queryDefaultPointResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			//查询评价河流列表
+			private function queryRiverListResponseHandler(event:CairngormEvent):void
+			{
+				
+			}
+			
+			//查询评价河流年份列表
+			private function queryRiverYearResponseHandler(event:CairngormEvent):void
+			{
+				
+			}
+			
+			//查询评价河流周期列表
+			private function queryRiverPeriodResponseHandler(event:CairngormEvent):void
+			{
+				
 			}
 			
 			//查询默认点成功
@@ -427,17 +443,34 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DEFAULT_POINT);
 				queryEvent.dispatch();
 			}
+			
+			//查明河流列表
+			private function queryRiverList():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_LIST);
+				queryEvent.dispatch();
+			}
+			
+			//查明河流评价年份
+			private function queryRiverYear():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_YEAR);
+				queryEvent.dispatch();
+			}
+			
+			//查明河流评价周期列表
+			private function queryRiverPeriod():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD);
+				queryEvent.dispatch();
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<ns:states>
-		<s:State name="ConditionState"/>
-		<s:State name="ListState"/>
-	</ns:states>
+
 	<s:VGroup x="0" y="0" width="100%" gap="2"
-			  includeIn="ConditionState" itemCreationPolicy="immediate"
 			  paddingBottom="5" paddingTop="5" paddingLeft="5" paddingRight="5">
 		<s:HGroup width="100%"
 				  horizontalAlign="left" verticalAlign="middle">
@@ -458,8 +491,9 @@
 		<s:SolidColorStroke color="#ACAB96" weight="1"/>
 		</s:stroke>
 		</s:Line>-->
-		<s:Scroller verticalScrollPolicy="auto" width="100%" maxHeight="{conditionPanelHeight}">
-			<s:VGroup id="conditionContainer" width="100%" height="100%" gap="5" paddingBottom="5" paddingTop="5">  
+		<s:Scroller verticalScrollPolicy="auto" horizontalScrollPolicy="off" 
+					width="100%" maxHeight="{conditionPanelHeight}">
+			<s:VGroup id="conditionContainer" width="100%" gap="5" paddingBottom="5" paddingTop="5">  
 			</s:VGroup>
 		</s:Scroller>
 		<s:Line width="100%">
@@ -467,14 +501,15 @@
 				<s:SolidColorStroke color="#ACAB96" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:HGroup width="100%" 
-				  horizontalAlign="center" verticalAlign="middle">
-			<s:Button width="60" height="30" buttonMode="true" label="查询" 
-					  styleName="SubmitRegisterStyle"/>
-			<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000"/>
-		</s:HGroup>
-	</s:VGroup>
-	<s:VGroup includeIn="ListState" itemCreationPolicy="immediate">
-		
+		<s:VGroup id="periodContainer" width="100%" height="250" gap="3"
+				  horizontalAlign="center" verticalAlign="middle" paddingTop="5">
+			<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
+				<s:Button width="60" height="30" buttonMode="true" label="查询" 
+						  styleName="SubmitRegisterStyle"/>
+				<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000" includeInLayout="false" visible="false"/>
+			</s:HGroup>
+			<s:List id="periodList" width="100%" height="100%" borderVisible="false"
+					horizontalScrollPolicy="off"/>
+		</s:VGroup>
 	</s:VGroup>
 </ns:WidgetBase>

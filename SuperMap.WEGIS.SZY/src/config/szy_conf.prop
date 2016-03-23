@@ -28,8 +28,8 @@ TDTVectorLabel=http://tdt.mwr.gov.cn:81/sla_c/wmts?SERVICE=WMTS&REQUEST=GetTile&
 TDTImage=http://tdt.mwr.gov.cn:81/img_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=7
 TDTImageLabel=http://tdt.mwr.gov.cn:81/sia_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=sia&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=7
 
-vectorMap=http://localhost:8080/iserver/services/map-SZY/rest/maps/basemap
-imageMap=http://localhost:8080/iserver/services/map-SZY/rest/maps/basemap
+vectorMap=http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap
+imageMap=http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap
 #=============二维地图====================#
 #地图比例尺
 layerScales=0.00000021634093716514, 0.00000043268187433028, 0.00000086536374866056,0.00000173072749732112, 0.00000346145499464224,0.00000692290998928384,0.00001384581997856768,0.00002769163995713790, 0.00005538327991427580
