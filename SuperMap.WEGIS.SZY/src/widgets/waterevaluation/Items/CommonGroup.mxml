@@ -42,6 +42,10 @@
 			/**是否默认选择第一项，默认值不选择(false)*/
 			public var isFirstItemSelected:Boolean = false;
 			
+			[Bindable]
+			/**内容面板最大高度*/
+			public var maxContentHeight:Number = 0;
+			
 			private var _data:Object = null;
 			[Bindable]
 			/**容器数据源*/

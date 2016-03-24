@@ -28,6 +28,7 @@
     <module application="src/index.mxml" destPath="widgets/basemap/BaseMapWidget.swf" optimize="true" sourcePath="src/widgets/basemap/BaseMapWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/legend/LegendWidget.swf" optimize="true" sourcePath="src/widgets/legend/LegendWidget.mxml"/>
     <module application="src/index.mxml" destPath="widgets/waterevaluation/WaterEvaluationWidget.swf" optimize="true" sourcePath="src/widgets/waterevaluation/WaterEvaluationWidget.mxml"/>
+    <module application="src/index.mxml" destPath="widgets/waterevaluation/WaterEvalutionInfoWidget.swf" optimize="true" sourcePath="src/widgets/waterevaluation/WaterEvalutionInfoWidget.mxml"/>
   </modules>
   <buildCSSFiles>
     <buildCSSFileEntry destPath="bin-debug" sourcePath="src/maincss.css"/>
