@@ -6,7 +6,7 @@
 			   xmlns:line="sm.wegis.szy.components.line.*"
 			   width="100%" height="100%"
 			   creationComplete="creationCompleteHandler(event)" 
-			   WidgetAddComplete="addWidget(event)"
+			   WidgetAddComplete="widgetAddCompleteHandler(event)"
 			   WidgetRemove="removeWidget(event)">
 	<fx:Script>
 		<![CDATA[
@@ -44,8 +44,6 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				initEventListener();
-//				queryMainTypes();
-				queryTypesAndDetailList();
 			}
 			
 			public function initEventListener():void{
@@ -53,7 +51,6 @@
 					[QueryEvent.QUERY_STATION_REAL_INFO_RESPONSE, queryStationRealInfoResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler],
-//					[QueryEvent.QUERY_MAIN_TYPES_RESPONSE, queryMainTypesHandler],
 					[QueryEvent.QUERY_TYPES_AND_DETAIL_LIST_RESPONSE, queryTypesAndDetailListHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
@@ -145,14 +142,8 @@
 			private function queryTypesAndDetailList():void
 			{
 				clearLastQuery();
-//				if (scrollButtonPanel.currentButtonItem == null && StringUtil.trim(searchInput.text).length == 0 ) {
-//					QueryInfoLabel.text = "请选择查询类型或输入查询对象名称";
-//					return;
-//				}
-//				var selectItem:ButtonItem = scrollButtonPanel.currentButtonItem;
 				var typeIds:Array = getTypeIds();
 				var mapQueryVO:MapQueryVO = new MapQueryVO();
-//				mapQueryVO.mainType = selectItem.id;
 				if (StringUtil.trim(searchInput.text).length != 0) {
 					mapQueryVO.keyword = StringUtil.trim(searchInput.text);
 				}
@@ -417,36 +408,20 @@
 				}
 			}
 			
-			//模块增加时触发
-			protected function addWidget(event:BaseWidgetEvent):void
-			{
-				//如果已经创建了图标，则显示。
-				FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
-				FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURETEXT_LAYER, modelLocator.mapCtrl);
-				
-				if(this.visible==false)
-				{
-					this.visible = true;
-					this.includeInLayout = true;
-				}
-			}
-			
-			//模块移除时触发
+			//模块移除时触发,清除查询结果
 			protected function removeWidget(event:BaseWidgetEvent):void
 			{
-				//如果已经创建了图标，则隐藏，模块切回之后，再显示。
-				var marksLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.LOCATION_FEATURE_LAYER) as FeaturesLayerEx;
-				if(marksLayer != null && marksLayer.numFeatures > 0)
-				{
-					marksLayer.visible = false;
-				}
-				
-				var textsLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.LOCATION_FEATURETEXT_LAYER) as FeaturesLayerEx;
-				if(textsLayer != null && textsLayer.numFeatures > 0)
-				{
-					textsLayer.visible = false;
-				}
+				//清除查询条件，初始化界面面板
+				clearLastQuery();
 			}
+			
+			protected function widgetAddCompleteHandler(event:BaseWidgetEvent):void
+			{
+				//清除查询条件，重新查询 
+				conditionGroup.removeAllElements();
+				queryTypesAndDetailList();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
