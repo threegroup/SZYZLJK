@@ -63,5 +63,8 @@ package sm.wegis.szy.events
 		
 		/**水质评价响应查询单个要素，监测数据查询*/
 		public static const QUERY_STATION_EVALUTION_INFO_RESPONSE:String = "QueryStationEvalutionInfoResponse";
+		
+		/**隐藏查询右侧面板*/
+		public static const HIDE_WATER_EVALUTION_WIDGET:String = "HideWaterEvalutionWidget";
 	}
 }

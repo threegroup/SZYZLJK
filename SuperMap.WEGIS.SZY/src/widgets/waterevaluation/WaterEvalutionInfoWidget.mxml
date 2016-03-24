@@ -6,13 +6,15 @@
 			   xmlns:line="sm.wegis.szy.components.line.*"
 			   xmlns:drodown="sm.wegis.szy.components.drodown.*"
 			   width="100%" 
-			   creationComplete="initWidget(event)">
+			   creationComplete="initWidget(event)"
+			   WidgetRemove="widgetRemoveHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.web.core.Point2D;
 			import com.supermap.wegis.common.components.checkComboBox.CheckBoxSelectEvent;
+			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
 			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 			import com.supermap.wegis.common.core.hashTable.HashTable;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
@@ -63,8 +65,8 @@
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				/**事件列表*/
 				var eList:ArrayCollection = new ArrayCollection([
-					[QueryEvent.QUERY_STATION_REAL_INFO_RESPONSE, querySingleObjectInfoResponseHandler],//响应查询结果
-					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],//隐藏容器面板
+					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler],//响应查询结果
+					[QueryEvent.HIDE_WATER_EVALUTION_WIDGET, clearSystemHandler],//隐藏容器面板
 				]);
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
 				
@@ -122,7 +124,7 @@
 			}
 			
 			/**响应查询结果*/
-			private function querySingleObjectInfoResponseHandler(event:QueryEvent):void
+			private function queryStationEvalutionInfoResponseHandler(event:QueryEvent):void
 			{
 				var resultData:Object = event.data;
 				var gridColumnInfo:GridColumnInfo;
@@ -257,26 +259,6 @@
 				resultGrid.columns.addItemAt(column, 0);
 			}
 			
-			//显示或隐藏数据展示
-			override public function set visible(value:Boolean):void
-			{
-				if(resultGrid.dataProvider != null)
-				{
-					this.currentState = SHOW;
-				}
-				else
-				{
-					this.currentState = HIDE;
-				}
-				
-				var map:MapCtrl = modelLocator.mapCtrl;
-				if(value == false)
-				{
-					map.infoWindow.content = null;
-					map.infoWindow.hide();
-				}
-			}
-			
 			//点击对象表格行，定位要素
 			protected function resultGrid_gridClickHandler(event:GridEvent):void
 			{
@@ -337,6 +319,12 @@
 			{
 				createGridColumn();
 			}
+			
+			protected function widgetRemoveHandler(event:BaseWidgetEvent):void
+			{
+				resetUI();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
