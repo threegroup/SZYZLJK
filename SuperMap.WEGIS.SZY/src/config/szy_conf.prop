@@ -19,8 +19,8 @@ copyRight=2015  版权所有：中国水利水电科学研究院  技术支持�
 
 #========服务地址配置============#
 #WebServices地址
-#wsdl=http://7.77.55.56:8080/waterEnv/services/query?wsdl
-wsdl=http://192.168.117.199:8080/waterEnv/services/query?wsdl
+wsdl=http://7.77.55.56:8080/waterEnv/services/query?wsdl
+#wsdl=http://192.168.117.199:8080/waterEnv/services/query?wsdl
 
 #天地图服务地址
 TDTVector=http://tdt.mwr.gov.cn:81/slb_c/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=slb&STYLE=default&TILEMATRIXSET=c&FORMAT=tiles&OFFLEVEL=7
