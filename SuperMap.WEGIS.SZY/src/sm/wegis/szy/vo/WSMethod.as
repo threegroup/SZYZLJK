@@ -29,6 +29,14 @@ package sm.wegis.szy.vo
 		/**--------------水质评价查询接口------------*/
 		/**查询水质评价模型点列表*/
 		public static const GetSZPJDefaultObj:String = "getSZPJDefaultObj";
+		/**查询水质评价河流列表*/
+		public static const GetSZPJRiverList:String = "getSZPJRiverList";
+		/**查询水质评价河流年份列表*/
+		public static const GetSZPJYearList:String = "getSZPJYearList";
+		/**查询水质评价周期列表*/
+		public static const GetSZPJPeriodList:String = "getSZPJPeriodList";
+		
+		
 		
 	}
 }

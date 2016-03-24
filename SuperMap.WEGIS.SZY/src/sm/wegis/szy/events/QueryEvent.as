@@ -44,10 +44,22 @@ package sm.wegis.szy.events
 		/**查询默认断面，测站，功能区点*/
 		public static  const QUERY_DEFAULT_POINT:String = "QueryDefaultPoint";
 		public static  const QUERY_DEFAULT_POINT_RESPONSE:String = "QueryDefaultPointResponse";
-		
+
 		/**----------------------水质评价----------------*/
 		/**水质评价查询单个要素，监测数据*/
 		public static const QUERY_STATION_EVALUTION_INFO:String = "QueryStationEvalutionInfo"
+		
+		/**查询河流列表*/
+		public static  const QUERY_RIVER_LIST:String = "QueryRiverList";
+		public static  const QUERY_RIVER_LIST_RESPONSE:String = "QueryRiverListResponse";
+		
+		/**查询河流评价年份列表*/
+		public static  const QUERY_RIVER_YEAR:String = "QueryRiverYear";
+		public static  const QUERY_RIVER_YEAR_RESPONSE:String = "QueryRiverYearResponse";
+		
+		/**查询河流评价周期列表*/
+		public static  const QUERY_RIVER_PERIOD:String = "QueryRiverPeriod";
+		public static  const QUERY_RIVER_PERIOD_RESPONSE:String = "QueryRiverPeriodResponse";
 		
 		/**水质评价响应查询单个要素，监测数据查询*/
 		public static const QUERY_STATION_EVALUTION_INFO_RESPONSE:String = "QueryStationEvalutionInfoResponse";
