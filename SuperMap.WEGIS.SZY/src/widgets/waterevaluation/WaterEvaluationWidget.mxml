@@ -21,6 +21,7 @@
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.core.baseclass.DottedLineClass;
+			import sm.wegis.szy.core.utils.DataUtils;
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
@@ -226,6 +227,8 @@
 					return;
 				
 				con.removeAllElements();
+				con.setStyle("paddingBottom",5);
+				con.setStyle("paddingTop",5);
 				
 				//生成常用查询条件
 				if(data.hasOwnProperty("nodeListSelect") 
@@ -401,25 +404,21 @@
 				queryEvent.dispatch();
 			}
 			
-			//查明河流评价年份
-			private function queryRiverYear(riverList:Array):void
-			{
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_YEAR);
-				if(riverList != null && riverList.length >0)
-				{
-					queryEvent.data = riverList.join(",");
-				}
-				else
-				{
-					queryEvent.data = null;
-				}
-				queryEvent.dispatch();
-			}
-			
 			//查明河流评价周期列表
 			private function queryRiverPeriod():void
 			{
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD);
+				
+				var tempData:Object = {};
+				//评价河流IDs
+				tempData["searchIds"] = getQueryParam(searchRiverContainer).join(",");
+				//评价年份
+				tempData["searchYear"] = getQueryParam(searchYearContainer)[0];
+				//评价类型
+				tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
+					
+				queryEvent.data = tempData;	
+				
 				queryEvent.dispatch();
 			}
 			
@@ -437,9 +436,6 @@
 							decodeRiverData(riverListData,[targetList]);
 						
 						decodeUI(searchRiverContainer, searchRiverPanelHeight, riverListData);
-						
-						//默认选中第一条河流
-						queryRiverYear(getQueryParam(searchRiverContainer));
 					}
 				}
 			}
@@ -453,9 +449,9 @@
 					if(targetList != null)
 					{
 						if(targetList is Array)
-							decodeYearData(yearListData, targetList as Array);
+							decodeYearData(yearListData, DataUtils.FieldSort(new ArrayCollection(targetList as Array), "year", true, true).toArray());
 						else
-							decodeYearData(yearListData,[targetList]);
+							decodeYearData(yearListData,DataUtils.FieldSort(new ArrayCollection([targetList]), "year", true, true).toArray());
 						
 						//此处派发默认选中项目评价年份
 						decodeUI(searchYearContainer, searchYearPanelHeight, yearListData);
@@ -473,6 +469,14 @@
 			{
 				var result:Object = event.data;
 			}
+			
+			//查询水质评价周期列表
+			protected function searchButton_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				queryRiverPeriod();
+			}
+
 			
 			//查询默认点成功
 			public function queryDefaultPointResponseHandler(event:CairngormEvent):void
@@ -552,7 +556,6 @@
 			{
 				queryDefaultStation();
 			}
-			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -566,26 +569,27 @@
 			<s:Label text="水质评价条件设置：" width="100%" height="30" 
 					 backgroundColor="#3385FF" fontSize="14" color="#FFFFFF"/>
 		</s:HGroup>
-		<s:Line width="100%">
+		<!--<s:Line width="100%">
 			<s:stroke>
 				<s:SolidColorStroke color="#ACAB96" weight="1"/>
 			</s:stroke>
-		</s:Line>
-		<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}" paddingBottom="5" paddingTop="5">  
+		</s:Line>-->
+		<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
 		</s:VGroup>
 		<s:Line width="100%">
 			<s:stroke>
 				<s:SolidColorStroke color="#ACAB96" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:VGroup id="searchYearContainer" width="100%" maxHeight="{searchYearPanelHeight}" paddingBottom="5" paddingTop="5">
+		<s:VGroup id="searchYearContainer" 
+				  width="100%" maxHeight="{searchYearPanelHeight}">
 		</s:VGroup>
 		<s:Line width="100%">
 			<s:stroke>
 				<s:SolidColorStroke color="#ACAB96" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:VGroup id="searchTypeContainer"  width="100%" paddingBottom="5" paddingTop="5">
+		<s:VGroup id="searchTypeContainer"  width="100%">
 		</s:VGroup>
 		<s:Line width="100%">
 			<s:stroke>
@@ -595,8 +599,8 @@
 		<s:VGroup id="periodContainer" width="100%" maxHeight="{searchPeriodPanelHeight}" gap="3"
 				  horizontalAlign="center" verticalAlign="middle" paddingTop="5">
 			<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:Button width="60" height="30" buttonMode="true" label="查询" 
-						  styleName="SubmitRegisterStyle"/>
+				<s:Button id="searchButton" width="60" height="30" buttonMode="true" label="查询" 
+						  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
 				<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000" includeInLayout="false" visible="false"/>
 			</s:HGroup>
 			<s:List id="periodList" width="100%" height="100%" borderVisible="false"

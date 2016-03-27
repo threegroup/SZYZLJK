@@ -35,6 +35,8 @@ package sm.wegis.szy.vo
 		public static const GetSZPJYearList:String = "getSZPJYearList";
 		/**查询水质评价周期列表*/
 		public static const GetSZPJPeriodList:String = "getSZPJPeriodList";
+		/**查询水质评价周期内容信息*/
+		public static const GetSZPJRiverLevel:String = "getSZPJRiverLevel";
 		
 		
 		
