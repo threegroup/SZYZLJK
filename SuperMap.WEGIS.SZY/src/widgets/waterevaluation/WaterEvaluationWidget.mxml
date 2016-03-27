@@ -4,7 +4,9 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 			   width="100%" height="100%"
-			   creationComplete="creationCompleteHandler(event)">
+			   creationComplete="creationCompleteHandler(event)"
+			   WidgetAddComplete="this_WidgetAddCompleteHandler(event)"
+			   WidgetRemove="this_WidgetRemoveHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
@@ -165,7 +167,6 @@
 				}
 				
 				initEventListener();
-				queryDefaultStation();
 				queryRiverList();
 				
 				//初始化评价类型列表
@@ -470,7 +471,7 @@
 			
 			private function queryStationEvalutionInfoResponseHandler(event:CairngormEvent):void
 			{
-				
+				var result:Object = event.data;
 			}
 			
 			//查询默认点成功
@@ -529,6 +530,29 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DEFAULT_POINT);
 				queryEvent.dispatch();
 			}	
+			
+			//清除当前菜单操作结果
+			private function clearLastQuery():void
+			{
+				//清空对象列表
+				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+				featuresLayer.clear();
+				//隐藏右下对象监测数据面板
+				var waterWatchEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_EVALUTION_WIDGET);
+				waterWatchEvent.dispatch();
+				modelLocator.mapCtrl.infoWindow.hide();
+			}
+			
+			protected function this_WidgetRemoveHandler(event:BaseWidgetEvent):void
+			{
+				clearLastQuery();
+			}
+			
+			protected function this_WidgetAddCompleteHandler(event:BaseWidgetEvent):void
+			{
+				queryDefaultStation();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
