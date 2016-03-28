@@ -4,7 +4,9 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 			   width="100%" height="100%"
-			   creationComplete="creationCompleteHandler(event)">
+			   creationComplete="creationCompleteHandler(event)"
+			   WidgetAddComplete="widgetAddCompleteHandler(event)"
+			   WidgetRemove="widgetRemoveHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
@@ -384,7 +386,6 @@
 					[QueryEvent.QUERY_RIVER_YEAR_RESPONSE, queryRiverYearResponseHandler],//评价年份
 					[QueryEvent.QUERY_RIVER_PERIOD_RESPONSE, queryRiverPeriodResponseHandler],//评价周期
 					[QueryEvent.QUERY_DEFAULT_POINT_RESPONSE, queryDefaultPointResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
-					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler], // 获取对象信息和下方面板信息
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
@@ -468,11 +469,6 @@
 				
 			}
 			
-			private function queryStationEvalutionInfoResponseHandler(event:CairngormEvent):void
-			{
-				
-			}
-			
 			//查询默认点成功
 			public function queryDefaultPointResponseHandler(event:CairngormEvent):void
 			{
@@ -493,12 +489,20 @@
 							item.y = Number(positions[1]);
 							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
 							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle, item);
+							feature.id = item.id;
 							feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
 							feature.buttonMode = true;
 							featuresLayer.addFeature(feature);
 						}
 					}
 				}
+			}
+			
+			private function showFeatureDetail(feature:Feature):void
+			{
+				var queryObjectEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_OBJECT_DETAIL);
+				queryObjectEvent.data = feature;
+				queryObjectEvent.dispatch();
 			}
 			
 			private function featureMouseClickHandler(event:MouseEvent):void
@@ -509,6 +513,8 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO);
 				queryEvent.data = requestParam;
 				queryEvent.dispatch();
+				
+				showFeatureDetail(feature);
 			}
 			
 			//清除
@@ -529,6 +535,22 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DEFAULT_POINT);
 				queryEvent.dispatch();
 			}	
+			
+			protected function widgetRemoveHandler(event:BaseWidgetEvent):void
+			{
+				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+				featuresLayer.clear();
+			}
+			
+			//初始化查询
+			protected function widgetAddCompleteHandler(event:BaseWidgetEvent):void
+			{
+				queryDefaultStation();
+				queryRiverList();
+				//初始化评价类型列表
+				decodeUI(searchTypeContainer, searchTypePanelHeight, searchTypeData);
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
