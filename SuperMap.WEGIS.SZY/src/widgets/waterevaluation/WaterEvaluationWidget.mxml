@@ -12,8 +12,10 @@
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.geometry.GeoPoint;
+			import com.supermap.web.core.styles.PictureMarkerStyle;
 			import com.supermap.web.core.styles.PredefinedMarkerStyle;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
 			import mx.collections.ArrayCollection;
@@ -480,7 +482,10 @@
 					featuresLayer.clear();
 					//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
 					var predefinedMarkerStyle:PredefinedMarkerStyle = new PredefinedMarkerStyle();
-					predefinedMarkerStyle.size = 10;
+					predefinedMarkerStyle.size = 7;
+//					var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
+//					pictureMarkerStyle.source = ResourceManagerEx.FindResource("station").cls;
+					
 					for each(var item:Object in targetList) {
 						var positionStr:String = item.location;
 						if (positionStr != null && positionStr.split(",").length == 2) {
@@ -490,6 +495,7 @@
 							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
 							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle, item);
 							feature.id = item.id;
+							feature.toolTip = item.name;
 							feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
 							feature.buttonMode = true;
 							featuresLayer.addFeature(feature);

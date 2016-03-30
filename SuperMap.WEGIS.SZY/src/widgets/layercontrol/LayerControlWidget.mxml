@@ -17,7 +17,6 @@
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.events.MapLayerEvent;
-			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.vo.LayerInfo;
 			

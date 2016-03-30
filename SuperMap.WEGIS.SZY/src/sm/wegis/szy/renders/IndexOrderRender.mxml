@@ -10,5 +10,5 @@
 			}
 		]]>
 	</fx:Script>
-	<s:Label id="lblData" top="9" left="7"/>
+	<s:Label id="lblData" top="9" left="7" width="100%" textAlign="center"/>
 </s:GridItemRenderer>

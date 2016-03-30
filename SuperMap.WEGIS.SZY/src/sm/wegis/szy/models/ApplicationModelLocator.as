@@ -15,6 +15,34 @@ package sm.wegis.szy.models
 	{
 		private static var modelLocator:ApplicationModelLocator;
 		
+		/**二维地图控件*/
+		public var mapCtrl:MapCtrl;
+		
+		/**系统信息*/
+		public var systemInfo:SystemVO;
+		
+		/**系统工具条视图信息*/
+		public var toolInfo:ToolVO =new ToolVO();
+		
+		/**系统菜单视图信息*/
+		public var menuInfo:MenuVO = new MenuVO();
+		
+		private var _baseMapInfo:BaseMapVO;
+		
+		/**用户信息*/
+		public var userVo:UserVO = new UserVO();
+		
+		/**需要特殊处理的参数*/
+		public var specialWidgetInfo:SpecialWidgetVO = new SpecialWidgetVO();
+		/**系统底图信息*/
+		public function get baseMapInfo():BaseMapVO
+		{
+			if (_baseMapInfo == null) {
+				_baseMapInfo = new BaseMapVO();
+			}
+			return _baseMapInfo;
+		}
+
 		public static function getInstance():ApplicationModelLocator
 		{
 			if(modelLocator == null)
@@ -32,26 +60,5 @@ package sm.wegis.szy.models
 				throw new Error("不能通过该方式创建类型的实例，请采用静态方法getInstance()初始化对象！");
 			}
 		}	
-		
-		/**二维地图控件*/
-		public var mapCtrl:MapCtrl;
-		
-		/**系统信息*/
-		public var systemInfo:SystemVO;
-		
-		/**系统工具条视图信息*/
-		public var toolInfo:ToolVO =new ToolVO();
-		
-		/**系统菜单视图信息*/
-		public var menuInfo:MenuVO = new MenuVO();
-		
-		/**系统底图信息*/
-		public var baseMapInfo:BaseMapVO;
-		
-		/**用户信息*/
-		public var userVo:UserVO = new UserVO();
-		
-		/**需要特殊处理的参数*/
-		public var specialWidgetInfo:SpecialWidgetVO = new SpecialWidgetVO();
 	}
 }

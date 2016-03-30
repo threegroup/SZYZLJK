@@ -30,9 +30,7 @@
 			
 			private function dispatchBaseMapChangeEvent():void
 			{
-				var baseMapVO:BaseMapVO = new BaseMapVO();
-				baseMapVO.baseMapState = this.currentState;
-				modelLocator.systemInfo.baseMap = baseMapVO;
+				modelLocator.baseMapInfo.baseMapState = this.currentState;
 				
 				var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE);
 				mapLayerEvent.dispatch();

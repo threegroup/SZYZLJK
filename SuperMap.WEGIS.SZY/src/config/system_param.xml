@@ -2,11 +2,13 @@
 <system>
 	<subSystem name="taizihe">
 		<viewBounds>121.7404, 40.4814, 125.3412, 41.8437</viewBounds>
+		<baseVectorMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/basemap</baseVectorMapUrl>
+        <baseImageMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/basemap</baseImageMapUrl>
 		<vectorMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_V</vectorMapUrl>
 		<rasterMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/SZY_R</rasterMapUrl>
 		<!-- <maskVectorMapUrl>http://localhost:8080/iserver/services/map-SZY-Mask/rest/maps/SZY_V</maskVectorMapUrl> -->
 		<!-- <maskRasterMapUrl>http://localhost:8080/iserver/services/map-SZY-Mask/rest/maps/SZY_R</maskRasterMapUrl> -->
-		<baseLayerId layerIds="0,1,2,3,23,24,25,32,45,46"/>
+		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50"/>
 		<themeLayerId>
 			<layer label="水库"  selected="true" layerIds="9,10,11,12,28,29,43,44" />
 			<layer label="河流"  selected="true" 
@@ -16,6 +18,7 @@
 			<layer label="拦河坝"  selected="true" layerIds="5,27" />
 			<layer label="排污口"  selected="true" layerIds="6,26" />
 			<layer label="高程线"  selected="true" layerIds="4,42" />
+			<layer label="路网"  selected="false" layerIds="45,46,47,48" />
 		</themeLayerId>
 	</subSystem>
     <subSystem name="yuqiao">

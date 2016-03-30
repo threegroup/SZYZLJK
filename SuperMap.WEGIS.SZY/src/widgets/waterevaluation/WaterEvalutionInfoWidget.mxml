@@ -263,7 +263,7 @@
 		<s:State name="hide"/>
 		<s:State name="show"/>
 	</ns:states>
-	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" title="多个指标测量值列表" bottom.show="5" bottom.hide="0"
+	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" title="监测指标" bottom.show="5" bottom.hide="0"
 			 height.hide="0">
 		<s:controlBarContent>
 			<s:Image id="stateImage" width="16" height="16" buttonMode="true" 
@@ -275,7 +275,7 @@
 					gridClick="resultGrid_gridClickHandler(event)" sortableColumns="false">
 			<s:columns>
 				<s:ArrayList>
-					<s:GridColumn headerText="序号" itemRenderer="sm.wegis.szy.renders.IndexOrderRender"/>
+					<s:GridColumn headerText="序号" width="50" itemRenderer="sm.wegis.szy.renders.IndexOrderRender"/>
 					<s:GridColumn headerText="指标名称"/>
 					<s:GridColumn headerText="测量值"/>
 					<s:GridColumn headerText="测量时间"/>

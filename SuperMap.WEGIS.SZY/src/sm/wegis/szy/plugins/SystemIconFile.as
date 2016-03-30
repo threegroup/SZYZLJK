@@ -1016,6 +1016,12 @@ package sm.wegis.szy.plugins
 		private static var ydsCls:Class;
 		private static var ydsKey:String = "yds";
 		ResourceManagerEx.RegisterResource("",ydsKey, ydsCls);
+		
+		
+		[Embed(source="assets/image/station.png")]
+		private static var stationCls:Class;
+		private static var stationKey:String = "station";
+		ResourceManagerEx.RegisterResource("",stationKey, stationCls);
 
 		
 		public function SystemIconFile()
