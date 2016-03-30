@@ -21,7 +21,6 @@
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.adobe.utils.StringUtil;
-			import com.supermap.web.core.Rectangle2D;
 			import com.supermap.wegis.common.components.events.MenuEventEx;
 			import com.supermap.wegis.common.components.events.ScrollPanelEvent;
 			import com.supermap.wegis.common.components.events.ToolEvent;
@@ -31,7 +30,6 @@
 			import com.supermap.wegis.common.core.widget.WidgetManager;
 			
 			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			

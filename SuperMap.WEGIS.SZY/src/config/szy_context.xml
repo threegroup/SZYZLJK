@@ -156,6 +156,8 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryStationEvalutionInfoCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryWaterFunctionRegionCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -190,6 +192,7 @@
 				<property name="QueryRiverYear" value="QueryRiverYearCommand" />
 				<property name="QueryRiverPeriod" value="QueryRiverPeriodCommand" />
 				<property name="QueryStationEvalutionInfo" value="QueryStationEvalutionInfoCommand" />
+				<property name="QueryWaterFunctionRegion" value="QueryWaterFunctionRegionCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

@@ -420,6 +420,10 @@
 				queryEvent.data = tempData;	
 				
 				queryEvent.dispatch();
+				
+				//水功能区水质查询
+				var queryWaterFunEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
+				queryWaterFunEvent.dispatch();
 			}
 			
 			//查询评价河流列表响应
