@@ -1,146 +1,613 @@
-package sm.wegis.szy.commands
-{
-	import com.adobe.cairngorm.control.CairngormEvent;
-	import com.supermap.web.core.Feature;
-	import com.supermap.web.core.geometry.GeoPoint;
-	import com.supermap.web.core.styles.PredefinedLineStyle;
-	import com.supermap.web.core.styles.PredefinedMarkerStyle;
-	import com.supermap.web.core.styles.TextStyle;
-	import com.supermap.web.iServerJava6R.FilterParameter;
-	import com.supermap.web.iServerJava6R.Recordset;
-	import com.supermap.web.iServerJava6R.queryServices.QueryBySQLParameters;
-	import com.supermap.web.iServerJava6R.queryServices.QueryBySQLService;
-	import com.supermap.web.iServerJava6R.queryServices.QueryResult;
-	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
-	import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
-	
-	import flash.display.Sprite;
-	import flash.events.MouseEvent;
-	import flash.filters.GlowFilter;
-	
-	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
-	import mx.rpc.AsyncResponder;
-	
-	import sm.wegis.szy.core.baseclass.CommandBase;
-	import sm.wegis.szy.utils.ColorUtils;
-	import sm.wegis.szy.vo.ConstVO;
-	
-	public class QueryWaterFunctionRegionCommand extends CommandBase
-	{
-		override public function execute(event:CairngormEvent):void
-		{
-			super.execute(event);
-			QueryWaterFunctionHandle("http://localhost:8090/iserver/services/map-SZYNew/rest/maps/水功能区",
-				"水功能区汇总@断面",['OBJECTID', '水功能区名']);
-		}
-		
-		//查询
-		private function QueryWaterFunctionHandle(layerUrl:String, layerName:String, fields:Array):void 
-		{
-			//定义 SQL 查询参数
-			var queryBySQLParam:QueryBySQLParameters = new QueryBySQLParameters();
-			var filter:FilterParameter = new FilterParameter();
-			filter.name = layerName;
-			filter.fields = fields;
-			queryBySQLParam.filterParameters = [filter];
+<?xml version="1.0" encoding="utf-8"?>
+<ns:WidgetBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
+			   width="100%" height="100%"
+			   creationComplete="creationCompleteHandler(event)"
+			   WidgetAddComplete="this_WidgetAddCompleteHandler(event)"
+			   WidgetRemove="this_WidgetRemoveHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.supermap.web.core.Feature;
+			import com.supermap.web.core.geometry.GeoPoint;
+			import com.supermap.web.core.styles.PredefinedMarkerStyle;
+			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
+			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
-			/* 执行 SQL 查询 */
-			var queryByDistanceService:QueryBySQLService = new QueryBySQLService(layerUrl);
-			queryByDistanceService.processAsync(queryBySQLParam, new AsyncResponder(displayQueryRecords, faultHandle, null));
-		}	 
-		
-		//显示查询结果
-		private function displayQueryRecords(queryResult:QueryResult, mark:Object = null):void
-		{
-			if(queryResult.recordsets != null && queryResult.recordsets.length != 0)
-			{
-				var recordSets:Array = queryResult.recordsets;
-				if(recordSets.length != 0)
-				{
-					var map:MapCtrl = modelLocator.mapCtrl;
-					var featuresLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERFUNCTION_FEATURE_LAYER) as FeaturesLayerEx;
-					if (featuresLayer == null)
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.core.baseclass.DottedLineClass;
+			import sm.wegis.szy.core.utils.DataUtils;
+			import sm.wegis.szy.events.QueryEvent;
+			import sm.wegis.szy.events.SystemEvent;
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.utils.CairngormEventClass;
+			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.utils.FeatureLayerUtil;
+			import sm.wegis.szy.vo.ConstVO;
+			
+			import spark.components.Group;
+			
+			import widgets.waterevaluation.Items.CheckBoxGroup;
+			import widgets.waterevaluation.Items.CommonGroup;
+			import widgets.waterevaluation.Items.RadioButtonGroup;
+			import widgets.waterevaluation.Items.TextGroup;
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
+			[Bindable]
+			/**评价条件面板高度*/
+			private var searchRiverPanelHeight:Number = 0;
+			
+			[Bindable]
+			/**评价年份面板高度*/
+			private var searchYearPanelHeight:Number = 0;
+			
+			[Bindable]
+			/**评价类型面板高度*/
+			private var searchTypePanelHeight:Number = 0;
+			
+			[Bindable]
+			/**评价周期面板高度*/
+			private var searchPeriodPanelHeight:Number = 0;
+			
+			/**默认显示字数*/
+			private const LENGTH:Number = 5;
+			
+			/**复选*/
+			private static const CHECKBOX:String ="0";      
+			/**单选*/
+			private static const RADIOBUTTON:String ="1";  
+			/**文本*/
+			private static const TEXT:String ="2"; 
+			
+			/**评价类型*/
+			private var searchTypeData:Object = {
+				"nodeListSelect": [
 					{
-						
-						featuresLayer = new FeaturesLayerEx();
-						featuresLayer.isPanEnableOnFeature = true;
-						featuresLayer.id = ConstVO.WATERFUNCTION_FEATURE_LAYER;
-						featuresLayer.minVisibleResolution = map.resolutions[map.resolutions.length-1];
-						featuresLayer.maxVisibleResolution = map.resolutions[15];
-						modelLocator.mapCtrl.addLayer(featuresLayer);
-					}
-					
-					var featuresTextLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERFUNCTION_FEATURETEXT_LAYER) as FeaturesLayerEx;
-					if (featuresTextLayer == null)
-					{
-						featuresTextLayer = new FeaturesLayerEx();
-						featuresTextLayer.isPanEnableOnFeature = true;
-						featuresTextLayer.id = ConstVO.WATERFUNCTION_FEATURETEXT_LAYER;
-						featuresTextLayer.minVisibleResolution = map.resolutions[map.resolutions.length-1];
-						featuresTextLayer.maxVisibleResolution = map.resolutions[15];
-						modelLocator.mapCtrl.addLayer(featuresTextLayer);
-					}
-					
-					var glowFilter:GlowFilter = new GlowFilter();
-					glowFilter.color = 0xffff00;
-					glowFilter.quality = 0.5;
-					glowFilter.inner = false;
-					for each(var recordSet:Recordset in recordSets)
-					{
-						if (recordSet.features != null && recordSet.features.length != 0)
-						{
-							for each (var feature:Feature in recordSet.features)
+						"hasCustom": "1",
+						"initialDisplay": "1",
+						"isSelect": "1",
+						"isShow": "1",
+						"optionList": [
 							{
-								feature.addEventListener(MouseEvent.ROLL_OVER,showToolTip);
-								feature.addEventListener(MouseEvent.ROLL_OUT,hideToolTip);
-								feature.addEventListener(MouseEvent.CLICK,showDetailInfo);
-								feature.buttonMode = true;
-								feature.style = new PredefinedLineStyle(PredefinedLineStyle.JOIN_ROUND, Math.random()*0xff0000,0.9, 5);
-								featuresLayer.addFeature(feature);
-								
-								/*var geoPoint:GeoPoint = new GeoPoint(feature.geometry.center.x,feature.geometry.center.y);
-								var textFeature:Feature = new Feature(geoPoint);
-								var textStyle:TextStyle = new TextStyle(feature.attributes["OBJECTID"],0xFF0000);
-								textStyle.yOffset = 0;
-								textFeature.addEventListener(MouseEvent.CLICK,showDetailInfo);
-								textFeature.style = textStyle;
-								textFeature.buttonMode = true;
-								textFeature.autoMoveToTop = true;
-								textFeature.attributes = feature.attributes;
-								textFeature.filters = [glowFilter];
-								featuresTextLayer.addFeature(textFeature);*/
+								"dicOrder": "周",
+								"optionName": "周",
+								"optionValue": "week"
+							},
+							{
+								"dicOrder": "旬",
+								"optionName": "旬",
+								"optionValue": "tenDays"
+							},
+							{
+								"dicOrder": "月",
+								"optionName": "月",
+								"optionValue": "month"
+							},
+							{
+								"dicOrder": "季度",
+								"optionName": "季度",
+								"optionValue": "quarterly"
+							},
+							{
+								"dicOrder": "年",
+								"optionName": "年",
+								"optionValue": "fengShui"
+							},
+							{
+								"dicOrder": "丰水期 ",
+								"optionName": "丰水期 ",
+								"optionValue": "fengShui"
+							},
+							{
+								"dicOrder": "枯水期 ",
+								"optionName": "枯水期 ",
+								"optionValue": "kuShui"
+							},
+							{
+								"dicOrder": "平水期",
+								"optionName": "平水期",
+								"optionValue": "pingShui"
+							}],
+						"orderIndex": "3",
+						"propertyDisplayType": "1",
+						"propertyType": "3",
+						"propertyId": "",
+						"propertyName": "评价周期"
+					}]
+			};
+			
+			/**评价河流*/
+			private var riverListData:Object = {
+				"nodeListSelect": [
+					{
+						"initialDisplay": "1",
+						"isSelect": "1",
+						"isShow": "1",
+						"optionList":[],
+						"orderIndex": "1",
+						"propertyDisplayType": "0",
+						"propertyId": "",
+						"propertyName": "评价河流",
+						"propertyType": "1",
+						"surveyFields": "",
+						"surveyTable": ""
+					}]
+			};
+			
+			/**评价年份*/
+			private var yearListData:Object = {
+				"nodeListSelect": [
+					{
+						"initialDisplay": "1",
+						"isSelect": "1",
+						"isShow": "1",
+						"optionList": [],
+						"orderIndex": "2",
+						"propertyDisplayType": "1",
+						"propertyId": "",
+						"propertyName": "评价年份"
+					}]
+			};
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				//计算条件面板高度
+				if(stage != null)
+				{
+					searchTypePanelHeight = 200;
+					searchYearPanelHeight = 100;
+					searchPeriodPanelHeight = 200;
+					searchRiverPanelHeight = stage.stageHeight - 120 
+						- searchYearPanelHeight 
+						- searchTypePanelHeight 
+						- searchPeriodPanelHeight;
+				}
+				
+				initEventListener();
+				queryRiverList();
+				
+				//初始化评价类型列表
+				decodeUI(searchTypeContainer, searchTypePanelHeight, searchTypeData);
+			}
+			
+			/**清空条件内容*/
+			public function clear():void
+			{
+				this.searchRiverContainer.removeAllElements();
+			}
+			
+			/**根据需要组装河流数据*/
+			private function decodeRiverData(targetData:Object, data:Array=null):void
+			{
+				targetData["nodeListSelect"][0]["optionList"]=[];
+				if(data == null)
+					return;
+				
+				if(data != null && data.length >0)
+				{
+					for each (var item:Object in data) 
+					{
+						var tf:Object = {};
+						tf["dicOrder"] = item["River_name"];
+						tf["optionName"] = item["River_name"];
+						tf["optionValue"] = item["River_id"];
+						targetData["nodeListSelect"][0]["optionList"].push(tf);
+					}
+				}
+			}
+			
+			/**根据需要组装河流年份数据*/
+			private function decodeYearData(targetData:Object, data:Array=null):void
+			{
+				targetData["nodeListSelect"][0]["optionList"]=[];
+				if(data == null)
+					return;
+				
+				if(data != null && data.length >0)
+				{
+					for each (var item:Object in data) 
+					{
+						var tf:Object = {};
+						tf["dicOrder"] = item["year"];
+						tf["optionName"] = item["year"];
+						tf["optionValue"] = item["year"];
+						targetData["nodeListSelect"][0]["optionList"].push(tf);
+					}
+				}
+			}
+			
+			//解释界面数据 ,data包含：显示类型,属性类型,预定义列表信息
+			private function decodeUI(con:Group, maxContentHeight:Number, data:Object=null):void
+			{
+				if(data == null)
+					return;
+				
+				con.removeAllElements();
+				con.setStyle("paddingBottom",5);
+				con.setStyle("paddingTop",5);
+				
+				//生成常用查询条件
+				if(data.hasOwnProperty("nodeListSelect") 
+					&& data["nodeListSelect"] is Array 
+					&& (data["nodeListSelect"] as Array).length >0)
+				{
+					var tempArr:Array = data["nodeListSelect"];
+					//格式化条件组名
+					tempArr = formatData(tempArr, "propertyName", false);
+					
+					//遍历数组，生成界面
+					for (var i:int = 0; i < tempArr.length; i++) 
+					{
+						var item:Object = tempArr[i];
+						
+						//格式化预定义条件值
+						if(item != null && item.hasOwnProperty("optionList")
+							&& item["optionList"] is Array && (item["optionList"] as Array).length > 0)
+						{
+							item["optionList"] = formatData(item["optionList"], "optionName", true);
+						}
+						
+						var gapLine:DottedLineClass = null;
+						if(i <= tempArr.length - 2)
+						{
+							gapLine = new DottedLineClass();
+							gapLine.percentWidth = 100;
+							gapLine.height = 1;
+						} 
+						
+						switch(item["propertyDisplayType"])
+						{
+							case TEXT:
+							{
+								var t:TextGroup = new TextGroup();
+								t.data = item;
+								con.addElement(t);
+								if(gapLine)
+									con.addElement(gapLine as IVisualElement);
+								break;
+							}
+							case CHECKBOX:
+							{
+								var c:CheckBoxGroup = new CheckBoxGroup();
+								c.data = item;
+								c.isFirstItemSelected = true;
+								c.maxContentHeight = maxContentHeight;
+								con.addElement(c);
+								if(gapLine)
+									con.addElement(gapLine as IVisualElement);
+								break;
+							}
+							case RADIOBUTTON:
+							{
+								var r:RadioButtonGroup = new RadioButtonGroup();
+								r.data = item;
+								r.isFirstItemSelected = true;
+								r.maxContentHeight = maxContentHeight;
+								con.addElement(r);
+								if(gapLine)
+									con.addElement(gapLine as IVisualElement);
+								break;
+							}
+							default:
+							{
+								break;
 							}
 						}
 					}
 				}
 			}
-		}
-		
-		private function showToolTip(event:MouseEvent):void
-		{
-			var feature:Feature = event.currentTarget as Feature;
-			if (feature.attributes != null && feature.attributes["OBJECTID"])
+			
+			/**获取查询参数*/
+			private function getQueryParam(con:Group):Array
 			{
-				feature.toolTip = feature.attributes["OBJECTID"];
+				var items:Array = [];
+				for(var i:int = 0;i < con.numElements; i++)
+				{
+					items.push(con.getElementAt(i));
+				}
+				var temps:Array = [];
+				if(items.length > 0)
+				{
+					for each (var item:CommonGroup in items) 
+					{
+						if(item != null)
+						{
+							if(item.isSelected)
+								temps.push(item.getContent().value);
+						}
+					}
+				}
+				return temps;
 			}
-		}
-		
-		private function hideToolTip(event:MouseEvent):void
-		{
-			var feature:Feature = event.currentTarget as Feature;
-				feature.toolTip = null;
-		}
-		
-		/**显示属性信息*/
-		private function showDetailInfo(event:MouseEvent):void
-		{
-
-		}
-		
-		private function faultHandle(object:Object, mark:Object = null):void
-		{
-			Alert.show("与服务端交互失败", "抱歉", 4, FlexGlobals.topLevelApplication as Sprite);
-		}
-	}
-}
+			
+			//常用条件字段格式化
+			public function formatData(dObj:Object, field:String="", isValue:Boolean=false):Array
+			{
+				if(dObj != null && dObj is Array)
+				{
+					var tempArray:Array = dObj as Array;
+					if(tempArray != null)
+					{
+						var len:int = tempArray.length;
+						if(len > 0)
+						{
+							for each (var item:Object in tempArray) 
+							{
+								if(item != null)
+								{
+									var value:String  = item[field]==null?" ":item[field];
+									var strLen:int = value.length;
+									if(strLen <= LENGTH)
+									{
+										if(isValue)
+										{
+											var dLen:Number = LENGTH - strLen;
+											for (var i:int = 0; i < dLen; i++) 
+											{
+												value = value + "  ";
+											} 
+											
+											item[field] = value;
+										}
+										else
+										{
+											item[field] = value + ":";
+										}
+									}
+									else
+									{
+										if(isValue)
+										{
+											item["tip"] = value;
+											item[field] = value.substr(0,LENGTH-1) + "..";
+										}
+										else
+										{
+											item["tip"] = value;
+											item[field] = value.substr(0,LENGTH-1) + ":";
+										}
+									}
+								}
+							}
+						}
+						
+						return tempArray;
+					}
+				}
+				
+				return null;
+			}
+			
+			public function initEventListener():void{
+				var eList:ArrayCollection = new ArrayCollection([
+					[QueryEvent.QUERY_RIVER_LIST_RESPONSE, queryRiverListResponseHandler],//评价河流
+					[QueryEvent.QUERY_RIVER_YEAR_RESPONSE, queryRiverYearResponseHandler],//评价年份
+					[QueryEvent.QUERY_RIVER_PERIOD_RESPONSE, queryRiverPeriodResponseHandler],//评价周期
+					[QueryEvent.QUERY_DEFAULT_POINT_RESPONSE, queryDefaultPointResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
+					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler], // 获取对象信息和下方面板信息
+					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
+					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
+				]);
+				var eventObject:CairngormEventClass = new CairngormEventClass();
+				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			
+			//查明河流列表
+			private function queryRiverList():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_LIST);
+				queryEvent.dispatch();
+			}
+			
+			//查明河流评价周期列表
+			private function queryRiverPeriod():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD);
+				
+				var tempData:Object = {};
+				//评价河流IDs
+				tempData["searchIds"] = getQueryParam(searchRiverContainer).join(",");
+				//评价年份
+				tempData["searchYear"] = getQueryParam(searchYearContainer)[0];
+				//评价类型
+				tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
+					
+				queryEvent.data = tempData;	
+				
+				queryEvent.dispatch();
+				
+				//水功能区水质查询
+				var queryWaterFunEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
+				queryWaterFunEvent.dispatch();
+			}
+			
+			//查询评价河流列表响应
+			private function queryRiverListResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					if(targetList != null)
+					{
+						if(targetList is Array)
+							decodeRiverData(riverListData, targetList as Array);
+						else
+							decodeRiverData(riverListData,[targetList]);
+						
+						decodeUI(searchRiverContainer, searchRiverPanelHeight, riverListData);
+					}
+				}
+			}
+			
+			//查询评价河流年份列表响应
+			private function queryRiverYearResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					if(targetList != null)
+					{
+						if(targetList is Array)
+							decodeYearData(yearListData, DataUtils.FieldSort(new ArrayCollection(targetList as Array), "year", true, true).toArray());
+						else
+							decodeYearData(yearListData,DataUtils.FieldSort(new ArrayCollection([targetList]), "year", true, true).toArray());
+						
+						//此处派发默认选中项目评价年份
+						decodeUI(searchYearContainer, searchYearPanelHeight, yearListData);
+					}
+				}
+			}
+			
+			//查询评价河流周期列表响应
+			private function queryRiverPeriodResponseHandler(event:CairngormEvent):void
+			{
+				
+			}
+			
+			private function queryStationEvalutionInfoResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+			}
+			
+			//查询水质评价周期列表
+			protected function searchButton_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				queryRiverPeriod();
+			}
+			
+			//查询默认点成功
+			public function queryDefaultPointResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					if (result.attributes.targetList !=null)
+						var targetList:Object = result.attributes.targetList;
+					var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+					featuresLayer.clear();
+					//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
+					var predefinedMarkerStyle:PredefinedMarkerStyle = new PredefinedMarkerStyle();
+					predefinedMarkerStyle.size = 10;
+					for each(var item:Object in targetList) {
+						var positionStr:String = item.location;
+						if (positionStr != null && positionStr.split(",").length == 2) {
+							var positions:Array = positionStr.split(",");
+							item.x = Number(positions[0]);
+							item.y = Number(positions[1]);
+							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
+							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle, item);
+							feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
+							feature.buttonMode = true;
+							featuresLayer.addFeature(feature);
+						}
+					}
+				}
+			}
+			
+			private function featureMouseClickHandler(event:MouseEvent):void
+			{
+				var feature:Feature = event.currentTarget as Feature;
+				var attribute:Object = feature.attributes;
+				var requestParam:Object = attribute;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO);
+				queryEvent.data = requestParam;
+				queryEvent.dispatch();
+			}
+			
+			//清除
+			public function clearSystemHandler(event:CairngormEvent):void
+			{
+				
+			}
+			
+			//系统重新加载
+			public function systemReloadHandler(event:CairngormEvent):void
+			{
+				
+			}
+			
+			//查明默认缺省监测点，断面水功能区点
+			private function queryDefaultStation():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DEFAULT_POINT);
+				queryEvent.dispatch();
+			}	
+			
+			//清除当前菜单操作结果
+			private function clearLastQuery():void
+			{
+				//清空对象列表
+				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+				featuresLayer.clear();
+				//隐藏右下对象监测数据面板
+				var waterWatchEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_EVALUTION_WIDGET);
+				waterWatchEvent.dispatch();
+				modelLocator.mapCtrl.infoWindow.hide();
+			}
+			
+			protected function this_WidgetRemoveHandler(event:BaseWidgetEvent):void
+			{
+				clearLastQuery();
+			}
+			
+			protected function this_WidgetAddCompleteHandler(event:BaseWidgetEvent):void
+			{
+				queryDefaultStation();
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:VGroup x="0" y="0" width="100%" gap="2"
+			  paddingBottom="5" paddingTop="5" paddingLeft="5" paddingRight="5">
+		<s:HGroup width="100%"
+				  horizontalAlign="left" verticalAlign="middle">
+			<s:Label text="水质评价条件设置：" width="100%" height="30" 
+					 backgroundColor="#3385FF" fontSize="14" color="#FFFFFF"/>
+		</s:HGroup>
+		<!--<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="#ACAB96" weight="1"/>
+			</s:stroke>
+		</s:Line>-->
+		<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
+		</s:VGroup>
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="#ACAB96" weight="1"/>
+			</s:stroke>
+		</s:Line>
+		<s:VGroup id="searchYearContainer" 
+				  width="100%" maxHeight="{searchYearPanelHeight}">
+		</s:VGroup>
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="#ACAB96" weight="1"/>
+			</s:stroke>
+		</s:Line>
+		<s:VGroup id="searchTypeContainer"  width="100%">
+		</s:VGroup>
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="#ACAB96" weight="1"/>
+			</s:stroke>
+		</s:Line>
+		<s:VGroup id="periodContainer" width="100%" maxHeight="{searchPeriodPanelHeight}" gap="3"
+				  horizontalAlign="center" verticalAlign="middle" paddingTop="5">
+			<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
+				<s:Button id="searchButton" width="60" height="30" buttonMode="true" label="查询" 
+						  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
+				<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000" includeInLayout="false" visible="false"/>
+			</s:HGroup>
+			<s:List id="periodList" width="100%" height="100%" borderVisible="false"
+					horizontalScrollPolicy="off"/>
+		</s:VGroup>
+	</s:VGroup>
+</ns:WidgetBase>
