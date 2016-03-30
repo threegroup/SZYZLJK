@@ -3,7 +3,8 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark" 
 				   xmlns:mx="library://ns.adobe.com/flex/mx" 
 				   xmlns:Items="widgets.waterevaluation.Items.*"
-				   creationComplete="initGroup(event)" xmlns:baseclass="sm.wegis.szy.core.baseclass.*">
+				   creationComplete="initGroup(event)"
+				   xmlns:baseclass="sm.wegis.szy.core.baseclass.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -18,6 +19,8 @@
 			import mx.events.CalendarLayoutChangeEvent;
 			import mx.events.FlexEvent;
 			import mx.utils.StringUtil;
+			
+			import sm.wegis.szy.events.QueryEvent;
 			
 			import spark.events.TextOperationEvent;
 			
@@ -123,6 +126,9 @@
 						//重设条件指标宽度
 						resetLayout(true, this.width, tempArr, "optionName", container, true);
 					}
+					
+					//派发河流评价年份查询
+					queryRiverYear(selectContent.toArray());
 				}
 			}
 			
@@ -190,24 +196,48 @@
 							selectContent.removeItemAt(index);
 					}
 					
-					if(selectContent.length > 0)
+					 if(selectContent.length > 0)
 					{
 						isSelected = true;
-						if(selectContent.length == container.numChildren)
+						/* if(selectContent.length == container.numChildren)
 						{
 							AllSelected.selected = true;
 						}
 						else
 						{
 							AllSelected.selected = false;
-						}
+						} */
 					}
 					else
 					{
 						isSelected = false;
-						AllSelected.selected = false;
-					}
+						/* AllSelected.selected = false; */
+					} 
+					
+					//派发河流评价年份查询
+					queryRiverYear(selectContent.toArray());
 				}
+			}
+			
+			//查明河流评价年份
+			private function queryRiverYear(riverList:Array):void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_YEAR);
+				if(riverList != null && riverList.length >0)
+				{
+					var temps:Array = [];
+					for each (var item:Object in riverList) 
+					{
+						temps.push(item["data"]["optionValue"]);
+					}
+					
+					queryEvent.data = temps.join(",");
+				}
+				else
+				{
+					queryEvent.data = null;
+				}
+				queryEvent.dispatch();
 			}
 			
 			//自定义文本内容发生改变(比如数值)
@@ -226,8 +256,8 @@
 							//清除前面已经选择的项目
 							clearAllSelected(container);
 							//清除全选
-							if(AllSelected)
-								AllSelected.selected = false;
+							/* if(AllSelected)
+								AllSelected.selected = false; */
 							if(selectContent != null && selectContent.length > 0)
 							{
 								selectContent.removeAll();
@@ -263,8 +293,8 @@
 						//这里暂时没有处理字符串是否为日期
 						clearAllSelected(container);
 						//清除全选
-						if(AllSelected)
-							AllSelected.selected = false;
+						/* if(AllSelected)
+							AllSelected.selected = false; */
 						if(selectContent != null && selectContent.length > 0)
 						{
 							selectContent.removeAll();
@@ -281,7 +311,7 @@
 			}
 			
 			//全选或反选
-			protected function AllSelected_clickHandler(event:MouseEvent):void
+			/* protected function AllSelected_clickHandler(event:MouseEvent):void
 			{
 				//获取所有指标选项
 				var num:int = container.numChildren;
@@ -331,8 +361,11 @@
 						isSelected = true;
 					else
 						isSelected = false;
+					
+					//派发河流评价年份查询
+					queryRiverYear(selectContent.toArray());
 				}
-			}
+			} */
 		]]>
 	</fx:Script> 
 	
@@ -347,14 +380,16 @@
 			  verticalAlign="middle" horizontalAlign="left">
 		<s:VGroup id="containerPanel" gap="{hGap}" width="100%"
 				  horizontalAlign="left" verticalAlign="middle">
-			<s:HGroup gap="{hGap}"
+			<!--<s:HGroup gap="{hGap}"
 					  horizontalAlign="left" verticalAlign="middle">
 				<s:Label text="{data.propertyName}" toolTip="{data.tip}" 
 						 styleName="ConditionTitle" width="{itemWidth}" buttonMode="true"/>
 				<s:CheckBox id="AllSelected" label="全选" width="{itemWidth}" buttonMode="true" 
 							styleName="AllSelected"
 							click="AllSelected_clickHandler(event)"/>
-			</s:HGroup>
+			</s:HGroup>-->
+			<s:Label text="{data.propertyName}" toolTip="{data.tip}" 
+					 styleName="ConditionTitle" width="{itemWidth}" buttonMode="true"/>
 			<baseclass:DottedLineClass width="100%" height="1"/>
 			<s:Scroller verticalScrollPolicy="auto" horizontalScrollPolicy="off" 
 						width="100%" maxHeight="{maxContentHeight-35}">

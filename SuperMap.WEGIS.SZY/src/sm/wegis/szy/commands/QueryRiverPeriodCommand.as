@@ -23,9 +23,13 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
+			var tempData:Object = event.data;
 			var params:Array = [];
 			params.push(modelLocator.systemInfo.subSystemID);
-			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetSZPJDefaultObj, params);
+			params.push(tempData["searchIds"]);
+			params.push(tempData["searchYear"]);
+			params.push(tempData["searchType"]);
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetSZPJPeriodList, params);
 			CursorManager.setBusyCursor();
 		}
 		
@@ -34,7 +38,7 @@ package sm.wegis.szy.commands
 			CursorManager.removeBusyCursor();
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
-			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DEFAULT_POINT_RESPONSE);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD_RESPONSE);
 			var resultValue:Object = jsDec.getValue() as Object;
 			if (resultValue.success == true) {
 				queryEvent.data = resultValue;
@@ -45,9 +49,9 @@ package sm.wegis.szy.commands
 		override public function fault(info:Object):void
 		{
 			CursorManager.removeBusyCursor();
-			Alert.show("获取水质评价默认点失败！", "提示", Alert.OK, null, null, 
+			Alert.show("获取水质评价周期列表失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
-			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DEFAULT_POINT_RESPONSE);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD_RESPONSE);
 			queryEvent.dispatch();
 		}
 	}
