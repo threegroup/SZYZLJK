@@ -66,5 +66,8 @@ package sm.wegis.szy.events
 		
 		/**隐藏查询右侧面板*/
 		public static const HIDE_WATER_EVALUTION_WIDGET:String = "HideWaterEvalutionWidget";
+		
+		/**水质评价，查询水功能区*/
+		public static const QUERY_WATER_FUNCTION_REGION:String = "QueryWaterFunctionRegion";
 	}
 }
