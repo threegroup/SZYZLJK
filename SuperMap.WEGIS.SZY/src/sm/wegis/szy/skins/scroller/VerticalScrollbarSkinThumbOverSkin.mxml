@@ -2,7 +2,7 @@
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:fc="http://ns.adobe.com/flashcatalyst/2009"
-		 minWidth="12" maxHeight="150">
+		 minWidth="12" maxHeight="40">
 	
 	<fx:Metadata>
 		[HostComponent("spark.components.Button")]
@@ -17,42 +17,30 @@
 	
 	
 	<!-- background -->
-	<s:Rect left="0" right="0" top="0" bottom="0" radiusX="1" radiusY="1" >
-		<s:stroke>
-			<s:SolidColorStroke 	color="#959695"	  weight="1"	/>
-		</s:stroke>
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0">
 		<s:fill>
-			<s:LinearGradient >
-					<s:GradientEntry color="#dfedf8" ratio="0.5" alpha="0.5"/>
-					<s:GradientEntry color="#b1d1ea" ratio="0.5" alpha="0.5"/>
-			</s:LinearGradient>
+			<s:SolidColor color="#3385FF"/>
 		</s:fill>
 	</s:Rect>
-	
 	<!-- Gripper -->
-	<s:Group horizontalCenter="0" verticalCenter="-1"  >
-		<s:Line yFrom="1" yTo="1" xFrom="0" xTo="6">
+	<s:VGroup left="0" right="0" top="0" bottom="0" gap="3"
+			  horizontalAlign="center" verticalAlign="middle"
+			  paddingLeft="2" paddingRight="2">
+		<s:Line width="100%">
 			<s:stroke>
-				<s:SolidColorStroke color="#787777" pixelHinting="true" />
+				<s:SolidColorStroke color="#FFFFFF" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:Line yFrom="4" yTo="4" xFrom="0" xTo="6">
+		<s:Line width="100%">
 			<s:stroke>
-				<s:SolidColorStroke color="#787777" pixelHinting="true" />
+				<s:SolidColorStroke color="#FFFFFF" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:Line yFrom="7" yTo="7" xFrom="0" xTo="6">
+		<s:Line width="100%">
 			<s:stroke>
-				<s:SolidColorStroke color="#787777" pixelHinting="true" />
+				<s:SolidColorStroke color="#FFFFFF" weight="1"/>
 			</s:stroke>
 		</s:Line>
-	</s:Group>
-	
-	<!-- shadow line -->
-	<!--<s:Line alpha="0.38" left="1" right="1" bottom="-1">
-		<s:stroke>
-			<s:SolidColorStroke color="#5C5C5C" weight="1" caps="square"/>
-		</s:stroke>
-	</s:Line>-->
+	</s:VGroup>
 	
 </s:Skin>

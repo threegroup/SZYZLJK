@@ -6,7 +6,8 @@
 			   width="100%" height="100%"
 			   creationComplete="creationCompleteHandler(event)"
 			   WidgetAddComplete="this_WidgetAddCompleteHandler(event)"
-			   WidgetRemove="this_WidgetRemoveHandler(event)">
+			   WidgetRemove="this_WidgetRemoveHandler(event)"
+			   resize="widgetbase_resizeHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
@@ -19,6 +20,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
 			
 			import sm.wegis.szy.core.baseclass.DottedLineClass;
 			import sm.wegis.szy.core.utils.DataUtils;
@@ -138,6 +140,8 @@
 					}]
 			};
 			
+			/**重绘布局*/
+			
 			/**评价年份*/
 			private var yearListData:Object = {
 				"nodeListSelect": [
@@ -153,19 +157,41 @@
 					}]
 			};
 			
+			private function updateUnitLayout():void
+			{
+				if(stage != null)
+				{
+					var factor:Number = stage.height/768;
+					searchTypePanelHeight = 150;
+					searchYearPanelHeight = 80*factor;
+					searchRiverPanelHeight = 100*factor;
+					searchPeriodPanelHeight = stage.stageHeight - 120 
+						- searchYearPanelHeight 
+						- searchTypePanelHeight 
+						- searchRiverPanelHeight;
+					
+					var conArr:Array = [searchRiverContainer, searchYearContainer];
+					var heightArr:Array = [searchRiverPanelHeight, searchYearPanelHeight];
+					for(var i:int = 0;i < conArr.length; i++)
+					{
+						if((conArr[i] as Group).numElements > 0)
+						{
+							(conArr[i].getElementAt(0) as CommonGroup).maxContentHeight = heightArr[i];
+						}
+					}
+				}
+			}
+			
+			protected function widgetbase_resizeHandler(event:ResizeEvent):void
+			{
+				// TODO Auto-generated method stub
+				updateUnitLayout();
+			}
+			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				//计算条件面板高度
-				if(stage != null)
-				{
-					searchTypePanelHeight = 200;
-					searchYearPanelHeight = 100;
-					searchPeriodPanelHeight = 200;
-					searchRiverPanelHeight = stage.stageHeight - 120 
-						- searchYearPanelHeight 
-						- searchTypePanelHeight 
-						- searchPeriodPanelHeight;
-				}
+				updateUnitLayout();
 				
 				initEventListener();
 				queryRiverList();
@@ -416,7 +442,7 @@
 				tempData["searchYear"] = getQueryParam(searchYearContainer)[0];
 				//评价类型
 				tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
-					
+				
 				queryEvent.data = tempData;	
 				
 				queryEvent.dispatch();
@@ -559,6 +585,7 @@
 			{
 				queryDefaultStation();
 			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -572,12 +599,7 @@
 			<s:Label text="水质评价条件设置：" width="100%" height="30" 
 					 backgroundColor="#3385FF" fontSize="14" color="#FFFFFF"/>
 		</s:HGroup>
-		<!--<s:Line width="100%">
-			<s:stroke>
-				<s:SolidColorStroke color="#ACAB96" weight="1"/>
-			</s:stroke>
-		</s:Line>-->
-		<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
+		<s:VGroup id="searchRiverContainer" width="100%" height="{searchRiverPanelHeight}">  
 		</s:VGroup>
 		<s:Line width="100%">
 			<s:stroke>
@@ -585,21 +607,21 @@
 			</s:stroke>
 		</s:Line>
 		<s:VGroup id="searchYearContainer" 
-				  width="100%" maxHeight="{searchYearPanelHeight}">
+				  width="100%" height="{searchYearPanelHeight}">
 		</s:VGroup>
 		<s:Line width="100%">
 			<s:stroke>
 				<s:SolidColorStroke color="#ACAB96" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:VGroup id="searchTypeContainer"  width="100%">
+		<s:VGroup id="searchTypeContainer"  width="100%" height="{searchTypePanelHeight}">
 		</s:VGroup>
 		<s:Line width="100%">
 			<s:stroke>
 				<s:SolidColorStroke color="#ACAB96" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:VGroup id="periodContainer" width="100%" maxHeight="{searchPeriodPanelHeight}" gap="3"
+		<s:VGroup id="periodContainer" width="100%" height="{searchPeriodPanelHeight}" gap="3"
 				  horizontalAlign="center" verticalAlign="middle" paddingTop="5">
 			<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
 				<s:Button id="searchButton" width="60" height="30" buttonMode="true" label="查询" 

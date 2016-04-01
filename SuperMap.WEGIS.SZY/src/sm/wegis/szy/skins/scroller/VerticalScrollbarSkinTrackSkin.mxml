@@ -21,7 +21,7 @@ in accordance with the terms of the license agreement accompanying it.
 @productversion Flex 4
 -->
 <s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" maxWidth="2" height="16">
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009">
 	
 	<fx:Metadata>
 		<![CDATA[ 
@@ -50,35 +50,10 @@ in accordance with the terms of the license agreement accompanying it.
 		<s:State name="disabled" />
 	</s:states>
 	
-	<!-- border/fill -->
-	<s:Rect top="0" bottom="0" left="0" right="0" minWidth="2" minHeight="14" radiusX="1" radiusY="1">
-		<s:stroke>
-			<s:SolidColorStroke caps="none" color="#EAEAEA" joints="miter" miterLimit="4" weight="2"/>
-		</s:stroke>
+	<!-- background -->
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0">
 		<s:fill>
-			<s:SolidColor color="#EAEAEA"/>
-		</s:fill>
-	</s:Rect>
-	
-	<!-- shadow -->
-	<s:Rect left="1" top="1" bottom="1" width="1" radiusX="3" radiusY="3">
-		<s:fill>
-			<s:SolidColor color="#F5F5F5" alpha="0.0" />
-		</s:fill>
-	</s:Rect>
-	<s:Rect left="2" top="1" bottom="1" width="1" radiusX="3" radiusY="3">
-		<s:fill>
-			<s:SolidColor color="#F5F5F5" alpha="0.0" />
-		</s:fill>
-	</s:Rect>
-	<s:Rect left="2" right="1" top="1" height="2" radiusX="3" radiusY="3">
-		<s:fill>
-			<s:SolidColor color="#F5F5F5" alpha="0.0" />
-		</s:fill>
-	</s:Rect>
-	<s:Rect left="2" right="1" bottom="1" height="3" radiusX="3" radiusY="3">
-		<s:fill>
-			<s:SolidColor color="#F5F5F5" alpha="0.0" />
+			<s:SolidColor color="#FFFFFF"/>
 		</s:fill>
 	</s:Rect>
 </s:SparkSkin>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:fc="http://ns.adobe.com/flashcatalyst/2009"
-		 maxWidth="16"  maxHeight="200" >
+		 maxWidth="16"  maxHeight="40">
 	
 	<fx:Metadata>
 		[HostComponent("spark.components.VScrollBar")]
@@ -17,13 +17,15 @@
 			  bottom="0" horizontalCenter="0" focusEnabled="false"
 			  skinClass="sm.wegis.szy.skins.scroller.VerticalScrollbarSkinTrackSkin"
 			  alpha.disabled="0.5"
-			  alpha.inactive="0.5"/>
+			  alpha.inactive="0.5"
+			  buttonMode="true"/>
 
 	<s:Button id="thumb" x="0" y="0" horizontalCenter="0" focusEnabled="false" 
-			  skinClass="sm.wegis.szy.skins.scroller.VerticalScrollbarSkinThumbSkin" minHeight="20"
+			  skinClass="sm.wegis.szy.skins.scroller.VerticalScrollbarSkinThumbSkin" minHeight="20" maxHeight="40"
 			  alpha.disabled="0.5"
 			  alpha.inactive="0.5" 
-			  visible.inactive="false"/>
+			  visible.inactive="false"
+			  buttonMode="true"/>
 	
 	<!--<s:Button id="decrementButton" top="2" horizontalCenter="0" enabled.inactive="false" alpha.disabled="0.5" alpha.inactive="0.5"
 			  skinClass="skins.scrollbar.VerticalScrollbarSkinUpButtonSkin" focusEnabled="false"/>

@@ -65,9 +65,9 @@
 	</s:LinearGradient>
 	-->
 	<!--- @private -->
-	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0" alpha.keepSelected="1" alpha.over="0.5" alpha="0">
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0" alpha.keepSelected="1" alpha.over="1" alpha="1">
 		<s:fill>
-			<s:SolidColor color.keepSelected="#3385FF" color.over="#3385FF" color="#FFFFFF"/>
+			<s:SolidColor color.keepSelected="#FFDE45" color.over="#FFDE45" color="#3385FF"/>
 		</s:fill>
 	</s:Rect>
 	
@@ -89,9 +89,9 @@
 			 verticalAlign="middle"
 			 left="0" right="0" 
 			 top="0" bottom="0"
-			 color.over="#FFFFFF"
-			 color.down="#FFFFFF"
-			 color.keepSelected="#FFFFFF"
+			 color.over="#000000"
+			 color.down="#000000"
+			 color.keepSelected="#000000"
 			 color="#FFFFFF"
 			 showTruncationTip="false">
 	</s:Label>

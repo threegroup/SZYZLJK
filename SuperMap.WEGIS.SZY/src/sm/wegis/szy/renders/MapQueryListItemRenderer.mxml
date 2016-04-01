@@ -41,7 +41,7 @@
 	</s:states>
 	<s:Rect left="0" right="0" top="0" bottom="0">
 		<s:fill>
-			<s:SolidColor color="0xFFFFFF" color.hovered="0x3385FF" color.selected="0xFFD345"/>
+			<s:SolidColor color="0xFFFFFF" color.hovered="0x3385FF" color.selected="0xFFDE45"/>
 		</s:fill>
 	</s:Rect>
 	<s:HGroup width="100%" height="100%" verticalAlign="middle" left="5" right="5">

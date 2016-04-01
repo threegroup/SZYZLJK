@@ -43,9 +43,33 @@
 			/**是否默认选择第一项，默认值不选择(false)*/
 			public var isFirstItemSelected:Boolean = false;
 			
+			private var _maxContentHeight:Number = 0;
+
 			[Bindable]
 			/**内容面板最大高度*/
-			public var maxContentHeight:Number = 0;
+			public function get maxContentHeight():Number
+			{
+				return _maxContentHeight;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set maxContentHeight(value:Number):void
+			{
+				if(_data != null)
+				{
+					if(data.hasOwnProperty("hasCustom") && data["hasCustom"] == "1")
+					{
+						_maxContentHeight = value - 55;
+					}
+					else
+					{
+						_maxContentHeight = value - 25;
+					}
+				}
+			}
+
 			
 			private var _data:Object = null;
 			[Bindable]

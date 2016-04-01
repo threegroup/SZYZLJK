@@ -83,7 +83,7 @@ viewport property to link them together.
         when there is too much data to fit vertically in a display area.
         The Scroller determines whether the vertical ScrollBar is visible. -->
         <fx:Component id="verticalScrollBarFactory">
-            <s:VScrollBar visible="false" skinClass="sm.wegis.szy.skins.scroller.VerticalScrollbarSkin"/>
+            <s:VScrollBar visible="false" skinClass="sm.wegis.szy.skins.scroller.VerticalScrollbarSkin" buttonMode="true"/>
         </fx:Component>
         
         <!---  A horizontal scrollbar that lets you control the portion of data that is displayed 
