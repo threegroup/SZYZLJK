@@ -130,9 +130,9 @@
 			</s:HGroup>
 		</fx:Component>
 	</fx:Declarations>
-<!--	<s:Scroller width="100%" top="3" bottom="3" horizontalScrollPolicy="off" verticalScrollPolicy="auto" >
-		<s:Group  width="100%" height="100%" >-->
+	<s:Scroller width="100%" top="3" bottom="3" horizontalScrollPolicy="off" verticalScrollPolicy="auto" >
+		<s:Group  width="100%" height="100%" >
 			<s:VGroup id="legendContainer" width="100%" height="100%" />
-<!--		</s:Group>
-	</s:Scroller>-->
+		</s:Group>
+	</s:Scroller>
 </s:Group>

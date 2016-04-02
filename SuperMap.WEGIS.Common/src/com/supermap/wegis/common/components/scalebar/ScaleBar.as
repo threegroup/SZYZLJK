@@ -1,12 +1,10 @@
 package   com.supermap.wegis.common.components.scalebar
 {
 	import com.supermap.web.core.Point2D;
-	import com.supermap.web.core.Unit;
 	import com.supermap.web.events.MapEvent;
 	import com.supermap.web.events.ViewBoundsEvent;
 	import com.supermap.web.mapping.Map;
 	import com.supermap.web.sm_internal;
-	import com.supermap.web.utils.ScaleUtil;
 	
 	use namespace sm_internal;
 
@@ -17,6 +15,7 @@ package   com.supermap.wegis.common.components.scalebar
 	import com.supermap.web.core.geometry.GeoPoint;
 	import com.supermap.web.core.geometry.Geometry;
 	import com.supermap.wegis.common.skins.scalebar.ScaleBarSkin;
+	import com.supermap.web.utils.Unit;
 	
 	/**
 	 * ${components_ScaleBar_Title}.

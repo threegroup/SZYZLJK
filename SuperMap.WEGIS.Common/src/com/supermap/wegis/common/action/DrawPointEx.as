@@ -9,7 +9,6 @@ package com.supermap.wegis.common.action
 	import com.supermap.wegis.common.utils.CursorUtil;
 	
 	import flash.display.DisplayObject;
-	import flash.geom.Point;
 	
 	public class DrawPointEx extends DrawPoint
 	{
@@ -21,7 +20,7 @@ package com.supermap.wegis.common.action
 			CursorUtil.detachCursor(map);
 			var cursor:CursorIcon = new CursorIcon(areaPic);
 			CursorUtil.attachCursor(map, cursor); 
-			addEventListener(DrawEvent.DRAW_END,removeCursor);
+			addEventListener(DrawEvent.DRAW_END,removeCursorHandler);
 		}
 		
 		override protected function startDraw(startPoint:Point2D = null):void
@@ -30,9 +29,9 @@ package com.supermap.wegis.common.action
 			CursorUtil.attachCursor(map, cursor); 
 		}
 		
-		private function removeCursor(event:DrawEvent):void
+		private function removeCursorHandler(event:DrawEvent):void
 		{
-			removeEventListener(DrawEvent.DRAW_END,removeCursor);
+			removeEventListener(DrawEvent.DRAW_END,removeCursorHandler);
 			CursorUtil.detachCursor(map);
 		}
 		

@@ -1,13 +1,13 @@
 package com.supermap.wegis.common.mappingEx
 {
-	import com.supermap.web.core.CoordinateReferenceSystem;
 	import com.supermap.web.core.Point2D;
 	import com.supermap.web.core.Rectangle2D;
-	import com.supermap.web.core.Unit;
 	import com.supermap.web.mapping.Map;
 	import com.supermap.web.mapping.TiledCachedLayer;
 	import com.supermap.web.serialization.json.JSONDecoder;
+	import com.supermap.web.utils.CoordinateReferenceSystem;
 	import com.supermap.web.utils.ScaleUtil;
+	import com.supermap.web.utils.Unit;
 	
 	import flash.events.Event;
 	import flash.net.URLRequest;

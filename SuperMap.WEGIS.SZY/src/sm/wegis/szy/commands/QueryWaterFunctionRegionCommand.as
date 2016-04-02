@@ -62,13 +62,16 @@ package sm.wegis.szy.commands
 					var featuresLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERFUNCTION_FEATURE_LAYER) as FeaturesLayerEx;
 					if (featuresLayer == null)
 					{
-						
 						featuresLayer = new FeaturesLayerEx();
 						featuresLayer.isPanEnableOnFeature = true;
 						featuresLayer.id = ConstVO.WATERFUNCTION_FEATURE_LAYER;
 						featuresLayer.minVisibleResolution = map.resolutions[map.resolutions.length-1];
 						featuresLayer.maxVisibleResolution = map.resolutions[15];
 						modelLocator.mapCtrl.addLayer(featuresLayer);
+					}
+					else
+					{
+						featuresLayer.clear();
 					}
 					
 					var featuresTextLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERFUNCTION_FEATURETEXT_LAYER) as FeaturesLayerEx;
@@ -80,6 +83,10 @@ package sm.wegis.szy.commands
 						featuresTextLayer.minVisibleResolution = map.resolutions[map.resolutions.length-1];
 						featuresTextLayer.maxVisibleResolution = map.resolutions[15];
 						modelLocator.mapCtrl.addLayer(featuresTextLayer);
+					}
+					else
+					{
+						featuresTextLayer.clear();
 					}
 					
 					var glowFilter:GlowFilter = new GlowFilter();

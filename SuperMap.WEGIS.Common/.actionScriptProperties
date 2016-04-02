@@ -11,8 +11,8 @@
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/Libs/as3commons-reflect.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/Libs/Efflex_v0.03.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/Libs/SuperMap.Web-7.0.0-10705.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/Libs/SuperMap.Web.iServerJava7C-7.0.0-10705.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/Libs/SuperMap.Web.iServerJava7C-8.0.0-13012.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${DOCUMENTS}/Libs/SuperMap.Web-8.0.0-13012.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

@@ -1,6 +1,5 @@
 package    com.supermap.wegis.common.mappingEx
 { 
-	import com.supermap.web.core.CoordinateReferenceSystem;
 	import com.supermap.web.core.Point2D;
 	import com.supermap.web.core.Rectangle2D;
 	import com.supermap.web.mapping.TiledCachedLayer;

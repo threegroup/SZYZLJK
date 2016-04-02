@@ -10,14 +10,15 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.supermap.wegis.common.components.container.ContainerItem;
 			import com.supermap.wegis.common.core.widget.WidgetBase;
+			import com.supermap.wegis.common.core.widget.WidgetManager;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			
-			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.skins.MenuItemSkinEx;
 			
 			import spark.effects.Resize;
 			
@@ -32,11 +33,11 @@
 			
 			/**图例面板顶部菜单项目高度*/
 			[Bindable]
-			public var menuHeight:Number = 20;
+			public var menuHeight:Number = 25;
 			
 			/**图例面板顶部菜单项目宽度*/
 			[Bindable]
-			public var menuWidth:Number = 20;
+			public var menuWidth:Number = 25;
 			private var menuList:ArrayCollection=modelLocator.menuInfo.mapMenuList;
 			//初始化管理器
 			protected function initLegendManager(event:FlexEvent):void
@@ -74,9 +75,9 @@
 										modelLocator.specialWidgetInfo.specialWidgetMap.add(item["key"], item);
 										var serviceLegend:Object = modelLocator.specialWidgetInfo.specialWidgetMap.itemFor("ServiceLegend");
 										if(serviceLegend){
-											containerManager.addElement(new ServiceLegend());
+											 containerManager.addElement(new ServiceLegend());
 											this.visible=true;
-											this.includeInLayout=true;
+											this.includeInLayout=true; 
 											LegendTitle.text=serviceLegend.name;
 										}
 										
@@ -159,10 +160,16 @@
 			<s:SolidColorStroke color="0xABAEB3" weight="1" alpha="1"/>
 		</s:stroke>
 	</s:Rect>
-	<s:HGroup width="100%" height="100%" gap="0" verticalAlign="top" >
-		<s:Button id="controlBtn" width="{menuWidth}" height="{menuHeight}"   buttonMode="true"/>
+	<s:HGroup width="100%" height="100%" gap="0" verticalAlign="top" paddingTop="2" paddingLeft="2">
+		<s:Button id="controlBtn" width="{menuWidth}" height="{menuHeight}"  skinClass="sm.wegis.szy.skins.ControlButtonSkin"  buttonMode="true"/>
 		<s:Group width="100%" height="100%">
-			<s:Label  id="LegendTitle" height="20" paddingTop="5" fontSize="15" fontWeight="bold" textAlign="center" />
+			<s:Label  id="LegendTitle"
+					  width="100%"
+					  height="25" fontSize="14" 
+					  backgroundColor="#3385FF"
+					  color="#FFFFFF"
+					  verticalAlign="middle"
+					  textAlign="left" />
 			<s:Scroller left="0" bottom="0" right="0" top="{LegendTitle.height + 5}" >
 				<s:Group id="containerManager" width="100%" height="100%" bottom="3"  clipAndEnableScrolling="true" />
 			</s:Scroller>
