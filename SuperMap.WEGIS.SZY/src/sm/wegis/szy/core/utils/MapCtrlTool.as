@@ -17,8 +17,6 @@ package sm.wegis.szy.core.utils
 	
 	import sm.wegis.szy.core.baseclass.ToolBase;
 	
-	import spark.components.BorderContainer;
-	import spark.components.Group;
 	import spark.components.VGroup;
 	import spark.effects.Fade;
 	
@@ -65,7 +63,7 @@ package sm.wegis.szy.core.utils
 					//初始化地图控件容器
 					vGroup = new VGroup();
 					vGroup.bottom = 15;
-					vGroup.right = 5;
+					vGroup.right = 10;
 					vGroup.gap = 0;
 					vGroup.depth = container.numElements + 100;
 					vGroup.verticalAlign = "top";

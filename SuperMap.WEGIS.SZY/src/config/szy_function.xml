@@ -48,6 +48,12 @@
 						<bottom>0</bottom>
 						<left>0</left>
 					</subitem>
+					<subitem>
+						<key>MapLegendWidget</key>
+						<name>地图图例</name>
+						<url>widgets/mapquery/MapLegendWidget.swf</url>
+						<legend>true</legend>
+					</subitem>
 				</subitems>
 			</item>
 			<item>
@@ -66,6 +72,12 @@
 						<cover>true</cover>
 						<bottom>0</bottom>
 						<left>0</left>
+					</subitem>
+					<subitem>
+						<key>WaterLegendWidget</key>
+						<name>水质图例</name>
+						<url>widgets/waterevaluation/WaterLegendWidget.swf</url>
+						<legend>true</legend>
 					</subitem>
 				</subitems>
 			</item>

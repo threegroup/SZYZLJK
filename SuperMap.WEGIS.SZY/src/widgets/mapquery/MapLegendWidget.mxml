@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:WidgetBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
+				  width="100%" height="100%"
+				  creationComplete="initServiceLegend(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.utils.StringUtil;
+			import com.supermap.wegis.common.core.resourceManager.ResourceInfo;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
+			
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			
+			import spark.components.HGroup;
+			
+			[Bindable]
+			private var modelLocator:ApplicationModelLocator  = ApplicationModelLocator.getInstance();
+			
+			/**保存动态图例前一次数据*/
+			private var preDynaicLegendData:ArrayCollection; 
+			private  const legendNameLen:int = 8;
+			
+			protected function initServiceLegend(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var service:HTTPService= new HTTPService();   
+				service.url = "config/maplegend.xml";   
+				service.resultFormat="text";
+				service.addEventListener(ResultEvent.RESULT, function(data:Object):void{
+					var config:XML= XML(data.result.toString());
+					analysisServiceXML(config);
+				});   
+				service.send(); 
+			}
+			
+			private  function analysisServiceXML(xml:XML):void{
+				var servicesArr:ArrayCollection=new ArrayCollection();
+				for each(var xmlItem:XML in xml.children())
+				{
+					var item:Object=new Object();
+					if ("@legendid" in xmlItem)
+					{
+						var resourceInfo:ResourceInfo = ResourceManagerEx.FindResource(StringUtil.trim(xmlItem.@legendid.toString()));
+						if (resourceInfo != null)
+						{
+							item.legendUrl=resourceInfo.cls;
+						}
+						item.legendId=xmlItem.@legendid.toString();
+					}
+					if ("@type" in xmlItem) 
+					{
+						item.type = xmlItem.@type.toString();
+					}
+					if ("@label" in xmlItem) 
+					{
+						item.legendName=xmlItem.@label.toString();
+					}
+					servicesArr.addItem(item);
+				}
+				loadLegendIcon(servicesArr);
+			}
+			
+			private function loadLegendIcon(data:ArrayCollection):void{
+				var counter:int = 0;
+				var legendGroup:HGroup;
+				for each(var item:Object in data)
+				{
+					if (item.type == "list")
+					{
+						if (legendGroup != null && legendGroup.numElements != 0)
+						{
+							legendContainer.addElement(legendGroup);
+							legendGroup = new HGroup();
+							legendGroup.percentWidth = 100;
+						}
+						var titleComp:TitleComponent = new TitleComponent();
+						titleComp.title.text = item.legendName;
+						legendContainer.addElement(titleComp);
+					} else {
+						if (legendGroup != null && legendGroup.numElements ==2) {
+							legendContainer.addElement(legendGroup);
+							legendGroup = new HGroup();
+							legendGroup.percentWidth = 100;
+						}
+						var lengendItem:LegendComponent=new LegendComponent();
+						lengendItem.percentWidth = 100;
+						lengendItem.id = item.legendId;
+						var labelValue:String = item.legendName;
+						if (labelValue.length > legendNameLen) {
+							lengendItem.label.text =  labelValue.substr(0,legendNameLen)+"...";
+							lengendItem.toolTip =labelValue;
+						} else {
+							lengendItem.label.text = labelValue;
+						}
+						if ( item.legendUrl != null ) {
+							lengendItem.image.source= item.legendUrl;
+						}
+						if (legendGroup == null ) {
+							legendGroup = new HGroup();
+							legendGroup.percentWidth = 100;
+						}
+						legendGroup.addElement(lengendItem);
+						if (data.getItemIndex(item) == data.length -1)
+						{
+							legendContainer.addElement(legendGroup);
+						}
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<fx:Component className="TitleComponent">
+			<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
+				<s:Label id="title" fontWeight="bold" fontSize="{getStyle('fontSize') + 1}"  verticalAlign="middle"/>
+			</s:HGroup>
+		</fx:Component>
+		<fx:Component className="LegendComponent" >
+			<s:HGroup gap="3" horizontalAlign="left" verticalAlign="middle" width="100%">
+				<s:Image id="image" scaleMode="stretch" smooth="true"/>
+				<s:Label id="label"   textAlign="left"	 verticalAlign="middle"/>
+			</s:HGroup>
+		</fx:Component>
+	</fx:Declarations>
+	<s:Scroller width="100%" top="3" bottom="3" horizontalScrollPolicy="off" verticalScrollPolicy="auto" >
+		<s:Group  width="100%" height="100%" >
+			<s:VGroup id="legendContainer" width="100%" height="100%" />
+		</s:Group>
+	</s:Scroller>
+</ns:WidgetBase>

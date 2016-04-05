@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<services>		
+		<service  label="Ⅰ~Ⅱ 类"   color="0x3385FF" />
+		<service label="Ⅲ 类" 	 color="0x4AAF48" />
+		<service label="Ⅳ 类"  color="0xEFF714" />
+		<service label="Ⅴ 类" color="0xF7BB43" />
+		<service  label="劣Ⅴ类"   color="0xFF3F00" />
+</services>

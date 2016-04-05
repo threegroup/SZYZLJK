@@ -31,6 +31,7 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.core.IVisualElement;
+			import mx.core.IVisualElementContainer;
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.core.utils.MapCtrlTool;
@@ -247,9 +248,7 @@
 						if(current == "vectorMapState")
 						{
 							this.CopyRightID.styleName = "verctorCopyRightStyle";
-						}
-						else
-						{
+						} else {
 							this.CopyRightID.styleName = "imageCopyRightStyle";
 						}
 					}
@@ -297,18 +296,32 @@
 				{
 					return;
 				}
+				
 				if(initWidgetConfig is ArrayCollection || initWidgetConfig is Array)
 				{
 					for each(var obj:Object in initWidgetConfig)
 					{
-						obj.parent = MapContainerID;
+						
+						obj.parent = selectParentContainer(obj);
 					}
 				}
 				else if(initWidgetConfig is Object)
 				{
-					initWidgetConfig.parent = MapContainerID;
+					initWidgetConfig.parent =  selectParentContainer(initWidgetConfig);
 				}
 				WidgetManager.getInstance().loadWidget(initWidgetConfig);
+			}
+			
+			private function selectParentContainer(data:Object):IVisualElementContainer
+			{
+				if (data) {
+					if (data.key == "MapLegend") {
+						return RightVGroupContainerID;
+					} else {
+						return MapContainerID;
+					}
+				} 
+				return MapContainerID;
 			}
 			
 			
@@ -329,8 +342,15 @@
 						: new ArrayCollection([subitems["subitem"]]);
 					if(subWidgets != null && subWidgets.length > 0) {
 						for each (var item:Object in subWidgets) {
-							if(item.hasOwnProperty("url") 	&& item["url"] != null )
+							if(item["legend"] == true)
 							{
+								var systemEvent:SystemEvent = new SystemEvent(SystemEvent.SYSTEM_WIDGET_ADD);
+								systemEvent.data = item;
+								systemEvent.dispatch();
+								if (modelLocator.specialWidgetInfo.specialWidgetMap) {
+									modelLocator.specialWidgetInfo.specialWidgetMap.add(item.key,item);
+								}
+							} else {
 								item.parent = this.RightDownContainerID;
 								WidgetManager.getInstance().loadWidget(item);
 							}
@@ -356,7 +376,7 @@
 				if(modelLocator.mapCtrl != null)
 				{
 					var mapCtrlTool:MapCtrlTool = new MapCtrlTool();
-					mapCtrlTool.initMapCompass(this.MapContainerID);
+					mapCtrlTool.initMapCompass(this.RightVGroupContainerID);
 				}
 			}
 			
@@ -476,6 +496,7 @@
 			<s:Group id="MainBodyContainerID" width="100%" height="100%">
 				<s:Group top="0" bottom="{RightDownContainerID.height}" width="100%">
 					<s:BorderContainer id="MapContainerID" width="100%" height="100%"/>
+					<s:VGroup id="RightVGroupContainerID" right="5" bottom="5" horizontalAlign="right"/>
 					<s:HGroup id="CopyRightID" left="3" bottom="3" width="100%" gap="0"
 							  horizontalAlign="left" verticalAlign="middle">
 						<s:Label fontFamily="Times New Roman" text="©"/>

@@ -7,6 +7,7 @@ package widgets.waterevaluation.Items
 		public function RadioButtonItem()
 		{
 			super();
+			buttonMode = true;
 		}
 		
 		private var _data:Object = null;
