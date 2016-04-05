@@ -448,8 +448,8 @@
 				queryEvent.dispatch();
 				
 				//水功能区水质查询
-				var queryWaterFunEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
-				queryWaterFunEvent.dispatch();
+				/* var queryWaterFunEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
+				queryWaterFunEvent.dispatch(); */
 			}
 			
 			//查询评价河流列表响应
@@ -492,7 +492,17 @@
 			//查询评价河流周期列表响应
 			private function queryRiverPeriodResponseHandler(event:CairngormEvent):void
 			{
-				
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					if(targetList != null)
+					{
+						if(targetList is Array)
+							this.periodList.dataProvider = new ArrayCollection(targetList as Array);
+						else
+							this.periodList.dataProvider = new ArrayCollection([targetList]);
+					}
+				}
 			}
 			
 			private function queryStationEvalutionInfoResponseHandler(event:CairngormEvent):void
@@ -635,12 +645,12 @@
 		<s:VGroup id="periodContainer" width="100%" height="{searchPeriodPanelHeight}" gap="3"
 				  horizontalAlign="center" verticalAlign="middle" paddingTop="5">
 			<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:Button id="searchButton" width="60" height="30" buttonMode="true" label="查询" 
+				<s:Button id="searchButton" width="45" height="25" buttonMode="true" label="查询" 
 						  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
 				<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000" includeInLayout="false" visible="false"/>
 			</s:HGroup>
 			<s:List id="periodList" width="100%" height="100%" borderVisible="false"
-					horizontalScrollPolicy="off"/>
+					horizontalScrollPolicy="off" itemRenderer="sm.wegis.szy.renders.PeriodListItemRenderer"/>
 		</s:VGroup>
 	</s:VGroup>
 </ns:WidgetBase>

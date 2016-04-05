@@ -1022,6 +1022,11 @@ package sm.wegis.szy.plugins
 		private static var stationCls:Class;
 		private static var stationKey:String = "station";
 		ResourceManagerEx.RegisterResource("",stationKey, stationCls);
+		
+		[Embed(source="assets/image/period.png")]
+		private static var periodCls:Class;
+		private static var periodKey:String = "period";
+		ResourceManagerEx.RegisterResource("",periodKey, periodCls);
 
 		
 		public function SystemIconFile()
