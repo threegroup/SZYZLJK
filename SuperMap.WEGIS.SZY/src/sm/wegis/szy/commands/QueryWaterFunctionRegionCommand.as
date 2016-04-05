@@ -31,8 +31,9 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			QueryWaterFunctionHandle("http://localhost:8090/iserver/services/map-SZYNew/rest/maps/水功能区",
-				"水功能区汇总@断面",['OBJECTID', '水功能区名']);
+			
+			QueryWaterFunctionHandle(modelLocator.baseMapInfo.sfzMapUrl,
+				modelLocator.baseMapInfo.sfzLayerName, ['OBJECTID', '水功能区名']);
 		}
 		
 		//查询

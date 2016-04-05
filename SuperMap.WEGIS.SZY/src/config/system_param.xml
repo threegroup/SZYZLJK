@@ -6,8 +6,8 @@
         <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap</baseImageMapUrl>
 		<vectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</vectorMapUrl>
 		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</rasterMapUrl>
-		<!-- <maskVectorMapUrl>http://localhost:8080/iserver/services/map-SZY-Mask/rest/maps/SZY_V</maskVectorMapUrl> -->
-		<!-- <maskRasterMapUrl>http://localhost:8080/iserver/services/map-SZY-Mask/rest/maps/SZY_R</maskRasterMapUrl> -->
+		<sfzMapUrl>http://localhost:8080/iserver/services/map-SZY/rest/maps/水功能区</sfzMapUrl>
+		<sfzLayerName>水功能区汇总@断面</sfzLayerName>
 		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50"/>
 		<themeLayerId>
 			<layer label="水库"  selected="true" layerIds="9,10,11,12,28,29,43,44" />

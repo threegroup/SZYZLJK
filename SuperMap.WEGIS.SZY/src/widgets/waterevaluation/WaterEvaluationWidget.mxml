@@ -527,6 +527,7 @@
 							item.y = Number(positions[1]);
 							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
 							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle, item);
+							feature.id = item.id;
 							feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
 							feature.buttonMode = true;
 							featuresLayer.addFeature(feature);
@@ -543,6 +544,11 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO);
 				queryEvent.data = requestParam;
 				queryEvent.dispatch();
+				
+				//请求要素infowindow数据
+				var queryObjectEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_OBJECT_DETAIL);
+				queryObjectEvent.data = feature;
+				queryObjectEvent.dispatch();
 			}
 			
 			//清除
@@ -599,7 +605,12 @@
 			<s:Label text="水质评价条件设置：" width="100%" height="30" 
 					 backgroundColor="#3385FF" fontSize="14" color="#FFFFFF"/>
 		</s:HGroup>
-		<s:VGroup id="searchRiverContainer" width="100%" height="{searchRiverPanelHeight}">  
+		<!--<s:Line width="100%">
+		<s:stroke>
+		<s:SolidColorStroke color="#ACAB96" weight="1"/>
+		</s:stroke>
+		</s:Line>-->
+		<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
 		</s:VGroup>
 		<s:Line width="100%">
 			<s:stroke>

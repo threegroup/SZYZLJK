@@ -21,6 +21,12 @@ package sm.wegis.szy.vo
 		/**水资源地图默认显示图层LayerIDS*/
 		public var waterResourceBaseLayerIds:String
 		
+		/**水功能区地图地址*/
+		public var sfzMapUrl:String;
+		
+		/**水功能区查询图层名称 */
+		public var sfzLayerName:String;
+		
 
 	}
 }

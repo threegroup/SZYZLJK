@@ -22,6 +22,12 @@ package sm.wegis.szy.commands
 					modelLocator.baseMapInfo.baseVectorMapUrl = systemParam.baseVectorMapUrl;
 					modelLocator.baseMapInfo.baseVectorMapUrl = systemParam.baseImageMapUrl;
 					
+					//设置水功能区地图地址
+					modelLocator.baseMapInfo.sfzMapUrl = systemParam.sfzMapUrl;
+					
+					//设置水功能区查询图层名称
+					modelLocator.baseMapInfo.sfzLayerName = systemParam.sfzLayerName;
+					
 					//设置应用系统矢量，影像水利专题地图服务地址
 					modelLocator.baseMapInfo.waterResourceVectorMapUrl = systemParam.vectorMapUrl;
 					modelLocator.baseMapInfo.waterResourceRasterMapUrl = systemParam.rasterMapUrl;
