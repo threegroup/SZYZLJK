@@ -57,6 +57,10 @@ package sm.wegis.szy.events
 		public static  const QUERY_RIVER_YEAR:String = "QueryRiverYear";
 		public static  const QUERY_RIVER_YEAR_RESPONSE:String = "QueryRiverYearResponse";
 		
+		/**查询水质评价数据*/
+		public static const QUERY_WATEREVALUATION_RESULT:String = "QueryWaterEvaluationResult";
+		public static const QUERY_WATEREVALUATION_RESULT_RESPONSE:String = "QueryWaterEvaluationResultResponse";
+		
 		/**查询河流评价周期列表*/
 		public static  const QUERY_RIVER_PERIOD:String = "QueryRiverPeriod";
 		public static  const QUERY_RIVER_PERIOD_RESPONSE:String = "QueryRiverPeriodResponse";

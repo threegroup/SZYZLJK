@@ -8,6 +8,8 @@
 		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</rasterMapUrl>
 		<sfzMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/水功能区</sfzMapUrl>
 		<sfzLayerName>水功能区汇总@断面</sfzLayerName>
+		<riverMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/河流</riverMapUrl>
+		<riverLayerName>河流汇总@断面</riverLayerName>
 		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50"/>
 		<themeLayerId>
 			<layer label="水库"  selected="true" layerIds="9,10,11,12,28,29,43,44" />

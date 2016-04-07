@@ -45,6 +45,9 @@ maxCols=8
 #点符号，文本注记可见最大比例尺级别
 maxLevel=3
 
+#水质评价，河流显示最大比例尺
+waterEvaluationMaxLevel=4
+
 
 
 

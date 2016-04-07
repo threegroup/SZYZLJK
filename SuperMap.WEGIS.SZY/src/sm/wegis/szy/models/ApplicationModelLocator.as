@@ -32,6 +32,9 @@ package sm.wegis.szy.models
 		/**用户信息*/
 		public var userVo:UserVO = new UserVO();
 		
+		/**水质评价成果数据*/
+		public var waterEvaluationResult:Object;
+		
 		/**需要特殊处理的参数*/
 		public var specialWidgetInfo:SpecialWidgetVO = new SpecialWidgetVO();
 		/**系统底图信息*/

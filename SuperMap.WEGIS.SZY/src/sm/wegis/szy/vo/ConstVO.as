@@ -33,5 +33,8 @@ package sm.wegis.szy.vo
 		
 		/**水质评价，水功能区文本图层*/
 		public static const WATERFUNCTION_FEATURETEXT_LAYER:String = "WaterFunctionFeatureTextLayer";
+		
+		/**水质评价，河流图层*/
+		public static const WATERRIVER_FEATURE_LAYER:String = "WaterRiverFeatureLayer";
 	}
 }

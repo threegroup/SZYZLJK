@@ -27,6 +27,12 @@ package sm.wegis.szy.vo
 		/**水功能区查询图层名称 */
 		public var sfzLayerName:String;
 		
+		/**河流地图地址*/
+		public var riverMapUrl:String;
+		
+		/**河流查询图层名称 */
+		public var riverLayerName:String;
+		
 
 	}
 }

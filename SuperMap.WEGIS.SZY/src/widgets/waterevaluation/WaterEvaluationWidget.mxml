@@ -31,6 +31,7 @@
 			import sm.wegis.szy.utils.CairngormEventManager;
 			import sm.wegis.szy.utils.FeatureLayerUtil;
 			import sm.wegis.szy.vo.ConstVO;
+			import sm.wegis.szy.vo.WaterEvaluaParam;
 			
 			import spark.components.Group;
 			import spark.events.IndexChangeEvent;
@@ -170,7 +171,7 @@
 					searchPeriodPanelHeight = stage.stageHeight - 120 
 						- searchYearPanelHeight 
 						- searchTypePanelHeight; 
-						//- searchRiverPanelHeight;
+					//- searchRiverPanelHeight;
 					
 					var conArr:Array = [searchYearContainer];//[searchRiverContainer, searchYearContainer];
 					var heightArr:Array = [searchYearPanelHeight];//[searchRiverPanelHeight, searchYearPanelHeight];
@@ -421,6 +422,7 @@
 					[QueryEvent.QUERY_DEFAULT_POINT_RESPONSE, queryDefaultPointResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
 					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler], // 获取对象信息和下方面板信息
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
+					[QueryEvent.QUERY_WATEREVALUATION_RESULT_RESPONSE, queryWaterEvaluationResultHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
@@ -433,6 +435,18 @@
 			{
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_LIST);
 				queryEvent.dispatch();
+			}
+			
+			//查询水质评价结果
+			private function queryWaterEvaluationResultHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					if(targetList != null)
+					{
+					}
+				}
 			}
 			
 			private function queryRiverYear(riverList:Array):void
@@ -681,7 +695,12 @@
 				var tempObject:Object = this.periodList.selectedItem;
 				if(tempObject != null)
 				{
-					queryRiverPeriodData(tempObject["id"]);
+					var waterEvaluaParam:WaterEvaluaParam = new WaterEvaluaParam();
+					waterEvaluaParam.searchType =  getQueryParam(searchTypeContainer)[0];
+					waterEvaluaParam.periodId = tempObject["id"];
+					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATEREVALUATION_RESULT);
+					queryEvent.data = waterEvaluaParam;
+					queryEvent.dispatch();
 				}
 			}
 			
@@ -734,15 +753,10 @@
 				<s:Label verticalAlign="middle" text="条记录"/>
 				<s:Spacer width="100%"/>
 				<!--<s:Button id="deduceButton" width="45" height="25" buttonMode="true" label="推演" 
-						  styleName="SubmitRegisterStyle"/>-->
+				styleName="SubmitRegisterStyle"/>-->
 				<s:Button id="searchButton" width="45" height="25" buttonMode="true" label="查询" 
 						  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
-			</s:HGroup>
-			<s:Line width="100%">
-				<s:stroke>
-					<s:SolidColorStroke color="#ACAB96" weight="1"/>
-				</s:stroke>
-			</s:Line>
+			</s:HGroup> 
 			<s:List id="periodList" width="100%" height="100%" borderVisible="false"
 					horizontalScrollPolicy="off" itemRenderer="sm.wegis.szy.renders.PeriodListItemRenderer"
 					change="periodList_changeHandler(event)"/>
