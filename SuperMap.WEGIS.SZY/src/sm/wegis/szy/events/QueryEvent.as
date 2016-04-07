@@ -61,6 +61,13 @@ package sm.wegis.szy.events
 		public static  const QUERY_RIVER_PERIOD:String = "QueryRiverPeriod";
 		public static  const QUERY_RIVER_PERIOD_RESPONSE:String = "QueryRiverPeriodResponse";
 		
+		/**查询河流评价周期数据*/
+		public static  const QUERY_RIVER_PERIOD_DATA:String = "QueryRiverPeriodData";
+		public static  const QUERY_RIVER_PERIOD_DATA_RESPONSE:String = "QueryRiverPeriodDataResponse";
+		
+		/**水质评价参数单选事件*/
+		public static  const SINGLE_OPTION_CLICK:String = "SingleOptionClick";
+		
 		/**水质评价响应查询单个要素，监测数据查询*/
 		public static const QUERY_STATION_EVALUTION_INFO_RESPONSE:String = "QueryStationEvalutionInfoResponse";
 		

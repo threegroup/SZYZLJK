@@ -33,6 +33,7 @@
 			import sm.wegis.szy.vo.ConstVO;
 			
 			import spark.components.Group;
+			import spark.events.IndexChangeEvent;
 			
 			import widgets.waterevaluation.Items.CheckBoxGroup;
 			import widgets.waterevaluation.Items.CommonGroup;
@@ -168,11 +169,11 @@
 					searchRiverPanelHeight = 100*factor;
 					searchPeriodPanelHeight = stage.stageHeight - 120 
 						- searchYearPanelHeight 
-						- searchTypePanelHeight 
-						- searchRiverPanelHeight;
+						- searchTypePanelHeight; 
+						//- searchRiverPanelHeight;
 					
-					var conArr:Array = [searchRiverContainer, searchYearContainer];
-					var heightArr:Array = [searchRiverPanelHeight, searchYearPanelHeight];
+					var conArr:Array = [searchYearContainer];//[searchRiverContainer, searchYearContainer];
+					var heightArr:Array = [searchYearPanelHeight];//[searchRiverPanelHeight, searchYearPanelHeight];
 					for(var i:int = 0;i < conArr.length; i++)
 					{
 						if((conArr[i] as Group).numElements > 0)
@@ -195,7 +196,8 @@
 				updateUnitLayout();
 				
 				initEventListener();
-				queryRiverList();
+				//queryRiverList();//初始化不再查询评价河流
+				queryRiverYear(null);//直接查询所有河流评价年份
 				
 				//初始化评价类型列表
 				decodeUI(searchTypeContainer, searchTypePanelHeight, searchTypeData);
@@ -204,7 +206,7 @@
 			/**清空条件内容*/
 			public function clear():void
 			{
-				this.searchRiverContainer.removeAllElements();
+				//this.searchRiverContainer.removeAllElements();
 			}
 			
 			/**根据需要组装河流数据*/
@@ -415,6 +417,7 @@
 					[QueryEvent.QUERY_RIVER_LIST_RESPONSE, queryRiverListResponseHandler],//评价河流
 					[QueryEvent.QUERY_RIVER_YEAR_RESPONSE, queryRiverYearResponseHandler],//评价年份
 					[QueryEvent.QUERY_RIVER_PERIOD_RESPONSE, queryRiverPeriodResponseHandler],//评价周期
+					[QueryEvent.QUERY_RIVER_PERIOD_DATA_RESPONSE, queryRiverPeriodDataResponseHandler],//评价周期
 					[QueryEvent.QUERY_DEFAULT_POINT_RESPONSE, queryDefaultPointResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
 					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler], // 获取对象信息和下方面板信息
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
@@ -432,6 +435,26 @@
 				queryEvent.dispatch();
 			}
 			
+			private function queryRiverYear(riverList:Array):void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_YEAR);
+				if(riverList != null && riverList.length >0)
+				{
+					var temps:Array = [];
+					for each (var item:Object in riverList) 
+					{
+						temps.push(item["data"]["optionValue"]);
+					}
+					
+					queryEvent.data = temps.join(",");
+				}
+				else
+				{
+					queryEvent.data = null;
+				}
+				queryEvent.dispatch();
+			}
+			
 			//查明河流评价周期列表
 			private function queryRiverPeriod():void
 			{
@@ -439,7 +462,7 @@
 				
 				var tempData:Object = {};
 				//评价河流IDs
-				tempData["searchIds"] = getQueryParam(searchRiverContainer).join(",");
+				tempData["searchIds"] = "";//getQueryParam(searchRiverContainer).join(",");
 				//评价年份
 				tempData["searchYear"] = getQueryParam(searchYearContainer)[0];
 				//评价类型
@@ -452,6 +475,24 @@
 				//水功能区水质查询
 				/* var queryWaterFunEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
 				queryWaterFunEvent.dispatch(); */
+			}
+			
+			//查明河流评价周期列表
+			private function queryRiverPeriodData(periodId:String):void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD_DATA);
+				
+				var tempData:Object = {};
+				//评价河流IDs
+				tempData["searchIds"] = "";//getQueryParam(searchRiverContainer).join(",");
+				//评价周期ID
+				tempData["searchPeriodId"] = periodId;
+				//评价类型
+				tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
+				
+				queryEvent.data = tempData;	
+				
+				queryEvent.dispatch();
 			}
 			
 			//查询评价河流列表响应
@@ -467,7 +508,7 @@
 						else
 							decodeRiverData(riverListData,[targetList]);
 						
-						decodeUI(searchRiverContainer, searchRiverPanelHeight, riverListData);
+						//decodeUI(searchRiverContainer, searchRiverPanelHeight, riverListData);
 					}
 				}
 			}
@@ -493,6 +534,29 @@
 			
 			//查询评价河流周期列表响应
 			private function queryRiverPeriodResponseHandler(event:CairngormEvent):void
+			{
+				var tempArrCol:ArrayCollection = null;
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					if(targetList != null)
+					{
+						if(targetList is Array)
+						{
+							tempArrCol = new ArrayCollection(targetList as Array);
+						}
+						else
+						{
+							tempArrCol = new ArrayCollection([targetList]);
+						}
+						this.periodList.dataProvider = tempArrCol;
+						this.queryInfoText.text = tempArrCol.length.toString();
+					}
+				}
+			}
+			
+			//查询评价河流周期数据响应
+			private function queryRiverPeriodDataResponseHandler(event:CairngormEvent):void
 			{
 				var tempArrCol:ArrayCollection = null;
 				var result:Object = event.data;
@@ -611,6 +675,16 @@
 				queryDefaultStation();
 			}
 			
+			protected function periodList_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				var tempObject:Object = this.periodList.selectedItem;
+				if(tempObject != null)
+				{
+					queryRiverPeriodData(tempObject["id"]);
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -629,8 +703,8 @@
 		<s:SolidColorStroke color="#ACAB96" weight="1"/>
 		</s:stroke>
 		</s:Line>-->
-		<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
-		</s:VGroup>
+		<!--<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
+		</s:VGroup>-->
 		<s:Line width="100%">
 			<s:stroke>
 				<s:SolidColorStroke color="#ACAB96" weight="1"/>
@@ -657,7 +731,7 @@
 				<s:Label verticalAlign="middle" text="周期列表:" fontWeight="bold"/>
 				<s:Label verticalAlign="middle" text="共"/>
 				<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000"  text="0"/>
-				<s:Label verticalAlign="middle" text="条"/>
+				<s:Label verticalAlign="middle" text="条记录"/>
 				<s:Spacer width="100%"/>
 				<!--<s:Button id="deduceButton" width="45" height="25" buttonMode="true" label="推演" 
 						  styleName="SubmitRegisterStyle"/>-->
@@ -670,7 +744,8 @@
 				</s:stroke>
 			</s:Line>
 			<s:List id="periodList" width="100%" height="100%" borderVisible="false"
-					horizontalScrollPolicy="off" itemRenderer="sm.wegis.szy.renders.PeriodListItemRenderer"/>
+					horizontalScrollPolicy="off" itemRenderer="sm.wegis.szy.renders.PeriodListItemRenderer"
+					change="periodList_changeHandler(event)"/>
 		</s:VGroup>
 	</s:VGroup>
 </ns:WidgetBase>
