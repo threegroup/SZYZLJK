@@ -63,6 +63,8 @@
 		<property name="maxCols" value="${maxCols}" type="number" />
 		<property name="maxLevel" value="${maxLevel}" type="number" />
 		<property name="waterEvaluationMaxLevel" value="${waterEvaluationMaxLevel}" type="number" />
+		<property name="waterEvaluationGridColumn" value="${waterEvaluationGridColumn}"/>
+		
 	</object>
 
 	<!--ModelLocator -->

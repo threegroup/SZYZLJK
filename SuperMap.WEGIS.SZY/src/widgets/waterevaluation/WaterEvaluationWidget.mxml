@@ -13,8 +13,10 @@
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.geometry.GeoPoint;
+			import com.supermap.web.core.styles.PictureMarkerStyle;
 			import com.supermap.web.core.styles.PredefinedMarkerStyle;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
 			import mx.collections.ArrayCollection;
@@ -613,17 +615,19 @@
 						var targetList:Object = result.attributes.targetList;
 					var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
 					featuresLayer.clear();
-					//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
-					var predefinedMarkerStyle:PredefinedMarkerStyle = new PredefinedMarkerStyle();
-					predefinedMarkerStyle.size = 10;
+					
 					for each(var item:Object in targetList) {
+						var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
+						var typeIDs:String = item.typeIDs;
+						pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;
+						
 						var positionStr:String = item.location;
 						if (positionStr != null && positionStr.split(",").length == 2) {
 							var positions:Array = positionStr.split(",");
 							item.x = Number(positions[0]);
 							item.y = Number(positions[1]);
 							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
-							var feature:Feature = new Feature(geoPoint, predefinedMarkerStyle, item);
+							var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
 							feature.id = item.id;
 							feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
 							feature.buttonMode = true;
@@ -638,11 +642,12 @@
 				var feature:Feature = event.currentTarget as Feature;
 				var attribute:Object = feature.attributes;
 				var requestParam:Object = attribute;
+				//点击站点，查询水质评价主要评价指标
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO);
 				queryEvent.data = requestParam;
 				queryEvent.dispatch();
 				
-				//请求要素infowindow数据
+				//点击站点，请求要素infowindow数据
 				var queryObjectEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_OBJECT_DETAIL);
 				queryObjectEvent.data = feature;
 				queryObjectEvent.dispatch();
@@ -684,6 +689,7 @@
 				clearLastQuery();
 			}
 			
+			//模块加载完成
 			protected function this_WidgetAddCompleteHandler(event:BaseWidgetEvent):void
 			{
 				queryDefaultStation();

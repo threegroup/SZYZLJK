@@ -50,6 +50,19 @@ package sm.wegis.szy.vo
 		private var _maxLevel:int = 2;
 		
 		private var _waterEvaluationMaxLevel:int = 4;
+		
+		//水质评价，测站评价指标表格数据展示列
+		private var _waterEvaluationGridColumn:String;
+
+		public function get waterEvaluationGridColumn():String
+		{
+			return _waterEvaluationGridColumn;
+		}
+
+		public function set waterEvaluationGridColumn(value:String):void
+		{
+			_waterEvaluationGridColumn = value;
+		}
 
 		/**水质评价，河流渲染最大显示级别，切换显示水功能区*/
 		public function get waterEvaluationMaxLevel():int

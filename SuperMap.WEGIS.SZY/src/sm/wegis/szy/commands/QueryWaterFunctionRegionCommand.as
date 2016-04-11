@@ -155,7 +155,7 @@ package sm.wegis.szy.commands
 			var waterFunctionFeatureLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERFUNCTION_FEATURE_LAYER) as FeaturesLayerEx;
 			resolveFeatureLayer(riverFeatureLayer);
 			resolveFeatureLayer(waterFunctionFeatureLayer);
-			if (modelLocator.waterEvaluationResult.success == true) {
+			if (modelLocator.waterEvaluationResult && modelLocator.waterEvaluationResult.success == true) {
 				if (modelLocator.waterEvaluationResult.attributes) {
 					var waterEvalutions:Object = modelLocator.waterEvaluationResult.attributes;
 					var ft:Feature;
@@ -168,7 +168,7 @@ package sm.wegis.szy.commands
 								{
 									ft.attributes["水质状况"] =  riverInfo["水质状况"];
 									ft.toolTip = ft.attributes["水质状况"];
-									ft.style = new PredefinedLineStyle("solid",parseInt(riverInfo["表征颜色"],16), 1,3);
+									ft.style = new PredefinedLineStyle("solid",parseInt(riverInfo["表征颜色"],16), 1,8);
 								}
 							}
 						}
@@ -180,7 +180,7 @@ package sm.wegis.szy.commands
 									if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
 									{
 										ft.attributes["水质状况"] =  riverInfo["水质状况"];
-										ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["表征颜色"],16), 1,3);
+										ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["表征颜色"],16), 1,8);
 										ft.toolTip = ft.attributes["水质状况"];
 									}
 								}

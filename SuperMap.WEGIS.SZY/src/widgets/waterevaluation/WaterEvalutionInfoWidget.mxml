@@ -13,23 +13,21 @@
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.web.core.Point2D;
-			import com.supermap.wegis.common.components.checkComboBox.CheckBoxSelectEvent;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
 			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
-			import com.supermap.wegis.common.core.hashTable.HashTable;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
-			import com.supermap.wegis.common.utils.ArrayCollectionUtils;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
-			import mx.events.ListEvent;
 			
 			import sm.wegis.szy.events.DropDownPanelEvent;
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.renders.DataGroupCheckItemrenderer;
+			import sm.wegis.szy.renders.HistoryLineRender;
+			import sm.wegis.szy.renders.IndexOrderRender;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
 			import sm.wegis.szy.vo.GridColumnInfo;
@@ -53,10 +51,11 @@
 			/**模型定位器*/
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
-			
 			protected function initWidget(event:FlexEvent):void
 			{
 				initListener();
+				//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
+				initGridColumns();
 			}
 			
 			/**初始化事件监听*/
@@ -75,6 +74,37 @@
 				
 				//切换系统
 				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD	, systemReloadHandler);
+			}
+			
+			//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
+			private function initGridColumns():void
+			{
+				var colConfigParam:String = modelLocator.systemInfo.waterEvaluationGridColumn;
+				var colConfigs:Array = colConfigParam.split(",");
+				if (resultGrid.columns == null) {
+					resultGrid.columns = new ArrayList();
+				}
+				var column:GridColumn;
+				for each(var item:String in colConfigs) {
+					var items:Array = item.split(":");
+					if (items.length >= 2) {
+						column	= new GridColumn();
+						if (items[1] == "index") {
+							column.headerText = "序号";
+							column.itemRenderer = new ClassFactory(IndexOrderRender);
+						} else if (items[1] == "history") {
+							column.headerText = "历史情况";
+							column.itemRenderer = new ClassFactory(HistoryLineRender);
+						} else {
+							column.headerText = items[0];
+							column.dataField = items[1];
+						}
+						if (items.length == 3) {
+							column.width = items[2];
+						}
+						resultGrid.columns.addItem(column);
+					}
+				}
 			}
 			
 			//用户或子系统发生变化，刷新数据
@@ -272,18 +302,7 @@
 			<s:Spacer width="10"/>
 		</s:controlBarContent>
 		<s:DataGrid id="resultGrid" width="100%" height="100%" maxHeight="200"  borderVisible="false"
-					gridClick="resultGrid_gridClickHandler(event)" sortableColumns="false">
-			<s:columns>
-				<s:ArrayList>
-					<s:GridColumn headerText="序号" width="50" itemRenderer="sm.wegis.szy.renders.IndexOrderRender"/>
-					<s:GridColumn headerText="指标名称"/>
-					<s:GridColumn headerText="测量值"/>
-					<s:GridColumn headerText="测量时间"/>
-					<s:GridColumn headerText="标准值"/>
-					<s:GridColumn headerText="超标情况"/>
-					<s:GridColumn headerText="历史情况"  itemRenderer="sm.wegis.szy.renders.HistoryLineRender"/>
-				</s:ArrayList>
-			</s:columns>
+					gridClick="resultGrid_gridClickHandler(event)" sortableColumns="false" >
 		</s:DataGrid>
 	</s:Panel>
 </ns:WidgetBase>
