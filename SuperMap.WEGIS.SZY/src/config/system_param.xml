@@ -12,14 +12,14 @@
 		<riverLayerName>河流汇总@断面</riverLayerName>
 		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50"/>
 		<themeLayerId>
-			<layer label="水库"  selected="true" layerIds="9,10,11,12,28,29,43,44" />
+			<layer label="水库"  selected="true" layerIds="9,10,11,12,28,29,33,34" />
 			<layer label="河流"  selected="true" 
-				layerIds="13,14,15,16,17,18,19,20,21,22,33,34,35,36,37,38,39,40,41" />
+				layerIds="13,14,15,16,17,18,19,20,21,22,35,36,37,38,39,40,41,42,43" />
 			<layer label="水文站"  selected="true" layerIds="8,30" />
 			<layer label="雨量站"  selected="true" layerIds="7,31" />
 			<layer label="拦河坝"  selected="true" layerIds="5,27" />
 			<layer label="排污口"  selected="true" layerIds="6,26" />
-			<layer label="高程线"  selected="true" layerIds="4,42" />
+			<layer label="高程线"  selected="true" layerIds="4,44" />
 			<layer label="路网"  selected="false" layerIds="45,46,47,48" />
 		</themeLayerId>
 	</subSystem>

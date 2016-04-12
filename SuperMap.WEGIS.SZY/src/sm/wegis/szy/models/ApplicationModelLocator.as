@@ -9,6 +9,7 @@ package sm.wegis.szy.models
 	import sm.wegis.szy.vo.SystemVO;
 	import sm.wegis.szy.vo.ToolVO;
 	import sm.wegis.szy.vo.UserVO;
+	import sm.wegis.szy.vo.WaterEvaluationVO;
 
 	[Bindable]
 	public class ApplicationModelLocator implements ModelLocator
@@ -32,11 +33,29 @@ package sm.wegis.szy.models
 		/**用户信息*/
 		public var userVo:UserVO = new UserVO();
 		
-		/**水质评价成果数据*/
-		public var waterEvaluationResult:Object;
-		
 		/**需要特殊处理的参数*/
 		public var specialWidgetInfo:SpecialWidgetVO = new SpecialWidgetVO();
+		
+		//水质评价，专题地图状态参数
+		private var _waterEvaluationVO:WaterEvaluationVO;
+		
+		/**水质评价，专题地图状态参数*/
+		public function get waterEvaluationVO():WaterEvaluationVO
+		{
+			if (_waterEvaluationVO == null) {
+				_waterEvaluationVO = new WaterEvaluationVO()
+			}
+			return _waterEvaluationVO;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set waterEvaluationVO(value:WaterEvaluationVO):void
+		{
+			_waterEvaluationVO = value;
+		}
+
 		/**系统底图信息*/
 		public function get baseMapInfo():BaseMapVO
 		{

@@ -318,10 +318,10 @@
 					if (data.key == "MapLegend") {
 						return RightVGroupContainerID;
 					} else {
-						return MapContainerID;
+						return initWidgetContainerID;
 					}
 				} 
-				return MapContainerID;
+				return initWidgetContainerID;
 			}
 			
 			
@@ -334,11 +334,9 @@
 				}
 				
 				//若有多个子模块
-				if(menuItemData.hasOwnProperty("subitems")
-					&& menuItemData["subitems"] != null){
+				if(menuItemData.hasOwnProperty("subitems") && menuItemData["subitems"] != null){
 					var subitems:Object = menuItemData["subitems"];
-					var subWidgets:ArrayCollection =  subitems["subitem"] is  ArrayCollection 
-						? subitems["subitem"] as  ArrayCollection
+					var subWidgets:ArrayCollection =  subitems["subitem"] is  ArrayCollection ? subitems["subitem"] as  ArrayCollection
 						: new ArrayCollection([subitems["subitem"]]);
 					if(subWidgets != null && subWidgets.length > 0) {
 						for each (var item:Object in subWidgets) {
@@ -351,7 +349,17 @@
 									modelLocator.specialWidgetInfo.specialWidgetMap.add(item.key,item);
 								}
 							} else {
-								item.parent = this.RightDownContainerID;
+								switch(item["position"]) {
+									case "bottom":
+										item.parent = this.RightDownContainerID;
+										break;
+									case "float":
+										item.parent = this.menuWidgetContainerID;
+										break;
+									default:
+										item.parent = this.RightDownContainerID;
+										break;
+								}
 								WidgetManager.getInstance().loadWidget(item);
 							}
 						}
@@ -365,7 +373,7 @@
 			/*****添加二维地图控件******************************************************/
 			public function addMapCtrl(component:IVisualElement):void
 			{
-				this.MapContainerID.addElement(component);
+				this.MapContainderID.addElement(component);
 				
 				this.initMapControl();
 			}
@@ -495,7 +503,9 @@
 			</s:BorderContainer>
 			<s:Group id="MainBodyContainerID" width="100%" height="100%">
 				<s:Group top="0" bottom="{RightDownContainerID.height}" width="100%">
-					<s:BorderContainer id="MapContainerID" width="100%" height="100%"/>
+					<s:BorderContainer id="MapContainderID" width="100%" height="100%"/>
+					<s:Group id="initWidgetContainerID" width="100%" height="100%"/>
+					<s:Group id="menuWidgetContainerID" width="100%" height="100%"/>
 					<s:VGroup id="RightVGroupContainerID" right="5" bottom="5" horizontalAlign="right"/>
 					<s:HGroup id="CopyRightID" left="3" bottom="3" width="100%" gap="0"
 							  horizontalAlign="left" verticalAlign="middle">

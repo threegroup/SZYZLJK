@@ -36,5 +36,12 @@ package sm.wegis.szy.vo
 		
 		/**水质评价，河流图层*/
 		public static const WATERRIVER_FEATURE_LAYER:String = "WaterRiverFeatureLayer";
+		
+		/**水质评价，专题地图——河流水质评价类型*/
+		public static const RIVER_WATER_EVALUATION_THEME_TYPE:String = "riverWaterEvaluationThemeType";
+		/**水质评价，专题地图——水功能区水质评价类型*/
+		public static const FUNCTION_EVALUATION_THEME_TYPE:String = "functionEvaluationThemeType";
+		/**水质评价，专题地图——水功能区是否达标类型*/
+		public static const FUNCTION_STANDARD_THEME_TYPE:String = "functionStandardThemeType";
 	}
 }

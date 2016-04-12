@@ -767,8 +767,8 @@
 				<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000"  text="0"/>
 				<s:Label verticalAlign="middle" text="条记录"/>
 				<s:Spacer width="100%"/>
-				<!--<s:Button id="deduceButton" width="45" height="25" buttonMode="true" label="推演" 
-				styleName="SubmitRegisterStyle"/>-->
+				<s:Button id="deduceButton" width="45" height="25" buttonMode="true" label="推演" 
+				styleName="SubmitRegisterStyle"/>
 				<s:Button id="searchButton" width="45" height="25" buttonMode="true" label="查询" 
 						  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
 			</s:HGroup> 

@@ -21,7 +21,7 @@
 			<right>0</right>
 		</item>
 		<item>
-			<name>显示控制</name>
+			<name>底图控制</name>
 			<key>BaseMapControl</key>
 			<url>widgets/basemap/BaseMapWidget.swf</url>
 			<mutex>false</mutex>
@@ -43,6 +43,7 @@
 						<key>WaterWatchWidget</key>
 						<name>监测数据展示面板</name>
 						<url>widgets/mapquery/WaterWatchIndexWidget.swf</url>
+						<position>bottom</position>
 						<mutex>true</mutex>
 						<cover>true</cover>
 						<bottom>0</bottom>
@@ -68,10 +69,20 @@
 						<key>WaterEvalutionWidget</key>
 						<name>评价指标数据展示面板</name>
 						<url>widgets/waterevaluation/WaterEvalutionInfoWidget.swf</url>
+						<position>bottom</position>
 						<mutex>true</mutex>
 						<cover>true</cover>
 						<bottom>0</bottom>
 						<left>0</left>
+					</subitem>
+					<subitem>
+						<key>WaterThemeTypeWidget</key>
+						<name>水质专题图类型</name>
+						<url>widgets/waterevaluation/WaterSelectThemeTypeWidget.swf</url>
+						<position>float</position>
+						<mutex>true</mutex>
+						<top>3</top>
+						<left>3</left>
 					</subitem>
 					<subitem>
 						<key>WaterLegendWidget</key>

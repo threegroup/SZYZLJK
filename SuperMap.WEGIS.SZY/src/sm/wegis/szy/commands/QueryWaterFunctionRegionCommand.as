@@ -23,7 +23,9 @@ package sm.wegis.szy.commands
 	import mx.rpc.AsyncResponder;
 	
 	import sm.wegis.szy.core.baseclass.CommandBase;
+	import sm.wegis.szy.events.QueryEvent;
 	import sm.wegis.szy.vo.ConstVO;
+	import sm.wegis.szy.vo.WaterEvaluationVO;
 	
 	public class QueryWaterFunctionRegionCommand extends CommandBase
 	{
@@ -31,7 +33,8 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			modelLocator.waterEvaluationResult = event.data;
+			//存储查询的成果数据
+			modelLocator.waterEvaluationVO.waterEvaluationResult = event.data;
 			
 			if (isFirstInitFeatureLayer == true) {
 				CursorManager.setBusyCursor();
@@ -87,8 +90,6 @@ package sm.wegis.szy.commands
 						{
 							for each (var feature:Feature in recordSet.features)
 							{
-//								feature.addEventListener(MouseEvent.ROLL_OVER,showToolTip);
-//								feature.addEventListener(MouseEvent.ROLL_OUT,hideToolTip);
 								feature.addEventListener(MouseEvent.CLICK,showDetailInfo);
 								feature.buttonMode = true;
 								featuresLayer.addFeature(feature);
@@ -98,7 +99,7 @@ package sm.wegis.szy.commands
 				}
 			}
 			updateEvaluationResult();
-			modelLocator.mapCtrl.addEventListener(ZoomEvent.ZOOM_END, zoomEndHandler);
+//			modelLocator.mapCtrl.addEventListener(ZoomEvent.ZOOM_END, zoomEndHandler);
 			CursorManager.removeBusyCursor();
 		}
 		
@@ -128,8 +129,6 @@ package sm.wegis.szy.commands
 						{
 							for each (var feature:Feature in recordSet.features)
 							{
-//								feature.addEventListener(MouseEvent.ROLL_OVER,showToolTip);
-//								feature.addEventListener(MouseEvent.ROLL_OUT,hideToolTip);
 								feature.addEventListener(MouseEvent.CLICK,showDetailInfo);
 								feature.buttonMode = true;
 								featuresLayer.addFeature(feature);
@@ -155,40 +154,70 @@ package sm.wegis.szy.commands
 			var waterFunctionFeatureLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERFUNCTION_FEATURE_LAYER) as FeaturesLayerEx;
 			resolveFeatureLayer(riverFeatureLayer);
 			resolveFeatureLayer(waterFunctionFeatureLayer);
-			if (modelLocator.waterEvaluationResult && modelLocator.waterEvaluationResult.success == true) {
-				if (modelLocator.waterEvaluationResult.attributes) {
-					var waterEvalutions:Object = modelLocator.waterEvaluationResult.attributes;
-					var ft:Feature;
-					var riverInfo:Object;
-					if (modelLocator.mapCtrl.level < modelLocator.systemInfo.waterEvaluationMaxLevel) {
+			var waterEvaluationVO:WaterEvaluationVO = modelLocator.waterEvaluationVO;
+			if (waterEvaluationVO.waterEvaluationResult && waterEvaluationVO.waterEvaluationResult.success == true
+				&& modelLocator.waterEvaluationVO.waterEvaluationResult.attributes) {
+				var waterEvalutions:Object = waterEvaluationVO.waterEvaluationResult.attributes;
+				var ft:Feature;
+				var riverInfo:Object;
+				var functionInfo:Object;
+				switch(waterEvaluationVO.themeMapType) {
+					//河流水质评价专题图
+					case ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE:
 						riverFeatureLayer.visible = true;
 						for each(riverInfo in waterEvalutions.targetList) {
-							for each(ft in riverFeatureLayer.features) {
-								if (ft.attributes["ID"] == riverInfo.SUPER_OBJ_ID)
-								{
-									ft.attributes["水质状况"] =  riverInfo["水质状况"];
-									ft.toolTip = ft.attributes["水质状况"];
-									ft.style = new PredefinedLineStyle("solid",parseInt(riverInfo["表征颜色"],16), 1,8);
-								}
+						for each(ft in riverFeatureLayer.features) {
+							if (ft.attributes["ID"] == riverInfo.SUPER_OBJ_ID)
+							{
+								ft.attributes["水质状况"] =  riverInfo["水质状况"];
+								ft.toolTip = ft.attributes["水质状况"];
+								ft.style = new PredefinedLineStyle("solid",parseInt(riverInfo["表征颜色"],16), 1,8);
 							}
 						}
-					} else {
+					}
+						break;
+					//水功能区水质评价专题图
+					case ConstVO.FUNCTION_EVALUATION_THEME_TYPE:
 						waterFunctionFeatureLayer.visible = true;
 						for each(riverInfo in waterEvalutions.targetList) {
-							for each(var functionInfo:Object in riverInfo.waterFunList) {
-								for each(ft in waterFunctionFeatureLayer.features) {
-									if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
-									{
-										ft.attributes["水质状况"] =  riverInfo["水质状况"];
-										ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["表征颜色"],16), 1,8);
-										ft.toolTip = ft.attributes["水质状况"];
-									}
+						for each(functionInfo in riverInfo.waterFunList) {
+							for each(ft in waterFunctionFeatureLayer.features) {
+								if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
+								{
+									ft.attributes["水质状况"] =  functionInfo["水质状况"];
+									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["表征颜色"],16), 1,8);
+									ft.toolTip = ft.attributes["水质状况"];
 								}
 							}
 						}
 					}
+						break;
+					//水功能区水质达标专题图
+					case ConstVO.FUNCTION_STANDARD_THEME_TYPE:
+						waterFunctionFeatureLayer.visible = true;
+						for each(riverInfo in waterEvalutions.targetList) {
+						for each(functionInfo in riverInfo.waterFunList) {
+							for each(ft in waterFunctionFeatureLayer.features) {
+								if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
+								{
+									ft.attributes["是否达标"] =  functionInfo["是否达标"] == "0" ? "否" : "是";
+									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["达标颜色"],16), 1,8);
+									ft.toolTip = ft.attributes["是否达标"];
+								}
+							}
+						}
+					}
+						break;
 				}
+				showWaterEvaluationLegend();
 			}
+		}
+		
+		//显示水质评价专题地图图例
+		private function showWaterEvaluationLegend():void
+		{
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.Change_Water_Evaluation_Legend);
+			queryEvent.dispatch();
 		}
 		
 		//设置要素透明和图层不可见
@@ -202,14 +231,6 @@ package sm.wegis.szy.commands
 			}
 		}
 		
-		
-		//地图显示比例尺发生变化
-		private  function mapZoomEndHandler(event:ZoomEvent):void
-		{
-			if (modelLocator.mapCtrl.level > modelLocator.systemInfo.waterEvaluationMaxLevel) {
-				
-			}
-		}
 		
 		private function showToolTip(event:MouseEvent):void
 		{

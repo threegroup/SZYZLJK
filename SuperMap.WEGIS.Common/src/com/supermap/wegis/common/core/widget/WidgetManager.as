@@ -139,7 +139,7 @@ package com.supermap.wegis.common.core.widget
 		
 		private function loadNextControl():void
 		{
-			if (widgetList.length &&　_preWidgetIsLoadComplate)
+			if (widgetList.length && _preWidgetIsLoadComplate)
 			{
 				var ctl:Object = widgetList[0];
 				var tempCtl:Object = {};

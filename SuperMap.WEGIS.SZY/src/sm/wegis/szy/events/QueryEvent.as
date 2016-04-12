@@ -77,5 +77,8 @@ package sm.wegis.szy.events
 		
 		/**水质评价，查询水功能区*/
 		public static const QUERY_WATER_FUNCTION_REGION:String = "QueryWaterFunctionRegion";
+		
+		/**水质评价，显示水质专题图图例*/
+		public static const Change_Water_Evaluation_Legend:String = "ChangeWaterEvaluationLegend";
 	}
 }
