@@ -23,6 +23,8 @@ package sm.wegis.szy.commands
 			params.push(tempData["searchIds"]);
 			params.push(tempData["searchYear"]);
 			params.push(tempData["searchType"]);
+			/*params.push("2009-04-10~2016-04-15");
+			params.push("begDate&endDate");*/
 			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetSZPJPeriodList, params);
 			CursorManager.setBusyCursor();
 		}

@@ -102,7 +102,7 @@
 							{
 								"dicOrder": "年",
 								"optionName": "年",
-								"optionValue": "fengShui"
+								"optionValue": "year"
 							},
 							{
 								"dicOrder": "丰水期 ",
@@ -350,7 +350,16 @@
 						if(item != null)
 						{
 							if(item.isSelected)
-								temps.push(item.getContent().value);
+							{
+								if(item.selectContent.length == 0)
+								{
+									temps.push(item.getContent().value + "~" + item.getContent().maxValue);
+								}
+								else
+								{
+									temps.push(item.getContent().value);
+								}
+							}
 						}
 					}
 				}

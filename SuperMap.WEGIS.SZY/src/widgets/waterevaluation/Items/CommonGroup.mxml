@@ -31,7 +31,7 @@
 			public var monthNamesArray:Array=["一月", "二月", "三月", "四月", "五月","六月", "七月", "八月", "九月", "十月", "十一月","十二月"];
 			/**日期格式*/
 			[Bindable]
-			public var formatString:String = "YYYYMM";
+			public var formatString:String = "YYYY-MM-DD";
 			[Bindable]
 			/**容器中项目间隔*/
 			public var hGap:Number = 5;
