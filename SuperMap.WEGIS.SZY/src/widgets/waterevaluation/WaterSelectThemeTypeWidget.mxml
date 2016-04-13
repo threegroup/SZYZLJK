@@ -3,6 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
+			   visible="false" visible.showState="true"
 			   creationComplete="creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
@@ -31,6 +32,26 @@
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
+				initEventListener();
+			}
+			
+			public function initEventListener():void{
+				var eList:ArrayCollection = new ArrayCollection([
+					[QueryEvent.SHOW_THEME_MAP_TYPE_PANEL_VISIBLE, showThememapTypePanelHandler],//评价河流
+					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
+				]);
+				var eventObject:CairngormEventClass = new CairngormEventClass();
+				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			private function showThememapTypePanelHandler(event:CairngormEvent):void
+			{
+				this.currentState = event.data == true ? "showState" : "hideState";
+			}
+			
+			private function systemReloadHandler(event:CairngormEvent):void
+			{
+				
 			}
 			
 		]]>
@@ -38,6 +59,10 @@
 	<fx:Declarations>
 		<s:RadioButtonGroup id="themeMapGroup" valueCommit="themeMapGroup_valueCommitHandler(event)"/>
 	</fx:Declarations>
+	<ns:states>
+		<s:State name="hideState"/>
+		<s:State name="showState"/>
+	</ns:states>
 	<s:Panel title="专题图类型">
 		<s:VGroup width="100%" height="100%"  paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5">
 			<s:RadioButton label="河流水质评价图" buttonMode="true"  groupName="themeMapGroup" selected="true" value="{ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE}"/>

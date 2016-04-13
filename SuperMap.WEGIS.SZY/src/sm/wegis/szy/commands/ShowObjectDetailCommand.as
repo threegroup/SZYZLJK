@@ -99,11 +99,6 @@ package sm.wegis.szy.commands
 					PopUpManager.centerPopUp(contentPanel);
 				}
 			}
-			
-			//加载要素对应的服务
-			/*var loadEvent:MapCtrlEvent = new MapCtrlEvent(MapCtrlEvent.LOCATE_TO_LOAD_LAYER);
-			loadEvent.data = parentAttribute["MIDDLE_TYPE"];
-			loadEvent.dispatch();*/
 		}
 		
 		/**获取选中对象，并高亮显示*/
@@ -151,8 +146,6 @@ package sm.wegis.szy.commands
 					}
 				}
 				selectedFeature = feature;
-				//清除关联对象
-				clearBaseDataLinkObject();
 			}
 		}
 		
@@ -167,16 +160,6 @@ package sm.wegis.szy.commands
 				feature = featureLayer.getFeatureByID(featureId);
 			}
 			return feature;
-		}
-		
-		//清除关联对象
-		private function clearBaseDataLinkObject():void
-		{
-			/*var baseDataEvent0:BaseDataEvent = new BaseDataEvent(BaseDataEvent.BASEDATA_LINK_OBJECT_CONTROL);
-			var baseDataLinkObjectData:BaseDataLinkObjectVO = new BaseDataLinkObjectVO();
-			baseDataLinkObjectData.layerName = ConstVO.BASEDATA_DETAIL_FEATURE_LAYER;
-			baseDataEvent0.data = baseDataLinkObjectData;
-			baseDataEvent0.dispatch();*/
 		}
 		
 		//有空间坐标信息关闭回调函数

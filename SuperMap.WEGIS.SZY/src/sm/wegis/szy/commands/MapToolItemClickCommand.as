@@ -74,15 +74,15 @@ package sm.wegis.szy.commands
 						}
 						case "Distance":
 						{
-//							var measureDistanceAction:MeasureDistanceAction = new MeasureDistanceAction(map,modelLocator.mapInfo.measureUrl);
-//							map.action = measureDistanceAction;
+							var measureDistanceAction:MeasureDistanceAction = new MeasureDistanceAction(map,modelLocator.systemInfo.measureUrl);
+							map.action = measureDistanceAction;
 							break;
 						}
 						case "Area":
 						{
-//							var measureAreaAction:MeasureAreaAction = new MeasureAreaAction(map,modelLocator.mapInfo.measureUrl);
-//							measureAreaAction.style = new PredefinedFillStyle(PredefinedFillStyle.SYMBOL_SLASH,0xABBEF2,1,new PredefinedLineStyle("soild",0xFE8035,0.9,0.8));
-//							map.action = measureAreaAction;
+							var measureAreaAction:MeasureAreaAction = new MeasureAreaAction(map,modelLocator.systemInfo.measureUrl);
+							measureAreaAction.style = new PredefinedFillStyle(PredefinedFillStyle.SYMBOL_SLASH,0xABBEF2,1,new PredefinedLineStyle("soild",0xFE8035,0.9,0.8));
+							map.action = measureAreaAction;
 							break;
 						}
 						case "Clear":

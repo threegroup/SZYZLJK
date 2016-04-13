@@ -35,6 +35,7 @@
 			import sm.wegis.szy.utils.FeatureLayerUtil;
 			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.MapQueryVO;
+			import sm.wegis.szy.vo.WaterEvaluaParam;
 			
 			import spark.components.DropDownList;
 			import spark.events.IndexChangeEvent;
@@ -269,8 +270,6 @@
 							}
 							var feature:Feature = new Feature(new GeoPoint(item.x, item.y), picMarkStyle, item);
 							feature.addEventListener(MouseEvent.CLICK, featureClickHandler);
-//							feature.addEventListener(MouseEvent.CLICK, featureOverHander);
-//							feature.addEventListener(MouseEvent.MOUSE_OUT,featureOutHandler);
 							feature.id = item.id;
 							feature.buttonMode = true;
 							feature.attributes = item;
@@ -292,14 +291,15 @@
 			private function featureClickHandler(event:MouseEvent):void
 			{
 				var feature:Feature = event.currentTarget as Feature;
-				var id:String = feature.id;
+				var attribute:Object = feature.attributes;
+				var id:String = attribute.id;
 				for each(var item:Object in resultList.dataProvider) {
 					if (item.id == id) {
 						resultList.selectedItem = item;
 						resultList.ensureIndexIsVisible(resultList.dataProvider.getItemIndex(item));
 					}
 				}
-				showFeatureDetail(feature);
+				showFeatureDetail(attribute);
 			}
 			
 			private function featureOverHander(event:MouseEvent):void
@@ -314,10 +314,15 @@
 				
 			}
 			
-			private function showFeatureDetail(feature:Feature):void
+			private function showFeatureDetail(data:Object):void
 			{
 				var queryObjectEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_OBJECT_DETAIL);
-				queryObjectEvent.data = feature;
+				var param:WaterEvaluaParam = new WaterEvaluaParam();
+				param.id = data.id;
+				param.name =  data["name"];
+				param.x = data["x"];
+				param.y = data["y"];
+				queryObjectEvent.data = param;
 				queryObjectEvent.dispatch();
 			}
 			
@@ -405,6 +410,7 @@
 					} else {
 						modelLocator.mapCtrl.panTo(point);
 					}
+					showFeatureDetail(selectItem);
 				}
 			}
 			

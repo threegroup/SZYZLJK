@@ -11,19 +11,26 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.events.QueryEvent;
 	import sm.wegis.szy.vo.WSMethod;
+	import sm.wegis.szy.vo.WaterEvaluaParam;
 	
 	public class QueryStationEvalutionInfoCommand extends CommandBase
 	{
-		private var requestData:Object;
+		private var waterEvaluaParam:WaterEvaluaParam;
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			requestData = event.data;
+			waterEvaluaParam = event.data as WaterEvaluaParam;
 			//如果左侧checkbox选择=true，请求数据，否则删除数据
 				var params:Array = [];
 				params.push(modelLocator.userVo.userId);
-				params.push(requestData.id);
+				params.push(waterEvaluaParam.id);
 				params.push("2");//评价指标
+				if (waterEvaluaParam.searchType != null) {
+					params.push(modelLocator.systemInfo.subSystemID);
+					params.push(waterEvaluaParam.searchType);
+					params.push(waterEvaluaParam.periodId);
+				}
+			
 				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTarget, params);
 				CursorManager.setBusyCursor();
 		}
@@ -35,8 +42,8 @@ package sm.wegis.szy.commands
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var value:Object = jsDec.getValue() as Object;
 			//用于右侧表格是添加、还是删除
-			value.x = requestData.x;
-			value.y = requestData.y;
+			value.x = waterEvaluaParam.x;
+			value.y = waterEvaluaParam.y;
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE);
 			queryEvent.data = value;
 			queryEvent.dispatch();
@@ -50,7 +57,6 @@ package sm.wegis.szy.commands
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE);
 			var faultObject:Object = new Object();
 			faultObject.success = false;
-			faultObject.index = requestData.index;
 			queryEvent.dispatch();
 		}
 	}

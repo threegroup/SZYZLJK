@@ -12,17 +12,24 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.events.QueryEvent;
 	import sm.wegis.szy.vo.WSMethod;
+	import sm.wegis.szy.vo.WaterEvaluaParam;
 	
 	public class QueryObjectDetailCommand extends CommandBase
 	{
-		private var f:Feature = null;
+		private var waterEvaluationParam:WaterEvaluaParam = null;
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			f = event.data as Feature;
-			var objId:String = f.id;
+			waterEvaluationParam = event.data as WaterEvaluaParam;
 			var params:Array = [];
-			params.push(objId);
+			params.push(waterEvaluationParam.id);
+			//searchTypef非空，查询水质评价
+			if (waterEvaluationParam.searchType != null) {
+				params.push(modelLocator.systemInfo.subSystemID);
+				params.push(waterEvaluationParam.searchType);
+				params.push(waterEvaluationParam.periodId);
+			}
+			
 			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetObjDetailInfo, params);
 			CursorManager.setBusyCursor();
 		}
@@ -36,11 +43,11 @@ package sm.wegis.szy.commands
 			var resultData:Object = {};
 			resultData["resultData"] = value;
 			resultData["attribute"] = {};
-			if(f != null)
+			if(waterEvaluationParam != null)
 			{
-				resultData["attribute"]["OBJ_NAME"] = f.attributes["name"];
-				resultData["attribute"]["CENTER_X"] = f.attributes["x"];
-				resultData["attribute"]["CENTER_Y"] = f.attributes["y"];
+				resultData["attribute"]["OBJ_NAME"] = waterEvaluationParam.name;
+				resultData["attribute"]["CENTER_X"] = waterEvaluationParam.x;
+				resultData["attribute"]["CENTER_Y"] = waterEvaluationParam.y;
 			}
 			if(value.hasOwnProperty("surveyData") && value["surveyData"] != null)
 			{

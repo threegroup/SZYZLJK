@@ -58,6 +58,7 @@
 		<property name="systemID" value="${systemID}" />
 		<property name="isNeedAuthorization" value="${isNeedAuthorization}" />
 		<property name="copyRight" value="${copyRight}" />
+		<property name="measureUrl" value="${measureUrl}" />
 		<property name="layerBounds" ref="bounds" />
 		<property name="normalCols" value="${normalCols}" type="number" />
 		<property name="maxCols" value="${maxCols}" type="number" />
@@ -153,6 +154,9 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryWaterEvaluationResultCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryRiverMainPollutionCommand
+					</value>
+					
 				</array>
 			</arg>
 		</method-invocation>
@@ -182,14 +186,16 @@
 				<property name="ShowObjectDetail" value="ShowObjectDetailCommand" />
 
 				<!--水质评价 -->
-				<property name="QueryDefaultPoint" value="QueryDefaultPointCommand" />
-				<property name="QueryRiverList" value="QueryRiverListCommand" />
-				<property name="QueryRiverYear" value="QueryRiverYearCommand" />
-				<property name="QueryRiverPeriod" value="QueryRiverPeriodCommand" />
+				<property name="QueryDefaultPoint" value="QueryDefaultPointCommand"/>
+				<property name="QueryRiverList" value="QueryRiverListCommand"/>
+				<property name="QueryRiverYear" value="QueryRiverYearCommand"/>
+				<property name="QueryRiverPeriod" value="QueryRiverPeriodCommand"/>
 				<property name="QueryRiverPeriodData" value="QueryRiverPeriodDataCommand" />
-				<property name="QueryStationEvalutionInfo" value="QueryStationEvalutionInfoCommand" />
-				<property name="QueryWaterFunctionRegion" value="QueryWaterFunctionRegionCommand" />
-				<property name="QueryWaterEvaluationResult" value="QueryWaterEvaluationResultCommand" />
+				<property name="QueryStationEvalutionInfo" value="QueryStationEvalutionInfoCommand"/>
+				<property name="QueryWaterFunctionRegion" value="QueryWaterFunctionRegionCommand"/>
+				<property name="QueryWaterEvaluationResult" value="QueryWaterEvaluationResultCommand"/>
+				<property name="QueryRiverMainPollution" value="QueryRiverMainPollutionCommand"/>
+				
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

@@ -529,7 +529,7 @@
 				</s:HGroup>
 				<s:BorderContainer right="5" top="5" height="30" borderVisible="true">
 					<ns:ToolBar id="MapTool" height="100%" buttonStyleName="toolStyle"
-								dataProvider="{modelLocator.toolInfo.mapToolList}"
+								dataProvider="{modelLocator.toolInfo.mapToolList}" 
 								labelField="{modelLocator.toolInfo.mapToolLabel}"/>
 				</s:BorderContainer>
 			</s:Group> 
