@@ -5,9 +5,14 @@
 		 minWidth="100" minHeight="60">
 	<fx:Script>
 		<![CDATA[
-			import spark.components.Label;
+			import sm.wegis.szy.renders.items.BreakGridRow;
+			import sm.wegis.szy.renders.items.RiverGridRow;
 			private var _targets:Object;
+			public var type:String;
 			private var change:Boolean =false;
+			
+			public static const River:String = "river";
+			public static const Break:String = "break";
 
 			public function get targets():Object
 			{
@@ -24,23 +29,42 @@
 			{
 				super.commitProperties();
 				if (change == true){
-					 for each(var item:Object in targets) {
-						 var label:Label = new Label();
-						 label.text = item.text;
-						 content.addElement(label);
-					 }
+					change = false;
+					var item:Object;
+					gridContent.removeAllElements();
+					if (type == River) {
+						var riverGridRow:RiverGridRow = new RiverGridRow();
+						riverGridRow.title =  "污染物名称";
+						riverGridRow.value =  "断面超标率";
+						gridContent.addElement(riverGridRow);
+						for each(item in targets) {
+							riverGridRow = new RiverGridRow();
+							riverGridRow.title = item["污染物名称"];
+							riverGridRow.value = item["断面超标率"];
+							gridContent.addElement(riverGridRow);
+						}
+					} else {
+						var breakGridRow:BreakGridRow = new BreakGridRow();
+						breakGridRow.title =  "污染物名称";
+						breakGridRow.value =  "观测值";
+						breakGridRow.times = "超标倍数";
+						gridContent.addElement(breakGridRow);
+						for each(item in targets) {
+							breakGridRow = new BreakGridRow();
+							breakGridRow.title = item["污染物名称"];
+							breakGridRow.value = item["断面超标率"];
+							breakGridRow.times =item["超标倍数"];
+							gridContent.addElement(breakGridRow);
+						}
+					}
 				}
 			}
-			
-
 		]]>
 	</fx:Script>
-	<fx:Declarations>
-	</fx:Declarations>
 	<s:Rect left="0" right="0" top="0" bottom="0">
 		<s:fill>
 			<s:SolidColor color="0xFFFFFF"/>
 		</s:fill>
 	</s:Rect>
-	<s:VGroup id="content" paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"/>
+	<mx:Grid id="gridContent" paddingLeft="3" paddingRight="3" paddingTop="3" paddingBottom="3"/>
 </s:Group>

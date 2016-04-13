@@ -53,18 +53,40 @@ package sm.wegis.szy.commands
 				var showPoint:GeoPoint;
 				var feature:Feature;
 				var infoStyle:InfoStyle;
-				if (result.type == "1") {
-					 showPoint = new GeoPoint(waterEvaluationParam.x, waterEvaluationParam.y);
-					 feature = new Feature(showPoint);
-					 infoStyle = new InfoStyle();
-					 var waterEvaluationCls:ClassFactory = new ClassFactory(WaterEvaluationTarget);
-					 waterEvaluationCls.properties = {targets:result};
-					 infoStyle.infoRenderer = waterEvaluationCls;
-					 feature.style = infoStyle;
-					 targetInfoFeaturesLayer.addFeature(feature);
-				} else {
-					//断面点图层
-					var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+				var waterEvaluationCls:ClassFactory;
+				if (result.attributes && result.attributes.targetList) {
+					var riverInfo:Object = result.attributes.targetList[0];
+					var riverMessage:Object = riverInfo.riverMessage;
+					if (!(riverMessage is Array)) {
+						if (riverMessage.dmID == "$$$") {
+							showPoint = new GeoPoint(waterEvaluationParam.x, waterEvaluationParam.y);
+							feature = new Feature(showPoint);
+							infoStyle = new InfoStyle();
+							waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
+							waterEvaluationCls.properties = {targets:riverMessage.dmMessage,type:WaterEvaluationTarget.River};
+							infoStyle.infoRenderer = waterEvaluationCls;
+							infoStyle.containerStyleName = "infoStyle";
+							feature.style = infoStyle;
+							targetInfoFeaturesLayer.addFeature(feature);
+						} else {
+							//断面点图层
+							var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+							for each(var item:Object in riverMessage) {
+								for each(var featrue:Feature in featuresLayer.features) {
+									if (item.dmID == featrue.attributes.id) {
+										feature = new Feature(featrue.geometry);
+										infoStyle = new InfoStyle();
+										waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
+										waterEvaluationCls.properties = {targets:riverMessage.dmMessage,type:WaterEvaluationTarget.Break};
+										infoStyle.infoRenderer = waterEvaluationCls;
+										infoStyle.containerStyleName = "infoStyle";
+										feature.style = infoStyle;
+										targetInfoFeaturesLayer.addFeature(feature);
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}

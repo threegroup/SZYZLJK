@@ -250,6 +250,18 @@ s|ButtonBar
 	verticalAlign:middle;
 }
 
+.infoStyle
+{
+	backgroundColor:#FFFFFF;
+	shadowDistance:0;
+	upperLeftRadius:0;
+	upperRightRadius:0;
+	lowerLeftRadius:0;
+	lowerRightRadius:0;
+	infoOffsetX:6;
+	infoOffsetY:6;
+}
+
 
 
 

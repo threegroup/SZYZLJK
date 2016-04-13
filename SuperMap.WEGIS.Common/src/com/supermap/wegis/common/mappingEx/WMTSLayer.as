@@ -3,17 +3,22 @@ package  com.supermap.wegis.common.mappingEx
 	import com.supermap.web.core.Point2D;
 	import com.supermap.web.core.Rectangle2D;
 	import com.supermap.web.mapping.TiledCachedLayer;
+	import com.supermap.web.sm_internal;
 	import com.supermap.web.utils.MathUtil;
 	
 	import flash.net.URLRequest;
+	use namespace sm_internal;
 	
 	public class WMTSLayer extends TiledCachedLayer
 	{
+		public var layerType:int;
+		public var layerIndex:int;
+		
 		public function WMTSLayer()
 		{
 			super();
 			this.tileSize = 256;
-			this.bounds = new Rectangle2D(107.973889965235,28.8206295368348,116.52089792271,33.4850595343644);
+			this.bounds = new Rectangle2D(-180,-90,180,90);
 			this.origin = new Point2D(-180,90);
 			setLoaded(true);
 		}
@@ -21,12 +26,7 @@ package  com.supermap.wegis.common.mappingEx
 		protected override  function getTileURL(row:int, col:int, level:int):URLRequest
 		{
 			var serverURL:String = this.url;
-//			serverURL = serverURL.replace("{TileCol}", col.toString());
-//			serverURL = serverURL.replace("{TileRow}", row.toString());
-//			serverURL = serverURL.replace("{TileMatrix}", (level).toString());
-			serverURL += "/"+level +"/" + row +"/" + col ;
-			
-			//serverURL = serverURL+"&t=" + Math.random()+ "&transparent=" + this.transparent; 
+			serverURL += "/"+(map.level + 4) +"/" + row +"/" + col  +".png";
 			return new URLRequest(serverURL);
 		}
 	}

@@ -3,7 +3,7 @@
 	<subSystem name="taizihe">
 		<viewBounds>121.7404, 40.4814, 125.3412, 41.8437</viewBounds>
 		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap</baseVectorMapUrl>
-        <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap</baseImageMapUrl>
+        <baseImageMapUrl>http://localhost:8090/tzhGooglemaps</baseImageMapUrl>
 		<vectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</vectorMapUrl>
 		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</rasterMapUrl>
 		<sfzMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/水功能区</sfzMapUrl>

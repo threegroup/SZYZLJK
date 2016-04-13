@@ -8,10 +8,11 @@ package sm.wegis.szy.vo
 		public  static const  VectorMapState:String = "vectorMapState";
 		public  static const  ImageMapState:String = "imageMapState";
 		
-		/**天地图底图*/
-		public  static const BaseMapLayerId:String = "baseMapLayerId";
-		/**天地图底图注记*/
-		public  static const BaseMapLabelLayerId:String = "baseMapLabelLayerId";
+		/**矢量底图*/
+		public  static const BaseMapVectorLayerId:String = "baseMapVectorLayerId";
+		
+		/**影像底图*/
+		public  static const BaseMapImageLayerId:String = "BaseMapImageLayerId";
 		
 		/**水资源底图图层名称*/
 		public static const WaterResourceLayerId:String = "waterResourceLayerId";

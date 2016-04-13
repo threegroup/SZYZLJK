@@ -172,7 +172,7 @@ package sm.wegis.szy.commands
 							{
 								ft.attributes["水质状况"] =  riverInfo["水质状况"];
 								//业务数据中河流对应的ID
-								ft.attributes["businessId"] = riverInfo["Id"];
+								ft.attributes["businessId"] = riverInfo["评价对象_ID"];
 								ft.toolTip = ft.attributes["水质状况"];
 								ft.style = new PredefinedLineStyle("solid",parseInt(riverInfo["表征颜色"],16), 1,8);
 							}
@@ -189,7 +189,7 @@ package sm.wegis.szy.commands
 								{
 									ft.attributes["水质状况"] =  functionInfo["水质状况"];
 									//业务数据中水功能区对应的ID
-									ft.attributes["businessId"] = riverInfo["Id"];
+									ft.attributes["businessId"] = riverInfo["评价对象_ID"];
 									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["表征颜色"],16), 1,8);
 									ft.toolTip = ft.attributes["水质状况"];
 								}
@@ -207,7 +207,7 @@ package sm.wegis.szy.commands
 								{
 									ft.attributes["是否达标"] =  functionInfo["是否达标"] == "0" ? "否" : "是";
 									//业务数据中水功能区对应的ID
-									ft.attributes["businessId"] = riverInfo["Id"];
+									ft.attributes["businessId"] = riverInfo["评价对象_ID"];
 									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["达标颜色"],16), 1,8);
 									ft.toolTip = ft.attributes["是否达标"];
 								}
@@ -271,7 +271,7 @@ package sm.wegis.szy.commands
 			var mapPoint:Point2D = modelLocator.mapCtrl.stageToMap(clickPoint);
 			//将点击河流的ID，通过事件派发出去
 			var waterEvaluationParam:WaterEvaluaParam = new WaterEvaluaParam();
-			waterEvaluationParam.id = feature.attributes["businsessId"];
+			waterEvaluationParam.id = feature.attributes["businessId"];
 			waterEvaluationParam.x = mapPoint.x;
 			waterEvaluationParam.y = mapPoint.y;
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.WATER_EVALUATION_THEME_MAP_RIVER_CLICK);
