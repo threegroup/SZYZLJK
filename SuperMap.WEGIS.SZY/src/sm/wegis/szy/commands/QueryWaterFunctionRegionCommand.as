@@ -2,6 +2,7 @@ package sm.wegis.szy.commands
 {
 	import com.adobe.cairngorm.control.CairngormEvent;
 	import com.supermap.web.core.Feature;
+	import com.supermap.web.core.Point2D;
 	import com.supermap.web.core.styles.PredefinedLineStyle;
 	import com.supermap.web.events.ZoomEvent;
 	import com.supermap.web.iServerJava6R.FilterParameter;
@@ -15,7 +16,7 @@ package sm.wegis.szy.commands
 	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.filters.GlowFilter;
+	import flash.geom.Point;
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
@@ -25,6 +26,7 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.events.QueryEvent;
 	import sm.wegis.szy.vo.ConstVO;
+	import sm.wegis.szy.vo.WaterEvaluaParam;
 	import sm.wegis.szy.vo.WaterEvaluationVO;
 	
 	public class QueryWaterFunctionRegionCommand extends CommandBase
@@ -99,7 +101,6 @@ package sm.wegis.szy.commands
 				}
 			}
 			updateEvaluationResult();
-//			modelLocator.mapCtrl.addEventListener(ZoomEvent.ZOOM_END, zoomEndHandler);
 			CursorManager.removeBusyCursor();
 		}
 		
@@ -170,6 +171,8 @@ package sm.wegis.szy.commands
 							if (ft.attributes["ID"] == riverInfo.SUPER_OBJ_ID)
 							{
 								ft.attributes["水质状况"] =  riverInfo["水质状况"];
+								//业务数据中河流对应的ID
+								ft.attributes["businessId"] = riverInfo["Id"];
 								ft.toolTip = ft.attributes["水质状况"];
 								ft.style = new PredefinedLineStyle("solid",parseInt(riverInfo["表征颜色"],16), 1,8);
 							}
@@ -185,6 +188,8 @@ package sm.wegis.szy.commands
 								if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
 								{
 									ft.attributes["水质状况"] =  functionInfo["水质状况"];
+									//业务数据中水功能区对应的ID
+									ft.attributes["businessId"] = riverInfo["Id"];
 									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["表征颜色"],16), 1,8);
 									ft.toolTip = ft.attributes["水质状况"];
 								}
@@ -201,6 +206,8 @@ package sm.wegis.szy.commands
 								if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
 								{
 									ft.attributes["是否达标"] =  functionInfo["是否达标"] == "0" ? "否" : "是";
+									//业务数据中水功能区对应的ID
+									ft.attributes["businessId"] = riverInfo["Id"];
 									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["达标颜色"],16), 1,8);
 									ft.toolTip = ft.attributes["是否达标"];
 								}
@@ -210,6 +217,9 @@ package sm.wegis.szy.commands
 						break;
 				}
 				showWaterEvaluationLegend();
+				showThemeMapTypePanel(true);
+			} else {
+				showThemeMapTypePanel(false);
 			}
 		}
 		
@@ -217,6 +227,13 @@ package sm.wegis.szy.commands
 		private function showWaterEvaluationLegend():void
 		{
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.Change_Water_Evaluation_Legend);
+			queryEvent.dispatch();
+		}
+		
+		private function showThemeMapTypePanel(visible:Boolean):void
+		{
+			var queryEvent:QueryEvent  = new QueryEvent(QueryEvent.SHOW_THEME_MAP_TYPE_PANEL_VISIBLE);
+			queryEvent.data = visible;
 			queryEvent.dispatch();
 		}
 		
@@ -230,7 +247,6 @@ package sm.wegis.szy.commands
 				}
 			}
 		}
-		
 		
 		private function showToolTip(event:MouseEvent):void
 		{
@@ -247,10 +263,20 @@ package sm.wegis.szy.commands
 			feature.toolTip = null;
 		}
 		
-		/**显示属性信息*/
+		/**查询河流主要污染物信息*/
 		private function showDetailInfo(event:MouseEvent):void
 		{
-			
+			var feature:Feature = event.currentTarget as Feature;
+			var clickPoint:Point = new Point(event.stageX,event.stageY);
+			var mapPoint:Point2D = modelLocator.mapCtrl.stageToMap(clickPoint);
+			//将点击河流的ID，通过事件派发出去
+			var waterEvaluationParam:WaterEvaluaParam = new WaterEvaluaParam();
+			waterEvaluationParam.id = feature.attributes["businsessId"];
+			waterEvaluationParam.x = mapPoint.x;
+			waterEvaluationParam.y = mapPoint.y;
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.WATER_EVALUATION_THEME_MAP_RIVER_CLICK);
+			queryEvent.data = waterEvaluationParam;
+			queryEvent.dispatch();
 		}
 		
 		private function faultHandle(object:Object, mark:Object = null):void

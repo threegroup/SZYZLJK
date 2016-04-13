@@ -49,8 +49,20 @@ package sm.wegis.szy.vo
 		
 		private var _maxLevel:int = 2;
 		
+		private var _measureUrl:String;
+		
 		//水质评价，测站评价指标表格数据展示列
 		private var _waterEvaluationGridColumn:String;
+
+		public function get measureUrl():String
+		{
+			return _measureUrl;
+		}
+
+		public function set measureUrl(value:String):void
+		{
+			_measureUrl = value;
+		}
 
 		public function get waterEvaluationGridColumn():String
 		{

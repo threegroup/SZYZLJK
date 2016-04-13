@@ -28,6 +28,8 @@ package sm.wegis.szy.vo
 		/**水质评价，默认监测断面点矢量图层*/
 		public static const EVALUATION_FEATURE_LAYER:String = "EvaluationFeatureLayer";
 		
+		/**水质评价，河流点击，查询显示主要污染指标矢量图层*/
+		public static const MAIN_EVALUATION_TARGET_INFO_LAYER:String = "MainEvaluationTargetInfoLayer"
 		/**水质评价，水功能区矢量图层*/
 		public static const WATERFUNCTION_FEATURE_LAYER:String = "WaterFunctionFeatureLayer";
 		

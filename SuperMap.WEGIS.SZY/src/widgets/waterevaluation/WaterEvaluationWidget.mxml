@@ -434,6 +434,7 @@
 					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler], // 获取对象信息和下方面板信息
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[QueryEvent.QUERY_WATEREVALUATION_RESULT_RESPONSE, queryWaterEvaluationResultHandler],
+					[QueryEvent.WATER_EVALUATION_THEME_MAP_RIVER_CLICK, waterEvaluationThemeMapRiverClickHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
@@ -458,6 +459,17 @@
 					{
 					}
 				}
+			}
+			
+			//河流点击，查询河流主要污染指标
+			private function waterEvaluationThemeMapRiverClickHandler(event:CairngormEvent):void
+			{
+				var waterEvaluationParam:WaterEvaluaParam = event.data as WaterEvaluaParam;
+				waterEvaluationParam.searchType =  getQueryParam(searchTypeContainer)[0];
+				waterEvaluationParam.periodId = periodList.selectedItem["id"];
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_MAIN_POLLUTION);
+				queryEvent.data = waterEvaluationParam;
+				queryEvent.dispatch();
 			}
 			
 			private function queryRiverYear(riverList:Array):void
@@ -620,46 +632,61 @@
 			{
 				var result:Object = event.data;
 				if (result != null && result.success == true) {
-					if (result.attributes.targetList !=null)
+					if (result.attributes.targetList !=null) {
 						var targetList:Object = result.attributes.targetList;
-					var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
-					featuresLayer.clear();
-					
-					for each(var item:Object in targetList) {
-						var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
-						var typeIDs:String = item.typeIDs;
-						pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;
+						var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+						featuresLayer.clear();
 						
-						var positionStr:String = item.location;
-						if (positionStr != null && positionStr.split(",").length == 2) {
-							var positions:Array = positionStr.split(",");
-							item.x = Number(positions[0]);
-							item.y = Number(positions[1]);
-							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
-							var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
-							feature.id = item.id;
-							feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
-							feature.buttonMode = true;
-							featuresLayer.addFeature(feature);
+						for each(var item:Object in targetList) {
+							var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
+							var typeIDs:String = item.typeIDs;
+							pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;
+							
+							var positionStr:String = item.location;
+							if (positionStr != null && positionStr.split(",").length == 2) {
+								var positions:Array = positionStr.split(",");
+								item.x = Number(positions[0]);
+								item.y = Number(positions[1]);
+								var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
+								var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
+								feature.id = item.id;
+								feature.addEventListener(MouseEvent.CLICK, featureMouseClickHandler);
+								feature.buttonMode = true;
+								featuresLayer.addFeature(feature);
+							}
 						}
 					}
 				}
 			}
 			
+			//点击站点，查询气泡数据和评价指标数据
 			private function featureMouseClickHandler(event:MouseEvent):void
 			{
 				var feature:Feature = event.currentTarget as Feature;
 				var attribute:Object = feature.attributes;
-				var requestParam:Object = attribute;
-				//点击站点，查询水质评价主要评价指标
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO);
-				queryEvent.data = requestParam;
-				queryEvent.dispatch();
 				
+				var param:WaterEvaluaParam = new WaterEvaluaParam();
+				param.id = feature.id;
+				param.name =  feature.attributes["name"];
+				param.x = feature.attributes["x"];
+				param.y = feature.attributes["y"];
+				var searchType:String = getQueryParam(searchTypeContainer)[0];
+				param.searchType = getQueryParam(searchTypeContainer)[0];
+				if (periodList.selectedItem != null) {
+					param.periodId =  periodList.selectedItem["id"];
+				} else  if (searchType == "begDate&endDate"){
+					//需要增加自定义选择时间参数
+					param.periodId = "";
+				}
 				//点击站点，请求要素infowindow数据
 				var queryObjectEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_OBJECT_DETAIL);
-				queryObjectEvent.data = feature;
+				queryObjectEvent.data = param;
 				queryObjectEvent.dispatch();
+				
+				//点击站点，查询水质评价主要评价指标
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO);
+				queryEvent.data = param;
+				queryEvent.dispatch();
 			}
 			
 			//清除
@@ -691,6 +718,10 @@
 				var waterWatchEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_EVALUTION_WIDGET);
 				waterWatchEvent.dispatch();
 				modelLocator.mapCtrl.infoWindow.hide();
+				
+				//隐藏水质评价专题图
+				waterWatchEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
+				waterWatchEvent.dispatch();
 			}
 			
 			protected function this_WidgetRemoveHandler(event:BaseWidgetEvent):void
@@ -706,7 +737,6 @@
 			
 			protected function periodList_changeHandler(event:IndexChangeEvent):void
 			{
-				// TODO Auto-generated method stub
 				var tempObject:Object = this.periodList.selectedItem;
 				if(tempObject != null)
 				{
@@ -768,7 +798,7 @@
 				<s:Label verticalAlign="middle" text="条记录"/>
 				<s:Spacer width="100%"/>
 				<s:Button id="deduceButton" width="45" height="25" buttonMode="true" label="推演" 
-				styleName="SubmitRegisterStyle"/>
+						  styleName="SubmitRegisterStyle"/>
 				<s:Button id="searchButton" width="45" height="25" buttonMode="true" label="查询" 
 						  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
 			</s:HGroup> 

@@ -80,5 +80,14 @@ package sm.wegis.szy.events
 		
 		/**水质评价，显示水质专题图图例*/
 		public static const Change_Water_Evaluation_Legend:String = "ChangeWaterEvaluationLegend";
+		
+		/**水质评价，控制水质专题地图类型面板显示和隐藏*/
+		public static const SHOW_THEME_MAP_TYPE_PANEL_VISIBLE:String = "ShowThemeMapTypePanel";
+		
+		/**水质评价，河流点击事件*/
+		public static const WATER_EVALUATION_THEME_MAP_RIVER_CLICK:String = "WaterEvaluationThemeMapRiverClick";
+		
+		/**水质评价，查询河流主要污染指标信息*/
+		public static const QUERY_RIVER_MAIN_POLLUTION:String = "QueryRiverMainPollution";
 	}
 }
