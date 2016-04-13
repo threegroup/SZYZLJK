@@ -34,7 +34,7 @@
 			<s:SolidColor color.selected="#FFDE45" color.hovered="#3385FF" color.normal="#FFFFFF"/>
 		</s:fill>
 	</s:Rect>
-	<s:HGroup horizontalAlign="left" verticalAlign="middle">
+	<s:HGroup horizontalAlign="left" verticalAlign="middle" width="100%" height="100%">
 		<s:Image source="{ResourceManagerEx.FindResource('period').cls}"/>
 		<s:Label id="textInfo"
 				 color.hovered="#FFFFFF"

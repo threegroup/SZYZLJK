@@ -180,6 +180,30 @@ s|Scroller
 	skinClass:ClassReference("sm.wegis.szy.skins.scroller.Scrollbar");
 }
 
+mx|AccordionHeader
+{
+	color:#000000;
+	fontSize:12;
+	fillColors:#ffffff, #ffffff;
+	selectedColors:#EFEEE9, #EFEEE9;
+	fillAlphas:1,1;
+	textRollOverColor:#000000;
+	paddingLeft:5;
+	borderColor:#3385FF;
+	cornerRadius:0;
+	skin:ClassReference("sm.wegis.szy.skins.accordion.AccordionHeaderSkinEx");
+}
+
+/**服务管理模块左侧菜单栏样�*/
+mx|Accordion
+{
+	borderColor:#c7c7c7;
+	borderVisible:false;
+	openDuration:0;
+	verticalGap:1;
+	headerHeight: 25;
+}
+
 mx|Alert
 {
 	modal-transparency:0.5;
@@ -193,6 +217,11 @@ mx|Alert
 	headerColors:#42A2DB,#3B78BD;
 	highlightAlphas:0.66,0;
 	corner-radius:5
+}
+
+s|ButtonBar
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.buttonbarskin.ButtonBarSkin");
 }
 
 /**水质评价条件样式*/

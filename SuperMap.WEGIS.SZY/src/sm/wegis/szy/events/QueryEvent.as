@@ -80,5 +80,8 @@ package sm.wegis.szy.events
 		
 		/**水质评价，显示水质专题图图例*/
 		public static const Change_Water_Evaluation_Legend:String = "ChangeWaterEvaluationLegend";
+		
+		/**水质评价查询条件自定义时间段激活*/
+		public static const INVOKE_TIME_SPAN_CONDITION:String = "InvokeTimeSpanCondition";
 	}
 }

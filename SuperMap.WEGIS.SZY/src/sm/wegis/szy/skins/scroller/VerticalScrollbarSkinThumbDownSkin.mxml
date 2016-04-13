@@ -18,7 +18,7 @@
 	<!-- background -->
 	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0">
 		<s:fill>
-			<s:SolidColor color="#3385FF"/>
+			<s:SolidColor color="#BCBCBC"/>
 		</s:fill>
 	</s:Rect>
 	<!-- Gripper -->

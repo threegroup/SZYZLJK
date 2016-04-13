@@ -40,9 +40,9 @@
 	</fx:Declarations>
 	<s:Panel title="专题图类型">
 		<s:VGroup width="100%" height="100%"  paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5">
-			<s:RadioButton label="河流水质评价图"  groupName="themeMapGroup" selected="true" value="{ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE}"/>
-			<s:RadioButton label="水功能区水质评价图"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_EVALUATION_THEME_TYPE}"/>
-			<s:RadioButton label="水功能区水质达标图"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_STANDARD_THEME_TYPE}"/>
+			<s:RadioButton label="河流水质评价图" buttonMode="true"  groupName="themeMapGroup" selected="true" value="{ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE}"/>
+			<s:RadioButton label="水功能区水质评价图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_EVALUATION_THEME_TYPE}"/>
+			<s:RadioButton label="水功能区水质达标图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_STANDARD_THEME_TYPE}"/>
 		</s:VGroup>
 	</s:Panel>
 </ns:WidgetBase>

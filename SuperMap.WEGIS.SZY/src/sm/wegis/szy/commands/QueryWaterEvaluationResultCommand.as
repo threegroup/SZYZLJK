@@ -24,6 +24,7 @@ package sm.wegis.szy.commands
 			params.push(modelLocator.systemInfo.subSystemID);
 			params.push(waterEvaluaParam.searchType);
 			params.push(waterEvaluaParam.periodId);
+			params.push(waterEvaluaParam.riverIds);
 			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetSZPJRiverLevel, params);
 			CursorManager.setBusyCursor();
 		}

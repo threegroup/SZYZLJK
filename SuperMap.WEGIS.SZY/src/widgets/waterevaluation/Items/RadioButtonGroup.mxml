@@ -19,11 +19,16 @@
 			import mx.events.FlexEvent;
 			import mx.utils.StringUtil;
 			
+			import sm.wegis.szy.events.QueryEvent;
+			
 			import spark.events.TextOperationEvent;
 			
 			/**自定义框间隔，如果没有预定义选项只有自定义框则为0，如果前面有预定义值则为预定义值设定间隔值*/
 			[Bindable]
 			private var tempGap:Number = 0;
+			
+			/**是否激活自定义条件*/
+			private var invokeEvent:QueryEvent = null;
 			
 			protected function initGroup(event:FlexEvent):void
 			{
@@ -169,6 +174,13 @@
 						//保存选中项
 						selectContent.removeAll();
 						selectContent.addItem(r);
+						
+						//是否激活自定义条件
+						invokeEvent = new QueryEvent(QueryEvent.INVOKE_TIME_SPAN_CONDITION);
+						var obj:Object = {};
+						obj["isInvokeCustom"] = false;
+						invokeEvent.data = obj;
+						invokeEvent.dispatch();
 					}
 					
 					if(selectContent.length > 0)
@@ -198,6 +210,13 @@
 							}
 							isSelected = true;
 							content.hasCustom = "1";
+							
+							//是否激活自定义条件
+							invokeEvent = new QueryEvent(QueryEvent.INVOKE_TIME_SPAN_CONDITION);
+							var obj:Object = {};
+							obj["isInvokeCustom"] = true;
+							invokeEvent.data = obj;
+							invokeEvent.dispatch();
 						}
 						else
 						{
@@ -231,6 +250,13 @@
 						}
 						isSelected = true;
 						content.hasCustom = "1";
+						
+						//是否激活自定义条件
+						invokeEvent = new QueryEvent(QueryEvent.INVOKE_TIME_SPAN_CONDITION);
+						var obj:Object = {};
+						obj["isInvokeCustom"] = true;
+						invokeEvent.data = obj;
+						invokeEvent.dispatch();
 					}
 					
 					if(startDate.text == "" && endDate.text == "")

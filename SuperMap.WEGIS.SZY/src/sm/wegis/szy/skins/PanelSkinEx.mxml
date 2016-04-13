@@ -76,7 +76,7 @@ in accordance with the terms of the license agreement accompanying it.
         <s:Rect id="border" left="0" right="0" top="0" bottom="0" >
             <s:stroke>
                 <!--- @private -->
-                <s:SolidColorStroke id="borderStroke" weight="1" color="#000000" alpha="0.5"/>
+                <s:SolidColorStroke id="borderStroke" weight="1" color="#B5B9C0" alpha="0.5"/>
             </s:stroke>
         </s:Rect>
         
@@ -86,7 +86,7 @@ in accordance with the terms of the license agreement accompanying it.
             <s:fill>
                 <!--- @private
                       Defines the  PanelSkin class's background fill. The default color is 0xFFFFFF. -->
-                <s:SolidColor id="backgroundFill" color="#FFFFFF"/>
+                <s:SolidColor id="backgroundFill" color="#FFFFFF" alpha="0.8"/>
             </s:fill>
         </s:Rect>
         
@@ -127,7 +127,7 @@ in accordance with the terms of the license agreement accompanying it.
                 <!-- layer 3: text -->
                 <!--- @copy spark.components.Panel#titleDisplay -->
                 <s:Label id="titleDisplay" maxDisplayedLines="1" color="#FFFFFF"
-                         left="10" right="0" top="0" bottom="0" minHeight="30"
+                         left="10" right="0" top="0" bottom="0" minHeight="25"
                          verticalAlign="middle" textAlign="start" fontWeight="normal">
                 </s:Label>
 				

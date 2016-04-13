@@ -39,23 +39,21 @@
 	
 	<!-- layer 6: highlight stroke (down state only) -->
 	<!--- @private -->
-	<s:Rect id="hldownstroke1" left="0" right="0" top="0" bottom="0" radiusX="0" radiusY="0">
+	<!--<s:Rect id="hldownstroke1" left="0" right="0" top="0" bottom="0" radiusX="0" radiusY="0">
 		<s:fill>
-			<!--<s:LinearGradient rotation="90">
-				<s:GradientEntry color="#F7F7F7"/>
-				<s:GradientEntry color="#D7D7D7"/>
-			</s:LinearGradient>-->
 			<s:SolidColor color="#FFFFFF"/>
 		</s:fill>
-	</s:Rect>
+	</s:Rect>-->
 	<!--- @private -->
-	<s:Rect id="hldownstroke2" left="0" right="0" top="0" bottom="0" radiusX="0" radiusY="0" includeIn="over,down,keepSelected">
+	<!--<s:Rect id="hldownstroke2" left="0" right="0" top="0" bottom="0" radiusX="0" radiusY="0" includeIn="over,down,keepSelected">
 		<s:fill>
-			<!--<s:LinearGradient rotation="90">
-				<s:GradientEntry color="#6FB2F6"/>
-				<s:GradientEntry color="#1F6CCD"/>
-			</s:LinearGradient>-->
 			<s:SolidColor color="#3385FF"/>
+		</s:fill>
+	</s:Rect>-->
+	
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0" alpha.keepSelected="1" alpha.over="1" alpha="1">
+		<s:fill>
+			<s:SolidColor color.keepSelected="#FFDE45" color.over="#FFDE45" color="#FFFFFF"/>
 		</s:fill>
 	</s:Rect>
 	
@@ -78,7 +76,7 @@
 			 verticalAlign="middle"
 			 left="0" right="0" 
 			 top="0" bottom="0"
-			 color.keepSelected="0xFFFFFF"
+			 color="#000000"
 			 showTruncationTip="true">
 	</s:Label>
     

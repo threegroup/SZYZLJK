@@ -73,8 +73,6 @@
 			private var searchTypeData:Object = {
 				"nodeListSelect": [
 					{
-						"hasCustom": "1",
-						"customOptionValue":"begDate&endDate",
 						"initialDisplay": "1",
 						"isSelect": "1",
 						"isShow": "1",
@@ -151,12 +149,15 @@
 			private var yearListData:Object = {
 				"nodeListSelect": [
 					{
+						"hasCustom": "1",
+						"customOptionValue":"begDate&endDate",
 						"initialDisplay": "1",
 						"isSelect": "1",
 						"isShow": "1",
 						"optionList": [],
 						"orderIndex": "2",
 						"propertyDisplayType": "1",
+						"propertyType": "3",
 						"propertyId": "",
 						"propertyName": "评价年份"
 					}]
@@ -167,9 +168,9 @@
 				if(stage != null)
 				{
 					var factor:Number = stage.height/768;
-					searchTypePanelHeight = 150;
-					searchYearPanelHeight = 80*factor;
-					searchRiverPanelHeight = 100*factor;
+					searchTypePanelHeight = 120;
+					searchYearPanelHeight = 130;//150*factor;
+					//searchRiverPanelHeight = 100*factor;
 					searchPeriodPanelHeight = stage.stageHeight - 120 
 						- searchYearPanelHeight 
 						- searchTypePanelHeight; 
@@ -209,7 +210,33 @@
 			/**清空条件内容*/
 			public function clear():void
 			{
-				//this.searchRiverContainer.removeAllElements();
+				
+			}
+			
+			//重置UI及数据
+			private function resetUI():void
+			{
+				this.periodList.dataProvider = null;
+				this.periodList.selectedIndex = -1;
+				this.queryInfoText.text = "0";
+				
+				this.clearLastQuery();
+				
+				//水功能区
+				var featuresLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERFUNCTION_FEATURE_LAYER) as FeaturesLayerEx;
+				if (featuresLayer != null)
+				{
+					featuresLayer.visible = false;
+				}
+				
+				//河流
+				var featuresLayer1:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERRIVER_FEATURE_LAYER) as FeaturesLayerEx;
+				if (featuresLayer1 != null)
+				{
+					featuresLayer1.visible = false;
+				}
+				
+				modelLocator.waterEvaluationVO.waterEvaluationResult = null;
 			}
 			
 			/**根据需要组装河流数据*/
@@ -354,6 +381,7 @@
 								if(item.selectContent.length == 0)
 								{
 									temps.push(item.getContent().value + "~" + item.getContent().maxValue);
+									temps.push(item.data["customOptionValue"]);
 								}
 								else
 								{
@@ -364,6 +392,28 @@
 					}
 				}
 				return temps;
+			}
+			
+			/**获取评价条件对象*/
+			private function getQueryParamObject(con:Group):Object
+			{
+				var items:Array = [];
+				for(var i:int = 0;i < con.numElements; i++)
+				{
+					items.push(con.getElementAt(i));
+				}
+				var tempOjb:Object = null;
+				if(items.length > 0)
+				{
+					for each (var item:CommonGroup in items) 
+					{
+						if(item != null)
+						{
+							tempOjb = item;
+						}
+					}
+				}
+				return tempOjb;
 			}
 			
 			//常用条件字段格式化
@@ -432,6 +482,7 @@
 					[QueryEvent.QUERY_RIVER_PERIOD_DATA_RESPONSE, queryRiverPeriodDataResponseHandler],//评价周期
 					[QueryEvent.QUERY_DEFAULT_POINT_RESPONSE, queryDefaultPointResponseHandler],//获取对象详细属性是否成功，如果不成功，不勾选
 					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler], // 获取对象信息和下方面板信息
+					[QueryEvent.INVOKE_TIME_SPAN_CONDITION, invokeTimeSpanConditionHandler], 
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[QueryEvent.QUERY_WATEREVALUATION_RESULT_RESPONSE, queryWaterEvaluationResultHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
@@ -489,13 +540,24 @@
 				//评价河流IDs
 				tempData["searchIds"] = "";//getQueryParam(searchRiverContainer).join(",");
 				//评价年份
-				tempData["searchYear"] = getQueryParam(searchYearContainer)[0];
-				//评价类型
-				tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
+				var searchArray:Array = getQueryParam(searchYearContainer);
+				tempData["searchYear"] = searchArray[0];
+				if(searchArray.length == 2)
+				{
+					tempData["searchType"] = searchArray[1];
+					queryEvaluaByPeriod(searchArray[0],searchArray[1],"");
+				}
+				else
+				{
+					//评价类型
+					tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
+				}
 				
-				queryEvent.data = tempData;	
-				
-				queryEvent.dispatch();
+				if(searchArray.length == 1)
+				{
+					queryEvent.data = tempData;	
+					queryEvent.dispatch();
+				}
 				
 				//水功能区水质查询
 				/* var queryWaterFunEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
@@ -603,6 +665,15 @@
 				}
 			}
 			
+			//是否启用评价类型条件
+			private function invokeTimeSpanConditionHandler(event:CairngormEvent):void
+			{
+				var isInvoke:Boolean = event.data["isInvokeCustom"];
+				this.searchTypeContainer.enabled = !isInvoke;
+				this.searchTypeContainer.alpha = isInvoke?0.5:1;
+				this.resetUI();
+			}
+			
 			private function queryStationEvalutionInfoResponseHandler(event:CairngormEvent):void
 			{
 				var result:Object = event.data;
@@ -611,7 +682,7 @@
 			//查询水质评价周期列表
 			protected function searchButton_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				this.resetUI();
 				queryRiverPeriod();
 			}
 			
@@ -710,71 +781,98 @@
 				var tempObject:Object = this.periodList.selectedItem;
 				if(tempObject != null)
 				{
-					var waterEvaluaParam:WaterEvaluaParam = new WaterEvaluaParam();
-					waterEvaluaParam.searchType =  getQueryParam(searchTypeContainer)[0];
-					waterEvaluaParam.periodId = tempObject["id"];
-					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATEREVALUATION_RESULT);
-					queryEvent.data = waterEvaluaParam;
-					queryEvent.dispatch();
+					this.queryEvaluaByPeriod(tempObject["id"],getQueryParam(searchTypeContainer)[0], "");
 				}
 			}
 			
+			//根据周期查询评价信息
+			private function queryEvaluaByPeriod(period:String, searchType:String, searchIds:String):void
+			{
+				var waterEvaluaParam:WaterEvaluaParam = new WaterEvaluaParam();
+				waterEvaluaParam.searchType = searchType;
+				waterEvaluaParam.periodId = period;
+				waterEvaluaParam.riverIds = searchIds;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATEREVALUATION_RESULT);
+				queryEvent.data = waterEvaluaParam;
+				queryEvent.dispatch();
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	
-	<s:VGroup x="0" y="0" width="100%" gap="2"
-			  paddingBottom="5" paddingTop="5" paddingLeft="5" paddingRight="5">
-		<s:HGroup width="100%"
-				  horizontalAlign="left" verticalAlign="middle">
-			<s:Label text="水质评价条件设置：" width="100%" height="30" 
-					 backgroundColor="#3385FF" fontSize="14" color="#FFFFFF"/>
-		</s:HGroup>
-		<!--<s:Line width="100%">
-		<s:stroke>
-		<s:SolidColorStroke color="#ACAB96" weight="1"/>
-		</s:stroke>
-		</s:Line>-->
-		<!--<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
-		</s:VGroup>-->
-		<s:Line width="100%">
-			<s:stroke>
-				<s:SolidColorStroke color="#ACAB96" weight="1"/>
-			</s:stroke>
-		</s:Line>
-		<s:VGroup id="searchYearContainer" 
-				  width="100%" height="{searchYearPanelHeight}">
-		</s:VGroup>
-		<s:Line width="100%">
-			<s:stroke>
-				<s:SolidColorStroke color="#ACAB96" weight="1"/>
-			</s:stroke>
-		</s:Line>
-		<s:VGroup id="searchTypeContainer"  width="100%" height="{searchTypePanelHeight}">
-		</s:VGroup>
-		<s:Line width="100%">
-			<s:stroke>
-				<s:SolidColorStroke color="#ACAB96" weight="1"/>
-			</s:stroke>
-		</s:Line>
-		<s:VGroup id="periodContainer" width="100%" height="{searchPeriodPanelHeight}" gap="2"
-				  horizontalAlign="center" verticalAlign="middle">
-			<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:Label verticalAlign="middle" text="周期列表:" fontWeight="bold"/>
-				<s:Label verticalAlign="middle" text="共"/>
-				<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000"  text="0"/>
-				<s:Label verticalAlign="middle" text="条记录"/>
-				<s:Spacer width="100%"/>
-				<s:Button id="deduceButton" width="45" height="25" buttonMode="true" label="推演" 
-				styleName="SubmitRegisterStyle"/>
-				<s:Button id="searchButton" width="45" height="25" buttonMode="true" label="查询" 
-						  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
-			</s:HGroup> 
-			<s:List id="periodList" width="100%" height="100%" borderVisible="false"
-					horizontalScrollPolicy="off" itemRenderer="sm.wegis.szy.renders.PeriodListItemRenderer"
-					change="periodList_changeHandler(event)"/>
-		</s:VGroup>
+	<s:VGroup width="100%" height="100%" gap="2">
+		<s:ButtonBar width="100%" dataProvider="{featureDetailInfos}"/>
+		<mx:ViewStack id="featureDetailInfos" width="100%" height="100%" creationPolicy="all">
+			<s:NavigatorContent  label="水资源质量" width="100%" height="100%">
+				<mx:Accordion width="100%" height="100%">
+					<s:NavigatorContent  label="水质评价" width="100%" height="100%">
+						<s:VGroup width="100%" height="100%"
+								  paddingTop="3" paddingBottom="3" paddingLeft="3" paddingRight="3">
+							<!--<s:HGroup width="100%"
+									  horizontalAlign="left" verticalAlign="middle">
+								<s:Label text="水质评价条件设置：" width="100%" height="25" 
+										 backgroundColor="#3385FF" fontSize="12" color="#FFFFFF"/>
+							</s:HGroup>-->
+							<!--<s:Line width="100%">
+							<s:stroke>
+							<s:SolidColorStroke color="#ACAB96" weight="1"/>
+							</s:stroke>
+							</s:Line>-->
+							<!--<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
+							</s:VGroup>-->
+							<!--<s:Line width="100%">
+								<s:stroke>
+									<s:SolidColorStroke color="#ACAB96" weight="1"/>
+								</s:stroke>
+							</s:Line>-->
+							<s:VGroup id="searchYearContainer" 
+									  width="100%" height="{searchYearPanelHeight}">
+							</s:VGroup>
+							<s:Line width="100%">
+								<s:stroke>
+									<s:SolidColorStroke color="#ACAB96" weight="1"/>
+								</s:stroke>
+							</s:Line>
+							<s:VGroup id="searchTypeContainer"  width="100%" height="{searchTypePanelHeight}">
+							</s:VGroup>
+							<s:Line width="100%">
+								<s:stroke>
+									<s:SolidColorStroke color="#ACAB96" weight="1"/>
+								</s:stroke>
+							</s:Line>
+							<!--<s:VGroup id="periodContainer" width="100%" height="{searchPeriodPanelHeight}" gap="2"
+									  horizontalAlign="center" verticalAlign="middle">-->
+							<s:VGroup id="periodContainer" width="100%" height="100%" gap="2"
+									  horizontalAlign="center" verticalAlign="middle">
+								<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
+									<s:Label verticalAlign="middle" text="周期列表:" fontWeight="bold"/>
+									<s:Label verticalAlign="middle" text="共"/>
+									<s:Label id="queryInfoText" verticalAlign="middle" color="#FF0000"  text="0"/>
+									<s:Label verticalAlign="middle" text="条记录"/>
+									<s:Spacer width="100%"/>
+									<s:Button id="deduceButton" width="45" height="25" buttonMode="true" label="推演" 
+											  styleName="SubmitRegisterStyle"/>
+									<s:Button id="searchButton" width="45" height="25" buttonMode="true" label="查询" 
+											  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
+								</s:HGroup> 
+								<s:List id="periodList" width="100%" height="100%" borderVisible="false"
+										horizontalScrollPolicy="off" itemRenderer="sm.wegis.szy.renders.PeriodListItemRenderer"
+										change="periodList_changeHandler(event)"/>
+							</s:VGroup>
+						</s:VGroup>
+					</s:NavigatorContent>
+					<s:NavigatorContent  label="水质评价专题图" width="100%" height="100%">
+						
+					</s:NavigatorContent>
+					<s:NavigatorContent  label="水质评价报告" width="100%" height="100%">
+						
+					</s:NavigatorContent>
+				</mx:Accordion>
+			</s:NavigatorContent>	
+			<s:NavigatorContent  label="水资源承载力" width="100%" height="100%">
+				
+			</s:NavigatorContent>	
+		</mx:ViewStack>
 	</s:VGroup>
 </ns:WidgetBase>
