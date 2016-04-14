@@ -172,7 +172,6 @@ package sm.wegis.szy.skins.accordion
 						1, 1, w - 2, h - 2, cr1,
 						[ selectedColors[0], selectedColors[1] ], 1,
 						verticalGradientMatrix(0, 0, w - 2, h - 2));
-					
 					break;
 				}
 					

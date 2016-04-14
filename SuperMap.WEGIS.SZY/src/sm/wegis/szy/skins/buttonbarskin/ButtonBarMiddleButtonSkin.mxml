@@ -73,7 +73,7 @@ in accordance with the terms of the license agreement accompanying it.
 	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0">
 		<s:fill>
 			<s:SolidColor color="#3385FF" color.overStates="#3385FF" color.selectedUpStates="#FFDE45"
-						  alpha="0.6" alpha.overStates="1" alpha.selectedUpStates="1"/>
+						  alpha="1" alpha.overStates="1" alpha.selectedUpStates="1"/>
 		</s:fill>
 	</s:Rect>
 	

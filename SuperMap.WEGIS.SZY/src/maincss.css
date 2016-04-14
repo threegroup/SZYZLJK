@@ -184,6 +184,7 @@ mx|AccordionHeader
 {
 	color:#000000;
 	fontSize:12;
+	fontWeight:normal;
 	fillColors:#ffffff, #ffffff;
 	selectedColors:#EFEEE9, #EFEEE9;
 	fillAlphas:1,1;
@@ -199,7 +200,7 @@ mx|Accordion
 {
 	borderColor:#c7c7c7;
 	borderVisible:false;
-	openDuration:0;
+	openDuration:200;
 	verticalGap:1;
 	headerHeight: 25;
 }
@@ -232,7 +233,7 @@ s|ButtonBar
 	textAlign:left;
 	textDecoration:none;
 	verticalAlign:middle;
-	fontWeight:bold
+	fontWeight:normal
 }
 
 /**水质评价全选按钮样式*/
