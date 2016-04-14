@@ -31,6 +31,11 @@ s|BorderContainer
 	borderVisible:false
 }
 
+s|RadioButton
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.radioButton.RadioButtonSkinEx");
+}
+
 .menuStyle
 {
 	color:#000000;
