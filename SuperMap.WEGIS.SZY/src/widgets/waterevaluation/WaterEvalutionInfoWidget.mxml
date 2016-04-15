@@ -154,16 +154,15 @@
 			{
 				var resultData:Object = event.data;
 				var gridColumnInfo:GridColumnInfo;
-				if (resultData != null && resultData.success == true)
+				if (resultData != null && resultData.success == true && "attributes" in resultData &&
+					"targets" in resultData["attributes"] && resultData["attributes"]["targets"] is Array 
+					&&  resultData["attributes"]["targets"].length > 0)
 				{
-					if ("attributes" in resultData && "targets" in resultData["attributes"] && resultData["attributes"]["targets"] is Array)
-					{
-						var gridDatas:Array=  resultData["attributes"]["targets"][0]["attributes"];
-						resultGrid.dataProvider = new ArrayCollection(gridDatas);
-					}
+					panel.title = resultData.name +"——评价指标";
+					var gridDatas:Array=  resultData["attributes"]["targets"];
+					resultGrid.dataProvider = new ArrayCollection(gridDatas);
 					this.currentState = SHOW;
-				}
-				else {
+				} else {
 					this.currentState = HIDE;
 				}
 			}
@@ -293,7 +292,7 @@
 		<s:State name="hide"/>
 		<s:State name="show"/>
 	</ns:states>
-	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" title="监测指标" bottom.show="5" bottom.hide="0"
+	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" bottom.show="5" bottom.hide="0"
 			 height.hide="0">
 		<s:controlBarContent>
 			<s:Image id="stateImage" width="16" height="16" buttonMode="true" 

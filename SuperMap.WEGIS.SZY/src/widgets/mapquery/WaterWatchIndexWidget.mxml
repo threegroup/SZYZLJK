@@ -119,48 +119,46 @@
 				if (resultData != null)
 				{
 					if (resultData.selected == true) {
-						if ( resultData.success == true)
+						if ( resultData.attributes.targets && resultData.attributes.targets.length > 0)
 						{
 							resultGrid.dataProvider = resultGrid.dataProvider == null ? new ArrayCollection() : resultGrid.dataProvider;
-							var resultTarget:Object = resultData.attributes.targets[0];
-							if (resultTarget != null) {
-								var item:Object = {};
-								item.id = resultTarget.id;
-								item.name = resultTarget.name;
-								item.index = resultData.index;
-								item.x = resultData.x;
-								item.y = resultData.y;
-								//遍历，更新watchIndexs数据
-								for each(var attribute:Object in resultTarget.attributes)
-								{
-									for (var propKey:String in attribute) {
-										item[propKey] = attribute[propKey];
-										var hasContain:Boolean = false;
-										for each(gridColumnInfo in watchIndexs) {
-											if (gridColumnInfo.dataField == propKey) {
-												gridColumnInfo.count++;
-												hasContain = true;
-												break;
-											}
-										}
-										if (hasContain == false) {
-											gridColumnInfo = new GridColumnInfo();
-											gridColumnInfo.dataField = propKey;
+							var resultTarget:Array = resultData.attributes.targets;
+							var item:Object = {};
+							item.id = resultData.id;
+							item.name = resultData.name;
+							item.index = resultData.index;
+							item.x = resultData.x;
+							item.y = resultData.y;
+							//遍历，更新watchIndexs数据
+							for each(var attribute:Object in resultTarget)
+							{
+								for (var propKey:String in attribute) {
+									item[propKey] = attribute[propKey];
+									var hasContain:Boolean = false;
+									for each(gridColumnInfo in watchIndexs) {
+										if (gridColumnInfo.dataField == propKey) {
 											gridColumnInfo.count++;
-											watchIndexs.addItem(gridColumnInfo);
+											hasContain = true;
+											break;
 										}
+									}
+									if (hasContain == false) {
+										gridColumnInfo = new GridColumnInfo();
+										gridColumnInfo.dataField = propKey;
+										gridColumnInfo.count++;
+										watchIndexs.addItem(gridColumnInfo);
 									}
 								}
 							}
-							
 							//第一次插入记录，设置默认显示列
 							if (resultGrid.dataProvider.length == 0) {
 								initDefaultWatchIndex();
 							}
 							resultGrid.dataProvider.addItem(item);
 							createGridColumn();
-							
 							ArrayCollectionUtils.FieldSort(resultGrid.dataProvider as ArrayCollection, ["index"], null, [Array.NUMERIC]);
+						}
+						if (resultGrid.dataProvider && resultGrid.dataProvider.length > 0) {
 							panel.contentGroup.visible = panel.contentGroup.includeInLayout = true;
 							this.currentState = SHOW;
 						}
@@ -193,13 +191,14 @@
 						}
 						
 						//如果表格不再有记录，则清除表格列，并隐藏模块。
-						if(dataProvider.length == 0)
+						if(dataProvider ==null || dataProvider.length == 0)
 						{
-							resultGrid.columns.removeAll();
+							if (resultGrid.columns != null) {
+								resultGrid.columns.removeAll();
+							}
 							this.currentState = HIDE;
 						}
 					}
-//					watchList.dataProvider = watchIndexs;
 				}
 			}
 			
@@ -334,11 +333,11 @@
 		<s:controlBarContent>
 			<s:Label text="设置监测指标:" color="#FFFFFF"/>
 			<!--<ns:CheckBoxComboBox id="watchList" width="80"  
-								 dataProvider="{watchIndexs}" 
-								 selectChanged="watchList_changeHandler(event)"/>-->
+			dataProvider="{watchIndexs}" 
+			selectChanged="watchList_changeHandler(event)"/>-->
 			<drodown:DropDownPanel id="watchList"  dataProvider="{watchIndexs}" 
 								   selectChanged="watchList_changeHandler(event)"/>
- 			<s:Spacer width="10"/>
+			<s:Spacer width="10"/>
 			<s:Image id="stateImage" width="16" height="16" buttonMode="true" 
 					 click="stateImage_clickHandler(event)"
 					 source="{ResourceManagerEx.FindResource('Down').cls}" toolTip="收缩"/>

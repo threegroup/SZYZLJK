@@ -1,19 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:GridRow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			xmlns:s="library://ns.adobe.com/flex/spark" 
-			xmlns:mx="library://ns.adobe.com/flex/mx"  >
+			xmlns:mx="library://ns.adobe.com/flex/mx" 
+			height="25" width="100%">
 	<fx:Script>
 		<![CDATA[
 			[Bindable]
 			public var title:String;
 			[Bindable]
 			public var value:String;
+			
+			[Bindable]
+			private var horizon:String = "left";
+			
+			private var _isTitle:Boolean = false;
+			private var change:Boolean = false;
+		
+
+			public function get isTitle():Boolean
+			{
+				return _isTitle;
+			}
+
+			public function set isTitle(value:Boolean):void
+			{
+				_isTitle = value;
+				change = true;
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				if (change == true) {
+					if (isTitle == true) {
+						horizon = "center";
+						setStyle("fontWeight","bold");
+					} else {
+						horizon = "left";
+					}
+					change = false;
+				}
+			}
+
 		]]>
 	</fx:Script>
-	<mx:GridItem>
+	<mx:GridItem width="100%" height="100%"  horizontalAlign="{horizon}" paddingLeft="5">
 		<s:Label text="{title}"/>
 	</mx:GridItem>
-	<mx:GridItem >
+	<mx:GridItem width="100%" height="100%" horizontalAlign="{horizon}"  paddingLeft="5">
 		<s:Label text="{value}"/>
 	</mx:GridItem>
 </mx:GridRow>

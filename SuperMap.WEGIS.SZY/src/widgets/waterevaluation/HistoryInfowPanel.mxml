@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns:ContentPanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx" 
+				 xmlns:ns="library://ns.supermap.com/flex/wegis/common"
+				 xmlns:line="sm.wegis.szy.components.line.*"
+				 enableIcon="false" enableMinimizeButton="false"
+				 creationComplete="creationCompleteHandler(event)" >
+	<fx:Script>
+		<![CDATA[
+			import com.fusioncharts.components.FusionCharts;
+			import com.supermap.wegis.common.utils.DateUtilEx;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			/**项目宽度*/
+			public var itemWidth:Number = 120;
+			/**星期*/
+			public var dayNamesArray:Array=["日", "一", "二", "三", "四", "五", "六"];
+			/**月份*/
+			public var monthNamesArray:Array=["一月", "二月", "三月", "四月", "五月","六月", "七月", "八月", "九月", "十月", "十一月","十二月"];
+			/**日期格式*/
+			public var formatString:String = "YYYY-MM-DD";
+			public var chartType:String = "Line";
+			public var caption:String;
+			public var subcaption:String = "";
+			public var xAxisName:String =""
+			public var yXaisName:String = "";
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				generateChart([]);				
+			}
+			
+			private function generateChart(chartData:Array):void
+			{
+				chartContent.removeAllElements();
+				var converChart:FusionCharts = new FusionCharts();
+				converChart.percentWidth = 100;
+				converChart.percentHeight = 100;
+				converChart.FCChartType = chartType;
+				var chartDatas:Array = [];
+				var xAxisDatas:Array = [];
+				var rainfallSeries:Array =[{seriesName:"污染物"}];
+				var rainValue:Number = 0;
+				for each (var item:Object in chartData) {
+					var time:String = item.id.tm;
+					var dateTime:Date = DateUtilEx.getDateByStr(time);
+					xAxisDatas.push({label:dateTime.hoursUTC});
+					rainValue = item.vvswc + rainValue;
+					rainfallSeries.push({value:item.vvswc});
+				}
+				//统计图数据
+//				converChart.FCData(new ArrayCollection(xAxisDatas.concat(rainfallSeries)));
+//				converChart.FCParams(mainChartParam());
+//				converChart.FCTrendLines("");
+//				converChart.FCStyles("");
+//				converChart.FCRender();
+				chartContent.addElement(converChart);
+			}
+			
+			/**主统计图参数*/
+			private function mainChartParam():ArrayCollection
+			{
+				var commonParams:Array;
+				//控制年预测显示
+				commonParams = [
+					{showValues:"0"},
+					{animation:"1"},
+					{xAxisName:" 时"}, 
+					{yAxisName:yXaisName},
+					{bgAlpha:"0"},
+					{bgSWFAlpha:"0"},
+					{bgColor:"#000000"},
+					{showBorder:"0"},
+					{showCanvasBg:"0"},
+					{canvasbgAlpha:"90"},
+					{showPrintMenuItem:"0"},
+					{showAboutMenuItem:"0"},
+					{showFCMenuItem:'0'},
+					{isSliced:"1"},
+					{overlapColumns:"1"},
+					{useEllipsesWhenOverflow:"1"},
+					{formatNumberScale:"0"},
+					{baseFontSize:"12"},
+					{hoverCapSepChar:" ; "},
+					{setAdaptiveYMin:"1"},
+				];
+				var param:Object = {caption:caption};
+				commonParams.push(param);
+				param = {subcaption:subcaption};
+				commonParams.push(param);
+				return new ArrayCollection(commonParams);
+			}
+			
+			private function dateChangeHandler(event:Event):void
+			{
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%" paddingLeft="5" paddingTop="5" paddingRight="5" paddingBottom="5">
+		<s:HGroup>
+			<s:Label  text="起始时间：" height="100%"/>
+			<mx:DateField id="startDate" width="{itemWidth}" dayNames="{dayNamesArray}"
+						  monthNames="{monthNamesArray}" 
+						  formatString="{formatString}" yearNavigationEnabled="true"
+						  maxYear="2100" minYear="1900" 
+						  dateChooserStyleName="dateFieldPopup" 
+						  buttonMode="true" rollOverColor="#b1d1ea"
+						  selectionColor="#b1d1ea" locale="zh-CN" editable="true"
+						  change="dateChangeHandler(event)"/>
+			<s:Spacer width="20"/>
+			<s:Label text="结束时间："  height="100%"/>
+			<mx:DateField id="endDate" width="{itemWidth}" dayNames="{dayNamesArray}"
+						  monthNames="{monthNamesArray}" 
+						  formatString="{formatString}" yearNavigationEnabled="true"
+						  maxYear="2100" minYear="1900" 
+						  dateChooserStyleName="dateFieldPopup" 
+						  buttonMode="true" rollOverColor="#b1d1ea"
+						  selectionColor="#b1d1ea" locale="zh-CN" editable="true"
+						  change="dateChangeHandler(event)"/>
+			<s:Spacer width="100%"/>
+			<s:Button id="queryBt" label="查询"   styleName="SubmitRegisterStyle"/>
+		</s:HGroup>
+		<line:HLine width="100%"/>
+		<s:HGroup id="chartContent" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle"/>
+	</s:VGroup>
+</ns:ContentPanel>

@@ -5,10 +5,33 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.supermap.wegis.common.core.popupmanager.PopUpManagerEx;
+			
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.gridClasses.GridColumn;
+			
+			import widgets.waterevaluation.HistoryInfowPanel;
 			override public function prepare(hasBeenRecycled:Boolean):void {
 				lblData.text =  "曲线图";
 			}
+			
+			protected function lblData_clickHandler(event:MouseEvent):void
+			{
+				event.stopPropagation();
+				var historyInfoPanel:HistoryInfowPanel = new HistoryInfowPanel();
+				if (grid.dataGrid.columns.length > 2) {
+					var nameDateField:String = (grid.dataGrid.columns.getItemAt(1) as GridColumn).dataField;
+					historyInfoPanel.widgetTitle = data[nameDateField] +  "——历史数据";
+				}
+				historyInfoPanel.width = FlexGlobals.topLevelApplication.width / 2;
+				historyInfoPanel.height = FlexGlobals.topLevelApplication.height / 3*2;
+				PopUpManagerEx.addPopUpEx(historyInfoPanel,FlexGlobals.topLevelApplication as DisplayObject , true);
+				PopUpManager.centerPopUp(historyInfoPanel);
+			}
+			
 		]]>
 	</fx:Script>
-	<s:Label id="lblData" top="9" left="7" horizontalCenter="0"/>
+	<s:Label id="lblData" top="9" left="7" horizontalCenter="0" buttonMode="true" click="lblData_clickHandler(event)"/>
 </s:GridItemRenderer>

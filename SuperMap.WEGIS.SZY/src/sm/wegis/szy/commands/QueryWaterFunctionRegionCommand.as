@@ -144,11 +144,6 @@ package sm.wegis.szy.commands
 				, displayWaterFunctionQueryRecords);
 		}
 		
-		private function zoomEndHandler(event:ZoomEvent):void
-		{
-			updateEvaluationResult();
-		}
-		
 		private function updateEvaluationResult():void
 		{
 			var riverFeatureLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERRIVER_FEATURE_LAYER) as FeaturesLayerEx;
@@ -221,6 +216,7 @@ package sm.wegis.szy.commands
 			} else {
 				showThemeMapTypePanel(false);
 			}
+			clearMainPollutionInfoStyle();
 		}
 		
 		//显示水质评价专题地图图例
@@ -234,6 +230,13 @@ package sm.wegis.szy.commands
 		{
 			var queryEvent:QueryEvent  = new QueryEvent(QueryEvent.SHOW_THEME_MAP_TYPE_PANEL_VISIBLE);
 			queryEvent.data = visible;
+			queryEvent.dispatch();
+		}
+		
+		//清除主要污染物气泡
+		private function clearMainPollutionInfoStyle():void
+		{
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_MAIN_POLLUTION);
 			queryEvent.dispatch();
 		}
 		

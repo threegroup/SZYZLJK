@@ -259,6 +259,8 @@ s|ButtonBar
 .infoStyle
 {
 	backgroundColor:#FFFFFF;
+	borderColor:#333333;
+	backgroundAlpha:0.9;
 	shadowDistance:0;
 	upperLeftRadius:0;
 	upperRightRadius:0;
@@ -266,6 +268,34 @@ s|ButtonBar
 	lowerRightRadius:0;
 	infoOffsetX:6;
 	infoOffsetY:6;
+}
+
+mx|Grid
+{
+	borderColor: #D1D1D1;
+	borderVisible:false;
+	horizontalGap:-1;
+	verticalGap:-1;
+}
+
+mx|GridItem{
+	borderColor: #D1D1D1;
+	borderStyle: solid;
+	horizontalAlign: center;
+	verticalAlign: middle;
+	paddingTop:-1;
+	paddingBottom:-1;
+}
+
+.headGridItem
+{
+	horizontalAlign:center;
+	fontWeight:bold;
+}
+
+.contentGridItem
+{
+	horizontalAlign:left;
 }
 
 

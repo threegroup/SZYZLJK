@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 minWidth="100" minHeight="60">
+		 minWidth="160" minHeight="60">
 	<fx:Script>
 		<![CDATA[
 			import sm.wegis.szy.renders.items.BreakGridRow;
@@ -36,11 +36,13 @@
 						var riverGridRow:RiverGridRow = new RiverGridRow();
 						riverGridRow.title =  "污染物名称";
 						riverGridRow.value =  "断面超标率";
+						riverGridRow.isTitle = true;
 						gridContent.addElement(riverGridRow);
 						for each(item in targets) {
 							riverGridRow = new RiverGridRow();
 							riverGridRow.title = item["污染物名称"];
 							riverGridRow.value = item["断面超标率"];
+							riverGridRow.styleName = "contentGridItem";
 							gridContent.addElement(riverGridRow);
 						}
 					} else {
@@ -48,12 +50,14 @@
 						breakGridRow.title =  "污染物名称";
 						breakGridRow.value =  "观测值";
 						breakGridRow.times = "超标倍数";
+						breakGridRow.isTitle = true;
 						gridContent.addElement(breakGridRow);
 						for each(item in targets) {
 							breakGridRow = new BreakGridRow();
 							breakGridRow.title = item["污染物名称"];
 							breakGridRow.value = item["断面超标率"];
 							breakGridRow.times =item["超标倍数"];
+							breakGridRow.styleName = "contentGridItem";
 							gridContent.addElement(breakGridRow);
 						}
 					}
@@ -61,10 +65,5 @@
 			}
 		]]>
 	</fx:Script>
-	<s:Rect left="0" right="0" top="0" bottom="0">
-		<s:fill>
-			<s:SolidColor color="0xFFFFFF"/>
-		</s:fill>
-	</s:Rect>
-	<mx:Grid id="gridContent" paddingLeft="3" paddingRight="3" paddingTop="3" paddingBottom="3"/>
+	<mx:Grid id="gridContent"   width="100%" height="100%" backgroundAlpha="0.8"/>
 </s:Group>

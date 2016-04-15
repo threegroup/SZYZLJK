@@ -25,19 +25,25 @@ package sm.wegis.szy.commands
 	
 	public class QueryRiverMainPollutionCommand extends CommandBase
 	{
-		var waterEvaluationParam:WaterEvaluaParam;
+		private var waterEvaluationParam:WaterEvaluaParam;
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			waterEvaluationParam = event.data as WaterEvaluaParam;
-			var params:Array = [];
-			params.push(modelLocator.systemInfo.subSystemID);
-			params.push(waterEvaluationParam.searchType);
-			params.push(waterEvaluationParam.periodId);
-			params.push(waterEvaluationParam.id);
-			
-			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetSZPJItemValue, params);
-			CursorManager.setBusyCursor();
+			//如果不为空，查询主要污染指标
+			if (event.data != null) {
+				waterEvaluationParam = event.data as WaterEvaluaParam;
+				var params:Array = [];
+				params.push(modelLocator.systemInfo.subSystemID);
+				params.push(waterEvaluationParam.searchType);
+				params.push(waterEvaluationParam.periodId);
+				params.push(waterEvaluationParam.id);
+				
+				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetSZPJItemValue, params);
+				CursorManager.setBusyCursor();
+			} else {
+				var targetInfoFeaturesLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.MAIN_EVALUATION_TARGET_INFO_LAYER, modelLocator.mapCtrl);
+				targetInfoFeaturesLayer.clear();
+			}
 		}
 		
 		override public function result(data:Object):void
@@ -54,7 +60,7 @@ package sm.wegis.szy.commands
 				var feature:Feature;
 				var infoStyle:InfoStyle;
 				var waterEvaluationCls:ClassFactory;
-				if (result.attributes && result.attributes.targetList) {
+				if (result.attributes && result.attributes.targetList && result.attributes.targetList.length > 0) {
 					var riverInfo:Object = result.attributes.targetList[0];
 					var riverMessage:Object = riverInfo.riverMessage;
 					if (!(riverMessage is Array)) {

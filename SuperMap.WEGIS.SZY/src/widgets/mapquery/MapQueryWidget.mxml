@@ -34,6 +34,7 @@
 			import sm.wegis.szy.utils.CairngormEventManager;
 			import sm.wegis.szy.utils.FeatureLayerUtil;
 			import sm.wegis.szy.vo.ConstVO;
+			import sm.wegis.szy.vo.MapQueryParam;
 			import sm.wegis.szy.vo.MapQueryVO;
 			import sm.wegis.szy.vo.WaterEvaluaParam;
 			
@@ -65,12 +66,11 @@
 				var result:Object = event.data;
 				var index:int =  result.index as int;
 				var selectItem:Object = resultList.dataProvider.getItemAt(index);
-				//查询失败
-				if (result.message == false) {
-					selectItem.selected = false;
+				//查询失败和取消选择
+				if (result.selected == false) {
 					resultList.dataProvider.itemUpdated(selectItem);
-					QueryInfoLabel.includeInLayout = true;
-					QueryInfoLabel.text = result.message;
+//					QueryInfoLabel.includeInLayout = true;
+//					QueryInfoLabel.text = result.message;
 				} 
 				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
 				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
@@ -381,8 +381,13 @@
 				QueryInfoLabel.text = "";
 				// 打开遮罩面板
 				maskGroup.visible = true;
-				var requestParam:Object = event.data;
-				requestParam.type = "1";
+				var requestParam:MapQueryParam = new MapQueryParam();
+				requestParam.id = event.data.id;
+				requestParam.selected = event.data.selected;
+				requestParam.index = event.data.index;
+				requestParam.name = event.data.name;
+				requestParam.x = event.data.x;
+				requestParam.y = event.data.y;
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_REAL_INFO);
 				queryEvent.data = requestParam;
 				queryEvent.dispatch();

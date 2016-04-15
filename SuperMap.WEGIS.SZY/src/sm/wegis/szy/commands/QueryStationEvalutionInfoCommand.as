@@ -24,11 +24,14 @@ package sm.wegis.szy.commands
 				var params:Array = [];
 				params.push(modelLocator.userVo.userId);
 				params.push(waterEvaluaParam.id);
-				params.push("2");//评价指标
+//				params.push("496674F833304A61B6CCA95C8807D7A2");
+				params.push("2");
 				if (waterEvaluaParam.searchType != null) {
 					params.push(modelLocator.systemInfo.subSystemID);
 					params.push(waterEvaluaParam.searchType);
 					params.push(waterEvaluaParam.periodId);
+//					params.push("month");
+//					params.push("2010-01-01~2010-12-31");
 				}
 			
 				IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTarget, params);
@@ -44,6 +47,7 @@ package sm.wegis.szy.commands
 			//用于右侧表格是添加、还是删除
 			value.x = waterEvaluaParam.x;
 			value.y = waterEvaluaParam.y;
+			value.name = waterEvaluaParam.name;
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE);
 			queryEvent.data = value;
 			queryEvent.dispatch();
