@@ -120,7 +120,11 @@
 						break;
 					case "linkRv":
 						addLinkRvlInfo(item);
+					case "linkRv":
+						addLinkRvlInfo(item);
 						break;
+					case "pollutionInfo":
+						addDetailInfo(item);
 				}
 			}
 			
@@ -394,6 +398,7 @@
 						case "linkObject":
 						case "linkDoc":
 						case "linkRv":
+						case "pollutionInfo":
 							linkBtVisible = true;
 							break;
 						case "realInfo":
