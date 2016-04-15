@@ -1027,6 +1027,16 @@ package sm.wegis.szy.plugins
 		private static var periodCls:Class;
 		private static var periodKey:String = "period";
 		ResourceManagerEx.RegisterResource("",periodKey, periodCls);
+		
+		[Embed(source="assets/image/theme.png")]
+		private static var themeCls:Class;
+		private static var themeKey:String = "theme";
+		ResourceManagerEx.RegisterResource("",themeKey, themeCls);
+		
+		[Embed(source="assets/image/report.png")]
+		private static var reportCls:Class;
+		private static var reportKey:String = "report";
+		ResourceManagerEx.RegisterResource("",reportKey, reportCls);
 
 		
 		public function SystemIconFile()

@@ -191,9 +191,9 @@ mx|AccordionHeader
 	fontSize:12;
 	fontWeight:normal;
 	fillColors:#ffffff, #ffffff;
-	selectedColors:#EFEEE9, #EFEEE9;
+	selectedColors:#BCBCBC, #BCBCBC;
 	fillAlphas:1,1;
-	textRollOverColor:#000000;
+	textRollOverColor:#FF0000;
 	paddingLeft:5;
 	borderColor:#3385FF;
 	cornerRadius:0;

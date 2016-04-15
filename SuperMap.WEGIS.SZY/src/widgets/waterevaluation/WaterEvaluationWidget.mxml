@@ -163,6 +163,34 @@
 					}]
 			};
 			
+			//水质评价专题图列表测试数据
+			[Bindable]
+			private var themeListData:ArrayCollection = new ArrayCollection([
+				{name:"河流水质专题图"},
+				{name:"水功能区水质专题图"},
+				{name:"水质评价专题图1"},
+				{name:"水质评价专题图2"},
+				{name:"水质评价专题图3"},
+				{name:"水质评价专题图4"},
+				{name:"水质评价专题图5"},
+				{name:"水质评价专题图6"}
+			]);
+			
+			//水质评价专题图列表测试数据
+			[Bindable]
+			private var evaluationListData:ArrayCollection = new ArrayCollection([
+				{name:"水质评价报告1"},
+				{name:"水质评价报告2"},
+				{name:"水质评价报告3"},
+				{name:"水质评价报告4"},
+				{name:"水质评价报告5"},
+				{name:"水质评价报告6"},
+				{name:"水质评价报告7"},
+				{name:"水质评价报告8"},
+				{name:"水质评价报告9"},
+				{name:"水质评价报告10"}
+			]);
+			
 			private function updateUnitLayout():void
 			{
 				if(stage != null)
@@ -897,10 +925,33 @@
 						</s:VGroup>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="水质评价专题图" width="100%" height="100%">
-						
+						<s:VGroup width="100%" height="100%"
+								  paddingTop="3" paddingBottom="3" paddingLeft="3" paddingRight="3">
+							<s:HGroup width="100%" verticalAlign="middle" gap="5">
+								<s:TextInput prompt="请输入专题名称" width="100%"/> 
+								<s:Button id="searchBt" buttonMode="true" width="45" height="25" label="保存" 
+										  toolTip="保存当前水质评价结果专题图"
+										  styleName="SubmitRegisterStyle"/>
+							</s:HGroup>
+							<s:Line width="100%">
+								<s:stroke>
+									<s:SolidColorStroke color="#ACAB96" weight="1"/>
+								</s:stroke>
+							</s:Line>
+							<s:List id="themeList" width="100%" height="100%" borderVisible="false"
+									horizontalScrollPolicy="off" 
+									dataProvider="{themeListData}"
+									itemRenderer="sm.wegis.szy.renders.ThemeListItemRenderer"/>
+						</s:VGroup>
 					</s:NavigatorContent>
 					<s:NavigatorContent  label="水质评价报告" width="100%" height="100%">
-						
+						<s:VGroup width="100%" height="100%"
+								  paddingTop="3" paddingBottom="3" paddingLeft="3" paddingRight="3">
+							<s:List id="evaluationList" width="100%" height="100%" borderVisible="false"
+									horizontalScrollPolicy="off" 
+									dataProvider="{evaluationListData}"
+									itemRenderer="sm.wegis.szy.renders.EvaluationListItemRenderer"/>
+						</s:VGroup>
 					</s:NavigatorContent>
 				</mx:Accordion>
 			</s:NavigatorContent>	
