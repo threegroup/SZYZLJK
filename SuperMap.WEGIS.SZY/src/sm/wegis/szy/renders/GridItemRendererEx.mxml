@@ -10,7 +10,7 @@
 			{
 				if(value == null)
 					return;
-				if(value is Array && value[column.columnIndex][column.dataField])
+				if(value is Array && value.length > column.columnIndex && value[column.columnIndex][column.dataField])
 				{
 					var arr:Array = value as Array;
 					if(arr != null && arr.length > 0)
