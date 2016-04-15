@@ -42,6 +42,9 @@ package sm.wegis.szy.events
 		/**添加图例模块*/
 		public static const SYSTEM_WIDGET_ADD:String = "Schema_Legend_Add";
 		
+		/**系统全屏*/
+		public static const SYSTEM_FULLSCREEN:String = "SystemFullScreen";
+		
 		
 		public function SystemEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

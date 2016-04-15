@@ -111,6 +111,9 @@
 				//切换系统
 				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD
 					, systemReloadHandler);
+				
+				//是否全屏
+				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_FULLSCREEN, fullScreenHandler);
 			}
 			
 			//用户或子系统发生变化，刷新数据
@@ -127,6 +130,54 @@
 				{
 					this.systemMenuId.dataProvider = null;
 					this.systemMenuId.dataProvider = modelLocator.menuInfo.mapMenuList;
+				}
+			}
+			
+			//响应同步全屏状态事件
+			private function fullScreenHandler(event:SystemEvent):void
+			{
+				var toolItem:ToolItem = event.data["currentItem"] as ToolItem;
+				if(toolItem != null)
+				{
+					var isFullScreen:Boolean = event.data["isFullScreen"];
+					var label:String = toolItem.label;
+					if(isFullScreen)
+					{
+						toolItem.label = "退出全屏";
+						toolItem.toolTip = "退出全屏";
+						//toolItem.setStyle("preImage", ResourceManagerEx.FindResource("ExitMapFullScreen").cls);
+					}
+					else
+					{
+						toolItem.label = "全屏";
+						toolItem.toolTip = "全屏";
+						//toolItem.setStyle("preImage", ResourceManagerEx.FindResource("MapFullScreen").cls);
+					}
+					
+					this.isFullScreen(isFullScreen);
+				}
+			}
+			
+			//是否开启全屏
+			private function isFullScreen(isFull:Boolean= false):void
+			{
+				this.TopContainerID.visible = !isFull;
+				this.TopContainerID.includeInLayout = !isFull;
+				
+				var tempWidth:Number = this.BodyContainerID.width;
+				if(isFull)
+				{
+					if(tempWidth != 0)
+					{
+						this.controlLeftPanel();
+					}
+				}
+				else
+				{
+					if(tempWidth == 0)
+					{
+						this.controlLeftPanel();
+					}
 				}
 			}
 			
@@ -257,6 +308,12 @@
 			
 			//控制左侧面板显示隐藏
 			private function controlBodyHandler(e:MouseEvent):void
+			{
+				this.controlLeftPanel();
+			}
+			
+			//控制窗口左侧面板显隐
+			private function controlLeftPanel():void
 			{
 				this.showEffect.stop();
 				this.hideEffect.stop();

@@ -93,6 +93,23 @@ package sm.wegis.szy.commands
 						}
 						case "Full":
 						{
+							var label:String = toolItem.label;
+							var data:Object = {};
+							var fullScreenEvent:SystemEvent = new SystemEvent(SystemEvent.SYSTEM_FULLSCREEN);
+							if(label == "全屏")
+							{
+								//派发全屏事件
+								data["isFullScreen"] = true;
+							}
+							else
+							{
+								//派发退出全屏事�
+								data["isFullScreen"] = false;
+							}
+							data["currentItem"] = toolItem;
+							fullScreenEvent.data = data;
+							fullScreenEvent.dispatch();
+							break;
 							break;
 						}
 						default:
