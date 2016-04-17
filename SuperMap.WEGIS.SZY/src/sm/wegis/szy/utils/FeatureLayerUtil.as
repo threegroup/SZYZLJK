@@ -12,7 +12,7 @@ package sm.wegis.szy.utils
 		{
 		}
 		
-		public static function getFeatureLayerById(layerId:String, map:MapCtrl):FeaturesLayerEx
+		public static function getFeatureLayerById(layerId:String, map:MapCtrl, layerType:int = -1, layerIndex:int = -1):FeaturesLayerEx
 		{
 			var featureLayer:FeaturesLayerEx = map.getLayer(layerId) as FeaturesLayerEx;
 			if (featureLayer == null) {
@@ -20,12 +20,18 @@ package sm.wegis.szy.utils
 				featureLayer.id = layerId;
 				map.addLayer(featureLayer);
 			} else{
-				map.moveLayer(layerId,map.layerIds.length-1);
 				if(!featureLayer.visible)
 				{
 					featureLayer.visible = true;
 				}
 			}
+			if (layerType != -1 ) {
+				featureLayer.layerType = layerType;
+				if (layerIndex != -1) {
+					featureLayer.layerIndex = layerIndex;
+				}
+			}
+			map.sortLayers();
 			return featureLayer;
 		}
 		

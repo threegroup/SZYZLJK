@@ -52,7 +52,7 @@ package sm.wegis.szy.commands
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var result:Object = jsDec.getValue() as Object;
-			var targetInfoFeaturesLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.MAIN_EVALUATION_TARGET_INFO_LAYER, modelLocator.mapCtrl);
+			var targetInfoFeaturesLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.MAIN_EVALUATION_TARGET_INFO_LAYER, modelLocator.mapCtrl, 8, 2);
 			targetInfoFeaturesLayer.clear();
 			if (result.success == true) {
 				//如果放回结果只有一条，说明是河流的信息，如果是多条，说明是断面
@@ -63,32 +63,30 @@ package sm.wegis.szy.commands
 				if (result.attributes && result.attributes.targetList && result.attributes.targetList.length > 0) {
 					var riverInfo:Object = result.attributes.targetList[0];
 					var riverMessage:Object = riverInfo.riverMessage;
-					if (!(riverMessage is Array)) {
-						if (riverMessage.dmID == "$$$") {
-							showPoint = new GeoPoint(waterEvaluationParam.x, waterEvaluationParam.y);
-							feature = new Feature(showPoint);
-							infoStyle = new InfoStyle();
-							waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
-							waterEvaluationCls.properties = {targets:riverMessage.dmMessage,type:WaterEvaluationTarget.River};
-							infoStyle.infoRenderer = waterEvaluationCls;
-							infoStyle.containerStyleName = "infoStyle";
-							feature.style = infoStyle;
-							targetInfoFeaturesLayer.addFeature(feature);
-						} else {
-							//断面点图层
-							var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
-							for each(var item:Object in riverMessage) {
-								for each(var featrue:Feature in featuresLayer.features) {
-									if (item.dmID == featrue.attributes.id) {
-										feature = new Feature(featrue.geometry);
-										infoStyle = new InfoStyle();
-										waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
-										waterEvaluationCls.properties = {targets:riverMessage.dmMessage,type:WaterEvaluationTarget.Break};
-										infoStyle.infoRenderer = waterEvaluationCls;
-										infoStyle.containerStyleName = "infoStyle";
-										feature.style = infoStyle;
-										targetInfoFeaturesLayer.addFeature(feature);
-									}
+					if (!(riverMessage is Array) && riverMessage.dmID == "$$$") {
+						showPoint = new GeoPoint(waterEvaluationParam.x, waterEvaluationParam.y);
+						feature = new Feature(showPoint);
+						infoStyle = new InfoStyle();
+						waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
+						waterEvaluationCls.properties = {targets:riverMessage.dmMessage,type:WaterEvaluationTarget.River};
+						infoStyle.infoRenderer = waterEvaluationCls;
+						infoStyle.containerStyleName = "infoStyle";
+						feature.style = infoStyle;
+						targetInfoFeaturesLayer.addFeature(feature);
+					}else if (riverMessage is Array){
+						//断面点图层
+						var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+						for each(var item:Object in riverMessage) {
+							for each(var featrue:Feature in featuresLayer.features) {
+								if (item.dmID == featrue.attributes.id) {
+									feature = new Feature(featrue.geometry);
+									infoStyle = new InfoStyle();
+									waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
+									waterEvaluationCls.properties = {targets:item.dmMessage,type:WaterEvaluationTarget.Break};
+									infoStyle.infoRenderer = waterEvaluationCls;
+									infoStyle.containerStyleName = "infoStyle";
+									feature.style = infoStyle;
+									targetInfoFeaturesLayer.addFeature(feature);
 								}
 							}
 						}

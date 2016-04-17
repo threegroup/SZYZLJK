@@ -249,22 +249,6 @@
 				this.queryInfoText.text = "0";
 				
 				this.clearLastQuery();
-				
-				//水功能区
-				var featuresLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERFUNCTION_FEATURE_LAYER) as FeaturesLayerEx;
-				if (featuresLayer != null)
-				{
-					featuresLayer.visible = false;
-				}
-				
-				//河流
-				var featuresLayer1:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.WATERRIVER_FEATURE_LAYER) as FeaturesLayerEx;
-				if (featuresLayer1 != null)
-				{
-					featuresLayer1.visible = false;
-				}
-				
-				modelLocator.waterEvaluationVO.waterEvaluationResult = null;
 			}
 			
 			/**根据需要组装河流数据*/
@@ -545,18 +529,21 @@
 			{
 				var waterEvaluationParam:WaterEvaluaParam = event.data as WaterEvaluaParam;
 				var searchArray:Array = getQueryParam(searchYearContainer);
-				waterEvaluationParam.periodId = searchArray[0];
 				if(searchArray.length == 2)
 				{
+					waterEvaluationParam.periodId = searchArray[0];
 					waterEvaluationParam.searchType = searchArray[1];
-				}else	{
+				}else	if (searchArray.length == 1){
 					//评价类型
 					waterEvaluationParam.searchType = getQueryParam(searchTypeContainer)[0];
+					waterEvaluationParam.periodId = periodList.selectedItem.id;
 				}
 				
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_MAIN_POLLUTION);
 				queryEvent.data = waterEvaluationParam;
 				queryEvent.dispatch();
+				
+				modelLocator.mapCtrl.infoWindow.hide();
 			}
 			
 			
@@ -594,7 +581,7 @@
 				if(searchArray.length == 2)
 				{
 					tempData["searchType"] = searchArray[1];
-					queryEvaluaByPeriod(searchArray[0],searchArray[1],"");
+					queryEvaluaByPeriod(searchArray[0], searchArray[1], "");
 				}
 				else
 				{
@@ -739,11 +726,11 @@
 			public function queryDefaultPointResponseHandler(event:CairngormEvent):void
 			{
 				var result:Object = event.data;
+				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl, 7, 1);
+				featuresLayer.clear();
 				if (result != null && result.success == true) {
 					if (result.attributes.targetList !=null)
 						var targetList:Object = result.attributes.targetList;
-					var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
-					featuresLayer.clear();
 					
 					for each(var item:Object in targetList) {
 						var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
@@ -778,13 +765,15 @@
 				param.y = feature.attributes["y"];
 				
 				var searchArray:Array = getQueryParam(searchYearContainer);
-				param.periodId= searchArray[0];
+			
 				if(searchArray.length == 2)
 				{
+					param.periodId= searchArray[0];
 					param.searchType = searchArray[1];
-				}else{
+				}else if(searchArray.length == 1 && periodList.selectedItem != null && periodList.selectedItem.id != null){
 					//评价类型
 					param.searchType = getQueryParam(searchTypeContainer)[0];
+					param.periodId = periodList.selectedItem.id;
 				}
 				
 				//点击站点，请求要素infowindow数据
@@ -823,11 +812,20 @@
 				//隐藏右下对象监测数据面板
 				var waterWatchEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_EVALUTION_WIDGET);
 				waterWatchEvent.dispatch();
+				
+				//隐藏河流及水功能区
+				modelLocator.waterEvaluationVO.waterEvaluationResult = null;
+				waterWatchEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
+				waterWatchEvent.dispatch();
+				
 				modelLocator.mapCtrl.infoWindow.hide();
 			}
 			
 			protected function this_WidgetRemoveHandler(event:BaseWidgetEvent):void
 			{
+				//清除默认断面点
+				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.EVALUATION_FEATURE_LAYER, modelLocator.mapCtrl);
+				featuresLayer.clear();
 				clearLastQuery();
 			}
 			
