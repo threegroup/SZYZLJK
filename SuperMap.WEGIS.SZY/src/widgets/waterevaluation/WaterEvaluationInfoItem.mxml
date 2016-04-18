@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" height="100%" xmlns:line="sm.wegis.szy.components.line.*" xmlns:baseclass="sm.wegis.szy.core.baseclass.*">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			private var _dmData:Object;
+			private var change:Boolean = false;
+			[Bindable]
+			public var waterEvaluationDatas:ArrayCollection;
+			
+			public function get dmData():Object
+			{
+				return _dmData;
+			}
+			
+			public function set dmData(value:Object):void
+			{
+				if (value != null ){
+					_dmData = value;
+					change = true;
+					invalidateProperties();
+				}
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				if (change == true) {
+					dmCode.text= dmData['dmCode'];
+					dmName.text= dmData['name'];
+					waterGrade.text=dmData['waterGrade'];
+					change = false;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Rect width="100%" height="100%">
+		<s:stroke>
+			<s:SolidColorStroke color="0xACAB96" alpha="0.9"/>
+		</s:stroke>
+	</s:Rect>
+	<s:VGroup width="100%" height="100%" paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5" gap="0">
+		<mx:Grid width="100%" verticalGap="-2">
+			<mx:GridRow height="25" width="100%">
+				<mx:GridItem width="80" height="100%">
+					<s:Label text="断面代码："/>
+				</mx:GridItem>
+				<mx:GridItem height="100%">
+					<s:Label id="dmCode" />
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow height="25" >
+				<mx:GridItem>
+					<s:Label text="断面名称："/>
+				</mx:GridItem>
+				<mx:GridItem width="100%" height="100%">
+					<s:Label id="dmName"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow height="25" >
+				<mx:GridItem>
+					<s:Label text="水质等级："/>
+				</mx:GridItem>
+				<mx:GridItem width="100%" >
+					<s:Label id="waterGrade"/>
+				</mx:GridItem>
+			</mx:GridRow>
+		</mx:Grid>
+		<s:VGroup width="100%" height="100%">
+			<s:Label text="评价指标" fontWeight="bold" />
+			<baseclass:DottedLineClass width="100%"/>
+			<s:DataGrid width="100%" height="100%" skinClass="sm.wegis.szy.skins.InfoDataGridSkinEx"
+						dataProvider="{waterEvaluationDatas}" editable="false" sortableColumns="false">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="指标名称" width="93" dataField="itemName" sortable="false"/>
+						<s:GridColumn headerText="测量值" dataField="gcValue" sortable="false"/>
+						<s:GridColumn headerText="等级" dataField="itemType" sortable="false"/>
+						<s:GridColumn headerText="污染倍数" dataField="pollutionTimes" sortable="false"/>
+					</s:ArrayList>
+				</s:columns>
+			</s:DataGrid>
+		</s:VGroup>
+	</s:VGroup>
+</s:Group>

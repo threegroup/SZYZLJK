@@ -270,7 +270,7 @@ s|ButtonBar
 	infoOffsetY:6;
 }
 
-mx|Grid
+.gridStyle
 {
 	borderColor: #D1D1D1;
 	borderVisible:false;
@@ -278,7 +278,7 @@ mx|Grid
 	verticalGap:-1;
 }
 
-mx|GridItem{
+.gridItemStyle{
 	borderColor: #D1D1D1;
 	borderStyle: solid;
 	horizontalAlign: center;

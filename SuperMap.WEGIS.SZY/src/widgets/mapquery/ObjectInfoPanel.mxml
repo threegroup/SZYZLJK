@@ -10,6 +10,7 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import widgets.waterevaluation.WaterEvaluationInfoItem;
 			import com.supermap.wegis.common.components.events.MenuEventEx;
 			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 			import com.supermap.wegis.common.components.menuBar.MenuItem;
@@ -124,7 +125,7 @@
 						addLinkRvlInfo(item);
 						break;
 					case "pollutionInfo":
-						addDetailInfo(item);
+						createWaterEvaluationPanel(item);
 				}
 			}
 			
@@ -227,6 +228,28 @@
 				dataGroup.layout = layout;
 				dataGroup.dataProvider = new ArrayCollection(data);
 				return dataGroup;
+			}
+			
+			/**创建水质评价内容
+			 * @param 断面信息 需要创建列的表格
+			 * @param 评价指标 数据实体
+			 * */
+			public function createWaterEvaluationPanel(data:Object):void
+			{
+				var infoNav:NavigatorContent = new NavigatorContent();
+				infoNav.percentHeight = 100;
+				infoNav.percentWidth = 100;
+				infoNav.label = data["label"];
+				var waterEvaluationInfoItem:WaterEvaluationInfoItem = new WaterEvaluationInfoItem();
+				if (data && "resultInfoDetailList" in data) {
+					var resultInfoDetailList:Array = data["resultInfoDetailList"]
+					if(resultInfoDetailList && resultInfoDetailList.length ==2){
+						waterEvaluationInfoItem.dmData = resultInfoDetailList[0];
+						waterEvaluationInfoItem.waterEvaluationDatas = new ArrayCollection(resultInfoDetailList[1]);
+					}
+				}
+				infoNav.addElement(waterEvaluationInfoItem);
+				infoViewStack.addItem(infoNav);
 			}
 			
 			/**创建DataGrid内容
@@ -398,10 +421,10 @@
 						case "linkObject":
 						case "linkDoc":
 						case "linkRv":
-						case "pollutionInfo":
 							linkBtVisible = true;
 							break;
 						case "realInfo":
+						case "pollutionInfo":
 							linkBtVisible = false;
 							break;
 					}

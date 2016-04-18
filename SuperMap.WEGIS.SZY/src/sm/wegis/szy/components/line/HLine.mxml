@@ -8,7 +8,7 @@
 			[Bindable]
 			public var weigth:int = 1;
 			[Bindable]
-			public var color:uint = 0xABDBFC;
+			public var color:uint = 0xACAB96;
 		]]>
 	</fx:Script>
 	<s:stroke>

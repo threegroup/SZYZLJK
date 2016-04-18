@@ -23,9 +23,10 @@ package sm.wegis.szy.commands
 			waterEvaluationParam = event.data as WaterEvaluaParam;
 			var params:Array = [];
 			params.push(waterEvaluationParam.id);
+//			params.push("496674F833304A61B6CCA95C8807D7A2");
+			params.push(modelLocator.systemInfo.subSystemID);
 			//searchTypef非空，查询水质评价
 			if (waterEvaluationParam.searchType != null) {
-				params.push(modelLocator.systemInfo.subSystemID);
 				params.push(waterEvaluationParam.searchType);
 				params.push(waterEvaluationParam.periodId);
 			}
