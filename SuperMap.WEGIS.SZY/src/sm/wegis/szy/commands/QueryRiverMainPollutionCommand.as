@@ -68,7 +68,7 @@ package sm.wegis.szy.commands
 						feature = new Feature(showPoint);
 						infoStyle = new InfoStyle();
 						waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
-						waterEvaluationCls.properties = {targets:riverMessage.dmMessage,type:WaterEvaluationTarget.River};
+						waterEvaluationCls.properties = {targets:riverMessage.dmMessage, title:riverMessage.dmName, type:WaterEvaluationTarget.River};
 						infoStyle.infoRenderer = waterEvaluationCls;
 						infoStyle.containerStyleName = "infoStyle";
 						feature.style = infoStyle;
@@ -82,7 +82,7 @@ package sm.wegis.szy.commands
 									feature = new Feature(featrue.geometry);
 									infoStyle = new InfoStyle();
 									waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
-									waterEvaluationCls.properties = {targets:item.dmMessage,type:WaterEvaluationTarget.Break};
+									waterEvaluationCls.properties = {targets:item.dmMessage, title:item.dmName ,type:WaterEvaluationTarget.Break};
 									infoStyle.infoRenderer = waterEvaluationCls;
 									infoStyle.containerStyleName = "infoStyle";
 									feature.style = infoStyle;

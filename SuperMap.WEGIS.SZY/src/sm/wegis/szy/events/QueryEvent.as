@@ -92,5 +92,11 @@ package sm.wegis.szy.events
 		
 		/**水质评价，查询河流主要污染指标信息*/
 		public static const QUERY_RIVER_MAIN_POLLUTION:String = "QueryRiverMainPollution";
+		
+		/**水质评价，查询保存的专题图数据*/
+		public static const QUERY_SAVE_THEME_MAP:String = "QuerySaveThemeMap";
+		
+		/**设置专题图类型*/
+		public static const CHANGE_THEME_MAP_TYPE:String = "ChangeThemeMapType";
 	}
 }

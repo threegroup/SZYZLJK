@@ -37,7 +37,7 @@ package sm.wegis.szy.commands
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
 			var resultValue:Object = jsDec.getValue() as Object;
 			if (resultValue.success == true) {
-				queryEvent.data = resultValue;
+				modelLocator.waterEvaluationVO.waterEvaluationResult = resultValue;
 			}
 			queryEvent.dispatch();
 		}
@@ -47,6 +47,7 @@ package sm.wegis.szy.commands
 			CursorManager.removeBusyCursor();
 			Alert.show("获取水质评价数据失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
+			modelLocator.waterEvaluationVO.waterEvaluationResult = null;
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
 			queryEvent.dispatch();
 		}
