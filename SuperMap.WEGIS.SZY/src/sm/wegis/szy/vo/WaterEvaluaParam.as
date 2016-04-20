@@ -5,8 +5,9 @@ package sm.wegis.szy.vo
 	{
 		
 		public var searchType:String;
+		public var searchYear:String;
 		public var periodId:String;
-		public var riverIds:String;
+		public var riverIds:String = "";
 		
 		public var id:String;
 		

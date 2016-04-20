@@ -11,6 +11,8 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.adobe.serialization.json.JSON;
+			import com.adobe.serialization.json.JSONEncoder;
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.geometry.GeoPoint;
 			import com.supermap.web.core.styles.PictureMarkerStyle;
@@ -33,6 +35,7 @@
 			import sm.wegis.szy.utils.CairngormEventManager;
 			import sm.wegis.szy.utils.FeatureLayerUtil;
 			import sm.wegis.szy.vo.ConstVO;
+			import sm.wegis.szy.vo.SaveThemeMapVO;
 			import sm.wegis.szy.vo.WaterEvaluaParam;
 			
 			import spark.components.Group;
@@ -528,15 +531,11 @@
 			private function waterEvaluationThemeMapRiverClickHandler(event:CairngormEvent):void
 			{
 				var waterEvaluationParam:WaterEvaluaParam = event.data as WaterEvaluaParam;
-				var searchArray:Array = getQueryParam(searchYearContainer);
-				if(searchArray.length == 2)
-				{
-					waterEvaluationParam.periodId = searchArray[0];
-					waterEvaluationParam.searchType = searchArray[1];
-				}else	if (searchArray.length == 1){
-					//评价类型
-					waterEvaluationParam.searchType = getQueryParam(searchTypeContainer)[0];
-					waterEvaluationParam.periodId = periodList.selectedItem.id;
+				
+				var modelWaterEvaluationParam:WaterEvaluaParam = modelLocator.waterEvaluaParam;
+				if (modelWaterEvaluationParam != null && modelWaterEvaluationParam.periodId != null && modelWaterEvaluationParam.searchType != null) {
+					waterEvaluationParam.periodId = modelWaterEvaluationParam.periodId;
+					waterEvaluationParam.searchType = modelWaterEvaluationParam.searchType;
 				}
 				
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_MAIN_POLLUTION);
@@ -572,26 +571,29 @@
 			{
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD);
 				
-				var tempData:Object = {};
+//				var tempData:Object = {};
 				//评价河流IDs
-				tempData["searchIds"] = "";//getQueryParam(searchRiverContainer).join(",");
+//				tempData["searchIds"] = "";//getQueryParam(searchRiverContainer).join(",");
 				//评价年份
 				var searchArray:Array = getQueryParam(searchYearContainer);
-				tempData["searchYear"] = searchArray[0];
+//				tempData["searchYear"] = searchArray[0];
+				modelLocator.waterEvaluaParam.searchYear =  searchArray[0];
 				if(searchArray.length == 2)
 				{
-					tempData["searchType"] = searchArray[1];
-					queryEvaluaByPeriod(searchArray[0], searchArray[1], "");
+//					tempData["searchType"] = searchArray[1];
+					modelLocator.waterEvaluaParam.searchType = searchArray[1];
+					queryEvaluaByPeriod();
 				}
 				else
 				{
 					//评价类型
-					tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
+//					tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
+					modelLocator.waterEvaluaParam.searchType = getQueryParam(searchTypeContainer)[0];
 				}
 				
 				if(searchArray.length == 1)
 				{
-					queryEvent.data = tempData;	
+					queryEvent.data = modelLocator.waterEvaluaParam;	
 					queryEvent.dispatch();
 				}
 				
@@ -764,18 +766,11 @@
 				param.x = feature.attributes["x"];
 				param.y = feature.attributes["y"];
 				
-				var searchArray:Array = getQueryParam(searchYearContainer);
-			
-				if(searchArray.length == 2)
-				{
-					param.periodId= searchArray[0];
-					param.searchType = searchArray[1];
-				}else if(searchArray.length == 1 && periodList.selectedItem != null && periodList.selectedItem.id != null){
-					//评价类型
-					param.searchType = getQueryParam(searchTypeContainer)[0];
-					param.periodId = periodList.selectedItem.id;
-				}
-				
+				var waterEvaluaParam:WaterEvaluaParam = modelLocator.waterEvaluaParam;
+			   if (waterEvaluaParam != null && waterEvaluaParam.searchType != null && waterEvaluaParam.periodId != null) {
+				   param.periodId = waterEvaluaParam.periodId;
+				   param.searchType = waterEvaluaParam.searchType;
+			   }
 				//点击站点，请求要素infowindow数据
 				var queryObjectEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_OBJECT_DETAIL);
 				queryObjectEvent.data = param;
@@ -835,27 +830,47 @@
 				queryDefaultStation();
 			}
 			
-			protected function periodList_changeHandler(event:IndexChangeEvent):void
+			protected function periodList_changeHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
 				var tempObject:Object = this.periodList.selectedItem;
 				if(tempObject != null)
 				{
-					this.queryEvaluaByPeriod(tempObject["id"],getQueryParam(searchTypeContainer)[0], "");
+					modelLocator.waterEvaluaParam.periodId = tempObject["id"];
+					queryEvaluaByPeriod();
 				}
 			}
 			
 			//根据周期查询评价信息
-			private function queryEvaluaByPeriod(period:String, searchType:String, searchIds:String):void
+			private function queryEvaluaByPeriod():void
 			{
-				var waterEvaluaParam:WaterEvaluaParam = new WaterEvaluaParam();
-				waterEvaluaParam.searchType = searchType;
-				waterEvaluaParam.periodId = period;
-				waterEvaluaParam.riverIds = searchIds;
+				var waterEvaluaParam:WaterEvaluaParam = modelLocator.waterEvaluaParam;
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATEREVALUATION_RESULT);
 				queryEvent.data = waterEvaluaParam;
 				queryEvent.dispatch();
 			}
+			
+			//保存专题图
+			protected function searchBt_clickHandler(event:MouseEvent):void
+			{
+				//当前有结果数据在展示
+				if (modelLocator.waterEvaluationVO.waterEvaluationResult != null) {
+					var saveThemeMapVO:SaveThemeMapVO = new SaveThemeMapVO();
+					saveThemeMapVO.waterEvaluation = modelLocator.waterEvaluationVO;
+					saveThemeMapVO.mapViewBounds = modelLocator.mapCtrl.viewBounds.bbox;
+					saveThemeMapVO.waterEvaluaParam = modelLocator.waterEvaluaParam;
+					var jsonString:String = com.adobe.serialization.json.JSON.encode(saveThemeMapVO);
+					trace(jsonString);
+				}
+			}
+			
+			protected function themeList_changeHandler(event:MouseEvent):void
+			{
+				periodList.selectedIndex = -1;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_SAVE_THEME_MAP);
+				queryEvent.dispatch();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -918,7 +933,7 @@
 								</s:HGroup> 
 								<s:List id="periodList" width="100%" height="100%" borderVisible="false"
 										horizontalScrollPolicy="off" itemRenderer="sm.wegis.szy.renders.PeriodListItemRenderer"
-										change="periodList_changeHandler(event)"/>
+										click="periodList_changeHandler(event)"/>
 							</s:VGroup>
 						</s:VGroup>
 					</s:NavigatorContent>
@@ -928,7 +943,7 @@
 							<s:HGroup width="100%" verticalAlign="middle" gap="5">
 								<s:TextInput prompt="请输入专题名称" width="100%"/> 
 								<s:Button id="searchBt" buttonMode="true" width="45" height="25" label="保存" 
-										  toolTip="保存当前水质评价结果专题图"
+										  toolTip="保存当前水质评价结果专题图" click="searchBt_clickHandler(event)"
 										  styleName="SubmitRegisterStyle"/>
 							</s:HGroup>
 							<s:Line width="100%">
@@ -939,6 +954,7 @@
 							<s:List id="themeList" width="100%" height="100%" borderVisible="false"
 									horizontalScrollPolicy="off" 
 									dataProvider="{themeListData}"
+									click="themeList_changeHandler(event)"
 									itemRenderer="sm.wegis.szy.renders.ThemeListItemRenderer"/>
 						</s:VGroup>
 					</s:NavigatorContent>

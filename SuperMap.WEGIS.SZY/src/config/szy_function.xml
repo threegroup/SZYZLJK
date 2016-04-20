@@ -32,7 +32,7 @@
 	<menu>
 		<mapmenu>
 			<item>
-				<name>水体查询</name>
+				<name>信息查询</name>
 				<key>WaterBodyQuery</key>
 				<url>widgets/mapquery/MapQueryWidget.swf</url>
 				<mutex>true</mutex>
@@ -41,7 +41,7 @@
 				<subitems>
 					<subitem>
 						<key>WaterWatchWidget</key>
-						<name>监测数据展示面板</name>
+						<name>信息查询数据展示面板</name>
 						<url>widgets/mapquery/WaterWatchIndexWidget.swf</url>
 						<position>bottom</position>
 						<mutex>true</mutex>
@@ -93,7 +93,7 @@
 				</subitems>
 			</item>
 			<item>
-				<name>水体预警</name>
+				<name>应急管理</name>
 				<key>WaterBodyWarn</key>
 				<url></url>
 				<mutex>true</mutex>

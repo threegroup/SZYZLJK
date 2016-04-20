@@ -9,6 +9,7 @@ package sm.wegis.szy.models
 	import sm.wegis.szy.vo.SystemVO;
 	import sm.wegis.szy.vo.ToolVO;
 	import sm.wegis.szy.vo.UserVO;
+	import sm.wegis.szy.vo.WaterEvaluaParam;
 	import sm.wegis.szy.vo.WaterEvaluationVO;
 
 	[Bindable]
@@ -39,6 +40,22 @@ package sm.wegis.szy.models
 		//水质评价，专题地图状态参数
 		private var _waterEvaluationVO:WaterEvaluationVO;
 		
+		//水质评价，专题地图查询参数
+		private var _waterEvaluaParam:WaterEvaluaParam;
+		
+		public function get waterEvaluaParam():WaterEvaluaParam
+		{
+			if (_waterEvaluaParam == null) {
+				_waterEvaluaParam = new WaterEvaluaParam();
+			}
+			return _waterEvaluaParam;
+		}
+
+		public function set waterEvaluaParam(value:WaterEvaluaParam):void
+		{
+			_waterEvaluaParam = value;
+		}
+
 		/**水质评价，专题地图状态参数*/
 		public function get waterEvaluationVO():WaterEvaluationVO
 		{

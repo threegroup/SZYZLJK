@@ -25,7 +25,6 @@
 				if (themeMapGroup.selectedValue != null) {
 					modelLocator.waterEvaluationVO.themeMapType = themeMapGroup.selectedValue as String;
 					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
-					queryEvent.data = modelLocator.waterEvaluationVO.waterEvaluationResult;
 					queryEvent.dispatch();
 				}
 			}
@@ -38,10 +37,28 @@
 			public function initEventListener():void{
 				var eList:ArrayCollection = new ArrayCollection([
 					[QueryEvent.SHOW_THEME_MAP_TYPE_PANEL_VISIBLE, showThememapTypePanelHandler],//评价河流
+					[QueryEvent.CHANGE_THEME_MAP_TYPE, changeThememapTypeHandler],//设置专题图类型
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			private function changeThememapTypeHandler(event:CairngormEvent):void
+			{
+				if (event.data) {
+					switch(event.data) {
+						case ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE:
+						riverType.selected = true;
+						break;
+						case ConstVO.FUNCTION_EVALUATION_THEME_TYPE:
+						functionType.selected = true;
+						break;
+						case ConstVO.FUNCTION_STANDARD_THEME_TYPE:
+						functionPsType.selected = true;
+						break;
+					}
+				}
 			}
 			
 			private function showThememapTypePanelHandler(event:CairngormEvent):void
@@ -65,9 +82,9 @@
 	</ns:states>
 	<s:Panel title="专题图类型">
 		<s:VGroup width="100%" height="100%"  paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5">
-			<s:RadioButton label="河流水质评价图" buttonMode="true"  groupName="themeMapGroup" selected="true" value="{ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE}"/>
-			<s:RadioButton label="水功能区水质评价图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_EVALUATION_THEME_TYPE}"/>
-			<s:RadioButton label="水功能区水质达标图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_STANDARD_THEME_TYPE}"/>
+			<s:RadioButton id="riverType" label="河流水质评价图" buttonMode="true"  groupName="themeMapGroup" selected="true" value="{ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE}"/>
+			<s:RadioButton id="functionType" label="水功能区水质评价图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_EVALUATION_THEME_TYPE}"/>
+			<s:RadioButton id="functionPsType" label="水功能区水质达标图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_STANDARD_THEME_TYPE}"/>
 		</s:VGroup>
 	</s:Panel>
 </ns:WidgetBase>

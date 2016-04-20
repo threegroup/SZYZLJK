@@ -232,6 +232,9 @@
 					<!--获取应用系统相关参数配置文件 -->
 					<value type="Class">sm.wegis.szy.commands.GetSystemParamCommand
 					</value>
+					
+					<value type="Class">sm.wegis.szy.commands.QuerySaveThemeMapCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -245,6 +248,9 @@
 				<!--获取系统功能 -->
 				<property name="GetFunction" value="GetFunctionCommand" />
 				<property name="GetSystemParam" value="GetSystemParamCommand" />
+				
+					<!--水质评价保存的专题地图查询 -->
+				<property name="QuerySaveThemeMap" value="QuerySaveThemeMapCommand" />
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

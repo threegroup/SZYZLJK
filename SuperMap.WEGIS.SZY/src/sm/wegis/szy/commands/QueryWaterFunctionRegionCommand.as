@@ -35,9 +35,6 @@ package sm.wegis.szy.commands
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
-			//存储查询的成果数据
-			modelLocator.waterEvaluationVO.waterEvaluationResult = event.data;
-			
 			if (isFirstInitFeatureLayer == true) {
 				CursorManager.setBusyCursor();
 				//查询河流
