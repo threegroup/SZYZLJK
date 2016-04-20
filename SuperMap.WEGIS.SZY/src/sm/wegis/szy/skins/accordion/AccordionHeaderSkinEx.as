@@ -181,52 +181,16 @@ package sm.wegis.szy.skins.accordion
 					
 					var upFillAlphas:Array = [ fillAlphas[0], fillAlphas[1] ];
 					
-					if (emph)
-					{
-						// button border/edge
-						drawRoundRect(
-							0, 0, w, h, cr,
-							[ themeColor, themeColorDrk1 ], 1,
-							verticalGradientMatrix(0, 0, w - 2, h - 2 ),
-							GradientType.LINEAR, null, 
-							{ x: 2, y: 2, w: w - 4, h: h - 4, r: cornerRadius - 2 });
-						
-						// button fill
-						drawRoundRect(
-							2, 2, w - 4, h - 4, cr2,
-							upFillColors, upFillAlphas,
-							verticalGradientMatrix(2, 2, w - 2, h - 2));
-						
-						// top highlight
-						drawRoundRect(
-							2, 2, w - 4, (h - 4) / 2,
-							{ tl: cr2, tr: cr2, bl: 0, br: 0 },
-							[ 0xFFFFFF, 0xFFFFFF ], highlightAlphas,
-							verticalGradientMatrix(1, 1, w - 2, (h - 2) / 2)); 
-					}
-					else
-					{
-						// button border/edge
-						drawRoundRect(
-							0, 0, w, h, cr,
-							[ borderColor, borderColorDrk1 ], 1,
-							verticalGradientMatrix(0, 0, w - 2, h - 2),
-							GradientType.LINEAR, null, 
-							{ x: 1, y: 1, w: w - 2, h: h - 2, r: cornerRadius - 1 }); 
-						
-						// button fill
-						drawRoundRect(
-							1, 1, w - 2, h - 2, cr1,
-							upFillColors, upFillAlphas,
-							verticalGradientMatrix(1, 1, w - 2, h - 2)); 
-						
-						// top highlight
-						drawRoundRect(
-							1, 1, w - 2, (h - 2) / 2,
-							{ tl: cr1, tr: cr1, bl: 0, br: 0 },
-							[ 0xFFFFFF, 0xFFFFFF ], highlightAlphas,
-							verticalGradientMatrix(1, 1, w - 2, (h - 2) / 2)); 
-					}
+					drawRoundRect(
+						0, 0, w, h, cr,
+						[ themeColor, themeColorDrk1 ], 1,
+						verticalGradientMatrix(0, 0, w - 2, h - 2)); 
+					
+					// button fill
+					drawRoundRect(
+						1, 1, w - 2, h - 2, cr1,
+						[ upFillColors[0], upFillColors[1] ], 1,
+						verticalGradientMatrix(0, 0, w - 2, h - 2));
 					break;
 				}
 					
@@ -244,26 +208,17 @@ package sm.wegis.szy.skins.accordion
 					else
 						overFillAlphas = [ fillAlphas[0], fillAlphas[1] ];
 					
-					// button border/edge
+					
 					drawRoundRect(
 						0, 0, w, h, cr,
 						[ themeColor, themeColorDrk1 ], 1,
-						verticalGradientMatrix(0, 0, w - 2, h - 2),
-						GradientType.LINEAR, null, 
-						{ x: 1, y: 1, w: w - 2, h: h - 2, r: cornerRadius - 1 }); 
+						verticalGradientMatrix(0, 0, w - 2, h - 2)); 
 					
 					// button fill
 					drawRoundRect(
 						1, 1, w - 2, h - 2, cr1,
-						overFillColors, overFillAlphas,
-						verticalGradientMatrix(1, 1, w - 2, h - 2)); 
-					
-					// top highlight
-					drawRoundRect(
-						1, 1, w - 2, (h - 2) / 2,
-						{ tl: cr1, tr: cr1, bl: 0, br: 0 },
-						[ 0xFFFFFF, 0xFFFFFF ], highlightAlphas,
-						verticalGradientMatrix(1, 1, w - 2, (h - 2) / 2)); 
+						[ overFillColors[0], overFillColors[1] ], 1,
+						verticalGradientMatrix(0, 0, w - 2, h - 2));
 					
 					break;
 				}
@@ -280,15 +235,8 @@ package sm.wegis.szy.skins.accordion
 					// button fill
 					drawRoundRect(
 						1, 1, w - 2, h - 2, cr1,
-						[ derStyles.fillColorPress1, derStyles.fillColorPress2], 1,
-						verticalGradientMatrix(1, 1, w - 2, h - 2)); 
-					
-					// top highlight
-					drawRoundRect(
-						2, 2, w - 4, (h - 4) / 2,
-						{ tl: cr2, tr: cr2, bl: 0, br: 0 },
-						[ 0xFFFFFF, 0xFFFFFF ], highlightAlphas,
-						verticalGradientMatrix(1, 1, w - 2, (h - 2) / 2)); 
+						[ selectedColors[0], selectedColors[1] ], 1,
+						verticalGradientMatrix(0, 0, w - 2, h - 2));
 					
 					break;
 				}

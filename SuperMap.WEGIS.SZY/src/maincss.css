@@ -187,13 +187,14 @@ s|Scroller
 
 mx|AccordionHeader
 {
-	color:#000000;
+	color:#FFFFFF;
 	fontSize:12;
 	fontWeight:normal;
-	fillColors:#ffffff, #ffffff;
+	fillColors:#666666, #666666;
 	selectedColors:#3385FF, #3385FF;
 	fillAlphas:1,1;
-	textRollOverColor:#FF0000;
+/*	textRollOverColor:#000000;
+	textSelectedColor:#000000;*/
 	paddingLeft:5;
 	borderColor:#3385FF;
 	cornerRadius:0;

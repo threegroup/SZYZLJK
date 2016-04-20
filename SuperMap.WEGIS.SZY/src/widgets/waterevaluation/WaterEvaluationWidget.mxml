@@ -18,10 +18,15 @@
 			import com.supermap.web.core.styles.PictureMarkerStyle;
 			import com.supermap.web.core.styles.PredefinedMarkerStyle;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
+			import com.supermap.wegis.common.components.panel.contentPanel.ContentPanel;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			import com.supermap.wegis.common.flexdiv.PanelContainer;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
+			import flash.net.navigateToURL;
+			
 			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			import mx.events.ResizeEvent;
@@ -39,6 +44,7 @@
 			import sm.wegis.szy.vo.WaterEvaluaParam;
 			
 			import spark.components.Group;
+			import spark.components.Panel;
 			import spark.events.IndexChangeEvent;
 			
 			import widgets.waterevaluation.Items.CheckBoxGroup;
@@ -64,6 +70,9 @@
 			
 			/**默认显示字数*/
 			private const LENGTH:Number = 5;
+			
+			/**pdf文档显示容器*/
+			private var pdfPanel:ContentPanel = null;
 			
 			/**复选*/
 			private static const CHECKBOX:String ="0";      
@@ -179,19 +188,19 @@
 				{name:"水质评价专题图6"}
 			]);
 			
-			//水质评价专题图列表测试数据
+			//水质评报告列表测试数据
 			[Bindable]
 			private var evaluationListData:ArrayCollection = new ArrayCollection([
-				{name:"水质评价报告1"},
-				{name:"水质评价报告2"},
-				{name:"水质评价报告3"},
-				{name:"水质评价报告4"},
-				{name:"水质评价报告5"},
-				{name:"水质评价报告6"},
-				{name:"水质评价报告7"},
-				{name:"水质评价报告8"},
-				{name:"水质评价报告9"},
-				{name:"水质评价报告10"}
+				{name:"水质评价报告1", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告2", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告3", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告4", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告5", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告6", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告7", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告8", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告9", url:"assets/pdf/水环境质量评价方案.pdf"},
+				{name:"水质评价报告10", url:"assets/pdf/水环境质量评价方案.pdf"}
 			]);
 			
 			private function updateUnitLayout():void
@@ -571,23 +580,23 @@
 			{
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_PERIOD);
 				
-//				var tempData:Object = {};
+				//				var tempData:Object = {};
 				//评价河流IDs
-//				tempData["searchIds"] = "";//getQueryParam(searchRiverContainer).join(",");
+				//				tempData["searchIds"] = "";//getQueryParam(searchRiverContainer).join(",");
 				//评价年份
 				var searchArray:Array = getQueryParam(searchYearContainer);
-//				tempData["searchYear"] = searchArray[0];
+				//				tempData["searchYear"] = searchArray[0];
 				modelLocator.waterEvaluaParam.searchYear =  searchArray[0];
 				if(searchArray.length == 2)
 				{
-//					tempData["searchType"] = searchArray[1];
+					//					tempData["searchType"] = searchArray[1];
 					modelLocator.waterEvaluaParam.searchType = searchArray[1];
 					queryEvaluaByPeriod();
 				}
 				else
 				{
 					//评价类型
-//					tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
+					//					tempData["searchType"] = getQueryParam(searchTypeContainer)[0];
 					modelLocator.waterEvaluaParam.searchType = getQueryParam(searchTypeContainer)[0];
 				}
 				
@@ -767,10 +776,10 @@
 				param.y = feature.attributes["y"];
 				
 				var waterEvaluaParam:WaterEvaluaParam = modelLocator.waterEvaluaParam;
-			   if (waterEvaluaParam != null && waterEvaluaParam.searchType != null && waterEvaluaParam.periodId != null) {
-				   param.periodId = waterEvaluaParam.periodId;
-				   param.searchType = waterEvaluaParam.searchType;
-			   }
+				if (waterEvaluaParam != null && waterEvaluaParam.searchType != null && waterEvaluaParam.periodId != null) {
+					param.periodId = waterEvaluaParam.periodId;
+					param.searchType = waterEvaluaParam.searchType;
+				}
 				//点击站点，请求要素infowindow数据
 				var queryObjectEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_OBJECT_DETAIL);
 				queryObjectEvent.data = param;
@@ -871,6 +880,46 @@
 				queryEvent.dispatch();
 			}
 			
+			protected function evaluationList_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				var item:Object = this.evaluationList.selectedItem;
+				if(item != null)
+				{
+					this.showPdfDoc(item["name"], item["url"]);
+				}
+			}
+			
+			/**显示pdf文档*/
+			private function showPdfDoc(pdfTitle:String, pdfUrl:String):void
+			{
+				var pdf:PanelContainer = new PanelContainer("pdf");
+				pdf.percentWidth = 100;
+				pdf.percentHeight = 100;
+				pdf.source = pdfUrl;
+				
+				if(pdfPanel == null)
+				{
+					pdfPanel = new ContentPanel();
+					pdfPanel.depth = FlexGlobals.topLevelApplication.numElements + 10;
+					pdfPanel.x = 300;
+					pdfPanel.y = 70;
+					pdfPanel.percentWidth = 100;
+					pdfPanel.percentHeight = 100; 
+					pdfPanel.enableMinimizeButton = false;
+					pdfPanel.enableResizeButton =false;
+					pdfPanel.enableIcon = false;
+					pdfPanel.draggable = false;
+					pdfPanel.unLoad = true;
+					pdfPanel.closeFunction = function():void{pdf.source=null;};
+					pdfPanel.widgetState = ContentPanel.WIDGET_OPENED;
+				}
+				pdfPanel.widgetTitle = pdfTitle;
+				pdfPanel.addElement(pdf);
+				FlexGlobals.topLevelApplication.addElement(pdfPanel); 
+				
+				/* navigateToURL(new URLRequest(pdfUrl), "_blank"); */
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -885,9 +934,9 @@
 						<s:VGroup width="100%" height="100%"
 								  paddingTop="3" paddingBottom="3" paddingLeft="3" paddingRight="3">
 							<!--<s:HGroup width="100%"
-									  horizontalAlign="left" verticalAlign="middle">
-								<s:Label text="水质评价条件设置：" width="100%" height="25" 
-										 backgroundColor="#3385FF" fontSize="12" color="#FFFFFF"/>
+							horizontalAlign="left" verticalAlign="middle">
+							<s:Label text="水质评价条件设置：" width="100%" height="25" 
+							backgroundColor="#3385FF" fontSize="12" color="#FFFFFF"/>
 							</s:HGroup>-->
 							<!--<s:Line width="100%">
 							<s:stroke>
@@ -897,9 +946,9 @@
 							<!--<s:VGroup id="searchRiverContainer" width="100%" maxHeight="{searchRiverPanelHeight}">  
 							</s:VGroup>-->
 							<!--<s:Line width="100%">
-								<s:stroke>
-									<s:SolidColorStroke color="#ACAB96" weight="1"/>
-								</s:stroke>
+							<s:stroke>
+							<s:SolidColorStroke color="#ACAB96" weight="1"/>
+							</s:stroke>
 							</s:Line>-->
 							<s:VGroup id="searchYearContainer" 
 									  width="100%" height="{searchYearPanelHeight}">
@@ -917,7 +966,7 @@
 								</s:stroke>
 							</s:Line>
 							<!--<s:VGroup id="periodContainer" width="100%" height="{searchPeriodPanelHeight}" gap="2"
-									  horizontalAlign="center" verticalAlign="middle">-->
+							horizontalAlign="center" verticalAlign="middle">-->
 							<s:VGroup id="periodContainer" width="100%" height="100%" gap="2"
 									  horizontalAlign="center" verticalAlign="middle">
 								<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
@@ -964,6 +1013,7 @@
 							<s:List id="evaluationList" width="100%" height="100%" borderVisible="false"
 									horizontalScrollPolicy="off" 
 									dataProvider="{evaluationListData}"
+									change="evaluationList_changeHandler(event)"
 									itemRenderer="sm.wegis.szy.renders.EvaluationListItemRenderer"/>
 						</s:VGroup>
 					</s:NavigatorContent>
