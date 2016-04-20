@@ -46,5 +46,7 @@ package sm.wegis.szy.vo
 		public static const FUNCTION_EVALUATION_THEME_TYPE:String = "functionEvaluationThemeType";
 		/**水质评价，专题地图——水功能区是否达标类型*/
 		public static const FUNCTION_STANDARD_THEME_TYPE:String = "functionStandardThemeType";
+		/**水质评价，专题地图——行政区划专题图*/
+		public static const ADMINISTRATIVE_DIVISION_THEME_TYPE:String = "AdministrativeDivisionThemeType";
 	}
 }

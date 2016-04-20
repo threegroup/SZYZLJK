@@ -210,6 +210,24 @@ package sm.wegis.szy.commands
 						}
 					}
 						break;
+					//行政区划水质评价专题图--待完善
+					case ConstVO.ADMINISTRATIVE_DIVISION_THEME_TYPE:
+						waterFunctionFeatureLayer.visible = true;
+						for each(riverInfo in waterEvalutions.targetList) {
+						for each(functionInfo in riverInfo.waterFunList) {
+							for each(ft in waterFunctionFeatureLayer.features) {
+								if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
+								{
+									ft.attributes["是否达标"] =  functionInfo["是否达标"] == "0" ? "否" : "是";
+									//业务数据中水功能区对应的ID
+									ft.attributes["businessId"] = riverInfo["评价对象_ID"];
+									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["达标颜色"],16), 1,8);
+									ft.toolTip = ft.attributes["是否达标"];
+								}
+							}
+						}
+					}
+						break;
 				}
 				showWaterEvaluationLegend();
 				showThemeMapTypePanel(true);
