@@ -145,6 +145,8 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryRiverYearCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryRiverCapacityYearCommand
+					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryRiverPeriodCommand
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryRiverPeriodDataCommand
@@ -192,12 +194,14 @@
 				<property name="QueryDefaultPoint" value="QueryDefaultPointCommand"/>
 				<property name="QueryRiverList" value="QueryRiverListCommand"/>
 				<property name="QueryRiverYear" value="QueryRiverYearCommand"/>
+				<property name="QueryRiverCapacityYear" value="QueryRiverCapacityYearCommand"/>
 				<property name="QueryRiverPeriod" value="QueryRiverPeriodCommand"/>
 				<property name="QueryRiverPeriodData" value="QueryRiverPeriodDataCommand" />
 				<property name="QueryStationEvalutionInfo" value="QueryStationEvalutionInfoCommand"/>
 				<property name="QueryWaterFunctionRegion" value="QueryWaterFunctionRegionCommand"/>
 				<property name="QueryWaterEvaluationResult" value="QueryWaterEvaluationResultCommand"/>
 				<property name="QueryRiverMainPollution" value="QueryRiverMainPollutionCommand"/>
+				
 				
 			</object>
 		</constructor-arg>

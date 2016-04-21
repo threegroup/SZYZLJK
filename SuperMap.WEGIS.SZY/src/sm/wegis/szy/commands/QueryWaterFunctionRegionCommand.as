@@ -197,7 +197,7 @@ package sm.wegis.szy.commands
 							for each(ft in waterFunctionFeatureLayer.features) {
 								if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
 								{
-									ft.attributes["是否达标"] =  functionInfo["是否达标"] == "0" ? "否" : "是";
+									ft.attributes["是否达标"] =  functionInfo["是否达标"] == "0" ? "不达标" : "达标";
 									//业务数据中水功能区对应的ID
 									ft.attributes["businessId"] = riverInfo["评价对象_ID"];
 									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["达标颜色"],16), 1,8);
@@ -215,7 +215,7 @@ package sm.wegis.szy.commands
 							for each(ft in waterFunctionFeatureLayer.features) {
 								if (ft.attributes["ID"] == functionInfo.SUPER_OBJ_ID)
 								{
-									ft.attributes["是否达标"] =  functionInfo["是否达标"] == "0" ? "否" : "是";
+									ft.attributes["是否达标"] =  functionInfo["是否达标"] == "0" ? "不达标" : "达标";
 									//业务数据中水功能区对应的ID
 									ft.attributes["businessId"] = riverInfo["评价对象_ID"];
 									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["达标颜色"],16), 1,8);
@@ -232,6 +232,12 @@ package sm.wegis.szy.commands
 				showThemeMapTypePanel(false);
 			}
 			clearMainPollutionInfoStyle();
+		}
+		
+		//构建水功能区tooltip信息
+		private function getWaterFunctionToolTip():String
+		{
+			return "";
 		}
 		
 		//显示水质评价专题地图图例

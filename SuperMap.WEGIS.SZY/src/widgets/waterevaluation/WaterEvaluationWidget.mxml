@@ -157,12 +157,28 @@
 			
 			/**重绘布局*/
 			
-			/**评价年份*/
+			/**水资源评价评价年份*/
 			private var yearListData:Object = {
 				"nodeListSelect": [
 					{
 						"hasCustom": "1",
 						"customOptionValue":"begDate&endDate",
+						"initialDisplay": "1",
+						"isSelect": "1",
+						"isShow": "1",
+						"optionList": [],
+						"orderIndex": "2",
+						"propertyDisplayType": "1",
+						"propertyType": "3",
+						"propertyId": "",
+						"propertyName": "评价年份"
+					}]
+			};
+			
+			/**水资源承载力评价年份，不需要定义时间*/
+			private var capacityYearListData:Object = {
+				"nodeListSelect": [
+					{
 						"initialDisplay": "1",
 						"isSelect": "1",
 						"isShow": "1",
@@ -201,6 +217,24 @@
 				{name:"水质评价报告8", url:"assets/pdf/水环境质量评价方案.pdf"},
 				{name:"水质评价报告9", url:"assets/pdf/水环境质量评价方案.pdf"},
 				{name:"水质评价报告10", url:"assets/pdf/水环境质量评价方案.pdf"}
+			]);
+			
+			
+			//水资源承载力专题图
+			[Bindable]
+			private var capacityThemeListData:ArrayCollection = new ArrayCollection([
+				{name:"2012水资源承载力"},
+				{name:"2013水资源承载力"},
+				{name:"2014水资源承载力"},
+				{name:"2015水资源承载力"}
+			]);
+			
+			//水资源承载力报告 
+			[Bindable]
+			private var capacityEvaluationListData:ArrayCollection = new ArrayCollection([
+				{name:"水资源承载力评价方案", url:"assets/pdf/水资源承载力评价方案.pdf"},
+				{name:"水资源承载力评价方案1", url:"assets/pdf/水资源承载力评价方案.pdf"},
+				{name:"水资源承载力评价方案2", url:"assets/pdf/水资源承载力评价方案.pdf"}
 			]);
 			
 			private function updateUnitLayout():void
@@ -368,6 +402,7 @@
 							case RADIOBUTTON:
 							{
 								var r:RadioButtonGroup = new RadioButtonGroup();
+								r.percentWidth = 100;
 								r.data = item;
 								r.isFirstItemSelected = true;
 								r.maxContentHeight = maxContentHeight;
@@ -510,6 +545,7 @@
 					[QueryEvent.HIDE_WATER_WATCH_WIDGET, clearSystemHandler],
 					[QueryEvent.QUERY_WATEREVALUATION_RESULT_RESPONSE, queryWaterEvaluationResultHandler],
 					[QueryEvent.WATER_EVALUATION_THEME_MAP_RIVER_CLICK, waterEvaluationThemeMapRiverClickHandler],
+					[QueryEvent.QUERY_RIVER_CAPACITY_YEAR_RESPONSE, queryRiverCapacityYearResponseHandler],//水资源承载力评价年份
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
@@ -655,16 +691,37 @@
 					var targetList:Object = result.attributes.targetList;
 					if(targetList != null)
 					{
-						if(targetList is Array)
+						if(targetList is Array) {
+							
 							decodeYearData(yearListData, DataUtils.FieldSort(new ArrayCollection(targetList as Array), "year", true, true).toArray());
-						else
+						}else {
 							decodeYearData(yearListData,DataUtils.FieldSort(new ArrayCollection([targetList]), "year", true, true).toArray());
-						
+						}
 						//此处派发默认选中项目评价年份
 						decodeUI(searchYearContainer, searchYearPanelHeight, yearListData);
 					}
 				}
 			}
+			
+			//查询水资源承载力评价年份列表响应
+			private function queryRiverCapacityYearResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					if(targetList != null)
+					{
+						if(targetList is Array) {
+							decodeYearData(capacityYearListData, DataUtils.FieldSort(new ArrayCollection(targetList as Array), "year", true, true).toArray());
+						}else {
+							decodeYearData(capacityYearListData,DataUtils.FieldSort(new ArrayCollection([targetList]), "year", true, true).toArray());
+						}
+						//水资源承载力评价年份界面
+						decodeUI(capacitySearchYearContainer, searchYearPanelHeight, capacityYearListData);
+					}
+				}
+			}
+			
 			
 			//查询评价河流周期列表响应
 			private function queryRiverPeriodResponseHandler(event:CairngormEvent):void
@@ -920,6 +977,18 @@
 				
 				/* navigateToURL(new URLRequest(pdfUrl), "_blank"); */
 			}
+			
+			protected function capacityNc_creationCompleteHandler(event:FlexEvent):void
+			{
+				queryRiverCapacityYear();
+			}
+			
+			private function queryRiverCapacityYear():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CAPACITY_YEAR);
+				queryEvent.dispatch();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -927,7 +996,7 @@
 	</fx:Declarations>
 	<s:VGroup width="100%" height="100%" gap="2">
 		<s:ButtonBar width="100%" dataProvider="{featureDetailInfos}"/>
-		<mx:ViewStack id="featureDetailInfos" width="100%" height="100%" creationPolicy="all">
+		<mx:ViewStack id="featureDetailInfos" width="100%" height="100%">
 			<s:NavigatorContent  label="水资源质量" width="100%" height="100%">
 				<mx:Accordion width="100%" height="100%">
 					<s:NavigatorContent  label="水质评价" width="100%" height="100%">
@@ -1019,8 +1088,57 @@
 					</s:NavigatorContent>
 				</mx:Accordion>
 			</s:NavigatorContent>	
-			<s:NavigatorContent  label="水资源承载力" width="100%" height="100%">
-				
+			<s:NavigatorContent id="capacityNc"  label="水资源承载力" width="100%" height="100%" >
+				<mx:Accordion width="100%" height="100%">
+					<s:NavigatorContent  label="水资源承载力评价" width="100%" height="100%"
+										 creationComplete="capacityNc_creationCompleteHandler(event)">
+						<s:VGroup width="100%" height="100%"
+								  paddingTop="3" paddingBottom="3" paddingLeft="3" paddingRight="3">
+							<s:VGroup id="capacitySearchYearContainer"  width="100%" >
+							</s:VGroup>
+							<s:Line width="100%">
+								<s:stroke>
+									<s:SolidColorStroke color="#ACAB96" weight="1"/>
+								</s:stroke>
+							</s:Line>
+							<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
+								<s:Button id="capacitySearchButton" width="45" height="25" buttonMode="true" label="查询" 
+										  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
+							</s:HGroup> 
+						</s:VGroup>
+					</s:NavigatorContent>
+					<s:NavigatorContent label="水资源承载力专题图" width="100%" height="100%">
+						<s:VGroup width="100%" height="100%"
+								  paddingTop="3" paddingBottom="3" paddingLeft="3" paddingRight="3">
+							<s:HGroup width="100%" verticalAlign="middle" gap="5">
+								<s:TextInput prompt="请输入专题名称" width="100%"/> 
+								<s:Button id="capacitySearchBt" buttonMode="true" width="45" height="25" label="保存" 
+										  toolTip="保存当前水资源承载力专题图" click="searchBt_clickHandler(event)"
+										  styleName="SubmitRegisterStyle"/>
+							</s:HGroup>
+							<s:Line width="100%">
+								<s:stroke>
+									<s:SolidColorStroke color="#ACAB96" weight="1"/>
+								</s:stroke>
+							</s:Line>
+							<s:List id="capacityThemeList" width="100%" height="100%" borderVisible="false"
+									horizontalScrollPolicy="off" 
+									dataProvider="{capacityThemeListData}"
+									click="themeList_changeHandler(event)"
+									itemRenderer="sm.wegis.szy.renders.ThemeListItemRenderer"/>
+						</s:VGroup>
+					</s:NavigatorContent>
+					<s:NavigatorContent  label="水资源承载力报告" width="100%" height="100%">
+						<s:VGroup width="100%" height="100%"
+								  paddingTop="3" paddingBottom="3" paddingLeft="3" paddingRight="3">
+							<s:List id="capacityEvaluationList" width="100%" height="100%" borderVisible="false"
+									horizontalScrollPolicy="off" 
+									dataProvider="{capacityEvaluationListData}"
+									change="evaluationList_changeHandler(event)"
+									itemRenderer="sm.wegis.szy.renders.EvaluationListItemRenderer"/>
+						</s:VGroup>
+					</s:NavigatorContent>
+				</mx:Accordion>
 			</s:NavigatorContent>	
 		</mx:ViewStack>
 	</s:VGroup>

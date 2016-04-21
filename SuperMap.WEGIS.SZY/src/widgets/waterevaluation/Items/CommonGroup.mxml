@@ -144,7 +144,7 @@
 							{
 								con.requestedColumnCount = i
 							} */
-							con.requestedColumnCount = i
+							con.requestedColumnCount = i;
 							break;
 						}
 					}

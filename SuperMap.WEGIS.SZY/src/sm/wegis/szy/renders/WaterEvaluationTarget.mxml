@@ -41,7 +41,12 @@
 				super.commitProperties();
 				if (change == true){
 					change = false;
-					titleLb.text = title;
+					if (title != null && title.length > 0) {
+						titleLb.text = title;
+					} else {
+						titleContent.visible = titleContent.includeInLayout = false;
+					}
+				
 					var item:Object;
 					gridContent.removeAllElements();
 					if (type == River) {
@@ -78,7 +83,7 @@
 		]]>
 	</fx:Script>
 	<s:VGroup width="100%" height="100%" gap="3">
-		<s:Group width="100%" height="20">
+		<s:Group id="titleContent" width="100%" height="20">
 			<s:Rect width="100%" height="100%">
 				<s:fill>
 					<s:SolidColor color="0x3385FF"/>

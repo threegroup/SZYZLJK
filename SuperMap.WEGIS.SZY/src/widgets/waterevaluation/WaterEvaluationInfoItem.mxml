@@ -83,7 +83,7 @@
 						<s:GridColumn headerText="指标名称" width="93" dataField="itemName" sortable="false"/>
 						<s:GridColumn headerText="测量值" dataField="gcValue" sortable="false"/>
 						<s:GridColumn headerText="等级" dataField="itemType" sortable="false"/>
-						<s:GridColumn headerText="污染倍数" dataField="pollutionTimes" sortable="false"/>
+						<s:GridColumn headerText="超标倍数" dataField="pollutionTimes" sortable="false"/>
 					</s:ArrayList>
 				</s:columns>
 			</s:DataGrid>

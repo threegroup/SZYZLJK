@@ -68,7 +68,7 @@ package sm.wegis.szy.commands
 						feature = new Feature(showPoint);
 						infoStyle = new InfoStyle();
 						waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
-						waterEvaluationCls.properties = {targets:riverMessage.dmMessage, title:riverMessage.dmName, type:WaterEvaluationTarget.River};
+						waterEvaluationCls.properties = {targets:riverMessage.dmMessage, title:"", type:WaterEvaluationTarget.River};
 						infoStyle.infoRenderer = waterEvaluationCls;
 						infoStyle.containerStyleName = "infoStyle";
 						feature.style = infoStyle;
