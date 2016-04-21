@@ -239,6 +239,9 @@
 					
 					<value type="Class">sm.wegis.szy.commands.QuerySaveThemeMapCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryCountyThemeDataCommand
+					</value>
+					
 				</array>
 			</arg>
 		</method-invocation>
@@ -255,6 +258,8 @@
 				
 					<!--水质评价保存的专题地图查询 -->
 				<property name="QuerySaveThemeMap" value="QuerySaveThemeMapCommand" />
+				<property name="QueryCountyThemeData" value="QueryCountyThemeDataCommand" />
+				
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

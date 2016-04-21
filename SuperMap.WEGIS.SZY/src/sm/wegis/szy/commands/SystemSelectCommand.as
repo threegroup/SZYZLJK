@@ -30,6 +30,10 @@ package sm.wegis.szy.commands
 					modelLocator.baseMapInfo.riverMapUrl = systemParam.riverMapUrl;
 					modelLocator.baseMapInfo.riverLayerName = systemParam.riverLayerName;
 					
+					//设置县界地址、设置县查询图层名称
+					modelLocator.baseMapInfo.countyMapUrl = systemParam.countyMapUrl;
+					modelLocator.baseMapInfo.countyLayerName = systemParam.countyLayerName;
+					
 					//设置应用系统矢量，影像水利专题地图服务地址
 					modelLocator.baseMapInfo.waterResourceVectorMapUrl = systemParam.vectorMapUrl;
 					modelLocator.baseMapInfo.waterResourceRasterMapUrl = systemParam.rasterMapUrl;

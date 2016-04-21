@@ -989,6 +989,15 @@
 				queryEvent.dispatch();
 			}
 			
+			//水资源承载力查询地图专题图数据
+			protected function capacitySearchButton_clickHandler(event:MouseEvent):void
+			{
+				resetUI();
+				modelLocator.waterEvaluationVO.themeMapType = ConstVO.COUNTY_THEME_TYPE;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COUNTY_THEME_DATA);
+				queryEvent.dispatch();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -1103,7 +1112,7 @@
 							</s:Line>
 							<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">
 								<s:Button id="capacitySearchButton" width="45" height="25" buttonMode="true" label="查询" 
-										  styleName="SubmitRegisterStyle" click="searchButton_clickHandler(event)"/>
+										  styleName="SubmitRegisterStyle" click="capacitySearchButton_clickHandler(event)"/>
 							</s:HGroup> 
 						</s:VGroup>
 					</s:NavigatorContent>

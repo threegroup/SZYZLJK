@@ -33,6 +33,12 @@ package sm.wegis.szy.vo
 		/**河流查询图层名称 */
 		public var riverLayerName:String;
 		
+		/**县界地图地址*/
+		public var countyMapUrl:String;
+		
+		/**县界查询图层名称*/
+		public var countyLayerName:String;
+		
 
 	}
 }

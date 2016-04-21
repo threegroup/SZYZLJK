@@ -32,6 +32,7 @@
 			private var modelLocator:ApplicationModelLocator  = ApplicationModelLocator.getInstance();
 			public static const waterEvaluationState:String = "waterEvaluationState";
 			public static const waterStandardState:String = "waterStandardState";
+			public static const waterCountyState:String ="waterCountyState";
 			
 			/**保存动态图例前一次数据*/
 			private var preDynaicLegendData:ArrayCollection; 
@@ -66,7 +67,20 @@
 			
 			private function changeWaterEvaluationLegendHandler(event:CairngormEvent):void {
 				var waterEvaluationVO:WaterEvaluationVO = modelLocator.waterEvaluationVO;
-				this.currentState = waterEvaluationVO.themeMapType != ConstVO.FUNCTION_STANDARD_THEME_TYPE ? waterEvaluationState : waterStandardState;
+				var state:String = waterEvaluationState;
+				switch(waterEvaluationVO.themeMapType) {
+					case ConstVO.FUNCTION_STANDARD_THEME_TYPE:
+					case ConstVO.FUNCTION_EVALUATION_THEME_TYPE:
+						state= waterEvaluationState;
+						break;
+					case ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE:
+						state = waterStandardState;
+						break;
+					case ConstVO.COUNTY_THEME_TYPE:
+						state = waterCountyState;
+						break;
+				}
+				this.currentState = state;
 			}
 			
 			private function systemReloadHandler(event:CairngormEvent):void {
@@ -85,6 +99,12 @@
 				xmlList = xml.waterStandard;
 				if (xmlList.length() == 1){
 					loadLegendIcon(xmlList[0], waterStandardLegendContainer);
+				}
+				
+				//解析行政区划--县图例
+				xmlList = xml.waterCounty;
+				if (xmlList.length() == 1){
+					loadLegendIcon(xmlList[0], waterCountyLegendContainer);
 				}
 			}
 			
@@ -143,6 +163,8 @@
 		<s:State name="waterEvaluationState"/>
 		<!--水质达标图例-->
 		<s:State name="waterStandardState"/>
+		<!--行政区划图例-->
+		<s:State name="waterCountyState"/>
 	</ns:states>
 	<s:Scroller width="100%" top="5" visible="false" visible.waterEvaluationState="true"
 				bottom="3" horizontalScrollPolicy="off" verticalScrollPolicy="auto" >
@@ -154,6 +176,12 @@
 				bottom="3" horizontalScrollPolicy="off" verticalScrollPolicy="auto" >
 		<s:Group  width="100%" height="100%" >
 			<s:VGroup id="waterStandardLegendContainer" width="100%" height="100%" />
+		</s:Group>
+	</s:Scroller>
+	<s:Scroller width="100%" top="5" visible="false" visible.waterCountyState="true"
+				bottom="3" horizontalScrollPolicy="off" verticalScrollPolicy="auto" >
+		<s:Group  width="100%" height="100%" >
+			<s:VGroup id="waterCountyLegendContainer" width="100%" height="100%" />
 		</s:Group>
 	</s:Scroller>
 </ns:WidgetBase>
