@@ -789,6 +789,10 @@
 			protected function searchButton_clickHandler(event:MouseEvent):void
 			{
 				this.resetUI();
+				if (modelLocator.waterEvaluationVO.preThemeMapType != null) {
+					modelLocator.waterEvaluationVO.themeMapType  = modelLocator.waterEvaluationVO.preThemeMapType;
+					modelLocator.waterEvaluationVO.preThemeMapType = null;
+				}
 				queryRiverPeriod();
 			}
 			
@@ -942,7 +946,8 @@
 			protected function evaluationList_changeHandler(event:IndexChangeEvent):void
 			{
 				// TODO Auto-generated method stub
-				var item:Object = this.capacityEvaluationList.selectedItem;
+					var list:List = event.currentTarget as List;
+				var item:Object = list.selectedItem;
 				if(item != null)
 				{
 					this.showPdfDoc(item["name"], item["url"]);
@@ -973,7 +978,8 @@
 					pdfPanel.enableIcon = false;
 					pdfPanel.draggable = false;
 					pdfPanel.unLoad = true;
-					pdfPanel.closeFunction = function():void{pdf.source=null;};
+				  pdf.visible = true;
+					pdfPanel.closeFunction = function():void{pdf.source=null; pdf.visible = true;};
 					pdfPanel.widgetState = ContentPanel.WIDGET_OPENED;
 				}
 				pdfPanel.widgetTitle = pdfTitle;
@@ -995,9 +1001,11 @@
 			}
 			
 			//水资源承载力查询地图专题图数据
-			protected function capacitySearchButton_clickHandler(event:MouseEvent):void
+			protected function capacitySearchButton_clickHandler(event:Event):void
 			{
 				resetUI();
+				//存储水质评价选择的专题图类型
+				modelLocator.waterEvaluationVO.preThemeMapType = modelLocator.waterEvaluationVO.themeMapType;
 				modelLocator.waterEvaluationVO.themeMapType = ConstVO.COUNTY_THEME_TYPE;
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COUNTY_THEME_DATA);
 				queryEvent.dispatch();
@@ -1138,7 +1146,7 @@
 							<s:List id="capacityThemeList" width="100%" height="100%" borderVisible="false"
 									horizontalScrollPolicy="off" 
 									dataProvider="{capacityThemeListData}"
-									click="themeList_changeHandler(event)"
+									click="capacitySearchButton_clickHandler(event)"
 									itemRenderer="sm.wegis.szy.renders.ThemeListItemRenderer"/>
 						</s:VGroup>
 					</s:NavigatorContent>
