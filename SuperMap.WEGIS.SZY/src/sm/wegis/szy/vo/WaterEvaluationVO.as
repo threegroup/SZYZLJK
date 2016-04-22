@@ -6,6 +6,9 @@ package sm.wegis.szy.vo
 		/**水质评价，前台渲染专题地图类型*/
 		public var themeMapType:String;
 		
+		/**用于记录水质评价，上次选择的地图类型,在切换水资源承载力的时候记录*/
+		public var preThemeMapType:String;
+		
 		/**水质评价成果数据*/
 		public var waterEvaluationResult:Object;
 	}
