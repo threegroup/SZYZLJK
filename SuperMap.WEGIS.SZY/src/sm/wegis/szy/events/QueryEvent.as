@@ -85,6 +85,9 @@ package sm.wegis.szy.events
 		/**水质评价，显示水质专题图图例*/
 		public static const Change_Water_Evaluation_Legend:String = "ChangeWaterEvaluationLegend";
 		
+		/**水质评价--水资源承载力，显示水资源承载力专题图图例*/
+		public static const CHANGE_WATER_CAPACITY_LEGEND:String = "ChangeWaterCapacityLegend";
+		
 		/**水质评价查询条件自定义时间段激活*/
 		public static const INVOKE_TIME_SPAN_CONDITION:String = "InvokeTimeSpanCondition";
 		
@@ -102,5 +105,8 @@ package sm.wegis.szy.events
 		
 		/**设置专题图类型*/
 		public static const CHANGE_THEME_MAP_TYPE:String = "ChangeThemeMapType";
+		
+		/**查询水资源承载力，县地图业务数据*/
+		public static const QUERY_COUNTY_THEME_DATA:String = "QueryCountyThemeData";
 	}
 }

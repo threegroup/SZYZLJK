@@ -8,7 +8,12 @@
 		<service  label="劣Ⅴ类"   color="0xFF3F00"/>
 	</waterEvaluation>		
 	<waterStandard>
-		<service  label="达标"   color="0x3385FF" />
-		<service label="不达标" 	color="0x4AAF48" />
-	</waterStandard>		
+		<service  label="达标"   color="0x00FF00" />
+		<service label="不达标" 	color="0xFF0000" />
+	</waterStandard>
+	<waterCounty>
+		<service  label="不超载"   color="0x0000FF" />
+		<service label="临界超载" 	color="0xFCD209" />
+		<service label="超载区" 	color="0xFF0000" />
+	</waterCounty>		
 </services>
