@@ -974,8 +974,9 @@
 					pdfPanel.draggable = false;
 					pdfPanel.unLoad = true;
 					pdfPanel.closeFunction = function():void{pdf.source=null;};
-					pdfPanel.widgetState = ContentPanel.WIDGET_OPENED;
 				}
+				pdfPanel.widgetState = ContentPanel.WIDGET_OPENED;
+				pdfPanel.depth = FlexGlobals.topLevelApplication.numElements + 10;
 				pdfPanel.widgetTitle = pdfTitle;
 				pdfPanel.addElement(pdf);
 				FlexGlobals.topLevelApplication.addElement(pdfPanel); 
