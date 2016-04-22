@@ -40,6 +40,9 @@ package sm.wegis.szy.vo
 		/**水质评价，河流图层*/
 		public static const WATERRIVER_FEATURE_LAYER:String = "WaterRiverFeatureLayer";
 		
+		/**水资源承载力，县界图层*/
+		public static const WATERCOUNTY_FEATURE_LAYER:String = "WaterCountyFeatureLayer";
+		
 		/**水质评价，专题地图——河流水质评价类型*/
 		public static const RIVER_WATER_EVALUATION_THEME_TYPE:String = "riverWaterEvaluationThemeType";
 		/**水质评价，专题地图——水功能区水质评价类型*/
@@ -47,7 +50,7 @@ package sm.wegis.szy.vo
 		/**水质评价，专题地图——水功能区是否达标类型*/
 		public static const FUNCTION_STANDARD_THEME_TYPE:String = "functionStandardThemeType";
 		/**水质评价，专题地图——行政区划专题图*/
-		public static const ADMINISTRATIVE_DIVISION_THEME_TYPE:String = "AdministrativeDivisionThemeType";
+		public static const COUNTY_THEME_TYPE:String = "CountyThemeType";
 		
 		/**水资源承载能力，第一级表格——行政区承载力情况统计表*/
 		public static const AREA_CAPACITY_TYPE:String = "Area_Capacity_Type";
