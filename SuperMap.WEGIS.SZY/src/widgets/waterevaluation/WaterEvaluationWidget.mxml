@@ -73,6 +73,8 @@
 			
 			/**pdf文档显示容器*/
 			private var pdfPanel:ContentPanel = null;
+			/**pdf文档*/
+			private var pdf:PanelContainer = null;
 			
 			/**复选*/
 			private static const CHECKBOX:String ="0";      
@@ -940,7 +942,7 @@
 			protected function evaluationList_changeHandler(event:IndexChangeEvent):void
 			{
 				// TODO Auto-generated method stub
-				var item:Object = this.evaluationList.selectedItem;
+				var item:Object = this.capacityEvaluationList.selectedItem;
 				if(item != null)
 				{
 					this.showPdfDoc(item["name"], item["url"]);
@@ -950,9 +952,12 @@
 			/**显示pdf文档*/
 			private function showPdfDoc(pdfTitle:String, pdfUrl:String):void
 			{
-				var pdf:PanelContainer = new PanelContainer("pdf");
-				pdf.percentWidth = 100;
-				pdf.percentHeight = 100;
+				if(pdf == null)
+				{
+					pdf = new PanelContainer("pdf");
+					pdf.percentWidth = 100;
+					pdf.percentHeight = 100;
+				}
 				pdf.source = pdfUrl;
 				
 				if(pdfPanel == null)

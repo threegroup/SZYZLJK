@@ -30,6 +30,7 @@
 			import sm.wegis.szy.renders.IndexOrderRender;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.GridColumnInfo;
 			
 			import spark.components.gridClasses.GridColumn;
@@ -77,32 +78,59 @@
 			}
 			
 			//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
-			private function initGridColumns():void
+			private function initGridColumns(showType:String=""):void
 			{
-				var colConfigParam:String = modelLocator.systemInfo.waterEvaluationGridColumn;
-				var colConfigs:Array = colConfigParam.split(",");
-				if (resultGrid.columns == null) {
-					resultGrid.columns = new ArrayList();
-				}
-				var column:GridColumn;
-				for each(var item:String in colConfigs) {
-					var items:Array = item.split(":");
-					if (items.length >= 2) {
-						column	= new GridColumn();
-						if (items[1] == "index") {
-							column.headerText = "序号";
-							column.itemRenderer = new ClassFactory(IndexOrderRender);
-						} else if (items[1] == "history") {
-							column.headerText = "历史情况";
-							column.itemRenderer = new ClassFactory(HistoryLineRender);
-						} else {
-							column.headerText = items[0];
-							column.dataField = items[1];
+				switch(showType)
+				{
+					case ConstVO.AREA_CAPACITY_TYPE:
+					{
+						
+						break;
+					}
+					case ConstVO.WATER_QUALITY_TYPE:
+					{
+						
+						break;
+					}
+					case ConstVO.WATER_POLLUTION_DETAIL_TYPE:
+					{
+						
+						break;
+					}
+					case ConstVO.WATER_DRAIN_POLLUTION_DETAIL_TYPE:
+					{
+						
+						break;
+					}
+					default:
+					{
+						var colConfigParam:String = modelLocator.systemInfo.waterEvaluationGridColumn;
+						var colConfigs:Array = colConfigParam.split(",");
+						if (resultGrid.columns == null) {
+							resultGrid.columns = new ArrayList();
 						}
-						if (items.length == 3) {
-							column.width = items[2];
+						var column:GridColumn;
+						for each(var item:String in colConfigs) {
+							var items:Array = item.split(":");
+							if (items.length >= 2) {
+								column	= new GridColumn();
+								if (items[1] == "index") {
+									column.headerText = "序号";
+									column.itemRenderer = new ClassFactory(IndexOrderRender);
+								} else if (items[1] == "history") {
+									column.headerText = "历史情况";
+									column.itemRenderer = new ClassFactory(HistoryLineRender);
+								} else {
+									column.headerText = items[0];
+									column.dataField = items[1];
+								}
+								if (items.length == 3) {
+									column.width = items[2];
+								}
+								resultGrid.columns.addItem(column);
+							}
 						}
-						resultGrid.columns.addItem(column);
+						break;
 					}
 				}
 			}

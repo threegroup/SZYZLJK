@@ -48,5 +48,14 @@ package sm.wegis.szy.vo
 		public static const FUNCTION_STANDARD_THEME_TYPE:String = "functionStandardThemeType";
 		/**水质评价，专题地图——行政区划专题图*/
 		public static const ADMINISTRATIVE_DIVISION_THEME_TYPE:String = "AdministrativeDivisionThemeType";
+		
+		/**水资源承载能力，第一级表格——行政区承载力情况统计表*/
+		public static const AREA_CAPACITY_TYPE:String = "Area_Capacity_Type";
+		/**水资源承载能力，第二级表格——河流水功能区水质达标率*/
+		public static const WATER_QUALITY_TYPE:String = "Water_Quality_Type";
+		/**水资源承载能力，第三级表格——水功能区污染物入河量详情*/
+		public static const WATER_POLLUTION_DETAIL_TYPE:String = "Water_Pollution_Detail_Type";
+		/**水资源承载能力，第三级表格——水功能区排污口污染物入河量详情*/
+		public static const WATER_DRAIN_POLLUTION_DETAIL_TYPE:String = "Water_Drain_Pollution_Detail_Type";
 	}
 }
