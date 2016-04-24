@@ -406,6 +406,7 @@
 					panel.title = resultData.name +"——评价指标";
 					var gridDatas:Array=  resultData["attributes"]["targets"];
 					getDataGrid(ConstVO.WATER_EVALUATION_TYPE).dataProvider = new ArrayCollection(gridDatas);
+					this.switchDataGrid(ConstVO.WATER_EVALUATION_TYPE);
 					this.currentState = SHOW;
 				} else {
 					this.currentState = HIDE;
