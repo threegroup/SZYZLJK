@@ -7,7 +7,7 @@ package widgets.waterevaluation
 		}
 		
 		/**时间：2016-04-24
-		 * 说明： isMainKey: 0-在表格中不显示，1-在表格中显示；
+		 * 说明： isMainKey: 0-在表格中不显示，1-在表格中显示, -1-表示详情操作列；
 		 * 		 colWidth：在表格显示的预设列宽；
 		 *       fieldName：列标题名称；
 		 *       fieldKey：表格列绑定字段。
