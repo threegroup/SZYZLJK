@@ -50,35 +50,11 @@ in accordance with the terms of the license agreement accompanying it.
 		<s:State name="disabled" />
 	</s:states>
 	
-	<!-- border/fill -->
-	<s:Rect top="0" bottom="0" left="0" right="0" minWidth="14" minHeight="12" radiusX="1" radiusY="1">
-		<s:stroke>
-			<s:SolidColorStroke caps="none" color="#F5F5F5" joints="miter" miterLimit="4" weight="1"/>
-		</s:stroke>
-		<s:fill>
-			<s:SolidColor color="#EAEAEA"/>
-		</s:fill>
-	</s:Rect>
 	
-	<!-- shadow -->
-	<s:Rect left="1" top="1" bottom="1" width="1" radiusX="1" radiusY="1">
+	<!-- background -->
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0">
 		<s:fill>
-			<s:SolidColor color="0x000000" alpha="0.0" />
-		</s:fill>
-	</s:Rect>
-	<s:Rect left="2" top="1" bottom="1" width="1" radiusX="1" radiusY="1">
-		<s:fill>
-			<s:SolidColor color="0x000000" alpha="0.0" />
-		</s:fill>
-	</s:Rect>
-	<s:Rect left="2" right="1" top="1" height="2" radiusX="1" radiusY="1">
-		<s:fill>
-			<s:SolidColor color="0x000000" alpha="0.0" />
-		</s:fill>
-	</s:Rect>
-	<s:Rect left="2" right="1" bottom="1" height="3" radiusX="1" radiusY="1">
-		<s:fill>
-			<s:SolidColor color="0x000000" alpha="0.0" />
+			<s:SolidColor color="#FFFFFF"/>
 		</s:fill>
 	</s:Rect>
 </s:SparkSkin>

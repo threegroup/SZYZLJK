@@ -16,37 +16,30 @@
 	</s:states>
 	
 	<!-- background -->
-	<s:Rect left="0" right="0" top="0" bottom="0" radiusX="1" radiusY="1">
-		<s:stroke>
-			<s:SolidColorStroke color.disabled="#ABABAB"
-								color.down="#959695"
-								color.over="#959695"
-								color.up="#959695"/>
-		</s:stroke>
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0">
 		<s:fill>
-			<s:LinearGradient rotation="90">
-				<s:GradientEntry color.up="#F1F1F2" color.down="#DCF0FB" color.over="#DCF0FB"  ratio="0.3"/>
-				<s:GradientEntry color.up="#D9DADC" color.down="#A4D5EF" color.over="#A4D5EF"  ratio="0.3"/>
-			</s:LinearGradient>
+			<s:SolidColor color="#BCBCBC"/>
 		</s:fill>
 	</s:Rect>
 	
 	<!-- Gripper -->
-	<s:Group horizontalCenter="-1" verticalCenter="0">
-		<s:Line xFrom="1" xTo="1" yFrom="0" yTo="6">
+	<s:HGroup left="0" right="0" top="0" bottom="0" gap="3"
+			  horizontalAlign="center" verticalAlign="middle"
+			  paddingTop="2" paddingBottom="2">
+		<s:Line height="100%">
 			<s:stroke>
-				<s:SolidColorStroke color="#787777" pixelHinting="true"/>
+				<s:SolidColorStroke color="#FFFFFF" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:Line xFrom="4" xTo="4" yFrom="0" yTo="6">
+		<s:Line height="100%">
 			<s:stroke>
-				<s:SolidColorStroke color="#787777" pixelHinting="true"/>
+				<s:SolidColorStroke color="#FFFFFF" weight="1"/>
 			</s:stroke>
 		</s:Line>
-		<s:Line xFrom="7" xTo="7" yFrom="0" yTo="6">
+		<s:Line height="100%">
 			<s:stroke>
-				<s:SolidColorStroke color="#787777" pixelHinting="true"/>
+				<s:SolidColorStroke color="#FFFFFF" weight="1"/>
 			</s:stroke>
 		</s:Line>
-	</s:Group>
+	</s:HGroup>
 </s:Skin>

@@ -33,10 +33,10 @@
 	<!-- shadow (down state only) -->
 	
 	<!-- arrow -->
-	<s:Path width="5" height="7" data="M 7 4 L 0 7.5  0 0 Z" verticalCenter="0" horizontalCenter="0.5">
+	<!--<s:Path width="5" height="7" data="M 7 4 L 0 7.5  0 0 Z" verticalCenter="0" horizontalCenter="0.5">
 		<s:fill>
 			<s:SolidColor color="#777777"/>
 		</s:fill>
-	</s:Path>
+	</s:Path>-->
 	
 </s:Skin>

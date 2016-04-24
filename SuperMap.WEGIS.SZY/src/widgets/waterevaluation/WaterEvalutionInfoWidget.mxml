@@ -77,6 +77,146 @@
 				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD	, systemReloadHandler);
 			}
 			
+			/**创建DataGrid内容*/
+			/* private function createContent(contentData:Object):void
+			{
+			DataGridList.visible = true;
+			gridHeaderWidth = 0;
+			//根据字段列表创建列
+			if(DataGridList.columns != null && DataGridList.columns.length >2)
+			{
+			}
+			else
+			{
+			DataGridList.columns = new ArrayCollection([]);
+			}
+			
+			//用于计算表头宽度
+			var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
+			uiTextFormat.antiAliasType = AntiAliasType.NORMAL;
+			uiTextFormat.gridFitType =GridFitType.NONE;
+			uiTextFormat.direction =Direction.LTR;
+			var textLine:TextLineMetrics;
+			var columnIndices:Vector.<int> = new Vector.<int>();
+			var sortColumn:GridColumn;
+			//根据返回结果创建需要显示的列
+			if(contentData.hasOwnProperty("resultHeaderList"))
+			{
+			var headerList:Array = contentData["resultHeaderList"] as Array;
+			if(headerList != null && headerList.length > 0)
+			{
+			var column:GridColumn;
+			if (headerList.length < DataGridList.columns.length)
+			{
+			DataGridList.columns = new ArrayCollection(DataGridList.columns.toArray().slice(0,headerList.length));
+			}
+			for each (var item:Object in headerList) 
+			{
+			if(item == null)
+			{
+			return;
+			}
+			if(DataGridList.columns.length > 0 && DataGridList.columns.length > headerList.indexOf(item) )
+			{
+			column	= DataGridList.columns.getItemAt(headerList.indexOf(item)) as GridColumn;
+			column.itemRenderer = null;
+			} 
+			if(column == null)
+			{
+			column = new GridColumn();
+			DataGridList.columns.addItem(column);
+			}
+			column.dataField = item["fieldKey"];
+			column.sortable = item["isSortField"] != null ? true : false;
+			
+			if("isAsc" in item )
+			{
+			sortColumn = column;
+			if(item["isAsc"].toString() == "1")
+			{
+			column.sortDescending = false;
+			}else{
+			column.sortDescending = true;
+			}
+			}
+			
+			var headerText:String = item["fieldName"].toString();
+			column.headerText = headerText.replace(/\^/g,"\n");
+			item["labelLength"] = column.headerText.length;
+			if("colWidth" in item && parseInt(item["colWidth"])  > 0)
+			{
+			column.width = parseInt(item["colWidth"]);
+			}else{
+			//包含换行符
+			if(headerText.search("^") != -1)
+			{
+			var headerArr:Array = headerText.split("^"); 
+			column.width = 0;
+			for each(var headerItem:String in headerArr)
+			{
+			textLine = uiTextFormat.measureText(headerItem);
+			if(column.width < textLine.width)
+			{
+			column.width = textLine.width;
+			}
+			}
+			column.width += 20;
+			}
+			} 
+			gridHeaderWidth += column.width;
+			column = null;
+			}
+			headerList.splice(1,0,{});
+			}
+			//动态添加列渲染器
+			var preFactory:ClassFactory = DataGridList.itemRenderer as ClassFactory;
+			if(preFactory.generator != BaseDataDetailPanelGridItemRenderer  
+			|| preFactory.properties == null 
+			|| !("headerList" in preFactory.properties) 
+			|| preFactory.properties["headerList"] != headerList)
+			{
+			preFactory = new ClassFactory(BaseDataDetailPanelGridItemRenderer);
+			preFactory.properties = {headerList:headerList};
+			DataGridList.itemRenderer = preFactory;
+			}
+			}
+			
+			//在表格的末列添加操作列
+			var operateCol:GridColumn = new GridColumn();
+			var colFactory:ClassFactory = new ClassFactory(BaseDataOperationGridItemRenderer);
+			colFactory.properties = {queryType:modelLocator.baseDataVO.searchRequestData.queryType};
+			operateCol.itemRenderer = colFactory;
+			operateCol.dataField = "OPERATION";
+			operateCol.headerText = "操作";
+			operateCol.sortable = false;
+			
+			textLine = uiTextFormat.measureText(operateCol.headerText);
+			operateCol.width = textLine.width + 20;
+			gridHeaderWidth += operateCol.width;
+			DataGridList.columns.addItemAt(operateCol,1);
+			
+			//在表格最后添加空白列
+			var blankColumn:GridColumn = new GridColumn();
+			colFactory = new ClassFactory(DefaultGridItemRenderer);
+			blankColumn.itemRenderer = colFactory; 
+			blankColumn.dataField = "";
+			blankColumn.headerText = "";
+			blankColumn.minWidth = 0;
+			blankColumn.width = NaN;
+			blankColumn.sortable = false;
+			
+			DataGridList.columns.addItem(blankColumn);
+			
+			//绑定数据源
+			if(this.DataGridList.dataProvider != null)
+			{
+			this.DataGridList.dataProvider = null;
+			}
+			
+			columnIndices.push(DataGridList.columns.getItemIndex(sortColumn));
+			DataGridList.columnHeaderGroup.visibleSortIndicatorIndices = columnIndices;
+			} */
+			
 			//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
 			private function initGridColumns(showType:String=""):void
 			{

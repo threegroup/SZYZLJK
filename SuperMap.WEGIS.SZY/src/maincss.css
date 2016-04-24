@@ -180,6 +180,23 @@ mx|VScrollBar
 	upArrowUpSkin:ClassReference("sm.wegis.szy.skins.scroller.VerticalScrollbarSkinUpButtonSkin");
 }
 
+mx|HScrollBar
+{
+	downArrowDownSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinRightButtonSkin");
+	downArrowOverSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinRightButtonSkin");
+	downArrowUpSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinRightButtonSkin");
+	downArrowSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinRightButtonSkin");
+	thumbDownSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinThumbDownSkin");
+	thumbSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinThumbSkin");
+	thumbOverSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinThumbOverSkin");
+	thumbUpSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinThumbSkin");
+	trackSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinTrackSkin");
+	upArrowSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinLeftButtonSkin");
+	upArrowDownSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinLeftButtonSkin");
+	upArrowOverSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinLeftButtonSkin");
+	upArrowUpSkin:ClassReference("sm.wegis.szy.skins.scroller.HorizontalScrollbarSkinLeftButtonSkin");
+}
+
 s|Scroller
 {
 	skinClass:ClassReference("sm.wegis.szy.skins.scroller.Scrollbar");
