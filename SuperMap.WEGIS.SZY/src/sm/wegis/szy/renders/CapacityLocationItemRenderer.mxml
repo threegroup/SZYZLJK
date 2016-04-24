@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" 
+					clipAndEnableScrolling="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.web.core.Point2D;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			
+			[Bindable]
+			/**模型定位器*/
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
+			protected function locationImage_clickHandler(event:MouseEvent):void
+			{
+				if(data["x"] !=null && data["y"] != null)
+				{
+					var point:Point2D = new Point2D(data["x"], data["y"]);
+					if (modelLocator.mapCtrl.level < 3) {
+						modelLocator.mapCtrl.zoomToLevel(3, point);
+					} else {
+						modelLocator.mapCtrl.panTo(point);
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		<s:Image id="locationImage" width="24" height="24" buttonMode="true" 
+				 source="{ResourceManagerEx.FindResource('Location').cls}" toolTip="定位"
+				 click="locationImage_clickHandler(event)"/>
+	</s:HGroup>
+</s:GridItemRenderer>

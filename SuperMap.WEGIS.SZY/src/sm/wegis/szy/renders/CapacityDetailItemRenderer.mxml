@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" 
+					clipAndEnableScrolling="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import sm.wegis.szy.events.QueryEvent;
+			
+			import widgets.waterevaluation.CapacityDataSource;
+			protected function detailImage_clickHandler(event:MouseEvent):void
+			{
+				var detailEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_WATER_CAPACITY_MONITOR_DATA);
+				detailEvent.data = CapacityDataSource.dgCol[3];
+				detailEvent.dispatch();
+			}
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		<s:Image id="detailImage" width="24" height="24" buttonMode="true" 
+				 source="{ResourceManagerEx.FindResource('Detail').cls}" toolTip="详情"
+				 click="detailImage_clickHandler(event)"/>
+	</s:HGroup>
+</s:GridItemRenderer>

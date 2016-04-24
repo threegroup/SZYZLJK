@@ -100,10 +100,12 @@ and <code>sortIndicator</code> properties.</p>
 		-->
 		<s:Label id="labelDisplay" 
 				 verticalCenter="1" 
-				 textAlign="start" horizontalCenter="0"
+				 textAlign="center" horizontalCenter="0"
 				 verticalAlign="middle"
-				 maxDisplayedLines="1"
-				 showTruncationTip="true" />
+				 maxDisplayedLines="0"
+				 showTruncationTip="false" />
+				<!--maxDisplayedLines="1"
+				showTruncationTip="true" -->
 	</fx:Declarations>
 	
 	<fx:Script>

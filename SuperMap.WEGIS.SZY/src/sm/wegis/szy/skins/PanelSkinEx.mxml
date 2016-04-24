@@ -165,7 +165,7 @@ in accordance with the terms of the license agreement accompanying it.
 					<!--- @copy spark.components.Panel#controlBarGroup -->
 					<s:Group id="controlBarGroup" left="0" right="0" top="0" bottom="0" minWidth="0" minHeight="0">
 						<s:layout>
-							<s:HorizontalLayout paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" gap="0" verticalAlign="middle"/>
+							<s:HorizontalLayout paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" gap="10" verticalAlign="middle"/>
 						</s:layout>
 					</s:Group>
 				</s:Group>

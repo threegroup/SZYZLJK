@@ -30,6 +30,8 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.vo.WaterEvaluaParam;
 	import sm.wegis.szy.vo.WaterEvaluationVO;
 	
+	import widgets.waterevaluation.CapacityDataSource;
+	
 	public class QueryWaterFunctionRegionCommand extends CommandBase
 	{
 		private static var isFirstInitFeatureLayer:Boolean = true;
@@ -378,6 +380,11 @@ package sm.wegis.szy.commands
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.WATER_EVALUATION_THEME_MAP_RIVER_CLICK);
 			queryEvent.data = waterEvaluationParam;
 			queryEvent.dispatch();
+			
+			//在地图窗口底部显示水资源承载能力表格数据
+			var showCapacityEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_WATER_CAPACITY_DATA);
+			showCapacityEvent.data = CapacityDataSource.dgCol[0];
+			showCapacityEvent.dispatch();
 		}
 		
 		private function faultHandle(object:Object, mark:Object = null):void

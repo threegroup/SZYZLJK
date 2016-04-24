@@ -108,5 +108,11 @@ package sm.wegis.szy.events
 		
 		/**查询水资源承载力，县地图业务数据*/
 		public static const QUERY_COUNTY_THEME_DATA:String = "QueryCountyThemeData";
+		
+		/**查询水资源承载力，在窗口底部显示表格数据*/
+		public static const SHOW_WATER_CAPACITY_DATA:String = "Show_Water_Capacity_Data";
+		
+		/**查询水资源承载力，在窗口底部显示污染物浓度监测详情数据*/
+		public static const SHOW_WATER_CAPACITY_MONITOR_DATA:String = "Show_Water_Capacity_Monitor_Data";
 	}
 }

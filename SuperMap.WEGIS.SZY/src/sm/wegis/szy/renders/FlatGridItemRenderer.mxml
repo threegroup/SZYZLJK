@@ -27,7 +27,8 @@
 			private function rollOverChangeHandler(event:DataGridItemRendererMouseEvent):void 
 			{
 				if (event.rowIndex == rowIndex) {
-					setStyle("color",0xFFFFFF);
+					/* setStyle("color",0xFFFFFF); */
+					setStyle("color",0x000000);
 				}
 			}
 			
@@ -40,7 +41,7 @@
 					if(cssObj != null){
 						setStyle("color", cssObj.getStyle("color"));
 					}else {
-						setStyle("color", 0x343434);
+						setStyle("color", 0x000000);
 					}
 				}
 			}

@@ -15,16 +15,22 @@
 			import com.supermap.web.core.Point2D;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
 			import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
+			import com.supermap.wegis.common.core.hashTable.HashTable;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import flashx.textLayout.formats.Direction;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
+			import mx.core.UITextFormat;
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.events.DropDownPanelEvent;
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.renders.CapacityDetailItemRenderer;
+			import sm.wegis.szy.renders.CapacityLocationItemRenderer;
 			import sm.wegis.szy.renders.DataGroupCheckItemrenderer;
 			import sm.wegis.szy.renders.HistoryLineRender;
 			import sm.wegis.szy.renders.IndexOrderRender;
@@ -33,8 +39,11 @@
 			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.GridColumnInfo;
 			
+			import spark.components.DataGrid;
 			import spark.components.gridClasses.GridColumn;
+			import spark.components.gridClasses.GridSelectionMode;
 			import spark.events.GridEvent;
+			import spark.skins.spark.DefaultGridItemRenderer;
 			
 			private const  SHOW:String = "show";
 			private const  HIDE:String = "hide";
@@ -52,11 +61,16 @@
 			/**模型定位器*/
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
+			//---DataGrid容器------
+			private var dgContainer:HashTable = new HashTable();
+			
 			protected function initWidget(event:FlexEvent):void
 			{
 				initListener();
-				//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
-				initGridColumns();
+				
+				initDataGrid();
+				
+				switchDataGrid(ConstVO.WATER_EVALUATION_TYPE);
 			}
 			
 			/**初始化事件监听*/
@@ -66,6 +80,8 @@
 				/**事件列表*/
 				var eList:ArrayCollection = new ArrayCollection([
 					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler],//响应查询结果
+					[QueryEvent.SHOW_WATER_CAPACITY_DATA, showWaterCapacityDataHandler],//显示水资源承载能力表
+					[QueryEvent.SHOW_WATER_CAPACITY_MONITOR_DATA, showMonitorDataHandler],//水功能区水质达标率及污染物入河量详情
 					[QueryEvent.HIDE_WATER_EVALUTION_WIDGET, clearSystemHandler]//隐藏容器面板
 				]);
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
@@ -77,178 +93,163 @@
 				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_RELOAD	, systemReloadHandler);
 			}
 			
-			/**创建DataGrid内容*/
-			/* private function createContent(contentData:Object):void
+			/**解码表格字段*/
+			private function decodeDatagridField(cols:Array):Array
 			{
-			DataGridList.visible = true;
-			gridHeaderWidth = 0;
-			//根据字段列表创建列
-			if(DataGridList.columns != null && DataGridList.columns.length >2)
-			{
-			}
-			else
-			{
-			DataGridList.columns = new ArrayCollection([]);
-			}
-			
-			//用于计算表头宽度
-			var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
-			uiTextFormat.antiAliasType = AntiAliasType.NORMAL;
-			uiTextFormat.gridFitType =GridFitType.NONE;
-			uiTextFormat.direction =Direction.LTR;
-			var textLine:TextLineMetrics;
-			var columnIndices:Vector.<int> = new Vector.<int>();
-			var sortColumn:GridColumn;
-			//根据返回结果创建需要显示的列
-			if(contentData.hasOwnProperty("resultHeaderList"))
-			{
-			var headerList:Array = contentData["resultHeaderList"] as Array;
-			if(headerList != null && headerList.length > 0)
-			{
-			var column:GridColumn;
-			if (headerList.length < DataGridList.columns.length)
-			{
-			DataGridList.columns = new ArrayCollection(DataGridList.columns.toArray().slice(0,headerList.length));
-			}
-			for each (var item:Object in headerList) 
-			{
-			if(item == null)
-			{
-			return;
-			}
-			if(DataGridList.columns.length > 0 && DataGridList.columns.length > headerList.indexOf(item) )
-			{
-			column	= DataGridList.columns.getItemAt(headerList.indexOf(item)) as GridColumn;
-			column.itemRenderer = null;
-			} 
-			if(column == null)
-			{
-			column = new GridColumn();
-			DataGridList.columns.addItem(column);
-			}
-			column.dataField = item["fieldKey"];
-			column.sortable = item["isSortField"] != null ? true : false;
-			
-			if("isAsc" in item )
-			{
-			sortColumn = column;
-			if(item["isAsc"].toString() == "1")
-			{
-			column.sortDescending = false;
-			}else{
-			column.sortDescending = true;
-			}
-			}
-			
-			var headerText:String = item["fieldName"].toString();
-			column.headerText = headerText.replace(/\^/g,"\n");
-			item["labelLength"] = column.headerText.length;
-			if("colWidth" in item && parseInt(item["colWidth"])  > 0)
-			{
-			column.width = parseInt(item["colWidth"]);
-			}else{
-			//包含换行符
-			if(headerText.search("^") != -1)
-			{
-			var headerArr:Array = headerText.split("^"); 
-			column.width = 0;
-			for each(var headerItem:String in headerArr)
-			{
-			textLine = uiTextFormat.measureText(headerItem);
-			if(column.width < textLine.width)
-			{
-			column.width = textLine.width;
-			}
-			}
-			column.width += 20;
-			}
-			} 
-			gridHeaderWidth += column.width;
-			column = null;
-			}
-			headerList.splice(1,0,{});
-			}
-			//动态添加列渲染器
-			var preFactory:ClassFactory = DataGridList.itemRenderer as ClassFactory;
-			if(preFactory.generator != BaseDataDetailPanelGridItemRenderer  
-			|| preFactory.properties == null 
-			|| !("headerList" in preFactory.properties) 
-			|| preFactory.properties["headerList"] != headerList)
-			{
-			preFactory = new ClassFactory(BaseDataDetailPanelGridItemRenderer);
-			preFactory.properties = {headerList:headerList};
-			DataGridList.itemRenderer = preFactory;
-			}
-			}
-			
-			//在表格的末列添加操作列
-			var operateCol:GridColumn = new GridColumn();
-			var colFactory:ClassFactory = new ClassFactory(BaseDataOperationGridItemRenderer);
-			colFactory.properties = {queryType:modelLocator.baseDataVO.searchRequestData.queryType};
-			operateCol.itemRenderer = colFactory;
-			operateCol.dataField = "OPERATION";
-			operateCol.headerText = "操作";
-			operateCol.sortable = false;
-			
-			textLine = uiTextFormat.measureText(operateCol.headerText);
-			operateCol.width = textLine.width + 20;
-			gridHeaderWidth += operateCol.width;
-			DataGridList.columns.addItemAt(operateCol,1);
-			
-			//在表格最后添加空白列
-			var blankColumn:GridColumn = new GridColumn();
-			colFactory = new ClassFactory(DefaultGridItemRenderer);
-			blankColumn.itemRenderer = colFactory; 
-			blankColumn.dataField = "";
-			blankColumn.headerText = "";
-			blankColumn.minWidth = 0;
-			blankColumn.width = NaN;
-			blankColumn.sortable = false;
-			
-			DataGridList.columns.addItem(blankColumn);
-			
-			//绑定数据源
-			if(this.DataGridList.dataProvider != null)
-			{
-			this.DataGridList.dataProvider = null;
-			}
-			
-			columnIndices.push(DataGridList.columns.getItemIndex(sortColumn));
-			DataGridList.columnHeaderGroup.visibleSortIndicatorIndices = columnIndices;
-			} */
-			
-			//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
-			private function initGridColumns(showType:String=""):void
-			{
-				switch(showType)
+				var tempCols:Array = [];
+				if(cols != null && cols.length > 0)
 				{
-					case ConstVO.AREA_CAPACITY_TYPE:
+					for each(var col:Object in cols)
 					{
-						
-						break;
+						var isMK:int = col["isMainKey"];
+						if(isMK == 1 || isMK == -1)
+						{
+							tempCols.push(col);
+						}
 					}
-					case ConstVO.WATER_QUALITY_TYPE:
+				}
+				return tempCols;
+			}
+			
+			/**切换表格*/
+			private function switchDataGrid(dgKey:String):void
+			{
+				this.dgGroup.removeAllElements();
+				var dg:DataGrid = getDataGrid(dgKey);
+				fadeEffect.target = dg;//为切换的表格增加渐变特效
+				this.dgGroup.addElement(dg);
+				if(dgKey != ConstVO.WATER_EVALUATION_TYPE)
+				{
+					dg.dataProvider = new ArrayCollection(CapacityDataSource.getDgSource(dgKey)["nodeList"]);
+					this.currentState = SHOW;
+				}
+			}
+			
+			/**获取表格*/
+			private function getDataGrid(dgKey:String):DataGrid
+			{
+				if(dgContainer.containsKey(dgKey))
+				{
+					return dgContainer.find(dgKey) as DataGrid;
+				}
+				return null;
+			}
+			
+			/**创建DataGrid内容*/
+			private function createDataGrid(contentData:Object):DataGrid
+			{
+				var dg:DataGrid = new DataGrid();
+				dg.addEventListener(GridEvent.GRID_CLICK, drillGridClickHandler);
+				dg.percentWidth = 100;
+				dg.percentHeight = 100;
+				dg.sortableColumns = false;
+				dg.setStyle("borderVisible",false);
+				dg.selectionMode = GridSelectionMode.SINGLE_CELL;
+				dg.columns = new ArrayCollection([]);
+				
+				//用于计算表头宽度
+				var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
+				uiTextFormat.antiAliasType = AntiAliasType.NORMAL;
+				uiTextFormat.gridFitType =GridFitType.NONE;
+				uiTextFormat.direction =Direction.LTR;
+				var textLine:TextLineMetrics;
+				//根据返回结果创建需要显示的列
+				if(contentData.hasOwnProperty("propFields"))
+				{
+					var headerList:Array = decodeDatagridField(contentData["propFields"] as Array);
+					if(headerList != null && headerList.length > 0)
 					{
+						for each(var item:Object in headerList)
+						{
+							var column:GridColumn = new GridColumn();
+							dg.columns.addItem(column);
+							column.dataField = item["fieldKey"];
+							var headerText:String = item["fieldName"].toString();
+							column.headerText = headerText.replace(/\^/g,"\n");
+							if("colWidth" in item && parseInt(item["colWidth"])  > 0)
+							{
+								column.width = parseInt(item["colWidth"]);
+							}
+							else
+							{
+								//包含换行符,不包含列KV描述，需要动态计算
+								if(headerText.search("^") != -1)
+								{
+									var headerArr:Array = headerText.split("^"); 
+									column.width = 0;
+									for each(var headerItem:String in headerArr)
+									{
+										textLine = uiTextFormat.measureText(headerItem);
+										if(column.width < textLine.width)
+										{
+											column.width = textLine.width;
+										}
+									}
+									column.width += 20;
+								}
+							} 
+							
+							var isMK:int = item["isMainKey"];
+							if(isMK == -1)//详情操作列表
+							{
+								var detailColFactory:ClassFactory = new ClassFactory(CapacityDetailItemRenderer);
+								column.itemRenderer = detailColFactory;
+							}
+						}
 						
-						break;
-					}
-					case ConstVO.WATER_POLLUTION_DETAIL_TYPE:
-					{
+						//在表格的首列添加定位操作列
+						var operateCol:GridColumn = new GridColumn();
+						var locationColFactory:ClassFactory = new ClassFactory(CapacityLocationItemRenderer);
+						operateCol.itemRenderer = locationColFactory; 
+						operateCol.dataField = "OPERATION";
+						operateCol.headerText = "操作";
+						operateCol.sortable = false;
+						textLine = uiTextFormat.measureText(operateCol.headerText);
+						operateCol.width = textLine.width + 20;
+						dg.columns.addItemAt(operateCol, 0);
 						
-						break;
+						//在表格最后添加空白列
+						var blankColumn:GridColumn = new GridColumn();
+						var blankColFactory:ClassFactory = new ClassFactory(DefaultGridItemRenderer);
+						blankColumn.itemRenderer = blankColFactory; 
+						blankColumn.dataField = "";
+						blankColumn.headerText = "";
+						blankColumn.minWidth = 0;
+						blankColumn.width = NaN;
+						blankColumn.sortable = false;
+						dg.columns.addItem(blankColumn);
 					}
-					case ConstVO.WATER_DRAIN_POLLUTION_DETAIL_TYPE:
+				}
+				return dg;
+			} 
+			
+			/**初始化水资源承载力相关表*/
+			private function initDataGrid():void
+			{
+				var dg:DataGrid = null;
+				for each(var dgSrc:Object in CapacityDataSource.dgCol)
+				{
+					var dgKey:String = dgSrc["key"];
+					if(dgKey != ConstVO.WATER_EVALUATION_TYPE)
 					{
+						dg = createDataGrid(CapacityDataSource.getDgSource(dgKey));
+						dg.name = dgKey;
+					}
+					else
+					{
+						//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
+						dg = new DataGrid();
+						dg.addEventListener(GridEvent.GRID_CLICK, normalGridClickHandler);
+						dg.name = dgKey;
+						dg.percentWidth = 100;
+						dg.percentHeight = 100;
+						dg.sortableColumns = false;
+						dg.setStyle("borderVisible",false);
+						dg.selectionMode = GridSelectionMode.SINGLE_CELL;
+						dg.columns = new ArrayCollection([]);
 						
-						break;
-					}
-					default:
-					{
 						var colConfigParam:String = modelLocator.systemInfo.waterEvaluationGridColumn;
 						var colConfigs:Array = colConfigParam.split(",");
-						if (resultGrid.columns == null) {
-							resultGrid.columns = new ArrayList();
-						}
 						var column:GridColumn;
 						for each(var item:String in colConfigs) {
 							var items:Array = item.split(":");
@@ -267,10 +268,68 @@
 								if (items.length == 3) {
 									column.width = items[2];
 								}
-								resultGrid.columns.addItem(column);
+								dg.columns.addItem(column);
 							}
 						}
-						break;
+					}
+					dgContainer.add(dgKey, dg);
+				}
+			}
+			
+			//点击对象表格行，定位要素
+			protected function normalGridClickHandler(event:GridEvent):void
+			{
+				var grid:DataGrid = event.currentTarget as DataGrid;
+				if (event.rowIndex > -1 && event.rowIndex < grid.dataProvider.length)
+				{
+					//地图定位
+					var selectedItem:Object = grid.selectedItem;
+					if ("x" in selectedItem && "y" in selectedItem) {
+						var point:Point2D = new Point2D(selectedItem.x, selectedItem.y);
+						if (modelLocator.mapCtrl.level < 3) {
+							modelLocator.mapCtrl.zoomToLevel(3, point);
+						} else {
+							modelLocator.mapCtrl.panTo(point);
+						}
+					}
+				}
+			}
+			
+			//点击水资源承载力表格，钻取
+			protected function drillGridClickHandler(event:GridEvent):void
+			{
+				var grid:DataGrid = event.currentTarget as DataGrid;
+				if (event.rowIndex > -1 && event.rowIndex < grid.dataProvider.length && event.columnIndex == 1)
+				{
+					if(CapacityDataSource.dataLevel <= 1)
+					{
+						CapacityDataSource.dataLevel++;
+						
+						this.homeImage.visible = this.returnImage.visible = true;
+						var dgSrc:Object = CapacityDataSource.dgCol[CapacityDataSource.dataLevel];
+						this.switchDataGrid(dgSrc["key"]);
+						this.panel.title = dgSrc["name"];
+					}
+				}
+			}
+			
+			/**清除所有表中数据*/
+			private function clearDataGrid():void
+			{
+				//清空哈希表中的数据
+				if(dgContainer.size>0)
+				{
+					var keySet:Array = dgContainer.getKeySet();
+					if(keySet != null && keySet.length > 0)
+					{
+						for(var i:int=0;i<keySet.length;i++)
+						{
+							if(dgContainer.find(keySet[i]) is DataGrid)
+							{
+								var dg:DataGrid = dgContainer.find(keySet[i]) as DataGrid;
+								dg.dataProvider = null;
+							}
+						}
 					}
 				}
 			}
@@ -302,7 +361,7 @@
 			/**清除所有结果*/
 			private function clearAllResult():void
 			{
-				resultGrid.dataProvider = null;
+				clearDataGrid();
 				hideInfoWidow();
 			}
 			
@@ -317,6 +376,24 @@
 				map.infoWindow.hide();
 			}
 			
+			/**显示水资源承载能力表*/
+			private function showWaterCapacityDataHandler(event:QueryEvent):void
+			{
+				var dgSrc:Object = event.data;
+				this.switchDataGrid(dgSrc["key"]);
+				this.panel.title = dgSrc["name"];
+			}
+			
+			/**水功能区水质达标率及污染物入河量详情*/
+			private function showMonitorDataHandler(event:QueryEvent):void
+			{
+				var dgSrc:Object = event.data;
+				this.switchDataGrid(dgSrc["key"]);
+				this.panel.title = dgSrc["name"];
+				
+				CapacityDataSource.isShowDetail = true;
+			}
+			
 			/**响应查询结果*/
 			private function queryStationEvalutionInfoResponseHandler(event:QueryEvent):void
 			{
@@ -328,7 +405,7 @@
 				{
 					panel.title = resultData.name +"——评价指标";
 					var gridDatas:Array=  resultData["attributes"]["targets"];
-					resultGrid.dataProvider = new ArrayCollection(gridDatas);
+					getDataGrid(ConstVO.WATER_EVALUATION_TYPE).dataProvider = new ArrayCollection(gridDatas);
 					this.currentState = SHOW;
 				} else {
 					this.currentState = HIDE;
@@ -360,6 +437,7 @@
 			private function createGridColumn():void
 			{
 				//清空表格列
+				var resultGrid:DataGrid = getDataGrid(ConstVO.WATER_EVALUATION_TYPE);
 				resultGrid.columns = new ArrayCollection(); 
 				var gridColumnInfo:GridColumnInfo;
 				var column:GridColumn;
@@ -379,22 +457,36 @@
 				resultGrid.columns.addItemAt(column, 0);
 			}
 			
-			//点击对象表格行，定位要素
-			protected function resultGrid_gridClickHandler(event:GridEvent):void
+			//首页
+			protected function homeImage_clickHandler(event:MouseEvent):void
 			{
-				var grid:DataGrid = event.currentTarget as DataGrid;
-				if (event.rowIndex > -1 && event.rowIndex < grid.dataProvider.length)
+				CapacityDataSource.dataLevel = 0;
+				
+				this.homeImage.visible = this.returnImage.visible = false;
+				var dgSrc:Object = CapacityDataSource.dgCol[CapacityDataSource.dataLevel];
+				this.switchDataGrid(dgSrc["key"]);
+				this.panel.title = dgSrc["name"];
+			}
+			
+			//返回
+			protected function returnImage_clickHandler(event:MouseEvent):void
+			{
+				if(CapacityDataSource.dataLevel >= 1)
 				{
-					//地图定位
-					var selectedItem:Object = grid.selectedItem;
-					if ("x" in selectedItem && "y" in selectedItem) {
-						var point:Point2D = new Point2D(selectedItem.x, selectedItem.y);
-						if (modelLocator.mapCtrl.level < 3) {
-							modelLocator.mapCtrl.zoomToLevel(3, point);
-						} else {
-							modelLocator.mapCtrl.panTo(point);
-						}
+					if(!CapacityDataSource.isShowDetail)
+					{
+						CapacityDataSource.dataLevel--;
 					}
+					CapacityDataSource.isShowDetail = false;
+					
+					if(CapacityDataSource.dataLevel == 0)
+					{
+						this.homeImage.visible = this.returnImage.visible = false;
+					}
+					
+					var dgSrc:Object = CapacityDataSource.dgCol[CapacityDataSource.dataLevel];
+					this.switchDataGrid(dgSrc["key"]);
+					this.panel.title = dgSrc["name"];
 				}
 			}
 			
@@ -404,7 +496,7 @@
 				panel.contentGroup.visible = panel.contentGroup.includeInLayout = !panel.contentGroup.includeInLayout;
 				if ( panel.contentGroup.visible) {
 					stateImage.toolTip = CONTRACT;
-					resizeEffect.heightTo =  MaxHeight;
+					resizeEffect.heightTo = MaxHeight;
 					fadeEffect.alphaTo = 1;
 				} else {
 					stateImage.toolTip = EXPAND;
@@ -444,13 +536,12 @@
 			{
 				resetUI();
 			}
-			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<s:Parallel id="animateEffect" duration="500" effectEnd="stateImage.enabled=true;"
 					effectStart="stateImage.enabled=false">
-			<s:Fade id="fadeEffect" target="{resultGrid}"   />
+			<s:Fade id="fadeEffect"/>
 			<s:Resize id="resizeEffect"  target="{panel}" />
 			<s:Rotate id="rotateEffect" angleBy="180" autoCenterTransform="true"
 					  target="{stateImage}"/>
@@ -460,16 +551,21 @@
 		<s:State name="hide"/>
 		<s:State name="show"/>
 	</ns:states>
-	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}" bottom.show="5" bottom.hide="0"
-			 height.hide="0">
+	<s:Panel id="panel" width="100%" maxHeight="{MaxHeight}"
+			 bottom.show="5" bottom.hide="0" height.hide="0">
 		<s:controlBarContent>
+			<s:Image id="homeImage" width="16" height="16" buttonMode="true" 
+					 click="homeImage_clickHandler(event)" visible="false"
+					 source="{ResourceManagerEx.FindResource('Home').cls}" toolTip="首页"/>
+			<s:Image id="returnImage" width="16" height="16" buttonMode="true" 
+					 click="returnImage_clickHandler(event)" visible="false"
+					 source="{ResourceManagerEx.FindResource('Return').cls}" toolTip="返回"/>
 			<s:Image id="stateImage" width="16" height="16" buttonMode="true" 
 					 click="stateImage_clickHandler(event)"
 					 source="{ResourceManagerEx.FindResource('Down').cls}" toolTip="收缩"/>
 			<s:Spacer width="10"/>
 		</s:controlBarContent>
-		<s:DataGrid id="resultGrid" width="100%" height="100%" maxHeight="200"  borderVisible="false"
-					gridClick="resultGrid_gridClickHandler(event)" sortableColumns="false" >
-		</s:DataGrid>
+		<s:Group id="dgGroup" width="100%" height="100%">
+		</s:Group>
 	</s:Panel>
 </ns:WidgetBase>

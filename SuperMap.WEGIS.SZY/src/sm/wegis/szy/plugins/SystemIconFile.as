@@ -166,8 +166,27 @@ package sm.wegis.szy.plugins
 		[Embed(source="assets/image/others/down.png")]
 		private static var DownCls:Class;
 		private static var DownKey:String = "Down";
-		ResourceManagerEx.RegisterResource("",DownKey, DownCls);
+		ResourceManagerEx.RegisterResource("", DownKey, DownCls);
 		
+		[Embed(source="assets/image/others/home.png")]
+		private static var homeCls:Class;
+		private static var homeKey:String = "Home";
+		ResourceManagerEx.RegisterResource("", homeKey, homeCls);
+		
+		[Embed(source="assets/image/others/return.png")]
+		private static var returnCls:Class;
+		private static var returnKey:String = "Return";
+		ResourceManagerEx.RegisterResource("", returnKey, returnCls);
+		
+		[Embed(source="assets/image/others/location.png")]
+		private static var locationCls:Class;
+		private static var locationKey:String = "Location";
+		ResourceManagerEx.RegisterResource("", locationKey, locationCls);
+		
+		[Embed(source="assets/image/others/detail.png")]
+		private static var detailCls:Class;
+		private static var detailKey:String = "Detail";
+		ResourceManagerEx.RegisterResource("", detailKey, detailCls);
 		
 		//用户登录图标
 		[Embed(source="assets/image/login/user.png")]

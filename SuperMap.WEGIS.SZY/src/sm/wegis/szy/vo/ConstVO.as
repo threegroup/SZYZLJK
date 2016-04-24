@@ -52,6 +52,8 @@ package sm.wegis.szy.vo
 		/**水质评价，专题地图——行政区划专题图*/
 		public static const COUNTY_THEME_TYPE:String = "CountyThemeType";
 		
+		/**水资源承载能力，测站水质评价主要评价指标表*/
+		public static const WATER_EVALUATION_TYPE:String = "Water_Evaluation_Type";
 		/**水资源承载能力，第一级表格——行政区承载力情况统计表*/
 		public static const AREA_CAPACITY_TYPE:String = "Area_Capacity_Type";
 		/**水资源承载能力，第二级表格——河流水功能区水质达标率*/
