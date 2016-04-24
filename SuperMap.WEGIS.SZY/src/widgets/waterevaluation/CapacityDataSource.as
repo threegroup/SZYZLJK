@@ -518,5 +518,59 @@ package widgets.waterevaluation
 			"responseSts": 0,
 			"totalCount": 2
 		};
+		
+		/**县区域水资源承载力气泡数据*/
+		public static var countyInfoData:Object ={
+			"message": "信息查询成功。",
+			"responseSts": 0,
+			"surveyData": [
+				{
+					"resultInfoHeaderList": [{
+						"showValue": "名称",
+						"decimalDigits": 0,
+						"code": "name",
+						"colWidth": 0
+					},
+					{
+							"showValue": "实际值(mg/L)",
+							"decimalDigits": 0,
+							"code": "value",
+							"colWidth": 0
+					},
+					{
+							"showValue": "国家标准(mg/L)",
+							"decimalDigits": 0,
+							"code": "standard",
+							"colWidth": 0
+					}],
+					"detailType": "detailInfo",
+					"label": "详细信息",
+					"resultInfoDetailList": [{
+						"name": "COD",
+						"value": "35",
+						"standard":"20"
+					},
+					{
+							"name": "氨氮",
+							"value": "1.8",
+							"standard":"1.0"
+					},
+					{
+							"name": "总磷",
+							"value": "0.2",
+							"standard":"0.3"
+					},
+					{
+							"name": "溶解氧",
+							"value": "5",
+							"standard":"2"
+					},
+					{
+							"name": "总氮",
+							"value": "0.4",
+							"standard":"0.2"
+					}]
+				}]
+		};
 	}
 }

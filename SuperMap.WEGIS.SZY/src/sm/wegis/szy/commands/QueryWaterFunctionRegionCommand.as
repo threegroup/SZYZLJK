@@ -102,7 +102,7 @@ package sm.wegis.szy.commands
 			}
 			
 			//查询县界
-			QueryVectorDatasetHandle(modelLocator.baseMapInfo.countyMapUrl, modelLocator.baseMapInfo.countyLayerName, ['ID']
+			QueryVectorDatasetHandle(modelLocator.baseMapInfo.countyMapUrl, modelLocator.baseMapInfo.countyLayerName, ['ID','NAME']
 				, displayCountyQueryRecords);
 		}
 		
@@ -172,7 +172,7 @@ package sm.wegis.szy.commands
 						{
 							for each (var feature:Feature in recordSet.features)
 							{
-								feature.addEventListener(MouseEvent.CLICK,showDetailInfo);
+								feature.addEventListener(MouseEvent.CLICK, showCityCapacityInfo);
 								feature.buttonMode = true;
 								featuresLayer.addFeature(feature);
 							}
@@ -263,12 +263,12 @@ package sm.wegis.szy.commands
 					case ConstVO.COUNTY_THEME_TYPE:
 						countyFeatureLayer.visible = true;
 						for each(riverInfo in waterEvalutions.targetList) {
-							for each(ft in countyFeatureLayer.features) {
-								if (ft.attributes["ID"] == riverInfo.SUPER_OBJ_ID)
-								{
-									ft.toolTip =  getCapacityToolTip(riverInfo["承载力类别等级"]);
-									ft.style = new PredefinedFillStyle("solid",getCapacityColor(riverInfo["承载力类别等级"]), 0.5, null);
-								}
+						for each(ft in countyFeatureLayer.features) {
+							if (ft.attributes["ID"] == riverInfo.SUPER_OBJ_ID)
+							{
+								ft.toolTip =  getCapacityToolTip(riverInfo["承载力类别等级"]);
+								ft.style = new PredefinedFillStyle("solid",getCapacityColor(riverInfo["承载力类别等级"]), 0.5, null);
+							}
 						}
 					}
 						break;
@@ -380,6 +380,29 @@ package sm.wegis.szy.commands
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.WATER_EVALUATION_THEME_MAP_RIVER_CLICK);
 			queryEvent.data = waterEvaluationParam;
 			queryEvent.dispatch();
+		}
+		
+		/**查询县承载力数据*/
+		private function showCityCapacityInfo(event:MouseEvent):void
+		{
+			var feature:Feature = event.currentTarget as Feature;
+			var attribute:Object = feature.attributes;
+			var clickPoint:Point = new Point(event.stageX,event.stageY);
+			var mapPoint:Point2D = modelLocator.mapCtrl.stageToMap(clickPoint);
+			
+			var resultData:Object = {};
+			var value:Object = CapacityDataSource.countyInfoData
+			resultData["resultData"] = value;
+			resultData["attribute"] = {};
+			resultData["attribute"]["OBJ_NAME"] = attribute["NAME"];
+			resultData["attribute"]["CENTER_X"] = mapPoint.x;
+			resultData["attribute"]["CENTER_Y"] = mapPoint.y;
+			if(value.hasOwnProperty("surveyData") && value["surveyData"] != null)
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_OBJECT_DETAIL);
+				queryEvent.data = resultData;
+				queryEvent.dispatch();
+			}
 			
 			//在地图窗口底部显示水资源承载能力表格数据
 			var showCapacityEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_WATER_CAPACITY_DATA);
@@ -391,5 +414,6 @@ package sm.wegis.szy.commands
 		{
 			Alert.show("与服务端交互失败", "抱歉", 4, FlexGlobals.topLevelApplication as Sprite);
 		}
+		
 	}
 }

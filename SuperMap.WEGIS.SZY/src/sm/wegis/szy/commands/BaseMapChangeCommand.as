@@ -1,11 +1,15 @@
 package sm.wegis.szy.commands
 {
 	import com.adobe.cairngorm.control.CairngormEvent;
+	import com.supermap.web.events.MapEvent;
 	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 	import com.supermap.wegis.common.mappingEx.TiledDynamicRESTLayerEx;
 	import com.supermap.wegis.common.mappingEx.WMTSLayer;
 	
+	import mx.controls.Alert;
+	
 	import sm.wegis.szy.core.baseclass.CommandBase;
+	import sm.wegis.szy.events.MapLayerEvent;
 	import sm.wegis.szy.vo.BaseMapVO;
 	import sm.wegis.szy.vo.ConstVO;
 	
@@ -19,6 +23,14 @@ package sm.wegis.szy.commands
 			}
 			var baseMapVO:BaseMapVO = modelLocator.baseMapInfo;
 			var mapCtrl:MapCtrl = modelLocator.mapCtrl;
+			var resolutions:Array;
+			if (mapCtrl.resolutions.length > 1) {
+				resolutions = mapCtrl.resolutions;
+				mapCtrl.removeEventListener(MapEvent.LOAD, mapLayerLoadHandler);
+				mapCtrl.addEventListener(MapEvent.LOAD, mapLayerLoadHandler);
+			} else {
+				Alert.show("地图比例尺异常","错误",Alert.OK);
+			}
 			
 			//矢量底图
 			var baseVectorLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer( ConstVO.BaseMapVectorLayerId) as TiledDynamicRESTLayerEx;
@@ -73,7 +85,12 @@ package sm.wegis.szy.commands
 				baseImageLayer.url = modelLocator.baseMapInfo.baseImageMapUrl;
 				baseImageLayer.visible = true;
 			}
-		
+			
+			function mapLayerLoadHandler(event:MapEvent):void
+			{
+				mapCtrl.resolutions = resolutions;
+			}
 		}
+		
 	}
 }
