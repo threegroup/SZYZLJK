@@ -6,6 +6,8 @@ package sm.wegis.szy.commands
 	import com.supermap.wegis.common.mappingEx.TiledDynamicRESTLayerEx;
 	import com.supermap.wegis.common.mappingEx.WMTSLayer;
 	
+	import flash.events.Event;
+	
 	import mx.controls.Alert;
 	
 	import sm.wegis.szy.core.baseclass.CommandBase;

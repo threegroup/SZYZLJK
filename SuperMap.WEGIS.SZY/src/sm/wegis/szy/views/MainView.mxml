@@ -442,6 +442,7 @@
 				{
 					var mapCtrlTool:MapCtrlTool = new MapCtrlTool();
 					mapCtrlTool.initMapCompass(this.RightVGroupContainerID);
+					modelLocator.zoomSlider = mapCtrlTool.zoomSlider;
 				}
 			}
 			

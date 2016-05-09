@@ -2,10 +2,10 @@
 <system>
 	<subSystem name="taizihe">
 		<viewBounds>121.7404, 40.4814, 125.3412, 41.8437</viewBounds>
-		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap</baseVectorMapUrl>
-        <baseImageMapUrl>http://localhost:8090/tzhGooglemaps</baseImageMapUrl>
+		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapV</baseVectorMapUrl>
+        <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapR</baseImageMapUrl>
 		<vectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</vectorMapUrl>
-		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</rasterMapUrl>
+		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_R</rasterMapUrl>
 		<sfzMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/水功能区</sfzMapUrl>
 		<sfzLayerName>水功能区汇总@断面</sfzLayerName>
 		<riverMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/河流</riverMapUrl>
@@ -13,7 +13,7 @@
 		<countyMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/行政区划</countyMapUrl>
 		<countyLayerName>流域内县界@MAP</countyLayerName>
 		
-		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50"/>
+		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50,51"/>
 		<themeLayerId>
 			<layer label="水库"  selected="true" layerIds="9,10,11,12,28,29,33,34" />
 			<layer label="河流"  selected="true" 
@@ -28,8 +28,10 @@
 	</subSystem>
     <subSystem name="yuqiao">
 		<viewBounds>117.43, 39.94, 118.18, 40.37</viewBounds>
-		<vectorMapUrl>http://localhost:8090/iserver/services/map-YQ_MAP/rest/maps/YQ_MAP</vectorMapUrl>
-		<rasterMapUrl>http://localhost:8090/iserver/services/map-YQ_MAP/rest/maps/YQ_MAP</rasterMapUrl>
+		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/yuqiao</baseVectorMapUrl>
+        <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/yuqiao</baseImageMapUrl>
+		<vectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/yuqiao</vectorMapUrl>
+		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/yuqiao</rasterMapUrl>
 		<baseLayerId layerIds="0"/>
 		<themeLayerId>
 			<layer label="水库" selected="true" layerIds="1" />

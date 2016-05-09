@@ -1,6 +1,7 @@
 package sm.wegis.szy.models
 {
 	import com.adobe.cairngorm.model.ModelLocator;
+	import com.supermap.web.components.ZoomSlider;
 	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 	
 	import sm.wegis.szy.vo.BaseMapVO;
@@ -16,6 +17,8 @@ package sm.wegis.szy.models
 	public class ApplicationModelLocator implements ModelLocator
 	{
 		private static var modelLocator:ApplicationModelLocator;
+		
+		public var zoomSlider:ZoomSlider;
 		
 		/**二维地图控件*/
 		public var mapCtrl:MapCtrl;

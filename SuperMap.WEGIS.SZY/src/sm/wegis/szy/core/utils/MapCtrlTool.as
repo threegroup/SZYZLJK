@@ -44,7 +44,7 @@ package sm.wegis.szy.core.utils
 		
 		//****地图罗盘***************************************/
 		private var compass:Compass;
-		private var zoomSlider:ZoomSlider;
+		public var zoomSlider:ZoomSlider;
 		private var vGroup:VGroup;
 		
 		private var isMove:Boolean = false;
@@ -121,6 +121,7 @@ package sm.wegis.szy.core.utils
 				fadeOut.repeatCount = 1;
 				fadeOut.play([compass, zoomSlider]);
 			}
+//			modelLocator.zoomSlider.refresh();
 		}
 		
 		public static function getLegalViewBounds(bounds:Rectangle2D):Rectangle2D
