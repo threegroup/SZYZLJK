@@ -4,7 +4,6 @@ package sm.wegis.szy.commands
 	import com.supermap.web.events.MapEvent;
 	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 	import com.supermap.wegis.common.mappingEx.TiledDynamicRESTLayerEx;
-	import com.supermap.wegis.common.mappingEx.WMTSLayer;
 	
 	import flash.events.Event;
 	
@@ -45,9 +44,9 @@ package sm.wegis.szy.commands
 				mapCtrl.addLayer(baseVectorLayer);
 			}
 			baseVectorLayer.visible = false;
-			var baseImageLayer:WMTSLayer = mapCtrl.getLayer( ConstVO.BaseMapImageLayerId) as WMTSLayer;
+			var baseImageLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer( ConstVO.BaseMapImageLayerId) as TiledDynamicRESTLayerEx;
 			if (baseImageLayer == null) {
-				baseImageLayer = new WMTSLayer();
+				baseImageLayer = new TiledDynamicRESTLayerEx();
 				baseImageLayer.id = ConstVO.BaseMapImageLayerId;
 				baseImageLayer.layerType = 0
 				baseImageLayer.layerIndex = 1;
