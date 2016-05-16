@@ -2,8 +2,10 @@
 <system>
 	<subSystem name="taizihe">
 		<viewBounds>121.7404, 40.4814, 125.3412, 41.8437</viewBounds>
-		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapV</baseVectorMapUrl>
-        <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapR</baseImageMapUrl>
+<!-- 		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapV</baseVectorMapUrl> -->
+<!--         <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapR</baseImageMapUrl> -->
+		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap</baseVectorMapUrl>
+        <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap</baseImageMapUrl>
 		<vectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</vectorMapUrl>
 		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_R</rasterMapUrl>
 		<sfzMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/水功能区</sfzMapUrl>

@@ -40,9 +40,22 @@ package sm.wegis.szy.vo
 		/**查询水质评价，河流主要污染指标*/
 		public static const GetSZPJItemValue:String = "getSZPJItemValue";
 		
-		
-		
-		
-		
+		/**--------------水资源承载力查询接口------------*/
+		/**
+		 * 行政区承载力情况统计表---1级---接口二
+		 */
+		public static const GetXZQCondition:String = "getXZQCondition";
+		/**
+		 * 河流水功能区水质达标率及污染物入河量情况统计表---2级---接口三
+		 */
+		public static const GetRiverWaterFounctionCondition:String = "getRiverWaterFounctionCondition";
+		/**
+		 * 水功能区水质达标率及污染物入河量详情---2级详情表---接口四
+		 */
+		public static const GetWaterFounctionItemValue:String = "getWaterFounctionItemValue";
+		/**
+		 * 水功能区排污口污染物入河量详情---3级---接口五
+		 */
+		public static const GetPWKDetail:String = "getPWKDetail";
 	}
 }

@@ -109,10 +109,32 @@ package sm.wegis.szy.events
 		/**查询水资源承载力，县地图业务数据*/
 		public static const QUERY_COUNTY_THEME_DATA:String = "QueryCountyThemeData";
 		
+		//-----------------------水资源承载力----------------------------------------------------------------
+		
 		/**查询水资源承载力，在窗口底部显示表格数据*/
 		public static const SHOW_WATER_CAPACITY_DATA:String = "Show_Water_Capacity_Data";
 		
 		/**查询水资源承载力，在窗口底部显示污染物浓度监测详情数据*/
 		public static const SHOW_WATER_CAPACITY_MONITOR_DATA:String = "Show_Water_Capacity_Monitor_Data";
+		
+		/**行政区承载力情况统计表---1级---接口二*/
+		public static const GET_XZQ_CONDITION:String = "getXZQCondition";
+		/**行政区承载力情况统计表---1级---接口二*/
+		public static const GET_XZQ_CONDITION_RESPONSE:String = "getXZQConditionResponse";
+		
+		/**河流水功能区水质达标率及污染物入河量情况统计表---2级---接口三*/
+		public static const GET_RIVER_WATER_FOUNCTION_CONDITION:String = "getRiverWaterFounctionCondition";
+		/**河流水功能区水质达标率及污染物入河量情况统计表---2级---接口三*/
+		public static const GET_RIVER_WATER_FOUNCTION_CONDITION_RESPONSE:String = "getRiverWaterFounctionConditionResponse";
+		
+		/**水功能区水质达标率及污染物入河量详情---2级详情表---接口四*/
+		public static const GET_WATER_FOUNCTION_ITEM_VALUE:String = "getWaterFounctionItemValue";
+		/**水功能区水质达标率及污染物入河量详情---2级详情表---接口四*/
+		public static const GET_WATER_FOUNCTION_ITEM_VALUE_RESPONSE:String = "getWaterFounctionItemValueResponse";
+		
+		/**水功能区排污口污染物入河量详情---3级---接口五*/
+		public static const GET_PWK_DETAIL:String = "getPWKDetail";
+		/**水功能区排污口污染物入河量详情---3级---接口五*/
+		public static const GET_PWK_DETAIL_RESPONSE:String = "getPWKDetailResponse";
 	}
 }

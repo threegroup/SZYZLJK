@@ -379,6 +379,11 @@
 			/**显示水资源承载能力表*/
 			private function showWaterCapacityDataHandler(event:QueryEvent):void
 			{
+				//点击地图水功能区重置级别及钻取按钮状态
+				CapacityDataSource.dataLevel = 0;
+				this.homeImage.visible = this.returnImage.visible = false;
+				
+				//切换数据表格内容
 				var dgSrc:Object = event.data;
 				this.switchDataGrid(dgSrc["key"]);
 				this.panel.title = dgSrc["name"];
