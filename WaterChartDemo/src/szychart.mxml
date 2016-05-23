@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="100%" height="100%" minWidth="955" minHeight="600"
+			   viewSourceURL="srcview/index.html">
+	<fx:Style source="szycss.css"/>
+	<fx:Script>
+		<![CDATA[
+			import chartdata.dm.DM_TerrainProfileSource;
+			import chartdata.dm.DM_WaterDensitySource;
+			import chartdata.dm.DM_WaterDepthSource;
+			import chartdata.dm.DM_WaterFlowSource;
+			import chartdata.dm.DM_WaterPositionSource;
+			import chartdata.dm.DM_WaterSpeedSource;
+			import chartdata.hd.HD_TerrainProfileSource;
+			import chartdata.hd.HD_WaterDensitySource;
+			import chartdata.hd.HD_WaterDepthSource;
+			import chartdata.hd.HD_WaterFlowSource;
+			import chartdata.hd.HD_WaterPositionSource;
+			import chartdata.hd.HD_WaterSpeedSource;
+			
+			import chartitemrender.LineChartDataRender;
+			import chartitemrender.LineChartDataRenderEx;
+			
+			import mx.charts.HitData;
+			import mx.charts.LegendItem;
+			import mx.charts.chartClasses.ChartBase;
+			import mx.charts.chartClasses.IAxis;
+			import mx.charts.events.ChartEvent;
+			import mx.charts.events.ChartItemEvent;
+			import mx.charts.events.LegendMouseEvent;
+			import mx.charts.series.items.LineSeriesItem;
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.formatters.DateFormatter;
+			
+			//--------------------------------断面-------------------------------------------
+			[Bindable]
+			/**断面地形剖面*/
+			private var tpDs:DM_TerrainProfileSource = new DM_TerrainProfileSource();
+			[Bindable]
+			/**断面水位过程*/
+			private var wpDs:DM_WaterPositionSource = new DM_WaterPositionSource();
+			[Bindable]
+			/**断面流量过程*/
+			private var wfDs:DM_WaterFlowSource = new DM_WaterFlowSource();
+			[Bindable]
+			/**断面水深*/
+			private var wdDs:DM_WaterDepthSource = new DM_WaterDepthSource();
+			[Bindable]
+			/**断面水流流速*/
+			private var wsDs:DM_WaterSpeedSource = new DM_WaterSpeedSource();
+			[Bindable]
+			/**断面污染物浓度*/
+			private var wDenDs:DM_WaterDensitySource = new DM_WaterDensitySource();
+			
+			//----------------------------------河道--------------------------------------------
+			[Bindable]
+			/**河道地形剖面*/
+			private var hdtpDs:HD_TerrainProfileSource = new HD_TerrainProfileSource();
+			[Bindable]
+			/**河道水位过程*/
+			private var hdwpDs:HD_WaterPositionSource = new HD_WaterPositionSource();
+			[Bindable]
+			/**河道流量过程*/
+			private var hdwfDs:HD_WaterFlowSource = new HD_WaterFlowSource();
+			[Bindable]
+			/**河道水深*/
+			private var hdwdDs:HD_WaterDepthSource = new HD_WaterDepthSource();
+			[Bindable]
+			/**河道水流流速*/
+			private var hdwsDs:HD_WaterSpeedSource = new HD_WaterSpeedSource();
+			[Bindable]
+			/**河道污染物浓度*/
+			private var hdwDenDs:HD_WaterDensitySource = new HD_WaterDensitySource();
+			
+			//----------------------通用-----------------------------------------------
+			private var canReset:Boolean = false;
+			
+			[Bindable]
+			private var maxValue:int = 200;
+			
+			//将X轴显示转化为具体的日期格式
+			private function dateParseFunction(s:String):Date { 
+				var a:Array = s.split("-");
+				var newDate:Date = new Date(a[0],a[1]-1,a[2]);
+				return newDate;
+			}
+			
+			//X轴时间显示格式
+			private function dateFormatFunction(labelValue:Date, previousValue:Object, axis:IAxis):String
+			{ 
+				var dateFormatter:DateFormatter = new DateFormatter();   
+				dateFormatter.formatString = "YYYY-MM-DD";   
+				var dateValue:String= dateFormatter.format(labelValue);    
+				return dateValue;
+			}
+			
+			//将X轴显示转化为具体的日期格式
+			private function dateParseFunction0(s:String):Date { 
+				var a:Array = s.split("-");
+				var b:Array = a[2].split(" ");
+				var c:Array = b[1].split(":");
+				var newDate:Date = new Date(a[0],a[1]-1,b[0], c[0], c[1]);
+				return newDate;
+			}
+			
+			//X轴时间显示格式
+			private function dateFormatFunction0(labelValue:Date, previousValue:Object, axis:IAxis):String
+			{ 
+				var dateFormatter:DateFormatter = new DateFormatter();   
+				dateFormatter.formatString = "YYYY-MM-DD JJ:NN";   
+				var dateValue:String= dateFormatter.format(labelValue);    
+				return dateValue;
+			}
+			
+			//缩放统计图
+			private function onZoom(event:ChartItemEvent):void
+			{
+				var lc:LineChart = event.target as LineChart;
+				for each (var ls:LineSeries in lc.series)
+				{
+					var ac:ArrayCollection = new ArrayCollection();
+					var dp:ArrayCollection = ls.dataProvider as ArrayCollection;
+					for each (var lsi:LineSeriesItem in ls.selectedItems)
+					{
+						ac.addItem(lsi.item);
+					}
+					ls.dataProvider = ac;
+					
+				}
+				lc.clearSelection();
+				canReset = true;
+			}
+			
+			//only need reset after zoom
+			private function onReset0(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						ls.dataProvider =  new ArrayCollection(wpDs.waterPositionData["nodeList"]);
+					}
+					canReset = false;
+				}
+			}
+			
+			private function onReset1(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						ls.dataProvider =  new ArrayCollection(wdDs.waterDepthData["nodeList"]);
+					}
+					canReset = false;
+				}
+			}
+			
+			private function onReset2(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						ls.dataProvider =  new ArrayCollection(wfDs.waterFlowData["nodeList"]);
+					}
+					canReset = false;
+				}
+			}
+			
+			private function onReset3(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						ls.dataProvider =  new ArrayCollection(wsDs.waterSpeedData["nodeList"]);
+					}
+					canReset = false;
+				}
+			}
+			
+			private function onReset4(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						if(ls.id == "waterCDensityLine")
+						{
+							ls.dataProvider =  new ArrayCollection(wDenDs.waterDensityData.getItemAt(0)["nodeList"]);
+						}
+						else
+						{
+							ls.dataProvider =  new ArrayCollection(wDenDs.waterDensityData.getItemAt(1)["nodeList"]);
+						}
+					}
+					canReset = false;
+				}
+			}
+			
+			//断面--水位过程统计图
+			private function waterPositionDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.altitude + "<br>"+"时间:"+ cntData.time;
+			}
+			
+			//断面--水位过程统计图--加载数据
+			protected function waterPositionChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.canReset = false;
+				this.waterPositionLine.displayName = wpDs.waterPositionData["label"];
+				this.waterPositionLine.dataProvider = new ArrayCollection(wpDs.waterPositionData["nodeList"]);
+			}
+			
+			//断面--地形剖面统计图
+			private function terrainProfileDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.altitude + "<br>"+"距离:"+ cntData.distance;
+			}
+			
+			//断面--地形剖面图--加载数据
+			protected function terrainProfileChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.waterPosition.dataProvider =  new ArrayCollection(tpDs.terrainProfileData.getItemAt(0)['nodeList'][0]["2016-01"]);
+				this.waterPosition.displayName = tpDs.terrainProfileData.getItemAt(0)['label'];
+				this.terrainProfile.dataProvider = new ArrayCollection(tpDs.terrainProfileData.getItemAt(1)['nodeList']);
+				this.terrainProfile.displayName = tpDs.terrainProfileData.getItemAt(1)['label'];
+			}
+			
+			//断面--流量过程统计图
+			private function waterFlowDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.flow + "<br>"+"时间:"+ cntData.time;
+			}
+			
+			//断面--流量过程图--加载数据
+			protected function waterFlowChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.canReset = false;
+				this.waterFlowLine.displayName = wfDs.waterFlowData["label"];
+				this.waterFlowLine.dataProvider = new ArrayCollection(wfDs.waterFlowData["nodeList"]);
+			}
+			
+			//断面--流量过程统计图
+			private function waterDepthDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.depth + "<br>"+"时间:"+ cntData.time;
+			}
+			
+			//断面--水深统计图--加载数据
+			protected function waterDepthChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.canReset = false;
+				// TODO Auto-generated method stub
+				this.waterDepthLine.displayName = wdDs.waterDepthData["label"];
+				this.waterDepthLine.dataProvider = new ArrayCollection(wdDs.waterDepthData["nodeList"]);
+			}
+			
+			//断面--水流流速统计图
+			private function waterSpeedDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.speed + "<br>"+"时间:"+ cntData.time;
+			}
+			
+			//断面--水流流速--加载数据
+			protected function waterSpeedChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.canReset = false;
+				this.waterSpeedLine.displayName = wsDs.waterSpeedData["label"];
+				this.waterSpeedLine.dataProvider = new ArrayCollection(wsDs.waterSpeedData["nodeList"]);
+			}
+			
+			//断面--水流流速统计图
+			private function waterDensityDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.density + "<br>"+"时间:"+ cntData.time;
+			}
+			
+			//断面--污染物浓度--加载数据
+			protected function waterDensityChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.canReset = false;
+				this.waterCDensityLine.displayName = wDenDs.waterDensityData.getItemAt(0)["label"];
+				this.waterCDensityLine.dataProvider = new ArrayCollection(wDenDs.waterDensityData.getItemAt(0)["nodeList"]);
+				this.waterRDensityLine.displayName = wDenDs.waterDensityData.getItemAt(1)["label"];
+				this.waterRDensityLine.dataProvider = new ArrayCollection(wDenDs.waterDensityData.getItemAt(1)["nodeList"]);
+			}
+			
+			//-----------------------以上所有方法均与河道统计相关------------------------------
+			private function hd_onReset4(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						if(ls.id == "hd_basicLine")
+						{
+							ls.dataProvider =  new ArrayCollection(hdtpDs.terrainProfileData["nodeList"]);
+						}
+						else
+						{
+							ls.dataProvider =  new ArrayCollection(hdwpDs.waterPositionData["nodeList"]);
+						}
+					}
+					canReset = false;
+				}
+			}
+			
+			private function hd_wd_onReset4(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						if(ls.id == "hd_wd_basicLine")
+						{
+							ls.dataProvider =  new ArrayCollection(hdtpDs.terrainProfileData["nodeList"]);
+						}
+						else
+						{
+							ls.dataProvider =  new ArrayCollection(hdwpDs.waterPositionData["nodeList"]);
+						}
+					}
+					canReset = false;
+				}
+			}
+			
+			private function hd_basicDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.altitude + "<br>"+"距离:"+ cntData.distance;
+			}
+			
+			protected function hd_WaterDensityChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.canReset = false;
+				this.hd_basicLine.displayName = hdtpDs.terrainProfileData["label"];
+				this.hd_basicLine.dataProvider = new ArrayCollection(hdtpDs.terrainProfileData["nodeList"]);
+				this.hd_WaterPositionLine.displayName = hdwpDs.waterPositionData["label"];
+				this.hd_WaterPositionLine.dataProvider = new ArrayCollection(hdwpDs.waterPositionData["nodeList"]);
+			}
+			
+			protected function hd_wpLegend_itemClickHandler(event:LegendMouseEvent):void
+			{
+				trace(event);
+				var currentLegendItem:LegendItem = event.item as LegendItem;
+				var currentChartItem:LineSeries = event.item.source as LineSeries;
+				if(currentLegendItem != null && currentChartItem != null)
+				{
+					currentChartItem.visible = currentChartItem.visible?false:true;
+				}
+			}
+			
+			protected function hd_WaterDepthChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.canReset = false;
+				//河道基础地形
+				this.hd_wd_basicLine.displayName = hdtpDs.wd_TerrainProfileData["label"];
+				this.hd_wd_basicLine.dataProvider = new ArrayCollection(hdtpDs.wd_TerrainProfileData["nodeList"]);
+				
+				//河道沿程水深数据--1月到12月
+				createChartSeries(hd_WaterDepthChart, hdwdDs.waterDepthData);
+			}
+			
+			//动态创建统计图
+			private function createChartSeries(bChart:ChartBase, cDataSource:Object):void
+			{
+				var tempCol:ArrayCollection = cDataSource as ArrayCollection;
+				var len:int = tempCol.length;
+				if(len >0)
+				{
+					var sa:Array = [];
+					//先添加河道高程线图
+					sa.push(hd_wd_basicLine);
+					//各月水深数据
+					for each(var cData:Object in tempCol)
+					{
+						var chartType:String = cData["type"];
+						if(chartType == "LineChart")
+						{
+							var ls:LineSeries = new LineSeries();
+							ls.xField = cData["xField"];
+							ls.yField = cData["yField"];
+							ls.setStyle("form", "curve");
+							ls.setStyle("showDataEffect", slide);
+							var scs:SolidColorStroke = new SolidColorStroke(cData["color"]);
+							ls.setStyle("lineStroke", scs);
+							var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+							ls.setStyle("itemRenderer", cf);
+							ls.displayName = cData["label"];
+							var temp:Array = cData["nodeList"];
+							for(var i:int=0;i<temp.length; i++)
+							{
+								temp[i][cData["yField"]] = temp[i][cData["yField"]] + 10*Math.random();
+							}
+							ls.dataProvider = new ArrayCollection(temp);
+							sa.push(ls);
+						}
+						else if(chartType == "AreaChart")
+						{
+							//略
+						}
+					}
+					bChart.series = sa;
+				}
+			}
+			
+			protected function hd_wden_WaterDensityChart_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.canReset = false;
+				
+				//此处数据需要特殊处理
+				var cData:Object = hdwDenDs.waterDensityData;
+				var tempArr:Array = cData["nodeList"];
+				var len:int = tempArr.length;
+				if(len%2 == 0)
+				{
+					var sa:Array = [];
+					var saItem:Array = null;
+					for(var i:int=0;i<len;i++)
+					{
+						if((i+1)%2 != 0)
+						{
+							saItem = [];
+							saItem.push(tempArr[i]);
+						}
+						else if((i+1)%2==0)
+						{
+							saItem.push(tempArr[i]);
+							
+							var ls:LineSeries = new LineSeries();
+							ls.xField = cData["xField"];
+							ls.yField = cData["yField"];
+							ls.setStyle("form", "horizontal");
+							ls.setStyle("showDataEffect", slide);
+							//var scs:SolidColorStroke = new SolidColorStroke(cData["color"]);
+							ls.setStyle("lineStroke", hd_wden_s5);
+							var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+							ls.setStyle("itemRenderer", cf);
+							ls.displayName = cData["label"];
+							ls.dataProvider = new ArrayCollection(saItem);
+							sa.push(ls);
+						}
+					}
+					hd_wden_WaterDensityChart.series = sa;
+				}
+			}
+			
+			private function hd_wden_basicDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.density + "<br>"+"距离:"+ cntData.distance;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:LineSeries id="hd_wd_basicLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="distance" yField="altitude" lineStroke="{hd_s3}" form="curve" showDataEffect="{slide}" />
+		
+		<mx:SolidColor id="sc1" color="#F5AC39"/>
+		<mx:SolidColor id="sc2" color="#55D8FE"  />
+		<s:SolidColorStroke id="s1" color="#F5AC39"/>
+		<s:SolidColorStroke id="s2" color="#55D8FE"/>
+		<s:SolidColorStroke id="s3" color="#1D66AE"/>
+		<s:SolidColorStroke id="hd_s3" color="#FF0000"/>
+		<s:SolidColorStroke id="s4" color="#712F82"/>
+		<s:SolidColorStroke id="s5" color="#55D8FE"/>
+		<s:SolidColorStroke id="hd_s5" color="#0000FF"/>
+		<s:SolidColorStroke id="hd_wden_s5" color="#0000FF" weight="10"/>
+		<mx:SeriesInterpolate id="slide" duration="200"/>
+		<mx:SeriesInterpolate id="slide2" duration="1000"/>
+		<s:SolidColorStroke id="chartAxisStroke" color="#BBCCDD" weight="1" alpha="1"/>
+		<mx:SeriesInterpolate id="areaSlide" duration="200"/>
+		<mx:SeriesInterpolate id="areaSlide2" duration="200"/>
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%" paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6">
+		<s:ButtonBar height="30" dataProvider="{chartViewStackId}"/>
+		<s:Rect width="100%" height="1">
+			<s:fill>
+				<s:SolidColor color="#000000"/>
+			</s:fill>
+		</s:Rect>
+		<mx:ViewStack id="chartViewStackId" width="100%" height="100%">
+			<s:NavigatorContent label="断面[水位]">
+				<mx:LineChart id="waterPositionChart" width="100%" height="100%" 
+							  showDataTips="true"
+							  seriesFilters="[]"
+							  selectionMode="multiple" 
+							  doubleClickEnabled="true"
+							  change="onZoom(event)"
+							  chartDoubleClick="onReset0(event)"
+							  dataTipFunction="waterPositionDataTipFunction"
+							  creationComplete="waterPositionChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!-- vertical axis -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="la" baseAtZero="false" title="高程" minimum="0" maximum="120"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{la}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<!-- horizontal axis -->
+					<mx:horizontalAxis>
+						<mx:DateTimeAxis id="ca" title="时间" interval="1" labelUnits="months" dataUnits="days" displayLocalTime="true" parseFunction="dateParseFunction" labelFunction="dateFormatFunction"/>
+					</mx:horizontalAxis>
+					<!-- horizontal axis renderer -->
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{ca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+						<mx:LineSeries id="waterPositionLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="altitude" lineStroke="{s2}" form="curve" showDataEffect="{slide}" />
+					</mx:series>
+				</mx:LineChart>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="断面[水深]">
+				<mx:LineChart id="waterDepthChart" width="100%" height="100%" 
+							  showDataTips="true"
+							  seriesFilters="[]"
+							  selectionMode="multiple" 
+							  doubleClickEnabled="true"
+							  change="onZoom(event)"
+							  chartDoubleClick="onReset1(event)"
+							  dataTipFunction="waterDepthDataTipFunction"
+							  creationComplete="waterDepthChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!-- vertical axis -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="lda" baseAtZero="false" title="水深" minimum="0" maximum="120"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{lda}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<!-- horizontal axis -->
+					<mx:horizontalAxis>
+						<mx:DateTimeAxis id="dca" title="时间" interval="1" labelUnits="months" dataUnits="days" displayLocalTime="true" parseFunction="dateParseFunction" labelFunction="dateFormatFunction"/>
+					</mx:horizontalAxis>
+					<!-- horizontal axis renderer -->
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{dca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+						<mx:LineSeries id="waterDepthLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="depth" lineStroke="{s3}" form="curve" showDataEffect="{slide}" />
+					</mx:series>
+				</mx:LineChart>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="断面[流量]">
+				<mx:LineChart id="waterFlowChart" width="100%" height="100%" 
+							  showDataTips="true"
+							  seriesFilters="[]"
+							  selectionMode="multiple" 
+							  doubleClickEnabled="true"
+							  change="onZoom(event)"
+							  chartDoubleClick="onReset2(event)"
+							  dataTipFunction="waterFlowDataTipFunction"
+							  creationComplete="waterFlowChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!-- vertical axis -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="lla" baseAtZero="false" title="流量" minimum="0" maximum="120"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{lla}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<!-- horizontal axis -->
+					<mx:horizontalAxis>
+						<mx:DateTimeAxis id="lca" title="时间" interval="1" labelUnits="months" dataUnits="days" displayLocalTime="true" parseFunction="dateParseFunction" labelFunction="dateFormatFunction"/>
+					</mx:horizontalAxis>
+					<!-- horizontal axis renderer -->
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{lca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+						<mx:LineSeries id="waterFlowLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="flow" lineStroke="{s1}" form="curve" showDataEffect="{slide}" />
+					</mx:series>
+				</mx:LineChart>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="断面[流速]">
+				<mx:LineChart id="waterSpeedChart" width="100%" height="100%" 
+							  showDataTips="true"
+							  seriesFilters="[]"
+							  selectionMode="multiple" 
+							  doubleClickEnabled="true"
+							  change="onZoom(event)"
+							  chartDoubleClick="onReset3(event)"
+							  dataTipFunction="waterSpeedDataTipFunction"
+							  creationComplete="waterSpeedChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!-- vertical axis -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="sda" baseAtZero="false" title="流速" minimum="0" maximum="120"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{sda}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<!-- horizontal axis -->
+					<mx:horizontalAxis>
+						<mx:DateTimeAxis id="sca" title="时间" interval="1" labelUnits="months" dataUnits="days" displayLocalTime="true" parseFunction="dateParseFunction" labelFunction="dateFormatFunction"/>
+					</mx:horizontalAxis>
+					<!-- horizontal axis renderer -->
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{sca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+						<mx:LineSeries id="waterSpeedLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="speed" lineStroke="{s4}" form="curve" showDataEffect="{slide}" />
+					</mx:series>
+				</mx:LineChart>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="断面[污染物浓度]">
+				<mx:LineChart id="waterDensityChart" width="100%" height="100%" 
+							  showDataTips="true"
+							  seriesFilters="[]"
+							  selectionMode="multiple" 
+							  doubleClickEnabled="true"
+							  change="onZoom(event)"
+							  chartDoubleClick="onReset4(event)"
+							  dataTipFunction="waterDensityDataTipFunction"
+							  creationComplete="waterDensityChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!-- vertical axis -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="dda" baseAtZero="false" title="水深" minimum="0" maximum="120"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{dda}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<!-- horizontal axis -->
+					<mx:horizontalAxis>
+						<mx:DateTimeAxis id="ddca" title="时间" interval="1" labelUnits="months" dataUnits="days" displayLocalTime="true" parseFunction="dateParseFunction0" labelFunction="dateFormatFunction0"/>
+					</mx:horizontalAxis>
+					<!-- horizontal axis renderer -->
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{ddca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+						<mx:LineSeries id="waterCDensityLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="time" yField="density" lineStroke="{s3}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterRDensityLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="density" lineStroke="{s5}" form="curve" showDataEffect="{slide}" />
+					</mx:series>
+				</mx:LineChart>
+				<mx:ControlBar top="20" right="20">
+					<mx:Legend dataProvider="{waterDensityChart}"
+							   direction="vertical" />
+				</mx:ControlBar>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="断面[地形图]">
+				<mx:AreaChart id="terrainProfileChart" height="100%" width="100%" showDataTips="true" 
+							  seriesFilters="[]"
+							  dataTipFunction="terrainProfileDataTipFunction"
+							  creationComplete="terrainProfileChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!--用于定义统计图的XY轴样式及数值范围-->
+					<mx:verticalAxis>
+						<mx:LinearAxis  id="a" baseAtZero="true" title="高程"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{a}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<mx:horizontalAxis>
+						<mx:LinearAxis id="b" title="距离"/>
+					</mx:horizontalAxis>
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{b}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+						<mx:AreaSeries id="waterPosition" itemRenderer="chartitemrender.AreaChartDataRender" xField="distance" yField="altitude" areaFill="{sc2}" areaStroke="{s2}" form="curve" showDataEffect="{areaSlide2}" />
+						<mx:AreaSeries id="terrainProfile" itemRenderer="chartitemrender.AreaChartDataRender" xField="distance" yField="altitude" areaFill="{sc1}" areaStroke="{s1}" form="curve" showDataEffect="{areaSlide}" />
+					</mx:series>
+				</mx:AreaChart>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="河道[水位]">
+				<mx:LineChart id="hd_WaterDensityChart" width="100%" height="100%" 
+							  showDataTips="true"
+							  seriesFilters="[]"
+							  selectionMode="multiple" 
+							  doubleClickEnabled="true"
+							  change="onZoom(event)"
+							  chartDoubleClick="hd_onReset4(event)"
+							  dataTipFunction="hd_basicDataTipFunction"
+							  creationComplete="hd_WaterDensityChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!-- vertical axis -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="hd_da" baseAtZero="false" title="水位(m)"  minimum="-50" maximum="200"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{hd_da}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<!-- horizontal axis -->
+					<mx:horizontalAxis>
+						<mx:LinearAxis id="hd_dca" title="距离(km)" interval="50" baseAtZero="false"/>
+					</mx:horizontalAxis>
+					<!-- horizontal axis renderer -->
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{hd_dca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+						<mx:LineSeries id="hd_basicLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="distance" yField="altitude" lineStroke="{hd_s3}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="hd_WaterPositionLine" itemRenderer="chartitemrender.LineChartDataRender" xField="distance" yField="altitude" lineStroke="{hd_s5}" form="curve" showDataEffect="{slide}" />
+					</mx:series>
+				</mx:LineChart>
+				<mx:ControlBar top="20" right="20">
+					<mx:Legend id="hd_wpLegend" dataProvider="{hd_WaterDensityChart}" buttonMode="true"
+							   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+				</mx:ControlBar>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="河道[水深]">
+				<mx:LineChart id="hd_WaterDepthChart" width="100%" height="100%" 
+							  showDataTips="true"
+							  seriesFilters="[]"
+							  selectionMode="multiple" 
+							  doubleClickEnabled="true"
+							  change="onZoom(event)"
+							  chartDoubleClick="hd_wd_onReset4(event)"
+							  dataTipFunction="hd_basicDataTipFunction"
+							  creationComplete="hd_WaterDepthChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!-- vertical axis -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="hd_wd_da" baseAtZero="false" title="水深(m)"  minimum="-5" maximum="100"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{hd_wd_da}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<!-- horizontal axis -->
+					<mx:horizontalAxis>
+						<mx:LinearAxis id="hd_wd_dca" title="距离(km)" interval="50" baseAtZero="false"/>
+					</mx:horizontalAxis>
+					<!-- horizontal axis renderer -->
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{hd_wd_dca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+					</mx:series>
+				</mx:LineChart>
+				<mx:ControlBar top="20" right="20">
+					<mx:Legend id="hd_wdLegend" dataProvider="{hd_WaterDepthChart}" buttonMode="true"
+							   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+				</mx:ControlBar>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="河道[流量]">
+				<s:TextArea width="100%" height="100%" editable="false">
+					<s:span>
+						<s:text><![CDATA[河道流量统计图的数据结构与河道水深统计图数据结构一致，只要将字段名称做一些必要的处理，针对其中一项数据处理如下：</br>
+							PS:请将数据Copy到他处格式化处理。
+							{
+							"type":"LineChart",
+							"schemeName":"所属方案名称",
+							"schemeCode":"所属方案编码",
+							"sectionName":"河道名称",
+							"sectionCode":"河道编码",
+							"year":"2016",
+							"label":"1月",
+							"color":"0x8F8FD2",
+							"xField":"distance",
+							"yField":"flow",
+							"xFieldName":"距离(m)",
+							"yFieldName":"流量(m³/s)",
+							"nodeList":
+							[
+							{
+							"distance": "0",
+							"flow": 30
+							},
+							{
+							"distance": "10",
+							"flow": 40
+							},
+							{
+							"distance": "25",
+							"flow": 43
+							},
+							{
+							"distance": "40",
+							"flow": 35
+							},
+							{
+							"distance": "50",
+							"flow": 30
+							},
+							{
+							"distance": "60",
+							"flow": 25
+							},
+							{
+							"distance": "70",
+							"flow": 40
+							},
+							{
+							"distance": "75",
+							"flow": 55
+							},
+							{
+							"distance": "90",
+							"flow": 40
+							},
+							{
+							"distance": "100",
+							"flow": 36
+							},
+							{
+							"distance": "110",
+							"flow": 48
+							},
+							{
+							"distance": "116",
+							"flow": 40
+							},
+							{
+							"distance": "125",
+							"flow": 30
+							},
+							{
+							"distance": "130",
+							"flow": 45
+							},
+							{
+							"distance": "150",
+							"flow": 30
+							},
+							{
+							"distance": "150",
+							"flow": 40
+							},
+							{
+							"distance": "171",
+							"flow": 44
+							},
+							{
+							"distance": "175",
+							"flow": 48
+							},
+							{
+							"distance":"180",
+							"flow": 45
+							},
+							{
+							"distance": "200",
+							"flow": 35
+							},
+							{
+							"distance": "204",
+							"flow": 40
+							},
+							{
+							"distance": "210",
+							"flow": 50
+							},
+							{
+							"distance": "215",
+							"flow": 35
+							},
+							{
+							"distance": "216",
+							"flow": 45
+							},
+							{
+							"distance": "220",
+							"flow": 50
+							}
+							]
+							}
+						}]]></s:text>
+					</s:span>
+				</s:TextArea>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="河道[流速]">
+				<s:TextArea width="100%" height="100%" editable="false">
+					<s:span>
+						<s:text><![CDATA[河道流速统计图的数据结构与河道水深统计图数据结构一致，只要将字段名称做一些必要的处理，针对其中一项数据处理如下：</br>
+							PS:请将数据Copy到他处格式化处理。
+							{
+							"type":"LineChart",
+							"schemeName":"所属方案名称",
+							"schemeCode":"所属方案编码",
+							"sectionName":"河道名称",
+							"sectionCode":"河道编码",
+							"year":"2016",
+							"label":"1月",
+							"color":"0x8F8FD2",
+							"xField":"distance",
+							"yField":"speed",
+							"xFieldName":"距离(m)",
+							"yFieldName":"流速(m/s)",
+							"nodeList":
+							[
+							{
+							"distance": "0",
+							"speed": 30
+							},
+							{
+							"distance": "10",
+							"speed": 40
+							},
+							{
+							"distance": "25",
+							"speed": 43
+							},
+							{
+							"distance": "40",
+							"speed": 35
+							},
+							{
+							"distance": "50",
+							"speed": 30
+							},
+							{
+							"distance": "60",
+							"speed": 25
+							},
+							{
+							"distance": "70",
+							"speed": 40
+							},
+							{
+							"distance": "75",
+							"speed": 55
+							},
+							{
+							"distance": "90",
+							"speed": 40
+							},
+							{
+							"distance": "100",
+							"speed": 36
+							},
+							{
+							"distance": "110",
+							"speed": 48
+							},
+							{
+							"distance": "116",
+							"speed": 40
+							},
+							{
+							"distance": "125",
+							"speed": 30
+							},
+							{
+							"distance": "130",
+							"speed": 45
+							},
+							{
+							"distance": "150",
+							"speed": 30
+							},
+							{
+							"distance": "150",
+							"speed": 40
+							},
+							{
+							"distance": "171",
+							"speed": 44
+							},
+							{
+							"distance": "175",
+							"speed": 48
+							},
+							{
+							"distance":"180",
+							"speed": 45
+							},
+							{
+							"distance": "200",
+							"speed": 35
+							},
+							{
+							"distance": "204",
+							"speed": 40
+							},
+							{
+							"distance": "210",
+							"speed": 50
+							},
+							{
+							"distance": "215",
+							"speed": 35
+							},
+							{
+							"distance": "216",
+							"speed": 45
+							},
+							{
+							"distance": "220",
+							"speed": 50
+							}
+							]
+							}
+						}]]></s:text>
+					</s:span>
+				</s:TextArea>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="河道[污染物浓度]">
+				<mx:LineChart id="hd_wden_WaterDensityChart" width="100%" height="100%" 
+							  showDataTips="true"
+							  seriesFilters="[]"
+							  dataTipFunction="hd_wden_basicDataTipFunction"
+							  creationComplete="hd_wden_WaterDensityChart_creationCompleteHandler(event)">
+					<mx:backgroundElements>
+						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+							<mx:verticalStroke>
+								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+							</mx:verticalStroke>
+						</mx:GridLines>
+					</mx:backgroundElements>
+					<!-- vertical axis -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="hd_wden_da" baseAtZero="false" title="浓度(mg/l)"  minimum="0" maximum="1.2"/>
+					</mx:verticalAxis>
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{hd_wden_da}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+					</mx:verticalAxisRenderers>
+					<!-- horizontal axis -->
+					<mx:horizontalAxis>
+						<mx:LinearAxis id="hd_wden_dca" title="距离(m)" interval="100000"/>
+					</mx:horizontalAxis>
+					<!-- horizontal axis renderer -->
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{hd_wden_dca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+					</mx:horizontalAxisRenderers>
+					<mx:series>
+					</mx:series>
+				</mx:LineChart>
+			</s:NavigatorContent>
+		</mx:ViewStack>
+	</s:VGroup>
+</s:Application>

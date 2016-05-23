@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<fx:Script>
+		<![CDATA[ 
+			import avmplus.getQualifiedClassName;
+			
+			import mx.charts.HitData;
+			import mx.charts.LegendItem;
+			import mx.charts.chartClasses.IAxis;
+			import mx.charts.chartClasses.LegendData;
+			import mx.charts.events.ChartItemEvent;
+			import mx.charts.events.LegendMouseEvent;
+			import mx.charts.series.items.PieSeriesItem;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.EffectEvent;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.SliderEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;	 
+			
+			[Bindable]
+			private var nlDataList:ArrayCollection = new ArrayCollection( );
+			[Bindable]
+			private var maxvalue:int = 10;
+			private var default_maxvalue:int = 10;
+			[Bindable]
+			private var nlSubDataList:ArrayCollection = new ArrayCollection();
+			
+			
+			protected function btnSearchClickHandler(event:MouseEvent):void
+			{    nlDataList = new ArrayCollection();   		
+				
+				// TODO Auto-generated method stub
+				for(var i:int=0 ; i <= 100 ; i++){
+					
+					var nancount:int = Math.random()*100*i+100;
+					var nvcount:int =  Math.random()*100*i+100;
+					if(maxvalue<nancount)maxvalue=nancount;
+					if(maxvalue<nvcount)maxvalue=nvcount;
+					nlDataList.addItem({ nl: i+"", nan:nancount,nv:nvcount,all:nancount+nvcount});
+					
+				}
+				
+				flushPieDataAndPie();
+			}  
+			
+			public function refresh(event:ResultEvent):void
+			{ 
+				if(event.result){
+					nlDataList = event.result.list as ArrayCollection;
+					var max:int = event.result.maxvalue;
+					if(default_maxvalue < max){
+						maxvalue = max;
+					}else{
+						maxvalue = default_maxvalue;
+					}
+				}
+				
+			}	
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			private function noneXAxis(labelValue:Object, previousValue:Object, axis:IAxis):String 
+			{ 
+				
+				return "   ";
+			} 
+			private function noneXAxis2(labelValue:Object, previousValue:Object, axis:IAxis):String 
+			{ 
+				if(int(labelValue) < 0)return "   ";
+				if(int(labelValue) < 10)return " "+labelValue+" ";
+				if(int(labelValue) < 100)return " "+labelValue;
+				return labelValue+"";
+			} 
+			
+			private function chartDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["xField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+"<br>"+"年龄:"+(cntData.nl>=100?'100及以上':cntData.nl+'')+"<br>"+"统计:"+cnt;
+				
+			}
+			
+			private function areaDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+"<br>"+"年龄:"+(cntData.nl>=100?'100及以上':cntData.nl+'')+"<br>"+"统计:"+cnt;
+				
+			}
+			
+			
+			private var  rotateFlag:int = 1;
+			protected function allAreaGroupRoteBtn_clickHandler(event:MouseEvent):void
+			{
+				
+				if(rotateFlag == 3)rotateFlag = 1;
+				buttonGroup.visible = false;
+				this["parallelEffect"+rotateFlag].end();
+				this["parallelEffect"+rotateFlag].play();
+				rotateFlag++;
+				
+				
+				
+			}
+			protected function zommHandler(uiCom:UIComponent,flag:String="1"):void
+			{
+				
+				uiCom.scaleX = allAreaGroup.scaleX+0.4
+				uiCom.scaleY = allAreaGroup.scaleY+0.4
+				
+			}
+			
+			protected function  effectEndHandler(event:EffectEvent):void
+			{
+				// TODO Auto-generated method stub
+				buttonGroup.visible = true;
+			}
+			
+			
+			
+			/**********************************************************************************/
+			private var nldcount:ArrayCollection = new ArrayCollection(
+				[{label:"5", data:"5"},
+					{label:"6", data:"6"},
+					{label:"7", data:"7"},
+					{label:"8", data:"8"},
+					{label:"9", data:"9"},
+					{label:"10", data:"10"}
+				]);
+			private var showType:ArrayCollection = new ArrayCollection(
+				[{label:"按年龄段", data:"nld"},
+					{label:"按性别", data:"xb"},
+					{label:"按年龄", data:"nl"}]
+			);
+			[Bindable]
+			private var pieReserveExplodeRadius:Number = 0.05;
+			private var nldValuesMap:Object = new Object();
+			private var subDataCount:int = 0;
+			private var allDataCount:int = 0;
+			private var _tjPieType:String;
+			
+			private function flushPieDataAndPie():void{
+				
+				trace("***************开始刷新、计算饼图数据！！！！");
+				if(!pieGoup){
+					subDataCount = 0;
+					return;
+				}
+				pieExplodeHide();
+				var nlSubDataListTmp:ArrayCollection = new ArrayCollection();
+				if(tjPieType == 'xb'){
+					//设置展现的字段
+					var subNl1:int = slider.values[0];
+					var subNl2:int = slider.values[1];	
+					var nanObject:Object = new Object();
+					var nvObject:Object = new Object();
+					var nanCount:int = 0;
+					var nvCount:int = 0;
+					for each(var obj:Object in nlDataList){
+						if(obj.nl >= subNl1 && obj.nl <= subNl2){
+							nanCount+=obj.nan;
+							nvCount+=obj.nv;
+						}
+					}
+					nanObject.nl="男"+"("+subNl1+"-"+subNl2+")";
+					nanObject.nan = nanCount;
+					nanObject.nv = nanCount;
+					nanObject.all = nanCount;
+					nanObject.type="xb";
+					
+					nvObject.nl="女"+"("+subNl1+"-"+subNl2+")";
+					nvObject.nan = nvCount;
+					nvObject.nv = nvCount;
+					nvObject.all = nvCount;
+					nvObject.type = 'xb'
+					
+					nlSubDataListTmp.addItem(nvObject);
+					nlSubDataListTmp.addItem(nanObject);
+				}
+					// 按年龄
+				else if(tjPieType == 'nl'){
+					//设置展现的字段
+					var subNl1:int = slider.values[0];
+					var subNl2:int = slider.values[1];	
+					if(includeOtherNl.selected){
+						
+						if(subNl1>slider_nld.minimum){
+							nlSubDataListTmp.addItem(getNldDataList(-1,subNl1-1));
+						}
+					}
+					for each(var obj:Object in nlDataList){
+						if(obj.nl >= subNl1 && obj.nl <= subNl2){
+							nlSubDataListTmp.addItem(obj);
+						}
+					}
+					if(includeOtherNl.selected){
+						if(subNl2<slider_nld.maximum){
+							nlSubDataListTmp.addItem(getNldDataList(subNl2+1,-1));
+						}
+						
+					}
+					
+				}
+					//按年龄段
+				else if(tjPieType == 'nld'){
+					//设置展现的字段
+					var nls:Array = slider_nld.values.slice(0,slider_nld.values.length);
+					trace("计算年龄段个段值依赖的年龄分段："+nls);
+					nls.push(slider_nld.minimum);
+					nls.sort(Array.NUMERIC);
+					nls.push(slider_nld.maximum);
+					for(var i:int = 1 ; i < nls.length ; i++){
+						var subNl1:int = nls[i-1];
+						var subNl2:int = nls[i];
+						
+						var nldObject = new Object();
+						//如果年龄段一样，则忽略
+						if(i!=nls.length-1 && subNl1==subNl2)continue;
+						
+						//获取在这个年龄段的男女数
+						
+						if(i!=nls.length-1){
+							nlSubDataListTmp.addItem(getNldDataList(subNl1,subNl2-1));
+						}else{
+							nlSubDataListTmp.addItem(getNldDataList(subNl1,-1));
+						}
+					}
+					
+				}
+				
+				
+				
+				nlSubDataList = nlSubDataListTmp;
+				//if(pieLegend)pieLegend.dataProvider = pie;
+				setPieSeriesField();
+				//pie.invalidateDisplayList();
+			}
+			
+			private function getNldDataList(subNl1:int,subNl2:int):Object{
+				
+				var nancount:int = 0 ; 
+				var nvcount:int = 0;
+				var allcount:int = 0;
+				var nldObject:Object = new Object();
+				for each(var obj:Object in nlDataList){
+					if(subNl1!=-1 && subNl2!=-1){
+						if(obj.nl >= subNl1 && obj.nl <= subNl2 ){
+							nancount+=obj.nan;
+							nvcount+=obj.nv;
+							allcount+=obj.all;
+							nldObject.nl = (subNl1)+"-"+(subNl2);
+						}
+					}else if(subNl2==-1){
+						if(obj.nl>=subNl1){
+							nancount+=obj.nan;
+							nvcount+=obj.nv;
+							allcount+=obj.all;
+							nldObject.nl = subNl1+"及以上"
+						}
+					}else if(subNl1==-1){
+						if(obj.nl<=subNl2){
+							nancount+=obj.nan;
+							nvcount+=obj.nv;
+							allcount+=obj.all;
+							nldObject.nl = subNl2+"及以下"
+						}
+					}
+					
+				}
+				//						nldObject.nl = "11111111111";
+				nldObject.nan = nancount;
+				nldObject.nv = nvcount;
+				nldObject.all = allcount;
+				nldObject.type="nld";
+				return nldObject;
+			}
+			
+			protected function button_tj_type_clickHandler(needFlushData:Boolean=true):void
+			{   trace('**************开始重新设置state!!!!')
+				setTjPieType();
+				var state:String = tjPieType+"_state";
+				trace('STATE变化：'+state);
+				this.currentState = state;
+				//				Alert.show(this.currentState);
+				if(needFlushData){
+					flushPieDataAndPie();
+				}
+				
+			}
+			
+			private function setTjPieType():void{
+				trace('**************开始设置展现类型!!!!');
+				var type:String = "State1";
+				type = show_type.selectedItem.data;
+				this._tjPieType =  type;
+				trace('设置展现类型:'+type);
+				if(this._tjPieType == 'xb'){
+					pieReserveExplodeRadius = 0;
+				}else{
+					pieReserveExplodeRadius = 0.05;
+				}
+				
+			}
+			
+			[Bindable]
+			private function get tjPieType():String{
+				return _tjPieType;
+			}
+			
+			
+			
+			
+			protected function pieGoup_creationCompleteHandler(event:FlexEvent):void
+			{   
+				
+				trace('!!!!!!!!!!!!!!!!!!!!!初始化展现方式');
+				button_tj_type_clickHandler(false);
+				trace("!!!!!!!!!!!!!!!!!!!!!初始化年龄段的值");
+				nld_countvalue_change();
+				
+				
+			}
+			
+			
+			//年龄段个数变化时，调用该方法重新计算
+			protected function nld_countvalue_change():void
+			{   
+				trace("***************开始重新计算年龄段值！！！！！！！！！")
+				
+				var thumbCount:int = 0;
+				if(nldcountCbx.selectedItem!=null){
+					thumbCount = int(nldcountCbx.selectedItem.data);
+				}else{
+					thumbCount = int(nldcountCbx.textInput.text);
+				}
+				if(thumbCount == 0){
+					return;
+				} 
+				slider_nld.thumbCount = thumbCount;
+				
+				//从缓存获取
+				if(nldValuesMap[thumbCount]) {
+					slider_nld.values = nldValuesMap[thumbCount];
+					trace("从缓存获取年龄段数据！"+nldValuesMap[thumbCount]);
+				}
+					//重新计算年龄段分布
+				else{
+					var newArrayNld:Array = [];
+					var interNldValue:int = Math.round((slider_nld.maximum-slider_nld.minimum)/(thumbCount));
+					for(var i:int = 1 ; i < thumbCount ; i++){
+						
+						newArrayNld.push(slider_nld.minimum+i*interNldValue);
+					}
+					newArrayNld.push(slider_nld.maximum);
+					nldValuesMap[thumbCount] = newArrayNld;
+					slider_nld.values = nldValuesMap[thumbCount];
+				}
+				
+				//刷新数据
+				slider_nld_changeHandler();
+			}
+			
+			protected function slider_nld_changeHandler():void
+			{
+				
+				nldValuesMap[slider_nld.thumbCount] = slider_nld.values;
+				flushPieDataAndPie();
+				
+			}
+			
+			
+			
+			
+			
+			protected function setPieSeriesField(field:String=null):void
+			{
+				trace("***************开始设置PieSeries的field！！！！");
+				pieExplodeHide();
+				if(field){
+					pieSeries.field = field;
+				}else{
+					if(tjPieType == 'xb'){
+						pieSeries.field = "all";
+					}else{
+						if(nanType.selected && nvType.selected){
+							pieSeries.field = "all";
+						}else if(nanType.selected){
+							pieSeries.field = "nan";
+						}else if(nvType.selected){
+							pieSeries.field = "nv";
+						}else{
+							pieSeries.field = "all";
+						}
+					}
+					
+				}
+				trace("重新计算总值字段"+pieSeries.field);
+				var pieDataList:ArrayCollection = pie.dataProvider as ArrayCollection ;
+				var count:int = 0;
+				for(var i:int = 0 ; i < pieDataList.length ; i++ ){
+					count+=pieDataList.getItemAt(i)[pieSeries.field];
+				}
+				var allCount:int = 0;
+				for(var i:int = 0 ; i < nlDataList.length ; i++ ){
+					allCount+=nlDataList.getItemAt(i)[pieSeries.field];
+				}
+				allDataCount = allCount;
+				subDataCount = count;
+				trace('总值：'+allCount+"  饼图总值："+count);
+				
+			}
+			
+			
+			private function showMorePieInfo(data:Object, field:String, index:Number, percentValue:Number):String{
+				
+				return "年龄:"+data['nl']+' '+Math.round(percentValue*100)/100+'%';
+			}
+			
+			private function pieDataTipFunction (hitData:HitData):String { 
+				
+				var cntData:Object = hitData.item;
+				var cnt:int = cntData[hitData.chartItem.element["field"]];
+				var nl:String = cntData["nl"];
+				var nlStr:String = "";
+				if(cntData.type == 'nld' || cntData.type == 'xb' ){
+					nlStr = nl;
+				}else{
+					nlStr = (int(nl)>=100?'100及以上':nl+'');
+				}
+				var str:String = "年龄:"+nlStr+"<br>"+"统计:"+cnt+"<br>"
+					+"占比:"+Math.round((cnt*10000)/subDataCount)/100+'%';
+				if(tjPieType!='nld'){
+					str+='<br>'+"总占比:"+Math.round((cnt*10000)/allDataCount)/100+'%';
+				}
+				return str;
+			}
+			
+			
+			protected function pieLegend_itemClickHandler(event:LegendMouseEvent):void
+			{
+				
+				trace(getQualifiedClassName(event.item));
+				explodePie(getIndexByPieLabel(event.item.label),pieSeries,pieReserveExplodeRadius);
+			}
+			
+			//显示选中对象的name属性值并弹出选中部分
+			private function pieExplodeShow(evt:ChartItemEvent):void
+			{   if(!evt || !evt.hitData)return;
+				explodePie(evt.hitData.chartItem.index,pieSeries,pieReserveExplodeRadius);
+			}
+			
+			/*设置选中的部分弹出隐藏*/
+			protected function pieExplodeHide():void
+			{
+				explodePie(-1,pieSeries,null,pieReserveExplodeRadius);
+			}
+			/*设置选中的部分弹出显示*/
+			private function explodePie(index:int,ps:PieSeries,radius:Number=0,resRadius:Number=0):void{
+				var arr:Array = [];
+				if(ps.perWedgeExplodeRadius[index] ||( tjPieType == 'xb' && ps.perWedgeExplodeRadius[index] == 0))return;
+				if(index>=0){
+					arr[index] = radius; 
+				}
+				ps.perWedgeExplodeRadius = arr; 
+				//显示选中项的name属性值
+				ps.reserveExplodeRadius = resRadius;
+			}
+			
+			private function getIndexByPieLabel(label:String):int{
+				var index:int = 0;
+				var pieDataList:ArrayCollection = pie.dataProvider as ArrayCollection;
+				var size:int = pieDataList.length;
+				var nameField:String = pieSeries.nameField;
+				for(var index:int = 0 ; index<size;index++){
+					var data:Object = pieDataList.getItemAt(index);
+					if(data[nameField] == label){
+						return index;
+					}
+				}
+				
+				return -1;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="State1"/>
+		<s:State name="xb_state"/>
+		<s:State name="nl_state"/>
+		<s:State name="nld_state"/>
+	</s:states>
+	
+	
+	<fx:Declarations>
+		
+		<mx:SolidColor id="sc1" color="blue" />
+		<mx:SolidColor id="sc2" color="red"  />
+		
+		
+		<s:SolidColorStroke id="s1" color="blue" weight="0" alpha="0" />
+		<s:SolidColorStroke id="s2" color="red" weight="0" alpha="0"/>
+		<mx:SeriesInterpolate id="slide" duration="200"   />
+		<mx:SeriesInterpolate id="slide2" duration="1000"   />
+		<mx:Stroke id="chartAxisStroke" color="#BBCCDD" weight="2"/>
+		<mx:SeriesInterpolate id="areaSlide" duration="200"    />
+		<mx:SeriesInterpolate id="areaSlide2" duration="200"    />
+		
+		<s:Parallel  id="parallelEffect1" effectEnd="effectEndHandler(event)" >
+			<mx:Rotate id="rotate1" angleFrom="0.0" angleTo="-90" target="{allAreaGroup}" /> 
+			<s:Resize id="resize2" heightTo="{allAreaGroup.width/2-10}" widthTo="{allBarGroup.height}" target="{area}" />
+		</s:Parallel  >
+		<s:Parallel   id="parallelEffect2" effectEnd="effectEndHandler(event)" >
+			<mx:Rotate id="rotate2" angleFrom="-90" angleTo="0"  target="{allAreaGroup}"/> 
+			<s:Resize id="resize5" heightTo="{allAreaGroup.width/2-10}" widthTo="{allAreaGroup.height}" target="{area}"/>
+		</s:Parallel  >
+		
+		
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%">
+		
+		
+		<s:VGroup id="grpCondition" width="100%" height="85" paddingBottom="40" paddingLeft="10"
+				  paddingRight="10" paddingTop="4">
+			<s:Button id="btnSearch" label="change" click="btnSearchClickHandler(event)" /> 
+			
+		</s:VGroup>	
+		<mx:TabNavigator id="alltab" width="100%" height="100%"   resizeToContent="true" paddingLeft="4" paddingRight="4"  >
+			
+			<s:NavigatorContent label="条形图" width="100%" height="100%" id="lineTab"  >	 
+				<s:HGroup  width="100%" height="100%"  paddingTop="-5"  >
+					<s:HGroup  width="100%" height="100%" id="allBarGroup"  >
+						<mx:BarChart id="bar" height="{allBarGroup.height}" width="{allBarGroup.width/2-10}" 
+									 showDataTips="true" dataProvider="{nlDataList}" seriesFilters="[]"
+									 dataTipFunction="chartDataTipFunction"  paddingRight="-15" paddingBottom="2">
+							<mx:verticalAxis>
+								<mx:LinearAxis id="v1" maximum="100" minimum="0" interval="5"    labelFunction="noneXAxis2"  />
+							</mx:verticalAxis>
+							<mx:verticalAxisRenderers>
+								<mx:AxisRenderer axis="{v1}" placement="right"  canDropLabels="false"  axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"  />
+							</mx:verticalAxisRenderers>
+							
+							<mx:horizontalAxis>
+								<mx:LinearAxis  id="h1"  direction="inverted"    maximum="{maxvalue}"  minimum="0" baseAtZero="true"   />
+							</mx:horizontalAxis>
+							<mx:horizontalAxisRenderers>
+								<mx:AxisRenderer axis="{h1}"   axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"  />
+							</mx:horizontalAxisRenderers>
+							
+							<mx:series>
+								<mx:BarSeries yField="nl" xField="nan" displayName="男" fill="{sc1}" stroke="{s1}" showDataEffect="{slide}"/>
+							</mx:series>
+						</mx:BarChart>
+						
+						<mx:BarChart id="bar2" height="{bar.height}" width="{bar.width}" 
+									 showDataTips="true" dataProvider="{nlDataList}" seriesFilters="[]"
+									 dataTipFunction="chartDataTipFunction" paddingLeft="-15" paddingBottom="2">
+							
+							<mx:verticalAxis>
+								<mx:LinearAxis id="v12" maximum="100" minimum="0" interval="5"    labelFunction="noneXAxis"   />
+							</mx:verticalAxis>
+							
+							<mx:verticalAxisRenderers>
+								<mx:AxisRenderer axis="{v12}"   canDropLabels="false"  axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"  />
+							</mx:verticalAxisRenderers>
+							<mx:horizontalAxis>
+								<mx:LinearAxis  id="h12"    maximum="{maxvalue}" minimum="0"  baseAtZero="true"    />
+							</mx:horizontalAxis>
+							
+							<mx:horizontalAxisRenderers>
+								<mx:AxisRenderer axis="{h12}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"    />
+							</mx:horizontalAxisRenderers>
+							
+							<mx:series>
+								<mx:BarSeries yField="nl" xField="nv" displayName="女" fill="{sc2}" stroke="{s2}"  showDataEffect="{slide}" />
+							</mx:series>
+						</mx:BarChart>
+						
+						
+					</s:HGroup>
+					
+					<s:VGroup height="100" width="60" horizontalAlign="right">
+						<mx:Legend dataProvider="{bar}"/> 
+						<mx:Legend dataProvider="{bar2}"/>
+					</s:VGroup>
+				</s:HGroup>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="区域图" width="100%" height="100%" id="areaTab"  >
+				<s:HGroup width="100%" height="100%" paddingTop="-5">
+					<s:VGroup id="allAreaGroup" width="100%" height="100%" >
+						<mx:AreaChart id="area" height="{allBarGroup.height/2-10}" width="{allBarGroup.width}" 
+									  paddingBottom="-10" 
+									  showDataTips="true" dataProvider="{nlDataList}" seriesFilters="[]"  dataTipFunction="areaDataTipFunction" >
+							<mx:verticalAxis>
+								<mx:LinearAxis  id="a1"      maximum="{maxvalue}"  minimum="0"  baseAtZero="true" />
+							</mx:verticalAxis>
+							<mx:verticalAxisRenderers>
+								<mx:AxisRenderer axis="{a1}"  axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"   />
+							</mx:verticalAxisRenderers>
+							<mx:horizontalAxis>
+								<mx:LinearAxis id="b1" maximum="100"  minimum="0"   interval="5"  labelFunction="noneXAxis"  />
+							</mx:horizontalAxis>
+							<mx:horizontalAxisRenderers>
+								<mx:AxisRenderer axis="{b1}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"   />
+							</mx:horizontalAxisRenderers>
+							<mx:series>
+								<mx:AreaSeries yField="nan" xField="nl" displayName="男"  areaFill="{sc1}" areaStroke="{s1}" form="curve" showDataEffect="{areaSlide}" />
+							</mx:series>
+						</mx:AreaChart>
+						<mx:AreaChart id="area2" height="{area.height}" width="{area.width}" 
+									  paddingTop="-10"
+									  showDataTips="true" dataProvider="{nlDataList}" seriesFilters="[]" dataTipFunction="areaDataTipFunction" >
+							<mx:verticalAxis>
+								<mx:LinearAxis  id="a12"   direction="inverted"  maximum="{maxvalue}"  minimum="0" baseAtZero="true"  />
+							</mx:verticalAxis>
+							<mx:verticalAxisRenderers>
+								<mx:AxisRenderer axis="{a12}"  axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"   />
+							</mx:verticalAxisRenderers>
+							<mx:horizontalAxis>
+								<mx:LinearAxis id="b12" maximum="100"  minimum="0" interval="5"  labelFunction="noneXAxis2"  />
+							</mx:horizontalAxis>
+							<mx:horizontalAxisRenderers>
+								<mx:AxisRenderer axis="{b12}" canDropLabels="true"  color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"   placement="top" />
+							</mx:horizontalAxisRenderers>
+							<mx:series>
+								<mx:AreaSeries yField="nv" xField="nl" displayName="女" areaFill="{sc2}" areaStroke="{s1}" form="curve" showDataEffect="{areaSlide2}" />
+							</mx:series>
+						</mx:AreaChart>
+					</s:VGroup>
+					
+					<s:VGroup height="100" width="60" horizontalAlign="right" id="buttonGroup">
+						<mx:Legend dataProvider="{area}"/> 
+						<mx:Legend dataProvider="{area2}"/> 
+						<mx:LinkButton label="旋转" color="#3D34F6"   id="allAreaGroupRoteBtn" click="allAreaGroupRoteBtn_clickHandler(event)" visible="true"/>
+					</s:VGroup>
+				</s:HGroup>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="饼图" width="100%" height="100%" id="pieTab"  >
+				<s:HGroup width="100%" height="100%" paddingTop="-5" creationComplete="pieGoup_creationCompleteHandler(event)" id="pieGoup">
+					<s:VGroup height="100%" width="80" horizontalAlign="left" id="pieButtonGroup" paddingRight="5" >
+						<s:CheckBox id="piePosition" width="100%" label="显示标签"/>
+						<s:ComboBox id="show_type" width="95%"  creationComplete="{show_type.textInput.editable=false;}" dataProvider="{showType}"   selectedIndex="0" change="button_tj_type_clickHandler()" />
+						<s:HGroup  width="80" includeIn="State1,nl_state" horizontalAlign="left" verticalAlign="middle">
+							<s:CheckBox id="includeOtherNl" label="其他年龄"  toolTip="其他年龄将会单独做为两个年龄段展现" selected="false" click="flushPieDataAndPie()"/>
+						</s:HGroup>
+						<s:HGroup  width="80" includeIn="State1,nld_state,nl_state" horizontalAlign="left" verticalAlign="middle">
+							<s:CheckBox id="nanType" label="男" selected="true" click="setPieSeriesField()"/>
+							<s:CheckBox id="nvType" label="女" selected="true" click="setPieSeriesField()"/>
+						</s:HGroup>
+						<s:HGroup  width="80" includeIn="State1,nld_state" horizontalAlign="left" verticalAlign="middle">
+							<s:Label width="50%" text="年龄段"  />  
+							<s:ComboBox id="nldcountCbx" width="50%" dataProvider="{nldcount}"
+										selectedIndex="0" change="nld_countvalue_change( )"  />
+						</s:HGroup>
+						<s:VGroup width="100%" height="100%" horizontalAlign="left" paddingLeft="-10">
+							
+							<mx:VSlider id="slider" includeIn="State1,nl_state,xb_state" width="100%"
+										height="100%" change="flushPieDataAndPie()"
+										dataTipPlacement="top"
+										labels="{[0,10,20,30,40,50,60,70,80,90,100]}"
+										liveDragging="false" maximum="100" minimum="0" 
+										showTrackHighlight="true" snapInterval="1" thumbCount="2"
+										tickInterval="10" values="[0,100]"/>
+							<mx:VSlider id="slider_nld" includeIn="State1,nld_state"
+										width="100%" height="100%" change="slider_nld_changeHandler()"
+										dataTipPlacement="top"
+										labels="{[0,10,20,30,40,50,60,70,80,90,100]}"
+										liveDragging="false" maximum="100" minimum="0"  
+										snapInterval="1" thumbCount="5"  
+										tickInterval="10"   allowThumbOverlap="true" allowTrackClick="true"/>
+							
+							
+						</s:VGroup>
+					</s:VGroup>
+					<s:VGroup id="allPieGroup" width="100%" height="100%" >
+						<mx:PieChart id="pie" dataProvider="{nlSubDataList}"  width="100%" height="100%" showDataTips="true" dataTipFunction="pieDataTipFunction" 
+									 itemMouseMove="pieExplodeShow(event)" >
+							<mx:series>
+								<mx:PieSeries reserveExplodeRadius="{pieReserveExplodeRadius}"  id="pieSeries" 
+											  field="all" 
+											  labelPosition="{piePosition.selected?'callout':'none'}"  
+											  nameField="nl"   
+											  filters="[]"  
+											  labelFunction="showMorePieInfo"
+											  showDataEffect="{slide2}">
+									
+									<!-- 内部分割线条 -->
+									<mx:radialStroke><mx:Stroke weight="1" color="#ffffff"  alpha="0.5" /></mx:radialStroke>
+									
+									<!-- 圆周边 边线 -->
+									<mx:stroke><mx:Stroke weight="2" color="#000000" alpha="0.5" /></mx:stroke>
+									
+									<!-- 提示信息的线 -->
+									<mx:calloutStroke><mx:Stroke weight="1" color="#000000" alpha="0.5" /></mx:calloutStroke>
+								</mx:PieSeries>
+								
+							</mx:series>
+							
+						</mx:PieChart>
+					</s:VGroup>
+					<s:Scroller height="100%" width="85" includeIn="State1,nld_state,xb_state,nl_state">
+						<s:VGroup id="pieLegendGroup"  width="80"
+								  height="100%" horizontalAlign="left">
+							
+							<mx:Legend  legendItemClass="legend.LinkLegendItem" dataProvider="{pie}" id="pieLegend" width="80"  buttonMode="true" itemClick="pieLegend_itemClickHandler(event)"> 
+								
+							</mx:Legend>
+							
+						</s:VGroup>
+					</s:Scroller>
+					
+				</s:HGroup>
+			</s:NavigatorContent>
+		</mx:TabNavigator>
+	</s:VGroup>
+</s:Application>

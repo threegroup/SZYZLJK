@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="100%" height="100%" minWidth="955" minHeight="600"
+			   viewSourceURL="srcview/index.html">
+	<fx:Script>
+		<![CDATA[
+			import chartdata.dm.DM_TerrainProfileSource;
+			
+			import mx.charts.HitData;
+			import mx.collections.ArrayCollection;
+			[Bindable]
+			/**统计图数据源*/
+			private var chartDataSrc:DM_TerrainProfileSource = new DM_TerrainProfileSource();
+			[Bindable]
+			private var maxValue:int = 200;
+			
+			private function showDepthInfo(data:Object, field:String):String{
+				
+				return "水位:"+data[field];
+			}
+			
+			private function areaDataTipFunction (hitData:HitData):String { 
+				trace(hitData.chartItem+"");
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData.altitude + "<br>"+"距离:"+ cntData.distance;
+				
+			}
+			
+			[Bindable]
+			/**
+			 *水位数据 
+			 * @return 
+			 * 
+			 */
+			public var depthDataCol:ArrayCollection = new ArrayCollection(
+				[
+					{
+						"distance": 25,
+						"altitude": 60
+					},
+					{
+						"distance": 75,
+						"altitude": 60
+					},
+					{
+						"distance": 116,
+						"altitude": 80
+					},
+					{
+						"distance": 171,
+						"altitude": 80
+					},
+					{
+						"distance": 204,
+						"altitude": 70
+					},
+					{
+						"distance": 216,
+						"altitude": 70
+					}
+				]
+			);
+			[Bindable]
+			/**
+			 *说明：剖面高程数据的节点中必须包含水位数据的各个节点 
+			 */
+			public var profileDataCol:ArrayCollection = new ArrayCollection(
+				[
+					{
+						"distance": 0,
+						"altitude": 100
+					},
+					{
+						"distance": 10,
+						"altitude": 95
+					},
+					{
+						"distance": 25,
+						"altitude": 60
+					},
+					{
+						"distance": 40,
+						"altitude": 50
+					},
+					{
+						"distance": 50,
+						"altitude": 30
+					},
+					{
+						"distance": 60,
+						"altitude": 25
+					},
+					{
+						"distance": 70,
+						"altitude": 40
+					},
+					{
+						"distance": 75,
+						"altitude": 60
+					},{
+						"distance": 90,
+						"altitude": 90
+					},
+					{
+						"distance": 100,
+						"altitude": 100
+					},
+					{
+						"distance": 110,
+						"altitude": 90
+					},
+					{
+						"distance": 116,
+						"altitude": 80
+					},
+					{
+						"distance": 125,
+						"altitude": 60
+					},
+					{
+						"distance": 130,
+						"altitude": 10
+					},
+					{
+						"distance": 150,
+						"altitude": 30
+					},
+					{
+						"distance": 171,
+						"altitude": 80
+					},
+					{
+						"distance": 175,
+						"altitude": 90
+					},
+					{
+						"distance": 180,
+						"altitude": 100
+					},
+					{
+						"distance": 200,
+						"altitude": 90
+					},
+					{
+						"distance": 204,
+						"altitude": 70
+					},
+					{
+						"distance": 210,
+						"altitude": 40
+					},
+					{
+						"distance": 215,
+						"altitude": 50
+					},
+					{
+						"distance": 216,
+						"altitude": 70
+					},
+					{
+						"distance": 220,
+						"altitude": 150
+					}
+				]
+			);
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:SolidColor id="sc1" color="#F5AC39"/>
+		<mx:SolidColor id="sc2" color="#55D8FE"  />
+		<s:SolidColorStroke id="s1" color="blue" weight="0" alpha="0" />
+		<s:SolidColorStroke id="s2" color="red" weight="0" alpha="0"/>
+		<mx:SeriesInterpolate id="slide" duration="200"/>
+		<mx:SeriesInterpolate id="slide2" duration="1000"/>
+		<s:SolidColorStroke id="chartAxisStroke" color="#BBCCDD" weight="2"/>
+		<mx:SeriesInterpolate id="areaSlide" duration="200"/>
+		<mx:SeriesInterpolate id="areaSlide2" duration="200"/>
+	</fx:Declarations>
+	
+	<mx:AreaChart id="myChart" height="100%" width="100%" showDataTips="true" 
+				  dataTipFunction="areaDataTipFunction">
+		<mx:backgroundElements>
+			<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+				<mx:verticalStroke>
+					<s:SolidColorStroke color="yellow" weight="1"/>
+				</mx:verticalStroke>
+			</mx:GridLines>
+		</mx:backgroundElements>
+		<mx:verticalAxis>
+			<mx:LinearAxis  id="a"      maximum="{maxValue}"  minimum="0"  baseAtZero="true" />
+		</mx:verticalAxis>
+		<mx:verticalAxisRenderers>
+			<mx:AxisRenderer axis="{a}"  axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+		</mx:verticalAxisRenderers>
+		<mx:horizontalAxis>
+			<mx:LinearAxis id="b" maximum="240"  minimum="0"   interval="20"/>
+		</mx:horizontalAxis>
+		<mx:horizontalAxisRenderers>
+			<mx:AxisRenderer axis="{b}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"   />
+		</mx:horizontalAxisRenderers>
+		<mx:series>
+			<mx:AreaSeries itemRenderer="chartitemrender.AreaChartDataRender" dataProvider="{depthDataCol}" yField="altitude" xField="distance" displayName="水位"  areaFill="{sc2}" areaStroke="{s1}" form="curve" showDataEffect="{areaSlide2}" />
+			<mx:AreaSeries itemRenderer="chartitemrender.AreaChartDataRender" dataProvider="{profileDataCol}" yField="altitude" xField="distance" displayName="高程"  areaFill="{sc1}" areaStroke="{s1}" form="curve" showDataEffect="{areaSlide}" />
+		</mx:series>
+	</mx:AreaChart>
+	
+	<!--<mx:AreaChart id="depthChart" height="100%" width="100%" 
+	dataProvider="{depthDataCol}" seriesFilters="[]">
+	<mx:verticalAxis>
+	<mx:LinearAxis  id="a12"      maximum="{maxValue}"  minimum="0"  baseAtZero="true" />
+	</mx:verticalAxis>
+	<mx:verticalAxisRenderers>
+	<mx:AxisRenderer axis="{a12}"  axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+	</mx:verticalAxisRenderers>
+	<mx:horizontalAxis>
+	<mx:LinearAxis id="b12" maximum="240"  minimum="0"   interval="20"/>
+	</mx:horizontalAxis>
+	<mx:horizontalAxisRenderers>
+	<mx:AxisRenderer axis="{b12}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"   />
+	</mx:horizontalAxisRenderers>
+	<mx:series>
+	<mx:AreaSeries yField="depth" xField="distance" displayName="水深"  areaFill="{sc2}" areaStroke="{s1}" form="curve" showDataEffect="{areaSlide2}" />
+	</mx:series>
+	</mx:AreaChart>
+	
+	<mx:AreaChart id="profileChart" height="100%" width="100%" 
+	showDataTips="true" dataProvider="{profileDataCol}" seriesFilters="[]">
+	<mx:verticalAxis>
+	<mx:LinearAxis  id="a1"      maximum="{maxValue}"  minimum="0"  baseAtZero="true" />
+	</mx:verticalAxis>
+	<mx:verticalAxisRenderers>
+	<mx:AxisRenderer axis="{a1}"  axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+	</mx:verticalAxisRenderers>
+	<mx:horizontalAxis>
+	<mx:LinearAxis id="b1" maximum="240"  minimum="0"   interval="20"/>
+	</mx:horizontalAxis>
+	<mx:horizontalAxisRenderers>
+	<mx:AxisRenderer axis="{b1}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"   />
+	</mx:horizontalAxisRenderers>
+	<mx:series>
+	<mx:AreaSeries yField="depth" xField="distance" displayName="高程"  areaFill="{sc1}" areaStroke="{s1}" form="curve" showDataEffect="{areaSlide}" />
+	</mx:series>
+	</mx:AreaChart>-->
+</s:Application>
