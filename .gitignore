@@ -46,7 +46,7 @@ Temporary Items
 .metadata
 
 # Compresss files
-.zip
+*.zip
 
 #Flash Project files
 .project
@@ -55,4 +55,3 @@ Temporary Items
 
 #Source files
 flex4_ofc2
-WaterChartDemo
