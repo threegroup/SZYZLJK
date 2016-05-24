@@ -9,12 +9,19 @@
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			
 			import sm.wegis.szy.events.QueryEvent;
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.vo.WaterCapacityParam;
 			
 			import widgets.waterevaluation.CapacityDataSource;
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
+			
 			protected function detailImage_clickHandler(event:MouseEvent):void
 			{
-				var detailEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_WATER_CAPACITY_MONITOR_DATA);
-				detailEvent.data = CapacityDataSource.dgCol[3];
+				event.stopImmediatePropagation();
+				var waterEvaluaParam:WaterCapacityParam = modelLocator.waterCapacityParam;
+				waterEvaluaParam.waterFunctionId = data["funCode"];
+				var detailEvent:QueryEvent = new QueryEvent(QueryEvent.GET_WATER_FOUNCTION_ITEM_VALUE);
+				detailEvent.data = waterEvaluaParam;
 				detailEvent.dispatch();
 			}
 		]]>

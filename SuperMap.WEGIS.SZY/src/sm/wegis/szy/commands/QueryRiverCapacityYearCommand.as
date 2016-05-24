@@ -25,8 +25,7 @@ package sm.wegis.szy.commands
 			super.execute(event);
 			var params:Array = [];
 			params.push(modelLocator.systemInfo.subSystemID);
-			params.push(event.data);
-			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetSZPJYearList, params);
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetSZYYearList, params);
 			CursorManager.setBusyCursor();
 		}
 		

@@ -1,66 +1,3 @@
-package widgets.waterevaluation
-{
-	public class CapacityDataSource
-	{
-		public function CapacityDataSource()
-		{
-		}
-		
-		/**时间：2016-04-24
-		 * 说明： isMainKey: 0-在表格中不显示，1-在表格中显示, -1-表示详情操作列；
-		 * 		 colWidth：在表格显示的预设列宽；
-		 *       fieldName：列标题名称；
-		 *       fieldKey：表格列绑定字段。
-		 * 结构： nodeList：表中记录；
-		 * 		 propFields：字段集。*/
-		
-		/**当前的钻取级别*/
-		public static var dataLevel:int = 0;
-		/**当前是否显示详情*/
-		public static var isShowDetail:Boolean = false;
-		
-		public static var dgCol:Array = [
-			{key:"Area_Capacity_Type",name:"行政区承载力情况统计表",type:"level"},
-			{key:"Water_Quality_Type",name:"河流水功能区水质达标率及污染物入河量情况统计表",type:"level"},
-			{key:"Water_Drain_Pollution_Detail_Type",name:"水功能区排污口污染物入河量详情",type:"level"},
-			{key:"Water_Pollution_Detail_Type",name:"水功能区水质达标率及污染物入河量详情",type:"detail"},
-			{key:"Water_Evaluation_Type",name:"测站水质评价主要评价指标",type:"normal"}
-		];
-		
-//		public static function getDgSource(key:String):Object
-//		{
-//			var dgSrc:Object = null;
-//			switch(key)
-//			{
-//				case "Area_Capacity_Type":
-//				{
-//					dgSrc = CapacityDataSource.actSrc;
-//					break;
-//				}
-//				case "Water_Quality_Type":
-//				{
-//					dgSrc = CapacityDataSource.wqtSrc;
-//					break;
-//				}
-//				case "Water_Drain_Pollution_Detail_Type":
-//				{
-//					dgSrc = CapacityDataSource.wdpdtSrc;
-//					break;
-//				}
-//				case "Water_Pollution_Detail_Type":
-//				{
-//					dgSrc = CapacityDataSource.wpdtSrc;
-//					break;
-//				}
-//				default:
-//				{
-//					dgSrc = null;
-//					break;
-//				}
-//			}
-//			return dgSrc;
-//		}
-		
 		//选择年份，点击查询，获取各县评价数据，用于地图展示
 		public static var countyThemeData:Object =	{
 			"success": true,
@@ -178,7 +115,7 @@ package widgets.waterevaluation
 		}
 		
 		/**行政区承载力情况统计表*/
-		public static var actSrc:Object = {
+	   {
 			"message": "信息查询成功。",
 			"nodeList": [
 				{
@@ -324,10 +261,10 @@ package widgets.waterevaluation
 				}],
 			"responseSts": 0,
 			"totalCount": 2
-		};
+		}
 		
 		/**河流水功能区水质达标率及污染物入河量情况统计表*/
-		public static var wqtSrc:Object = {
+		{
 			"message": "信息查询成功。",
 			"nodeList": [
 				{
@@ -441,10 +378,10 @@ package widgets.waterevaluation
 				}],
 			"responseSts": 0,
 			"totalCount": 2
-		};
+		}
 		
 		/**水功能区水质达标率及污染物入河量详情*/
-		public static var wpdtSrc:Object = {
+	 {
 			"message": "信息查询成功。",
 			"nodeList": [
 				{
@@ -539,7 +476,7 @@ package widgets.waterevaluation
 		};
 		
 		/**水功能区排污口污染物入河量详情*/
-		public static var wdpdtSrc:Object = {
+		 {
 			"message": "信息查询成功。",
 			"nodeList": [
 				{
@@ -633,10 +570,10 @@ package widgets.waterevaluation
 				}],
 			"responseSts": 0,
 			"totalCount": 2
-		};
+		}
 		
 		/**县区域水资源承载力气泡数据*/
-		public static var countyInfoData:Object ={
+		{
 			"message": "信息查询成功。",
 			"responseSts": 0,
 			"surveyData": [
@@ -687,6 +624,4 @@ package widgets.waterevaluation
 							"standard":"0.2"
 					}]
 				}]
-		};
-	}
-}
+		}

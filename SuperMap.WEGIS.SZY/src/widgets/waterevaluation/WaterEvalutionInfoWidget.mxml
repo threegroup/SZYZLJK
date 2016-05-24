@@ -38,6 +38,7 @@
 			import sm.wegis.szy.utils.CairngormEventManager;
 			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.GridColumnInfo;
+			import sm.wegis.szy.vo.WaterCapacityParam;
 			
 			import spark.components.DataGrid;
 			import spark.components.gridClasses.GridColumn;
@@ -70,7 +71,7 @@
 				
 				initDataGrid();
 				
-				switchDataGrid(ConstVO.WATER_EVALUATION_TYPE);
+//				switchDataGrid(ConstVO.WATER_EVALUATION_TYPE);
 			}
 			
 			/**初始化事件监听*/
@@ -80,8 +81,10 @@
 				/**事件列表*/
 				var eList:ArrayCollection = new ArrayCollection([
 					[QueryEvent.QUERY_STATION_EVALUTION_INFO_RESPONSE, queryStationEvalutionInfoResponseHandler],//响应查询结果
-					[QueryEvent.SHOW_WATER_CAPACITY_DATA, showWaterCapacityDataHandler],//显示水资源承载能力表
-					[QueryEvent.SHOW_WATER_CAPACITY_MONITOR_DATA, showMonitorDataHandler],//水功能区水质达标率及污染物入河量详情
+					[QueryEvent.GET_XZQ_CONDITION_RESPONSE, getXZQConditionHandler],//显示行政区承载力情况统计表
+					[QueryEvent.GET_RIVER_WATER_FOUNCTION_CONDITION_RESPONSE, getRiverWaterFunctionConditionHandler],//河流水功能区水质达标率及污染物入河量情况统计表
+					[QueryEvent.GET_WATER_FOUNCTION_ITEM_VALUE_RESPONSE, getWaterFounctionItemValueHandler],//点击水功能区，详情列，显示水功能区水质达标率及污染物入河量详情
+					[QueryEvent.GET_PWK_DETAIL_RESPONSE, getPWKDetailHandler],//水功能区排污口污染物入河量详情
 					[QueryEvent.HIDE_WATER_EVALUTION_WIDGET, clearSystemHandler]//隐藏容器面板
 				]);
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
@@ -112,27 +115,34 @@
 			}
 			
 			/**切换表格*/
-			private function switchDataGrid(dgKey:String):void
+			private function switchDataGrid(dgSrc:Object):void
 			{
 				this.dgGroup.removeAllElements();
-				var dg:DataGrid = getDataGrid(dgKey);
+				var dgKey:String = dgSrc["key"];
+				var dg:DataGrid = getDataGrid(dgSrc);
 				fadeEffect.target = dg;//为切换的表格增加渐变特效
 				this.dgGroup.addElement(dg);
 				if(dgKey != ConstVO.WATER_EVALUATION_TYPE)
 				{
-					dg.dataProvider = new ArrayCollection(CapacityDataSource.getDgSource(dgKey)["nodeList"]);
+					dg.dataProvider = new ArrayCollection(dgSrc["nodeList"]);
 					this.currentState = SHOW;
 				}
 			}
 			
 			/**获取表格*/
-			private function getDataGrid(dgKey:String):DataGrid
+			private function getDataGrid(dgSrc:Object):DataGrid
 			{
-				if(dgContainer.containsKey(dgKey))
+				var key:String = dgSrc["key"];
+				var dg:DataGrid;
+				if(dgContainer.containsKey(key))
 				{
-					return dgContainer.find(dgKey) as DataGrid;
-				}
-				return null;
+					dg = dgContainer.find(key) as DataGrid;
+				} else {
+					var dg:DataGrid = createDataGrid(dgSrc);
+					dg.name = key;
+					dgContainer.add(key, dg);
+				}	
+				return dg;
 			}
 			
 			/**创建DataGrid内容*/
@@ -227,53 +237,55 @@
 			private function initDataGrid():void
 			{
 				var dg:DataGrid = null;
-				for each(var dgSrc:Object in CapacityDataSource.dgCol)
-				{
-					var dgKey:String = dgSrc["key"];
-					if(dgKey != ConstVO.WATER_EVALUATION_TYPE)
-					{
-						dg = createDataGrid(CapacityDataSource.getDgSource(dgKey));
-						dg.name = dgKey;
-					}
-					else
-					{
-						//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
-						dg = new DataGrid();
-						dg.addEventListener(GridEvent.GRID_CLICK, normalGridClickHandler);
-						dg.name = dgKey;
-						dg.percentWidth = 100;
-						dg.percentHeight = 100;
-						dg.sortableColumns = false;
-						dg.setStyle("borderVisible",false);
-						dg.selectionMode = GridSelectionMode.SINGLE_CELL;
-						dg.columns = new ArrayCollection([]);
-						
-						var colConfigParam:String = modelLocator.systemInfo.waterEvaluationGridColumn;
-						var colConfigs:Array = colConfigParam.split(",");
-						var column:GridColumn;
-						for each(var item:String in colConfigs) {
-							var items:Array = item.split(":");
-							if (items.length >= 2) {
-								column	= new GridColumn();
-								if (items[1] == "index") {
-									column.headerText = "序号";
-									column.itemRenderer = new ClassFactory(IndexOrderRender);
-								} else if (items[1] == "history") {
-									column.headerText = "历史情况";
-									column.itemRenderer = new ClassFactory(HistoryLineRender);
-								} else {
-									column.headerText = items[0];
-									column.dataField = items[1];
-								}
-								if (items.length == 3) {
-									column.width = items[2];
-								}
-								dg.columns.addItem(column);
-							}
+				//				for each(var dgSrc:Object in CapacityDataSource.dgCol)
+				//				{
+				//					var dgKey:String = dgSrc["key"];
+				//					if(dgKey != ConstVO.WATER_EVALUATION_TYPE)
+				//					{
+				//						dg = createDataGrid(CapacityDataSource.getDgSource(dgKey));
+				//						dg.name = dgKey;
+				//					}
+				//					else
+				//					{
+				//初始化，测站水质评价主要评价指标表格列，根据配置文件创建
+				
+				var dgKey:String = ConstVO.WATER_EVALUATION_TYPE;
+				dg = new DataGrid();
+				dg.addEventListener(GridEvent.GRID_CLICK, normalGridClickHandler);
+				dg.name = dgKey;
+				dg.percentWidth = 100;
+				dg.percentHeight = 100;
+				dg.sortableColumns = false;
+				dg.setStyle("borderVisible",false);
+				dg.selectionMode = GridSelectionMode.SINGLE_CELL;
+				dg.columns = new ArrayCollection([]);
+				
+				var colConfigParam:String = modelLocator.systemInfo.waterEvaluationGridColumn;
+				var colConfigs:Array = colConfigParam.split(",");
+				var column:GridColumn;
+				for each(var item:String in colConfigs) {
+					var items:Array = item.split(":");
+					if (items.length >= 2) {
+						column	= new GridColumn();
+						if (items[1] == "index") {
+							column.headerText = "序号";
+							column.itemRenderer = new ClassFactory(IndexOrderRender);
+						} else if (items[1] == "history") {
+							column.headerText = "历史情况";
+							column.itemRenderer = new ClassFactory(HistoryLineRender);
+						} else {
+							column.headerText = items[0];
+							column.dataField = items[1];
 						}
+						if (items.length == 3) {
+							column.width = items[2];
+						}
+						dg.columns.addItem(column);
 					}
-					dgContainer.add(dgKey, dg);
 				}
+				//					}
+				dgContainer.add(dgKey, dg);
+				//			}
 			}
 			
 			//点击对象表格行，定位要素
@@ -299,16 +311,37 @@
 			protected function drillGridClickHandler(event:GridEvent):void
 			{
 				var grid:DataGrid = event.currentTarget as DataGrid;
-				if (event.rowIndex > -1 && event.rowIndex < grid.dataProvider.length && event.columnIndex == 1)
+				if (event.rowIndex > -1 && event.rowIndex < grid.dataProvider.length && event.columnIndex == 1 
+					&& CapacityDataSource.isShowDetail == false)
 				{
 					if(CapacityDataSource.dataLevel <= 1)
 					{
 						CapacityDataSource.dataLevel++;
 						
 						this.homeImage.visible = this.returnImage.visible = true;
-						var dgSrc:Object = CapacityDataSource.dgCol[CapacityDataSource.dataLevel];
-						this.switchDataGrid(dgSrc["key"]);
-						this.panel.title = dgSrc["name"];
+						//						var dgSrc:Object = CapacityDataSource.dgCol[CapacityDataSource.dataLevel];
+						//						this.switchDataGrid(dgSrc["key"]);
+						//						this.panel.title = dgSrc["name"];
+						
+						//点击河流列表，请求水功能区水质达标率及污染物入河量详情
+						var queryEvent:QueryEvent;
+						var selectItem:Object = grid.dataProvider.getItemAt(event.rowIndex);
+						var waterEvaluaParam:WaterCapacityParam = modelLocator.waterCapacityParam;
+						if (CapacityDataSource.dataLevel == 1){
+							waterEvaluaParam.riverIds = selectItem["code"];
+							queryEvent  = new QueryEvent(QueryEvent.GET_RIVER_WATER_FOUNCTION_CONDITION);
+						}
+						
+						//水功能区排污口污染物入河量详情
+						if (CapacityDataSource.dataLevel == 2) {
+							waterEvaluaParam.waterFunctionId = selectItem["funCode"];
+							queryEvent  = new QueryEvent(QueryEvent.GET_PWK_DETAIL);
+						}
+					
+						if (queryEvent != null) {
+							queryEvent.data = waterEvaluaParam;
+							queryEvent.dispatch();
+						}
 					}
 				}
 			}
@@ -376,8 +409,8 @@
 				map.infoWindow.hide();
 			}
 			
-			/**显示水资源承载能力表*/
-			private function showWaterCapacityDataHandler(event:QueryEvent):void
+			/**显示行政区承载力情况统计表*/
+			private function getXZQConditionHandler(event:QueryEvent):void
 			{
 				//点击地图水功能区重置级别及钻取按钮状态
 				CapacityDataSource.dataLevel = 0;
@@ -385,18 +418,34 @@
 				
 				//切换数据表格内容
 				var dgSrc:Object = event.data;
-				this.switchDataGrid(dgSrc["key"]);
+				this.switchDataGrid(dgSrc);
+				this.panel.title = dgSrc["name"];
+			}
+			
+			/**河流水功能区水质达标率及污染物入河量情况统计表*/
+			private function getRiverWaterFunctionConditionHandler(event:QueryEvent):void
+			{
+				var dgSrc:Object = event.data;
+				this.switchDataGrid(dgSrc);
 				this.panel.title = dgSrc["name"];
 			}
 			
 			/**水功能区水质达标率及污染物入河量详情*/
-			private function showMonitorDataHandler(event:QueryEvent):void
+			private function getWaterFounctionItemValueHandler(event:QueryEvent):void
 			{
 				var dgSrc:Object = event.data;
-				this.switchDataGrid(dgSrc["key"]);
+				this.switchDataGrid(dgSrc);
 				this.panel.title = dgSrc["name"];
 				
 				CapacityDataSource.isShowDetail = true;
+			}
+			
+			/**水功能区排污口污染物入河量详情*/
+			private function getPWKDetailHandler(event:QueryEvent):void
+			{
+				var dgSrc:Object = event.data;
+				this.switchDataGrid(dgSrc);
+				this.panel.title = dgSrc["name"];
 			}
 			
 			/**响应查询结果*/
@@ -467,10 +516,10 @@
 			protected function homeImage_clickHandler(event:MouseEvent):void
 			{
 				CapacityDataSource.dataLevel = 0;
-				
+				CapacityDataSource.isShowDetail = false;
 				this.homeImage.visible = this.returnImage.visible = false;
 				var dgSrc:Object = CapacityDataSource.dgCol[CapacityDataSource.dataLevel];
-				this.switchDataGrid(dgSrc["key"]);
+				this.switchDataGrid(dgSrc);
 				this.panel.title = dgSrc["name"];
 			}
 			
@@ -491,7 +540,7 @@
 					}
 					
 					var dgSrc:Object = CapacityDataSource.dgCol[CapacityDataSource.dataLevel];
-					this.switchDataGrid(dgSrc["key"]);
+					this.switchDataGrid(dgSrc);
 					this.panel.title = dgSrc["name"];
 				}
 			}

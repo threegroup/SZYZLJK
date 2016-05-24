@@ -14,6 +14,8 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.vo.BaseMapVO;
 	import sm.wegis.szy.vo.ConstVO;
 	
+	import widgets.basemap.BaseMapWidget;
+	
 	public class BaseMapChangeCommand extends CommandBase
 	{
 		override public function execute(event:CairngormEvent):void
@@ -34,26 +36,34 @@ package sm.wegis.szy.commands
 			}
 			
 			//矢量底图
-			var baseVectorLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer( ConstVO.BaseMapVectorLayerId) as TiledDynamicRESTLayerEx;
-			if (baseVectorLayer == null) {
-				baseVectorLayer = new TiledDynamicRESTLayerEx();
-				baseVectorLayer.id = ConstVO.BaseMapVectorLayerId;
-				baseVectorLayer.layerType = 0
-				baseVectorLayer.layerIndex = 1;
-				baseVectorLayer.bounds = modelLocator.systemInfo.layerBounds;
-				mapCtrl.addLayer(baseVectorLayer);
+			var baseMapLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer( ConstVO.BaseMapVectorLayerId) as TiledDynamicRESTLayerEx;
+			if (baseMapLayer != null) {
+				mapCtrl.removeLayer(baseMapLayer);
+				baseMapLayer = null;
 			}
-			baseVectorLayer.visible = false;
-			var baseImageLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer( ConstVO.BaseMapImageLayerId) as TiledDynamicRESTLayerEx;
-			if (baseImageLayer == null) {
-				baseImageLayer = new TiledDynamicRESTLayerEx();
-				baseImageLayer.id = ConstVO.BaseMapImageLayerId;
-				baseImageLayer.layerType = 0
-				baseImageLayer.layerIndex = 1;
-				baseImageLayer.bounds = modelLocator.systemInfo.layerBounds;
-				mapCtrl.addLayer(baseImageLayer);
+			if (baseMapLayer == null) {
+				baseMapLayer = new TiledDynamicRESTLayerEx();
+				baseMapLayer.id = ConstVO.BaseMapVectorLayerId;
+				baseMapLayer.layerType = 0
+				baseMapLayer.layerIndex = 1;
+				baseMapLayer.bounds = modelLocator.systemInfo.layerBounds;
+				mapCtrl.addLayer(baseMapLayer);
+				//显示矢量底图
+				switch(baseMapVO.baseMapSelectType) {
+					case ConstVO.VectorType:
+						baseMapLayer.url = modelLocator.baseMapInfo.baseVectorMapUrl;
+						break;
+					case ConstVO.ImageType:
+						baseMapLayer.url = modelLocator.baseMapInfo.baseImageMapUrl;
+						break;
+					case ConstVO.DemType:
+						baseMapLayer.url = modelLocator.baseMapInfo.baseDemMapUrl;
+						break;
+					default:
+						baseMapLayer.url = modelLocator.baseMapInfo.baseVectorMapUrl;
+						break;
+				}
 			}
-			baseImageLayer.visible = false;
 			
 			//水资源地图显示，必须先移除，再添加，不然地图不更新，iserver的bug
 			var waterResourceLayer:TiledDynamicRESTLayerEx = mapCtrl.getLayer(ConstVO.WaterResourceLayerId) as TiledDynamicRESTLayerEx;
@@ -69,23 +79,22 @@ package sm.wegis.szy.commands
 				waterResourceLayer.layerIndex = 1;
 				waterResourceLayer.transparent = true;
 				waterResourceLayer.layersID = modelLocator.systemInfo.lastLayerIds;
-				if (baseMapVO.baseMapState == ConstVO.VectorMapState) {
-					waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceVectorMapUrl;
-				} else {
-					waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceRasterMapUrl;
+				switch(baseMapVO.baseMapSelectType) {
+					case ConstVO.VectorType:
+						waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceVectorMapUrl;
+						break;
+					case ConstVO.ImageType:
+					case ConstVO.DemType:
+						waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceRasterMapUrl;
+						break;
+					default:
+						waterResourceLayer.url = modelLocator.baseMapInfo.waterResourceVectorMapUrl;
+						break;
 				}
 				mapCtrl.addLayer(waterResourceLayer);
 			}
 			mapCtrl.sortLayers();
 			
-			//显示矢量底图
-			if (baseMapVO.baseMapState == ConstVO.VectorMapState) {
-				baseVectorLayer.url = modelLocator.baseMapInfo.baseVectorMapUrl;
-				baseVectorLayer.visible = true;
-			} else {
-				baseImageLayer.url = modelLocator.baseMapInfo.baseImageMapUrl;
-				baseImageLayer.visible = true;
-			}
 			
 			function mapLayerLoadHandler(event:MapEvent):void
 			{

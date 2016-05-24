@@ -58,6 +58,12 @@ package sm.wegis.szy.plugins
 		private static var imagePngKey:String = "imagePng";
 		ResourceManagerEx.RegisterResource("",imagePngKey, imagePngCls);
 		
+		/**底图地形*/
+		[Embed(source="assets/image/basemap/dem.png")]
+		private static var demPngCls:Class;
+		private static var demPngKey:String = "demPng";
+		ResourceManagerEx.RegisterResource("",demPngKey, demPngCls);
+		
 		/**地图工具栏*/
 		[Embed(source="assets/image/tool/area.png")]
 		private static var areaCls:Class;
@@ -893,6 +899,7 @@ package sm.wegis.szy.plugins
 		private static var guanquKey:String = "灌区";
 		ResourceManagerEx.RegisterResource("",guanquKey, guanquCls);
 		
+		
 		/**新增图例*/
 		[Embed(source="assets/image/legend/df1.png")]
 		private static var df1Cls:Class;
@@ -1036,6 +1043,112 @@ package sm.wegis.szy.plugins
 		private static var ydsKey:String = "yds";
 		ResourceManagerEx.RegisterResource("",ydsKey, ydsCls);
 		
+		//土地利用图例
+		[Embed(source="assets/image/legend/21.png")]
+		private static var s21Cls:Class;
+		private static var s21Key:String = "21";
+		ResourceManagerEx.RegisterResource("",s21Key, s21Cls);
+		
+		[Embed(source="assets/image/legend/22.png")]
+		private static var s22Cls:Class;
+		private static var s22Key:String = "22";
+		ResourceManagerEx.RegisterResource("",s22Key, s22Cls);
+		
+		[Embed(source="assets/image/legend/23.png")]
+		private static var s23Cls:Class;
+		private static var s23Key:String = "23";
+		ResourceManagerEx.RegisterResource("",s23Key, s23Cls);
+		
+		[Embed(source="assets/image/legend/31.png")]
+		private static var s31Cls:Class;
+		private static var s31Key:String = "31";
+		ResourceManagerEx.RegisterResource("",s31Key, s31Cls);
+		
+		[Embed(source="assets/image/legend/32.png")]
+		private static var s32Cls:Class;
+		private static var s32Key:String = "32";
+		ResourceManagerEx.RegisterResource("",s32Key, s32Cls);
+		
+		[Embed(source="assets/image/legend/33.png")]
+		private static var s33Cls:Class;
+		private static var s33Key:String = "33";
+		ResourceManagerEx.RegisterResource("",s33Key, s33Cls);
+		
+		[Embed(source="assets/image/legend/41.png")]
+		private static var s41Cls:Class;
+		private static var s41Key:String = "41";
+		ResourceManagerEx.RegisterResource("",s41Key, s41Cls);
+		
+		[Embed(source="assets/image/legend/42.png")]
+		private static var s42Cls:Class;
+		private static var s42Key:String = "42";
+		ResourceManagerEx.RegisterResource("",s42Key, s42Cls);
+		
+		[Embed(source="assets/image/legend/43.png")]
+		private static var s43Cls:Class;
+		private static var s43Key:String = "43";
+		ResourceManagerEx.RegisterResource("",s43Key, s43Cls);
+		
+		[Embed(source="assets/image/legend/51.png")]
+		private static var s51Cls:Class;
+		private static var s51Key:String = "51";
+		ResourceManagerEx.RegisterResource("",s51Key, s51Cls);
+		
+		[Embed(source="assets/image/legend/52.png")]
+		private static var s52Cls:Class;
+		private static var s52Key:String = "52";
+		ResourceManagerEx.RegisterResource("",s52Key, s52Cls);
+		
+		[Embed(source="assets/image/legend/53.png")]
+		private static var s53Cls:Class;
+		private static var s53Key:String = "53";
+		ResourceManagerEx.RegisterResource("",s53Key, s53Cls);
+		
+		
+		[Embed(source="assets/image/legend/61.png")]
+		private static var s61Cls:Class;
+		private static var s61Key:String = "61";
+		ResourceManagerEx.RegisterResource("",s61Key, s61Cls);
+		
+		[Embed(source="assets/image/legend/62.png")]
+		private static var s62Cls:Class;
+		private static var s62Key:String = "62";
+		ResourceManagerEx.RegisterResource("",s62Key, s62Cls);
+		
+		[Embed(source="assets/image/legend/63.png")]
+		private static var s63Cls:Class;
+		private static var s63Key:String = "63";
+		ResourceManagerEx.RegisterResource("",s63Key, s63Cls);
+		
+		[Embed(source="assets/image/legend/111.png")]
+		private static var s111Cls:Class;
+		private static var s111Key:String = "111";
+		ResourceManagerEx.RegisterResource("",s111Key, s111Cls);
+		
+		[Embed(source="assets/image/legend/112.png")]
+		private static var s112Cls:Class;
+		private static var s112Key:String = "112";
+		ResourceManagerEx.RegisterResource("",s112Key, s112Cls);
+		
+		[Embed(source="assets/image/legend/113.png")]
+		private static var s113Cls:Class;
+		private static var s113Key:String = "113";
+		ResourceManagerEx.RegisterResource("",s113Key, s113Cls);
+		
+		[Embed(source="assets/image/legend/121.png")]
+		private static var s121Cls:Class;
+		private static var s121Key:String = "121";
+		ResourceManagerEx.RegisterResource("",s121Key, s121Cls);
+		
+		[Embed(source="assets/image/legend/122.png")]
+		private static var s122Cls:Class;
+		private static var s122Key:String = "122";
+		ResourceManagerEx.RegisterResource("",s122Key, s122Cls);
+		
+		[Embed(source="assets/image/legend/123.png")]
+		private static var s123Cls:Class;
+		private static var s123Key:String = "123";
+		ResourceManagerEx.RegisterResource("",s123Key, s123Cls);
 		
 		[Embed(source="assets/image/station.png")]
 		private static var stationCls:Class;

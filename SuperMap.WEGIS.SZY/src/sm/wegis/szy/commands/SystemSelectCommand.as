@@ -21,6 +21,7 @@ package sm.wegis.szy.commands
 					//设置各子系统基础地图，矢量、影像地图地址
 					modelLocator.baseMapInfo.baseVectorMapUrl = systemParam.baseVectorMapUrl;
 					modelLocator.baseMapInfo.baseImageMapUrl = systemParam.baseImageMapUrl;
+					modelLocator.baseMapInfo.baseDemMapUrl = systemParam.baseDemMapUrl;
 					
 					//设置水功能区地图地址，设置水功能区查询图层名称
 					modelLocator.baseMapInfo.sfzMapUrl = systemParam.sfzMapUrl;
@@ -37,6 +38,7 @@ package sm.wegis.szy.commands
 					//设置应用系统矢量，影像水利专题地图服务地址
 					modelLocator.baseMapInfo.waterResourceVectorMapUrl = systemParam.vectorMapUrl;
 					modelLocator.baseMapInfo.waterResourceRasterMapUrl = systemParam.rasterMapUrl;
+					modelLocator.baseMapInfo.waterResourceDemMapUrl = systemParam.demMapUrl;
 					
 					var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE);
 					mapLayerEvent.dispatch();

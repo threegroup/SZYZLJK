@@ -18,7 +18,10 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.vo.WaterEvaluaParam;
 	import sm.wegis.szy.vo.WaterEvaluationVO;
 	
-	public class QueryCountyThemeDataCommand extends CommandBase
+	import widgets.waterevaluation.CapacityDataSource;
+	
+	//水功能区排污口污染物入河量详情
+	public class GetPWKDetailCommand extends CommandBase
 	{
 		override public function execute(event:CairngormEvent):void
 		{
@@ -27,7 +30,10 @@ package sm.wegis.szy.commands
 			var params:Array = [];
 			params.push(modelLocator.systemInfo.subSystemID);
 			params.push(waterCapacityParam.searchYear);
-			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetXZQDataList, params);
+			params.push(waterCapacityParam.id);
+			params.push(waterCapacityParam.riverIds);
+			params.push(waterCapacityParam.waterFunctionId);
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetPWKDetail, params);
 			CursorManager.setBusyCursor();
 		}
 		
@@ -36,19 +42,18 @@ package sm.wegis.szy.commands
 			CursorManager.removeBusyCursor();
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var value:Object = jsDec.getValue() as Object;
-			
-			var queryEvent:QueryEvent;
-			
-			modelLocator.waterEvaluationVO.waterEvaluationResult = value;
-			
-			queryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
-			queryEvent.dispatch();
+			var capacityItem:Object = CapacityDataSource.dgCol[2];
+			for (var prop:String in value) {
+				capacityItem[prop] = value[prop];
+			}
+			var showCapacityEvent:QueryEvent = new QueryEvent(QueryEvent.GET_PWK_DETAIL_RESPONSE);
+			showCapacityEvent.data = capacityItem;;
+			showCapacityEvent.dispatch();
 		}
 		
 		override public function fault(info:Object):void
 		{
-			CursorManager.removeBusyCursor();
-			Alert.show("请求水资源承载力数据失败！", "提示", Alert.OK, null, null, 
+			Alert.show("请求水功能区排污口污染物入河量详情失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
 		}
 	}

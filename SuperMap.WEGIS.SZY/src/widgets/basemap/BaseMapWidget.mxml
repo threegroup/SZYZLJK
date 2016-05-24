@@ -12,33 +12,66 @@
 			
 			import mx.events.FlexEvent;
 			
+			import org.as3commons.reflect.Constant;
+			
 			import sm.wegis.szy.events.MapLayerEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.vo.BaseMapVO;
 			import sm.wegis.szy.vo.ConstVO;
 			
+			import spark.components.Image;
+			
+			public static const normalState:String = "normalState";
+			
+			public static const selectState:String = "selectState";
+			
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			protected function baseMapType_clickHandler(event:MouseEvent):void
 			{
-				if (this.currentState == ConstVO.VectorMapState) {
-					this.currentState = ConstVO.ImageMapState;
-				} else {
-					this.currentState = ConstVO.VectorMapState;
-				}
+				var selectImg:BaseMapImageItem = event.currentTarget as BaseMapImageItem;
+				select.source = selectImg.source;
+				select.title = selectImg.title;
+				modelLocator.baseMapInfo.baseMapSelectType = getBaseMapUrl(selectImg);
 				dispatchBaseMapChangeEvent();
+			}
+			
+			private function getBaseMapUrl(selectImg:BaseMapImageItem):String
+			{
+				switch(selectImg.id)
+				{
+					case vector.id:
+						return ConstVO.VectorType;
+						break;
+					case image.id:
+						return ConstVO.ImageType;
+						break;
+					case dem.id:
+						return ConstVO.DemType;
+						break;
+				}
+				return ConstVO.VectorType;
 			}
 			
 			private function dispatchBaseMapChangeEvent():void
 			{
-				modelLocator.baseMapInfo.baseMapState = this.currentState;
-				
 				var mapLayerEvent:MapLayerEvent = new MapLayerEvent(MapLayerEvent.BASE_MAP_CHANGE);
 				mapLayerEvent.dispatch();
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
+				modelLocator.baseMapInfo.baseMapSelectType = ConstVO.VectorType;
 				dispatchBaseMapChangeEvent();
+			}
+			
+			protected function select_rollOverHandler(event:MouseEvent):void
+			{
+				this.currentState = selectState;
+			}
+			
+			protected function selectPanl_rollOutHandler(event:MouseEvent):void
+			{
+				this.currentState = normalState;				
 			}
 			
 		]]>
@@ -47,11 +80,17 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<ns:states>
-		<s:State name="vectorMapState"/>
-		<s:State name="imageMapState"/>
+		<s:State name="normalState"/>
+		<s:State name="selectState"/>
 	</ns:states>
-	<basemap:BaseMapImageItem id="vector" includeIn="imageMapState"  click="baseMapType_clickHandler(event)"
+	<s:HGroup id="selectPanl" gap="5" includeIn="selectState" rollOut="selectPanl_rollOutHandler(event)">
+	<basemap:BaseMapImageItem id="vector" click="baseMapType_clickHandler(event)"
 							  source="{ResourceManagerEx.FindResource('vectorPng').cls}" title="矢量"/>
-	<basemap:BaseMapImageItem id="image" includeIn="vectorMapState"  click="baseMapType_clickHandler(event)"
+	<basemap:BaseMapImageItem id="image" click="baseMapType_clickHandler(event)"
 							  source="{ResourceManagerEx.FindResource('imagePng').cls}" title="影像"/>
+	<basemap:BaseMapImageItem id="dem"  click="baseMapType_clickHandler(event)"
+							  source="{ResourceManagerEx.FindResource('demPng').cls}" title="地形"/>
+	</s:HGroup>
+	<basemap:BaseMapImageItem id="select" includeIn="normalState"   rollOver="select_rollOverHandler(event)"  
+							  source="{ResourceManagerEx.FindResource('vectorPng').cls}" title="矢量"/>
 </ns:WidgetBase>

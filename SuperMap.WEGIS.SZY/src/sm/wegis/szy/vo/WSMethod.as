@@ -40,12 +40,28 @@ package sm.wegis.szy.vo
 		/**查询水质评价，河流主要污染指标*/
 		public static const GetSZPJItemValue:String = "getSZPJItemValue";
 		
+		/**水功能区目标水质*/
+		public static const GetWaterFounctionWaterregimen:String = "getWaterFounctionWaterregimen";
+		
 		/**--------------水资源承载力查询接口------------*/
 		/**
 		 * 行政区承载力情况统计表---1级---接口二
 		 */
 		public static const GetXZQCondition:String = "getXZQCondition";
 		/**
+
+		/**获取水资源承载力年份列表*/
+		public static const GetSZYYearList:String = "getSZYYearList";
+		
+		/**选择年份，点击查询，获取【行政区】（各县）评价数据，用于地图展示*/
+		public static const GetXZQDataList:String = "getXZQDataList";
+
+		/**
+		 * 获取水资源承载力，市气泡数据
+		 */
+		 public static const GetXZQBubbleDetail:String = "getXZQBubbleDetail";
+		 
+		 /** 
 		 * 河流水功能区水质达标率及污染物入河量情况统计表---2级---接口三
 		 */
 		public static const GetRiverWaterFounctionCondition:String = "getRiverWaterFounctionCondition";

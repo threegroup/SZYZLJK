@@ -159,6 +159,25 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryRiverMainPollutionCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryWaterFunctionDestinationInfoCommand
+					</value>
+					
+					
+					<!--水资源承载力-->
+					<value type="Class">sm.wegis.szy.commands.QueryCountyThemeDataCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryCountyInfoDataCommand
+					</value>
+					
+                    <value type="Class">sm.wegis.szy.commands.GetXZQConditionCommand
+					</value>			
+					<value type="Class">sm.wegis.szy.commands.GetRiverWaterFounctionConditionCommand
+					</value>	
+				    <value type="Class">sm.wegis.szy.commands.GetWaterFounctionItemValueCommand
+					</value>
+					 <value type="Class">sm.wegis.szy.commands.GetPWKDetailCommand
+					</value>				
+					
 				</array>
 			</arg>
 		</method-invocation>
@@ -201,7 +220,17 @@
 				<property name="QueryWaterFunctionRegion" value="QueryWaterFunctionRegionCommand"/>
 				<property name="QueryWaterEvaluationResult" value="QueryWaterEvaluationResultCommand"/>
 				<property name="QueryRiverMainPollution" value="QueryRiverMainPollutionCommand"/>
+				<property name="QueryWaterFunctionDestinationInfo" value="QueryWaterFunctionDestinationInfoCommand"/>
 				
+				<!--水资源承载力-->
+				<property name="QueryCountyThemeData" value="QueryCountyThemeDataCommand"/>
+				<property name="QueryCountyInfoData" value="QueryCountyInfoDataCommand"/>
+				
+				<property name="GetXZQCondition" value="GetXZQConditionCommand"/>
+				<property name="GetRiverWaterFounctionCondition" value="GetRiverWaterFounctionConditionCommand"/>
+				<property name="GetWaterFounctionItemValue" value="GetWaterFounctionItemValueCommand"/>
+				<property name="GetPWKDetail" value="GetPWKDetailCommand"/>
+							
 				
 			</object>
 		</constructor-arg>
@@ -239,8 +268,7 @@
 					
 					<value type="Class">sm.wegis.szy.commands.QuerySaveThemeMapCommand
 					</value>
-					<value type="Class">sm.wegis.szy.commands.QueryCountyThemeDataCommand
-					</value>
+				
 					
 				</array>
 			</arg>
@@ -258,7 +286,7 @@
 				
 					<!--水质评价保存的专题地图查询 -->
 				<property name="QuerySaveThemeMap" value="QuerySaveThemeMapCommand" />
-				<property name="QueryCountyThemeData" value="QueryCountyThemeDataCommand" />
+				
 				
 			</object>
 		</constructor-arg>

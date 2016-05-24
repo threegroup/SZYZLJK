@@ -5,8 +5,12 @@ package sm.wegis.szy.vo
 		/**要素图片Y轴偏移值*/
 		public static const PICTURE_FEATURE_YOFFSET:int = 12;
 		
-		public  static const  VectorMapState:String = "vectorMapState";
-		public  static const  ImageMapState:String = "imageMapState";
+		
+		/**底图类型，矢量，影像，地形*/
+		public static const VectorType="vectorType";
+		public static const ImageType="imageType";
+		public static const DemType="demType";
+		
 		
 		/**矢量底图*/
 		public  static const BaseMapVectorLayerId:String = "baseMapVectorLayerId";
@@ -49,6 +53,8 @@ package sm.wegis.szy.vo
 		public static const FUNCTION_EVALUATION_THEME_TYPE:String = "functionEvaluationThemeType";
 		/**水质评价，专题地图——水功能区是否达标类型*/
 		public static const FUNCTION_STANDARD_THEME_TYPE:String = "functionStandardThemeType";
+		/**水质评价，专题地图——水功能区目标水质类型*/
+		public static const FUNCTION_DESTINATION_THEME_TYPE:String = "functionDestinationThemeType";
 		/**水质评价，专题地图——行政区划专题图*/
 		public static const COUNTY_THEME_TYPE:String = "CountyThemeType";
 		

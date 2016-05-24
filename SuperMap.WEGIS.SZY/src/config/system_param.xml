@@ -2,20 +2,20 @@
 <system>
 	<subSystem name="taizihe">
 		<viewBounds>121.7404, 40.4814, 125.3412, 41.8437</viewBounds>
-<!-- 		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapV</baseVectorMapUrl> -->
-<!--         <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapR</baseImageMapUrl> -->
-		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap</baseVectorMapUrl>
-        <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap</baseImageMapUrl>
+   		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapV</baseVectorMapUrl> 
+         <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapR</baseImageMapUrl>
+         <baseDemMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapD</baseDemMapUrl>
 		<vectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_V</vectorMapUrl>
 		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_R</rasterMapUrl>
+		<demMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_R</demMapUrl>
 		<sfzMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/水功能区</sfzMapUrl>
 		<sfzLayerName>水功能区汇总@断面</sfzLayerName>
 		<riverMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/河流</riverMapUrl>
 		<riverLayerName>河流汇总@断面</riverLayerName>
 		<countyMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/行政区划</countyMapUrl>
-		<countyLayerName>流域内县界@MAP</countyLayerName>
+		<countyLayerName>市界_太子河流域@MAP</countyLayerName>
 		
-		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50,51"/>
+		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50,52"/>
 		<themeLayerId>
 			<layer label="水库"  selected="true" layerIds="9,10,11,12,28,29,33,34" />
 			<layer label="河流"  selected="true" 
@@ -25,7 +25,8 @@
 			<layer label="拦河坝"  selected="true" layerIds="5,27" />
 			<layer label="排污口"  selected="true" layerIds="6,26" />
 			<layer label="高程线"  selected="true" layerIds="4,44" />
-			<layer label="路网"  selected="false" layerIds="45,46,47,48" />
+			<layer label="路网"  selected="false" layerIds="45,46,47,48"/>
+			<layer label="土地利用"  selected="false" layerIds="51"/>
 		</themeLayerId>
 	</subSystem>
     <subSystem name="yuqiao">

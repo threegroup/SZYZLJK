@@ -10,6 +10,7 @@ package sm.wegis.szy.models
 	import sm.wegis.szy.vo.SystemVO;
 	import sm.wegis.szy.vo.ToolVO;
 	import sm.wegis.szy.vo.UserVO;
+	import sm.wegis.szy.vo.WaterCapacityParam;
 	import sm.wegis.szy.vo.WaterEvaluaParam;
 	import sm.wegis.szy.vo.WaterEvaluationVO;
 
@@ -46,6 +47,19 @@ package sm.wegis.szy.models
 		//水质评价，专题地图查询参数
 		private var _waterEvaluaParam:WaterEvaluaParam;
 		
+		//水资源承载力，专题地图查询参数
+		private var _waterCapacityParam:WaterCapacityParam;
+		
+		public function get waterCapacityParam():WaterCapacityParam
+		{
+			return _waterCapacityParam;
+		}
+
+		public function set waterCapacityParam(value:WaterCapacityParam):void
+		{
+			_waterCapacityParam = value;
+		}
+
 		public function get waterEvaluaParam():WaterEvaluaParam
 		{
 			if (_waterEvaluaParam == null) {

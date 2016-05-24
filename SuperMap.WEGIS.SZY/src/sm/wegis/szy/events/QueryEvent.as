@@ -47,7 +47,10 @@ package sm.wegis.szy.events
 
 		/**----------------------水质评价----------------*/
 		/**水质评价查询单个要素，监测数据*/
-		public static const QUERY_STATION_EVALUTION_INFO:String = "QueryStationEvalutionInfo"
+		public static const QUERY_STATION_EVALUTION_INFO:String = "QueryStationEvalutionInfo";
+		
+		/**水质评价，查询当前waterbodyId下，水功能区目标水质*/
+		public static const QUERY_WATER_FUNCTION_DESTINATION_INFO:String = "QueryWaterFunctionDestinationInfo";
 		
 		/**查询河流列表*/
 		public static  const QUERY_RIVER_LIST:String = "QueryRiverList";
@@ -106,10 +109,13 @@ package sm.wegis.szy.events
 		/**设置专题图类型*/
 		public static const CHANGE_THEME_MAP_TYPE:String = "ChangeThemeMapType";
 		
-		/**查询水资源承载力，县地图业务数据*/
+		/**查询水资源承载力，市地图业务数据*/
 		public static const QUERY_COUNTY_THEME_DATA:String = "QueryCountyThemeData";
 		
 		//-----------------------水资源承载力----------------------------------------------------------------
+		
+		/**查询行政区划气泡数据*/
+		public static const QUERY_COUNTY_INFO_DATA:String = "QueryCountyInfoData";
 		
 		/**查询水资源承载力，在窗口底部显示表格数据*/
 		public static const SHOW_WATER_CAPACITY_DATA:String = "Show_Water_Capacity_Data";
@@ -118,23 +124,23 @@ package sm.wegis.szy.events
 		public static const SHOW_WATER_CAPACITY_MONITOR_DATA:String = "Show_Water_Capacity_Monitor_Data";
 		
 		/**行政区承载力情况统计表---1级---接口二*/
-		public static const GET_XZQ_CONDITION:String = "getXZQCondition";
+		public static const GET_XZQ_CONDITION:String = "GetXZQCondition";
 		/**行政区承载力情况统计表---1级---接口二*/
-		public static const GET_XZQ_CONDITION_RESPONSE:String = "getXZQConditionResponse";
+		public static const GET_XZQ_CONDITION_RESPONSE:String = "GetXZQConditionResponse";
 		
 		/**河流水功能区水质达标率及污染物入河量情况统计表---2级---接口三*/
-		public static const GET_RIVER_WATER_FOUNCTION_CONDITION:String = "getRiverWaterFounctionCondition";
+		public static const GET_RIVER_WATER_FOUNCTION_CONDITION:String = "GetRiverWaterFounctionCondition";
 		/**河流水功能区水质达标率及污染物入河量情况统计表---2级---接口三*/
-		public static const GET_RIVER_WATER_FOUNCTION_CONDITION_RESPONSE:String = "getRiverWaterFounctionConditionResponse";
+		public static const GET_RIVER_WATER_FOUNCTION_CONDITION_RESPONSE:String = "GetRiverWaterFounctionConditionResponse";
 		
 		/**水功能区水质达标率及污染物入河量详情---2级详情表---接口四*/
-		public static const GET_WATER_FOUNCTION_ITEM_VALUE:String = "getWaterFounctionItemValue";
+		public static const GET_WATER_FOUNCTION_ITEM_VALUE:String = "GetWaterFounctionItemValue";
 		/**水功能区水质达标率及污染物入河量详情---2级详情表---接口四*/
-		public static const GET_WATER_FOUNCTION_ITEM_VALUE_RESPONSE:String = "getWaterFounctionItemValueResponse";
+		public static const GET_WATER_FOUNCTION_ITEM_VALUE_RESPONSE:String = "GetWaterFounctionItemValueResponse";
 		
 		/**水功能区排污口污染物入河量详情---3级---接口五*/
-		public static const GET_PWK_DETAIL:String = "getPWKDetail";
+		public static const GET_PWK_DETAIL:String = "GetPWKDetail";
 		/**水功能区排污口污染物入河量详情---3级---接口五*/
-		public static const GET_PWK_DETAIL_RESPONSE:String = "getPWKDetailResponse";
+		public static const GET_PWK_DETAIL_RESPONSE:String = "GetPWKDetailResponse";
 	}
 }

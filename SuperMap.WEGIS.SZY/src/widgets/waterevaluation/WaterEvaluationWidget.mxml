@@ -41,6 +41,7 @@
 			import sm.wegis.szy.utils.FeatureLayerUtil;
 			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.SaveThemeMapVO;
+			import sm.wegis.szy.vo.WaterCapacityParam;
 			import sm.wegis.szy.vo.WaterEvaluaParam;
 			
 			import spark.components.Group;
@@ -272,6 +273,7 @@
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
+				queryWaterFunctionDestination();
 				//计算条件面板高度
 				updateUnitLayout();
 				
@@ -281,6 +283,13 @@
 				
 				//初始化评价类型列表
 				decodeUI(searchTypeContainer, searchTypePanelHeight, searchTypeData);
+			}
+			
+			//由于水功能区目标水质，只与waterbodyid有关，设置初始化就请求数据
+			public function queryWaterFunctionDestination():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_DESTINATION_INFO);
+				queryEvent.dispatch();
 			}
 			
 			/**清空条件内容*/
@@ -1006,7 +1015,12 @@
 				//存储水质评价选择的专题图类型
 				modelLocator.waterEvaluationVO.preThemeMapType = modelLocator.waterEvaluationVO.themeMapType;
 				modelLocator.waterEvaluationVO.themeMapType = ConstVO.COUNTY_THEME_TYPE;
+				modelLocator.waterCapacityParam = new WaterCapacityParam();
+				var waterCapacityParam:WaterCapacityParam = modelLocator.waterCapacityParam;
+				var searchArray:Array = getQueryParam(capacitySearchYearContainer);
+				waterCapacityParam.searchYear = searchArray[0];
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COUNTY_THEME_DATA);
+				queryEvent.data = waterCapacityParam;
 				queryEvent.dispatch();
 			}
 			

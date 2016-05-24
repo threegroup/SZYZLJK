@@ -17,7 +17,7 @@
 		<service label="水利工程" type="list"/>
 		<service label="水库"  legendid="SK" />
 		<service  label="水电站"  legendid="sdz3" />
-			<service label="水闸" legendid="sz1" />
+		<service label="水闸" legendid="sz1" />
 		<service   label="泵站"  legendid="泵站" />
 		<service  label="农村供水"	 legendid="农村供水工程" />
 		<service label="灌区" 	legendid="gq" />
@@ -25,4 +25,26 @@
 		<service  label="河湖取水口"  legendid="河湖取水口" />
 		<service label="地表水源地"  legendid="地表水水源地" />
 		<service  label="排污口"  legendid="入河湖排污口" />
+     	<service label="土地利用" type="list"/>
+		<service  label="果园"  legendid="21" />
+		<service  label="茶园"  legendid="22" />
+		<service  label="其他园地"  legendid="23" />
+		<service  label="有林地"  legendid="31" />
+		<service  label="灌木林"  legendid="32" />
+		<service  label="其他林地"  legendid="33" />
+		<service  label="天然牧草地"  legendid="41" />
+		<service  label="人工牧草地"  legendid="42" />
+		<service  label="其他草地"  legendid="43" />
+		<service  label="批发零售用地"  legendid="51" />
+		<service  label="住宿餐饮用地"  legendid="52" />
+		<service  label="商务金融用地"  legendid="53" />
+		<service  label="工业用地"  legendid="61" />
+		<service  label="采矿用地"  legendid="62" />
+		<service  label="仓储用地"  legendid="63" />
+		<service  label="河流水面"  legendid="111" />
+		<service  label="湖泊水面"  legendid="112"/>
+		<service  label="水库水面"  legendid="113"/>
+		<service  label="空闲地"  legendid="121" />
+		<service  label="设施农用地"  legendid="122" />
+		<service  label="田坎"  legendid="123" />
 </services>

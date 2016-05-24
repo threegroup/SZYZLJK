@@ -11,5 +11,8 @@ package sm.wegis.szy.vo
 		
 		/**水质评价成果数据*/
 		public var waterEvaluationResult:Object;
+		
+		/**水功能区，目标水质查询结果数据*/
+		public var waterFunctionDestinationResult:Object;
 	}
 }

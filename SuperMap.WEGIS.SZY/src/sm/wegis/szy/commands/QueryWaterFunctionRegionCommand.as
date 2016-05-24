@@ -27,6 +27,7 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.events.QueryEvent;
 	import sm.wegis.szy.vo.ConstVO;
+	import sm.wegis.szy.vo.WaterCapacityParam;
 	import sm.wegis.szy.vo.WaterEvaluaParam;
 	import sm.wegis.szy.vo.WaterEvaluationVO;
 	
@@ -101,7 +102,7 @@ package sm.wegis.szy.commands
 				}
 			}
 			
-			//查询县界
+			//查询太子河流域内市界
 			QueryVectorDatasetHandle(modelLocator.baseMapInfo.countyMapUrl, modelLocator.baseMapInfo.countyLayerName, ['ID','NAME']
 				, displayCountyQueryRecords);
 		}
@@ -146,7 +147,7 @@ package sm.wegis.szy.commands
 				, displayWaterFunctionQueryRecords);
 		}
 		
-		//县查询结果
+		//市查询结果
 		private function displayCountyQueryRecords(queryResult:QueryResult, mark:Object = null):void
 		{
 			if(queryResult.recordsets != null && queryResult.recordsets.length != 0)
@@ -214,6 +215,7 @@ package sm.wegis.szy.commands
 								ft.attributes["businessId"] = riverInfo["评价对象_ID"];
 								ft.toolTip = ft.attributes["水质状况"];
 								ft.style = new PredefinedLineStyle("solid",parseInt(riverInfo["表征颜色"],16), 1,8);
+								break;
 							}
 						}
 					}
@@ -232,6 +234,7 @@ package sm.wegis.szy.commands
 									ft.attributes["businessId"] = riverInfo["评价对象_ID"];
 									ft.style = new PredefinedLineStyle("solid",parseInt(functionInfo["表征颜色"],16), 1,8);
 									ft.toolTip = ft.attributes["水质状况"];
+									break;
 								}
 							}
 						}
@@ -253,21 +256,45 @@ package sm.wegis.szy.commands
 									colorStr = colorStr.replace(/#/ig, "0x");
 									ft.style = new PredefinedLineStyle("solid",parseInt(colorStr,16), 1,8);
 									ft.toolTip = getWaterFunctionToolTip(functionInfo);
+									break;
 								}
 							}
 						}
 					}
 						showThemeMapTypePanel(true);
 						break;
-					//行政区划水质评价专题图--待完善
+					//水功能区目标水质图
+					case ConstVO.FUNCTION_DESTINATION_THEME_TYPE:
+						waterFunctionFeatureLayer.visible = true;
+						waterEvalutions = waterEvaluationVO.waterFunctionDestinationResult;
+						if (waterEvalutions != null) {
+							for each(functionInfo in waterEvalutions.targetList) {
+								for each(ft in waterFunctionFeatureLayer.features) {
+									if (ft.attributes["ID"] == functionInfo.super_obj_id)
+									{
+										colorStr = functionInfo["目标水质颜色"];
+										colorStr = colorStr.replace(/#/ig, "0x");
+										ft.style = new PredefinedLineStyle("solid",parseInt(colorStr,16), 1,8);
+										ft.toolTip = "目标水质:"+functionInfo["目标水质名称"];
+										break;
+									}
+								}
+							}
+						}
+						showThemeMapTypePanel(true);
+						break;
+					//行政区划水质承载力专题图
 					case ConstVO.COUNTY_THEME_TYPE:
 						countyFeatureLayer.visible = true;
 						for each(riverInfo in waterEvalutions.targetList) {
 						for each(ft in countyFeatureLayer.features) {
-							if (ft.attributes["ID"] == riverInfo.SUPER_OBJ_ID)
+							if (ft.attributes["ID"] == riverInfo["SUPER_OBJ_ID"])
 							{
+								ft.attributes["行政区_id"] = riverInfo["行政区_id"];
 								ft.toolTip =  getCapacityToolTip(riverInfo["承载力类别等级"]);
 								ft.style = new PredefinedFillStyle("solid",getCapacityColor(riverInfo["承载力类别等级"]), 0.5, null);
+								//								ft.style = new PredefinedFillStyle("solid",parseInt(riverInfo["达标颜色"], 16), 0.7, null);
+								break;
 							}
 						}
 					}
@@ -382,7 +409,7 @@ package sm.wegis.szy.commands
 			queryEvent.dispatch();
 		}
 		
-		/**查询县承载力数据*/
+		/**查询太子河流域市承载力数据*/
 		private function showCityCapacityInfo(event:MouseEvent):void
 		{
 			var feature:Feature = event.currentTarget as Feature;
@@ -390,24 +417,20 @@ package sm.wegis.szy.commands
 			var clickPoint:Point = new Point(event.stageX,event.stageY);
 			var mapPoint:Point2D = modelLocator.mapCtrl.stageToMap(clickPoint);
 			
-			var resultData:Object = {};
-			var value:Object = CapacityDataSource.countyInfoData
-			resultData["resultData"] = value;
-			resultData["attribute"] = {};
-			resultData["attribute"]["OBJ_NAME"] = attribute["NAME"];
-			resultData["attribute"]["CENTER_X"] = mapPoint.x;
-			resultData["attribute"]["CENTER_Y"] = mapPoint.y;
-			if(value.hasOwnProperty("surveyData") && value["surveyData"] != null)
-			{
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_OBJECT_DETAIL);
-				queryEvent.data = resultData;
-				queryEvent.dispatch();
-			}
+			//请求区域水资源承载力气泡数据
+			var waterEvaluaParam:WaterCapacityParam = modelLocator.waterCapacityParam;
+			waterEvaluaParam.id = attribute["行政区_id"];
+			waterEvaluaParam.name = attribute["NAME"];
+			waterEvaluaParam.x = mapPoint.x;
+			waterEvaluaParam.y = mapPoint.y;
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COUNTY_INFO_DATA);
+			queryEvent.data = waterEvaluaParam;
+			queryEvent.dispatch();
 			
-			//在地图窗口底部显示水资源承载能力表格数据
-			var showCapacityEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_WATER_CAPACITY_DATA);
-			showCapacityEvent.data = CapacityDataSource.dgCol[0];
-			showCapacityEvent.dispatch();
+			//请求在地图窗口底部显示水资源承载能力表格数据
+			queryEvent = new QueryEvent(QueryEvent.GET_XZQ_CONDITION);
+			queryEvent.data = waterEvaluaParam;
+			queryEvent.dispatch();
 		}
 		
 		private function faultHandle(object:Object, mark:Object = null):void

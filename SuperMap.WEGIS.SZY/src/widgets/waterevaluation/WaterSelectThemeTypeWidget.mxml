@@ -85,6 +85,7 @@
 			<s:RadioButton id="riverType" label="河流水质评价图" buttonMode="true"  groupName="themeMapGroup" selected="true" value="{ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE}"/>
 			<s:RadioButton id="functionType" label="水功能区水质评价图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_EVALUATION_THEME_TYPE}"/>
 			<s:RadioButton id="functionPsType" label="水功能区水质达标图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_STANDARD_THEME_TYPE}"/>
+			<s:RadioButton id="functionDstType" label="水功能区水质目标图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_DESTINATION_THEME_TYPE}"/>
 		</s:VGroup>
 	</s:Panel>
 </ns:WidgetBase>
