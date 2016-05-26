@@ -4,7 +4,10 @@ package sm.wegis.szy.utils
 	import com.supermap.wegis.common.components.mapCtrl.MapCtrl;
 	import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 	
+	import flash.text.TextFormat;
+	
 	import mx.controls.Text;
+	import mx.styles.StyleManager;
 
 	public class FeatureLayerUtil
 	{
@@ -37,7 +40,8 @@ package sm.wegis.szy.utils
 		
 		public static function getTextStyle(text:String):TextStyle
 		{
-			return new TextStyle(text, 0xFFFFFF, true, 0xFFFFFF, true, 0x979797, 0, TextStyle.PLACEMENT_BOTTOM);
+			var textFormat:TextFormat = new TextFormat("宋体",13);
+			return new TextStyle(text, 0xFFFFFF, true, 0xFFFFFF, true, 0x979797, 0, TextStyle.PLACEMENT_BOTTOM,0,0,null,textFormat);
 		}
 	}
 }

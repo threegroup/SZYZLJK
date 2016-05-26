@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 minWidth="160" minHeight="60">
+		 width="150" minHeight="50">
 	<fx:Script>
 		<![CDATA[
 			import sm.wegis.szy.renders.items.BreakGridRow;
@@ -12,24 +12,21 @@
 			public var type:String;
 			private var change:Boolean =false;
 			
-			public static const River:String = "river";
-			public static const Break:String = "break";
-
 			public function get title():String
 			{
 				return _title;
 			}
-
+			
 			public function set title(value:String):void
 			{
 				_title = value;
 			}
-
+			
 			public function get targets():Object
 			{
 				return _targets;
 			}
-
+			
 			public function set targets(value:Object):void
 			{
 				_targets = value;
@@ -43,41 +40,24 @@
 					change = false;
 					if (title != null && title.length > 0) {
 						titleLb.text = title;
-						titleLb.toolTip = title;
 					} else {
 						titleContent.visible = titleContent.includeInLayout = false;
 					}
-				
+					
 					var item:Object;
 					gridContent.removeAllElements();
-					if (type == River) {
-						var riverGridRow:RiverGridRow = new RiverGridRow();
-						riverGridRow.title =  "污染物名称";
-						riverGridRow.value =  "断面超标率";
-						riverGridRow.isTitle = true;
+					var riverGridRow:RiverGridRow;
+					//						riverGridRow = = new RiverGridRow();
+					//						riverGridRow.title =  "污染物名称";
+					//						riverGridRow.value =  "断面超标率";
+					//						riverGridRow.isTitle = true;
+					//						gridContent.addElement(riverGridRow);
+					for each(item in targets) {
+						riverGridRow = new RiverGridRow();
+						riverGridRow.title = item["name"];
+						riverGridRow.value = item["value"];
+						riverGridRow.styleName = "contentGridItem";
 						gridContent.addElement(riverGridRow);
-						for each(item in targets) {
-							riverGridRow = new RiverGridRow();
-							riverGridRow.title = item["污染物名称"];
-							riverGridRow.value = item["断面超标率"];
-							riverGridRow.styleName = "contentGridItem";
-							gridContent.addElement(riverGridRow);
-						}
-					} else {
-						var breakGridRow:BreakGridRow = new BreakGridRow();
-						breakGridRow.title =  "污染物名称";
-						breakGridRow.value =  "观测值";
-						breakGridRow.times = "超标倍数";
-						breakGridRow.isTitle = true;
-						gridContent.addElement(breakGridRow);
-						for each(item in targets) {
-							breakGridRow = new BreakGridRow();
-							breakGridRow.title = item["污染物名称"];
-							breakGridRow.value = item["断面超标率"];
-							breakGridRow.times =item["超标倍数"];
-							breakGridRow.styleName = "contentGridItem";
-							gridContent.addElement(breakGridRow);
-						}
 					}
 				}
 			}

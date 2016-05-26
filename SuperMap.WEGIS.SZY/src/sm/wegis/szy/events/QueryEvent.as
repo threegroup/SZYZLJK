@@ -44,6 +44,10 @@ package sm.wegis.szy.events
 		/**查询默认断面，测站，功能区点*/
 		public static  const QUERY_DEFAULT_POINT:String = "QueryDefaultPoint";
 		public static  const QUERY_DEFAULT_POINT_RESPONSE:String = "QueryDefaultPointResponse";
+		
+		/**查询排污口*/
+		public static  const QUERY_POLLUTION_POINT:String = "QueryPollutionPoint";
+		public static  const QUERY_POLLUTION_POINT_RESPONSE:String = "QueryPollutionPointResponse";
 
 		/**----------------------水质评价----------------*/
 		/**水质评价查询单个要素，监测数据*/
