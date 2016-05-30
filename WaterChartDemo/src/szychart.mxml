@@ -376,7 +376,7 @@
 				return displayName+ ":" + cntData.altitude + "<br>"+"距离:"+ cntData.distance;
 			}
 			
-			protected function hd_WaterDensityChart_creationCompleteHandler(event:FlexEvent):void
+			/* protected function hd_WaterDensityChart_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
 				this.canReset = false;
@@ -384,7 +384,7 @@
 				this.hd_basicLine.dataProvider = new ArrayCollection(hdtpDs.terrainProfileData["nodeList"]);
 				this.hd_WaterPositionLine.displayName = hdwpDs.waterPositionData["label"];
 				this.hd_WaterPositionLine.dataProvider = new ArrayCollection(hdwpDs.waterPositionData["nodeList"]);
-			}
+			} */
 			
 			protected function hd_wpLegend_itemClickHandler(event:LegendMouseEvent):void
 			{
@@ -752,46 +752,129 @@
 				</mx:AreaChart>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="河道[水位]">
-				<mx:LineChart id="hd_WaterDensityChart" width="100%" height="100%" 
-							  showDataTips="true"
-							  seriesFilters="[]"
-							  selectionMode="multiple" 
-							  doubleClickEnabled="true"
-							  change="onZoom(event)"
-							  chartDoubleClick="hd_onReset4(event)"
-							  dataTipFunction="hd_basicDataTipFunction"
-							  creationComplete="hd_WaterDensityChart_creationCompleteHandler(event)">
-					<mx:backgroundElements>
-						<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
-							<mx:verticalStroke>
-								<s:SolidColorStroke color="#CCCCCC" weight="1"/>
-							</mx:verticalStroke>
-						</mx:GridLines>
-					</mx:backgroundElements>
-					<!-- vertical axis -->
-					<mx:verticalAxis>
-						<mx:LinearAxis id="hd_da" baseAtZero="false" title="水位(m)"  minimum="-50" maximum="200"/>
-					</mx:verticalAxis>
-					<mx:verticalAxisRenderers>
-						<mx:AxisRenderer axis="{hd_da}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
-					</mx:verticalAxisRenderers>
-					<!-- horizontal axis -->
-					<mx:horizontalAxis>
-						<mx:LinearAxis id="hd_dca" title="距离(km)" interval="50" baseAtZero="false"/>
-					</mx:horizontalAxis>
-					<!-- horizontal axis renderer -->
-					<mx:horizontalAxisRenderers>
-						<mx:AxisRenderer axis="{hd_dca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
-					</mx:horizontalAxisRenderers>
-					<mx:series>
-						<mx:LineSeries id="hd_basicLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="distance" yField="altitude" lineStroke="{hd_s3}" form="curve" showDataEffect="{slide}" />
-						<mx:LineSeries id="hd_WaterPositionLine" itemRenderer="chartitemrender.LineChartDataRender" xField="distance" yField="altitude" lineStroke="{hd_s5}" form="curve" showDataEffect="{slide}" />
-					</mx:series>
-				</mx:LineChart>
-				<mx:ControlBar top="20" right="20">
-					<mx:Legend id="hd_wpLegend" dataProvider="{hd_WaterDensityChart}" buttonMode="true"
-							   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
-				</mx:ControlBar>
+				<s:TextArea width="100%" height="100%" editable="false">
+					<s:span>
+						<s:text><![CDATA[河道水位统计图的数据结构与河道水深统计图数据结构一致，只要将字段名称做一些必要的处理，针对其中一项数据处理如下：</br>
+							PS:请将数据Copy到他处格式化处理。
+							{
+							"type":"LineChart",
+							"schemeName":"所属方案名称",
+							"schemeCode":"所属方案编码",
+							"sectionName":"河道名称",
+							"sectionCode":"河道编码",
+							"year":"2016",
+							"label":"1月",
+							"color":"0x8F8FD2",
+							"xField":"distance",
+							"yField":"altitude",
+							"xFieldName":"距离（m）",
+							"yFieldName":"高程（m）",
+							"nodeList":
+							[
+							{
+							"distance": "0",
+							"altitude": 30
+							},
+							{
+							"distance": "10",
+							"altitude": 40
+							},
+							{
+							"distance": "25",
+							"altitude": 43
+							},
+							{
+							"distance": "40",
+							"altitude": 35
+							},
+							{
+							"distance": "50",
+							"altitude": 30
+							},
+							{
+							"distance": "60",
+							"altitude": 25
+							},
+							{
+							"distance": "70",
+							"altitude": 40
+							},
+							{
+							"distance": "75",
+							"altitude": 55
+							},
+							{
+							"distance": "90",
+							"altitude": 40
+							},
+							{
+							"distance": "100",
+							"altitude": 36
+							},
+							{
+							"distance": "110",
+							"altitude": 48
+							},
+							{
+							"distance": "116",
+							"altitude": 40
+							},
+							{
+							"distance": "125",
+							"altitude": 30
+							},
+							{
+							"distance": "130",
+							"altitude": 45
+							},
+							{
+							"distance": "150",
+							"altitude": 30
+							},
+							{
+							"distance": "150",
+							"altitude": 40
+							},
+							{
+							"distance": "171",
+							"altitude": 44
+							},
+							{
+							"distance": "175",
+							"altitude": 48
+							},
+							{
+							"distance":"180",
+							"altitude": 45
+							},
+							{
+							"distance": "200",
+							"altitude": 35
+							},
+							{
+							"distance": "204",
+							"altitude": 40
+							},
+							{
+							"distance": "210",
+							"altitude": 50
+							},
+							{
+							"distance": "215",
+							"altitude": 35
+							},
+							{
+							"distance": "216",
+							"altitude": 45
+							},
+							{
+							"distance": "220",
+							"altitude": 50
+							}
+							]
+							}]]></s:text>
+					</s:span>
+				</s:TextArea>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="河道[水深]">
 				<mx:LineChart id="hd_WaterDepthChart" width="100%" height="100%" 
