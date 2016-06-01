@@ -70,8 +70,6 @@
 				initListener();
 				
 				initDataGrid();
-				
-//				switchDataGrid(ConstVO.WATER_EVALUATION_TYPE);
 			}
 			
 			/**初始化事件监听*/
@@ -292,10 +290,10 @@
 			protected function normalGridClickHandler(event:GridEvent):void
 			{
 				var grid:DataGrid = event.currentTarget as DataGrid;
-				if (event.rowIndex > -1 && event.rowIndex < grid.dataProvider.length)
+				if (grid.selectedIndex > -1 && grid.selectedIndex < grid.dataProvider.length)
 				{
 					//地图定位
-					var selectedItem:Object = grid.selectedItem;
+					var selectedItem:Object = grid.dataProvider.getItemAt(grid.selectedIndex);
 					if ("x" in selectedItem && "y" in selectedItem) {
 						var point:Point2D = new Point2D(selectedItem.x, selectedItem.y);
 						if (modelLocator.mapCtrl.level < 3) {
@@ -459,8 +457,10 @@
 				{
 					panel.title = resultData.name +"——评价指标";
 					var gridDatas:Array=  resultData["attributes"]["targets"];
-					getDataGrid(ConstVO.WATER_EVALUATION_TYPE).dataProvider = new ArrayCollection(gridDatas);
-					this.switchDataGrid(ConstVO.WATER_EVALUATION_TYPE);
+					var data:Object = {};
+					data["key"] = ConstVO.WATER_EVALUATION_TYPE;
+					getDataGrid(data).dataProvider = new ArrayCollection(gridDatas);
+					this.switchDataGrid(data);
 					this.currentState = SHOW;
 				} else {
 					this.currentState = HIDE;

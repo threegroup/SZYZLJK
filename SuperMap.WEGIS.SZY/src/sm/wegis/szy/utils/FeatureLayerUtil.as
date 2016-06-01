@@ -41,7 +41,7 @@ package sm.wegis.szy.utils
 		public static function getTextStyle(text:String):TextStyle
 		{
 			var textFormat:TextFormat = new TextFormat("宋体",13);
-			return new TextStyle(text, 0xFFFFFF, true, 0xFFFFFF, true, 0x979797, 0, TextStyle.PLACEMENT_BOTTOM,0,0,null,textFormat);
+			return new TextStyle(text, 0xFFFFFF, true, 0xFFFFFF, true, 0x3D4852, 0, TextStyle.PLACEMENT_BOTTOM,0,0,null,textFormat);
 		}
 	}
 }

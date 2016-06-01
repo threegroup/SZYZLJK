@@ -9,7 +9,7 @@
 		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_R</rasterMapUrl>
 		<demMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/SZY_R</demMapUrl>
 		<sfzMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/水功能区</sfzMapUrl>
-		<sfzLayerName>水功能区汇总@断面</sfzLayerName>
+		<sfzLayerName>水功能区处理最终@断面</sfzLayerName>
 		<riverMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/河流</riverMapUrl>
 		<riverLayerName>河流汇总@断面</riverLayerName>
 		<countyMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/行政区划</countyMapUrl>

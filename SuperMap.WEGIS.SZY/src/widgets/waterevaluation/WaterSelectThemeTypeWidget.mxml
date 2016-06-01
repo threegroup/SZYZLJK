@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
-			   visible="false" visible.showState="true" height="90" width="160"
+			   height="90" width="160"
 			   creationComplete="creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
@@ -23,7 +23,9 @@
 			protected function themeMapGroup_valueCommitHandler(event:FlexEvent):void
 			{
 				if (themeMapGroup.selectedValue != null) {
-					modelLocator.waterEvaluationVO.themeMapType = themeMapGroup.selectedValue as String;
+					var type:String =  themeMapGroup.selectedValue as String;
+					modelLocator.waterEvaluationVO.EvalutionThemeMapType =type;
+					modelLocator.waterEvaluationVO.themeMapType = type;
 					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_WATER_FUNCTION_REGION);
 					queryEvent.dispatch();
 				}
@@ -80,7 +82,7 @@
 		<s:State name="hideState"/>
 		<s:State name="showState"/>
 	</ns:states>
-	<s:Panel title="专题图类型" width="100%" height="100%">
+	<s:Panel title="专题图类型" width="100%" height="100%"  visible.hideState="false" visible.showState="true">
 		<s:VGroup width="100%" height="100%"  paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5">
 			<s:RadioButton id="riverType" label="河流水质评价图" buttonMode="true"  groupName="themeMapGroup" selected="true" value="{ConstVO.RIVER_WATER_EVALUATION_THEME_TYPE}"/>
 			<s:RadioButton id="functionType" label="水功能区水质评价图" buttonMode="true"  groupName="themeMapGroup" value="{ConstVO.FUNCTION_EVALUATION_THEME_TYPE}"/>

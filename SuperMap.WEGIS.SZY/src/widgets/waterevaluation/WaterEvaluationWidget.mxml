@@ -799,10 +799,8 @@
 			protected function searchButton_clickHandler(event:MouseEvent):void
 			{
 				this.resetUI();
-				if (modelLocator.waterEvaluationVO.preThemeMapType != null) {
-					modelLocator.waterEvaluationVO.themeMapType  = modelLocator.waterEvaluationVO.preThemeMapType;
-					modelLocator.waterEvaluationVO.preThemeMapType = null;
-				}
+				hideEvalutionThemeType();
+				modelLocator.waterEvaluationVO.themeMapType  = modelLocator.waterEvaluationVO.EvalutionThemeMapType;
 				queryRiverPeriod();
 			}
 			
@@ -968,6 +966,8 @@
 				featuresLayer.clear();
 				
 				clearLastQuery();
+				
+				hideEvalutionThemeType();
 			}
 			
 			//模块加载完成
@@ -1067,6 +1067,15 @@
 				queryRiverCapacityYear();
 			}
 			
+			//隐藏水质评价专题图类型面板
+			private function hideEvalutionThemeType():void
+			{
+				//隐藏水质评价专题类型切换面板
+				var queryEvent:QueryEvent  = new QueryEvent(QueryEvent.SHOW_THEME_MAP_TYPE_PANEL_VISIBLE);
+				queryEvent.data = false;
+				queryEvent.dispatch();
+			}
+			
 			private function queryRiverCapacityYear():void
 			{
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CAPACITY_YEAR);
@@ -1078,7 +1087,6 @@
 			{
 				resetUI();
 				//存储水质评价选择的专题图类型
-				modelLocator.waterEvaluationVO.preThemeMapType = modelLocator.waterEvaluationVO.themeMapType;
 				modelLocator.waterEvaluationVO.themeMapType = ConstVO.COUNTY_THEME_TYPE;
 				modelLocator.waterCapacityParam = new WaterCapacityParam();
 				var waterCapacityParam:WaterCapacityParam = modelLocator.waterCapacityParam;
@@ -1108,7 +1116,8 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<s:VGroup width="100%" height="100%" gap="2">
-		<s:ButtonBar id="waterTypeBTB" width="100%" dataProvider="{featureDetailInfos}" valueCommit="waterTypeBTB_valueCommitHandler()"/>
+		<s:ButtonBar id="waterTypeBTB" width="100%" dataProvider="{featureDetailInfos}"
+					 valueCommit="waterTypeBTB_valueCommitHandler()"/>
 		<mx:ViewStack id="featureDetailInfos" width="100%" height="100%">
 			<s:NavigatorContent  label="水资源质量" width="100%" height="100%">
 				<mx:Accordion width="100%" height="100%">
