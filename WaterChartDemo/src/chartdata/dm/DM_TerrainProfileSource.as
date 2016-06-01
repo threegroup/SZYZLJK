@@ -31,89 +31,29 @@ package chartdata.dm
 					"yFieldName":"高程",
 					"nodeList":
 					[
-						{"2016-01":
-							[
-								{
-									"distance": 25,
-									"altitude": 60
-								},
-								{
-									"distance": 75,
-									"altitude": 60
-								},
-								{
-									"distance": 116,
-									"altitude": 80
-								},
-								{
-									"distance": 171,
-									"altitude": 80
-								},
-								{
-									"distance": 204,
-									"altitude": 70
-								},
-								{
-									"distance": 216,
-									"altitude": 70
-								}
-							]
+						{
+							"date": "2016-01",
+							"altitude": 60
 						},
-						{"2016-02":
-							[
-								{
-									"distance": 23,
-									"altitude": 62
-								},
-								{
-									"distance": 78,
-									"altitude": 62
-								},
-								{
-									"distance": 114,
-									"altitude": 82
-								},
-								{
-									"distance": 175,
-									"altitude": 82
-								},
-								{
-									"distance": 200,
-									"altitude": 72
-								},
-								{
-									"distance": 217,
-									"altitude": 72
-								}
-							]
+						{
+							"date": "2016-02",
+							"altitude": 60
 						},
-						{"2016-03":
-							[
-								{
-									"distance": 20,
-									"altitude": 63
-								},
-								{
-									"distance": 80,
-									"altitude": 63
-								},
-								{
-									"distance": 111,
-									"altitude": 83
-								},
-								{
-									"distance": 177,
-									"altitude": 83
-								},
-								{
-									"distance": 198,
-									"altitude": 73
-								},
-								{
-									"distance": 218,
-									"altitude": 73
-								}
-							]
+						{
+							"date": "2016-03",
+							"altitude": 80
+						},
+						{
+							"date": "2016-04",
+							"altitude": 80
+						},
+						{
+							"date": "2016-05",
+							"altitude": 70
+						},
+						{
+							"date": "2016-06",
+							"altitude": 70
 						}
 					]
 				},

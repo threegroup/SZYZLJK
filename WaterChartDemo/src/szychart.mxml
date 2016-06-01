@@ -240,10 +240,25 @@
 				return displayName+ ":" + cntData.altitude + "<br>"+"距离:"+ cntData.distance;
 			}
 			
+			//将断面水位数据转化为面统计图数据
+			private function rewriteWaterPositionData(wpData:Object):Array
+			{
+				var tpArray:Array = tpDs.terrainProfileData.getItemAt(1)['nodeList'];
+				var wpValue:Number = wpData["altitude"];
+				var minDistance:Number = tpArray[0]["distance"];
+				var maxDistance:Number = tpArray[tpArray.length - 1]["distance"];
+				var wpArray:Array = [];
+				wpArray.push({"distance": minDistance, "altitude": 0});
+				wpArray.push({"distance": minDistance, "altitude": wpValue});
+				wpArray.push({"distance": maxDistance, "altitude": wpValue});
+				wpArray.push({"distance": maxDistance, "altitude": 0});
+				return wpArray;
+			}
+			
 			//断面--地形剖面图--加载数据
 			protected function terrainProfileChart_creationCompleteHandler(event:FlexEvent):void
 			{
-				this.waterPosition.dataProvider =  new ArrayCollection(tpDs.terrainProfileData.getItemAt(0)['nodeList'][0]["2016-01"]);
+				this.waterPosition.dataProvider =  new ArrayCollection(rewriteWaterPositionData(tpDs.terrainProfileData.getItemAt(0)['nodeList'][0]));
 				this.waterPosition.displayName = tpDs.terrainProfileData.getItemAt(0)['label'];
 				this.terrainProfile.dataProvider = new ArrayCollection(tpDs.terrainProfileData.getItemAt(1)['nodeList']);
 				this.terrainProfile.displayName = tpDs.terrainProfileData.getItemAt(1)['label'];
@@ -425,6 +440,7 @@
 						if(chartType == "LineChart")
 						{
 							var ls:LineSeries = new LineSeries();
+							ls.name = cData["label"];
 							ls.xField = cData["xField"];
 							ls.yField = cData["yField"];
 							ls.setStyle("form", "curve");
@@ -505,7 +521,6 @@
 	</fx:Script>
 	<fx:Declarations>
 		<mx:LineSeries id="hd_wd_basicLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="distance" yField="altitude" lineStroke="{hd_s3}" form="curve" showDataEffect="{slide}" />
-		
 		<mx:SolidColor id="sc1" color="#F5AC39"/>
 		<mx:SolidColor id="sc2" color="#55D8FE"  />
 		<s:SolidColorStroke id="s1" color="#F5AC39"/>
