@@ -212,6 +212,90 @@
 				}
 			}
 			
+			private function onReset5(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						if(ls.id == "waterRPositionLine")
+						{
+							ls.dataProvider =  new ArrayCollection(wpDs.waterPositionData.getItemAt(0)["nodeList"]);
+						}
+						else
+						{
+							ls.dataProvider =  new ArrayCollection(wpDs.waterPositionData.getItemAt(1)["nodeList"]);
+						}
+					}
+					canReset = false;
+				}
+			}
+			
+			private function onReset6(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						if(ls.id == "waterRDepthLine")
+						{
+							ls.dataProvider =  new ArrayCollection(wdDs.waterDepthData.getItemAt(0)["nodeList"]);
+						}
+						else
+						{
+							ls.dataProvider =  new ArrayCollection(wdDs.waterDepthData.getItemAt(1)["nodeList"]);
+						}
+					}
+					canReset = false;
+				}
+			}
+			
+			private function onReset7(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						if(ls.id == "waterRFlowLine")
+						{
+							ls.dataProvider =  new ArrayCollection(wfDs.waterFlowData.getItemAt(0)["nodeList"]);
+						}
+						else
+						{
+							ls.dataProvider =  new ArrayCollection(wfDs.waterFlowData.getItemAt(1)["nodeList"]);
+						}
+					}
+					canReset = false;
+				}
+			}
+			
+			private function onReset8(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:LineChart = event.target as LineChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeries = lc.series[i] as LineSeries;
+						if(ls.id == "waterRSpeedLine")
+						{
+							ls.dataProvider =  new ArrayCollection(wsDs.waterSpeedData.getItemAt(0)["nodeList"]);
+						}
+						else
+						{
+							ls.dataProvider =  new ArrayCollection(wsDs.waterSpeedData.getItemAt(1)["nodeList"]);
+						}
+					}
+					canReset = false;
+				}
+			}
+			
 			//断面--水位过程统计图
 			private function waterPositionDataTipFunction (hitData:HitData):String { 
 				trace(hitData.chartItem+"");
@@ -226,8 +310,11 @@
 			protected function waterPositionChart_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.canReset = false;
-				this.waterPositionLine.displayName = wpDs.waterPositionData["label"];
-				this.waterPositionLine.dataProvider = new ArrayCollection(wpDs.waterPositionData["nodeList"]);
+				this.waterCPositionLine.displayName = wpDs.waterPositionData[1]["label"];
+				this.waterCPositionLine.dataProvider = new ArrayCollection(wpDs.waterPositionData[1]["nodeList"]);
+				
+				this.waterRPositionLine.displayName = wpDs.waterPositionData[0]["label"];
+				this.waterRPositionLine.dataProvider = new ArrayCollection(wpDs.waterPositionData[0]["nodeList"]);
 			}
 			
 			//断面--地形剖面统计图
@@ -278,8 +365,11 @@
 			protected function waterFlowChart_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.canReset = false;
-				this.waterFlowLine.displayName = wfDs.waterFlowData["label"];
-				this.waterFlowLine.dataProvider = new ArrayCollection(wfDs.waterFlowData["nodeList"]);
+				this.waterRFlowLine.displayName = wfDs.waterFlowData[0]["label"];
+				this.waterRFlowLine.dataProvider = new ArrayCollection(wfDs.waterFlowData[0]["nodeList"]);
+				
+				this.waterCFlowLine.displayName = wfDs.waterFlowData[1]["label"];
+				this.waterCFlowLine.dataProvider = new ArrayCollection(wfDs.waterFlowData[1]["nodeList"]);
 			}
 			
 			//断面--流量过程统计图
@@ -297,8 +387,11 @@
 			{
 				this.canReset = false;
 				// TODO Auto-generated method stub
-				this.waterDepthLine.displayName = wdDs.waterDepthData["label"];
-				this.waterDepthLine.dataProvider = new ArrayCollection(wdDs.waterDepthData["nodeList"]);
+				this.waterRDepthLine.displayName = wdDs.waterDepthData[0]["label"];
+				this.waterRDepthLine.dataProvider = new ArrayCollection(wdDs.waterDepthData[0]["nodeList"]);
+				
+				this.waterCDepthLine.displayName = wdDs.waterDepthData[1]["label"];
+				this.waterCDepthLine.dataProvider = new ArrayCollection(wdDs.waterDepthData[1]["nodeList"]);
 			}
 			
 			//断面--水流流速统计图
@@ -315,8 +408,11 @@
 			protected function waterSpeedChart_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.canReset = false;
-				this.waterSpeedLine.displayName = wsDs.waterSpeedData["label"];
-				this.waterSpeedLine.dataProvider = new ArrayCollection(wsDs.waterSpeedData["nodeList"]);
+				this.waterCSpeedLine.displayName = wsDs.waterSpeedData[0]["label"];
+				this.waterCSpeedLine.dataProvider = new ArrayCollection(wsDs.waterSpeedData[0]["nodeList"]);
+				
+				this.waterRSpeedLine.displayName = wsDs.waterSpeedData[1]["label"];
+				this.waterRSpeedLine.dataProvider = new ArrayCollection(wsDs.waterSpeedData[1]["nodeList"]);
 			}
 			
 			//断面--水流流速统计图
@@ -528,8 +624,8 @@
 		<s:SolidColorStroke id="s3" color="#1D66AE"/>
 		<s:SolidColorStroke id="hd_s3" color="#FF0000"/>
 		<s:SolidColorStroke id="s4" color="#712F82"/>
-		<s:SolidColorStroke id="s5" color="#55D8FE"/>
 		<s:SolidColorStroke id="hd_s5" color="#0000FF"/>
+		<s:SolidColorStroke id="s5" color="#FF00CC"/>
 		<s:SolidColorStroke id="hd_wden_s5" color="#0000FF" weight="10"/>
 		<mx:SeriesInterpolate id="slide" duration="200"/>
 		<mx:SeriesInterpolate id="slide2" duration="1000"/>
@@ -552,7 +648,7 @@
 							  selectionMode="multiple" 
 							  doubleClickEnabled="true"
 							  change="onZoom(event)"
-							  chartDoubleClick="onReset0(event)"
+							  chartDoubleClick="onReset5(event)"
 							  dataTipFunction="waterPositionDataTipFunction"
 							  creationComplete="waterPositionChart_creationCompleteHandler(event)">
 					<mx:backgroundElements>
@@ -578,9 +674,15 @@
 						<mx:AxisRenderer axis="{ca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
 					</mx:horizontalAxisRenderers>
 					<mx:series>
-						<mx:LineSeries id="waterPositionLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="altitude" lineStroke="{s2}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterCPositionLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="altitude" lineStroke="{s3}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterRPositionLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="time" yField="altitude" lineStroke="{s5}" form="curve" showDataEffect="{slide}" />
 					</mx:series>
 				</mx:LineChart>
+				<mx:ControlBar top="20" right="20">
+					<mx:Legend dataProvider="{waterPositionChart}"
+							   buttonMode="true"
+							   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+				</mx:ControlBar>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="断面[水深]">
 				<mx:LineChart id="waterDepthChart" width="100%" height="100%" 
@@ -589,7 +691,7 @@
 							  selectionMode="multiple" 
 							  doubleClickEnabled="true"
 							  change="onZoom(event)"
-							  chartDoubleClick="onReset1(event)"
+							  chartDoubleClick="onReset6(event)"
 							  dataTipFunction="waterDepthDataTipFunction"
 							  creationComplete="waterDepthChart_creationCompleteHandler(event)">
 					<mx:backgroundElements>
@@ -615,9 +717,15 @@
 						<mx:AxisRenderer axis="{dca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
 					</mx:horizontalAxisRenderers>
 					<mx:series>
-						<mx:LineSeries id="waterDepthLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="depth" lineStroke="{s3}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterRDepthLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="depth" lineStroke="{s3}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterCDepthLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="time" yField="depth" lineStroke="{s5}" form="curve" showDataEffect="{slide}" />
 					</mx:series>
 				</mx:LineChart>
+				<mx:ControlBar top="20" right="20">
+					<mx:Legend dataProvider="{waterDepthChart}"
+							   buttonMode="true"
+							   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+				</mx:ControlBar>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="断面[流量]">
 				<mx:LineChart id="waterFlowChart" width="100%" height="100%" 
@@ -626,7 +734,7 @@
 							  selectionMode="multiple" 
 							  doubleClickEnabled="true"
 							  change="onZoom(event)"
-							  chartDoubleClick="onReset2(event)"
+							  chartDoubleClick="onReset7(event)"
 							  dataTipFunction="waterFlowDataTipFunction"
 							  creationComplete="waterFlowChart_creationCompleteHandler(event)">
 					<mx:backgroundElements>
@@ -652,9 +760,15 @@
 						<mx:AxisRenderer axis="{lca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
 					</mx:horizontalAxisRenderers>
 					<mx:series>
-						<mx:LineSeries id="waterFlowLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="flow" lineStroke="{s1}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterRFlowLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="flow" lineStroke="{s1}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterCFlowLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="time" yField="flow" lineStroke="{s3}" form="curve" showDataEffect="{slide}" />
 					</mx:series>
 				</mx:LineChart>
+				<mx:ControlBar top="20" right="20">
+					<mx:Legend dataProvider="{waterFlowChart}"
+							   buttonMode="true"
+							   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+				</mx:ControlBar>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="断面[流速]">
 				<mx:LineChart id="waterSpeedChart" width="100%" height="100%" 
@@ -663,7 +777,7 @@
 							  selectionMode="multiple" 
 							  doubleClickEnabled="true"
 							  change="onZoom(event)"
-							  chartDoubleClick="onReset3(event)"
+							  chartDoubleClick="onReset8(event)"
 							  dataTipFunction="waterSpeedDataTipFunction"
 							  creationComplete="waterSpeedChart_creationCompleteHandler(event)">
 					<mx:backgroundElements>
@@ -689,9 +803,15 @@
 						<mx:AxisRenderer axis="{sca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
 					</mx:horizontalAxisRenderers>
 					<mx:series>
-						<mx:LineSeries id="waterSpeedLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="speed" lineStroke="{s4}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterRSpeedLine" itemRenderer="chartitemrender.LineChartDataRender" xField="time" yField="speed" lineStroke="{s4}" form="curve" showDataEffect="{slide}" />
+						<mx:LineSeries id="waterCSpeedLine" itemRenderer="chartitemrender.LineChartDataRenderEx" xField="time" yField="speed" lineStroke="{s5}" form="curve" showDataEffect="{slide}" />
 					</mx:series>
 				</mx:LineChart>
+				<mx:ControlBar top="20" right="20">
+					<mx:Legend dataProvider="{waterSpeedChart}"
+							   buttonMode="true"
+							   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+				</mx:ControlBar>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="断面[污染物浓度]">
 				<mx:LineChart id="waterDensityChart" width="100%" height="100%" 
@@ -732,7 +852,8 @@
 				</mx:LineChart>
 				<mx:ControlBar top="20" right="20">
 					<mx:Legend dataProvider="{waterDensityChart}"
-							   direction="vertical" />
+							   buttonMode="true"
+							   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
 				</mx:ControlBar>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="断面[地形图]">
