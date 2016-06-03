@@ -76,6 +76,7 @@
 	<component id ="ZoomContainer" class="com.supermap.wegis.common.components.zoomPanel.ZoomContainer"/>
 	<component id ="ScaleBar" class="com.supermap.wegis.common.components.scalebar.ScaleBar"/>
 	<component id ="DateFieldEx" class="com.supermap.wegis.common.components.datefield.DateFieldEx"/>
+	<component id ="DateFieldEx2" class="com.supermap.wegis.common.components.datefield.DateFieldEx2"/>
 	<component id ="CheckBoxComboBox" class="com.supermap.wegis.common.components.checkComboBox.CheckBoxComboBox"/>
 	
 	<!-- itemrenders -->

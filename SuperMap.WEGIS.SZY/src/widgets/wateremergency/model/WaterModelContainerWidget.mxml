@@ -1,10 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ns:WidgetBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
-			   width="100%" height="100%">
+			   xmlns:line="sm.wegis.szy.components.line.*"
+			   width="100%" height="100%"
+			   creationComplete="this_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.supermap.wegis.common.utils.DateUtilEx;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.events.QueryEvent;
+			import sm.wegis.szy.events.SystemEvent;
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.utils.CairngormEventClass;
+			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.vo.ModelContainerShowVO;
+			import sm.wegis.szy.vo.WSMethod;
+			import sm.wegis.szy.vo.WaterModelParam;
+			
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
+			
+			public static const HIDE_STATE:String = "hideState";
+			public static const BREAK_STATE:String = "breakState";
+			public static const RIVER_STATE:String = "riverState";
+			
+			private var targetsList:ArrayCollection = new ArrayCollection([
+				{label:"水位",value:1}, {label:"水深",value:2},
+				{label:"流量",value:3},{label:"流速",value:4},
+				{label:"污染物浓度",value:5}]);
+			
+			private function queryBreakCalcResultResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					if(targetList != null)
+					{
+						if(targetList is Array)
+						{
+						}
+					}
+				}
+			}
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				initEventListener();
+			}
+			
+			public function initEventListener():void{
+				var eList:ArrayCollection = new ArrayCollection([
+					[QueryEvent.QUERY_BREAK_CALC_RESULT_RESPONSE, queryBreakCalcResultResponseHandler],//查询断面计算结果
+					[QueryEvent.SHOW_MODEL_RESULT_WIDGET, showModelResultWidgetHandler],
+					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
+				]);
+				var eventObject:CairngormEventClass = new CairngormEventClass();
+				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			private function showModelResultWidgetHandler(event:CairngormEvent):void
+			{
+				var modelShowVO:ModelContainerShowVO =  event.data as  ModelContainerShowVO;
+				panel.title = modelShowVO.title;
+				this.currentState = modelShowVO.state;
+			}
+			
+			
+			protected function closeBt_clickHandler(event:MouseEvent):void
+			{
+				this.currentState = HIDE_STATE;
+			}
+			
+			protected function targetDpList_valueCommitHandler(event:FlexEvent):void
+			{
+				if (targetDpList.selectedItem != null) {
+					var selectedItem:Object = targetDpList.selectedItem;
+					watchTargetCB.enabled = true;
+					switch(selectedItem["value"]) {
+						case 2:
+						case 4:
+							watchTargetCB.enabled = false;
+							break;
+					}
+				}
+			}
+			
+			//点击查询断面计算结果
+			private function queryBt_clickHandler():void
+			{
+				toolTipLb.text = "";
+				var targetSelect:Boolean = false;
+				if (calcTargetCB.selected == true) {
+					targetSelect = true;
+				}
+				if (watchTargetCB.enabled == true && watchTargetCB.selected == true) {
+					targetSelect = true;
+				}
+				if (targetSelect == true) {
+					var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
+					waterModelparam.start = DateUtilEx.getDateYMD(startDateField.selectedDate);
+					waterModelparam.end = DateUtilEx.getDateYMD(endDateField.selectedDate);
+					waterModelparam.method = getQueryMethodHandler();
+					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT);
+					queryEvent.dispatch();
+				} else {
+					toolTipLb.text = "请选择【指标类型】";
+				}
+			}
+			
+			//根据选择指标类型，获取后台查询方法
+			private function getQueryMethodHandler():String
+			{
+				var selectItem:Object = targetDpList.selectedItem;
+				switch(selectItem["value"]) {
+					case 1:
+						return WSMethod.GetWaterDMPositionData;
+					case 2:
+						return WSMethod.GetWaterDMDepthData;
+					case 3:
+						return WSMethod.GetWaterDMFlowData
+					case 4:
+						return WSMethod.GetWaterDMSpeedData
+						//					case 5:
+						//						return WSMethod.
+				}
+				return "";
+			}
+			//系统重新加载
+			public function systemReloadHandler(event:CairngormEvent):void
+			{
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	<ns:states>
+		<s:State name="hideState"/>
+		<s:State name="breakState"/>
+		<s:State name="riverState"/>
+	</ns:states>
+	<s:Panel id="panel" width="100%" height="100%" visible="false" visible.breakState="true" visible.riverState="true">
+		<s:controlBarContent>
+			<fx:Array>
+				<s:Button id="closeBt" skinClass="sm.wegis.szy.skins.CloseLoginButtonSkin" buttonMode="true"
+						  click="closeBt_clickHandler(event)"/>
+			</fx:Array>
+		</s:controlBarContent>
+		<!--断面信息展示-->
+		<s:Group id="breakGroup" width="100%" height="100%" visible="false" visible.breakState="true" >
+			<s:VGroup width="100%" height="100%" gap="0">
+				<s:ButtonBar id="breakBTB" dataProvider="{breakVW}"/>
+				<mx:ViewStack id="breakVW" width="100%" height="100%">
+					<s:NavigatorContent label="断面计算结果"  width="100%" height="100%">
+						<s:VGroup  width="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
+							<mx:Grid verticalGap="15" horizontalGap="15">
+								<mx:GridRow>
+									<mx:GridItem>
+										<s:HGroup gap="10" >
+											<s:Label text="指标" height="100%"/>
+											<s:DropDownList id="targetDpList" width="160" dataProvider="{targetsList}"  
+															requireSelection="true" styleName="SystemSelectorStyle"
+															valueCommit="targetDpList_valueCommitHandler(event)"/>
+										</s:HGroup>
+									</mx:GridItem>
+									<mx:GridItem>
+										<s:HGroup gap="10" >
+											<s:Label text="指标类型" height="100%"/>
+											<s:CheckBox id="calcTargetCB" label="计算指标" selected="true" />
+											<s:CheckBox id="watchTargetCB" label="监测指标" />
+										</s:HGroup>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow>
+									<mx:GridItem>
+										<s:HGroup gap="10" >
+											<s:Label text="时间" height="100%"/>
+											<ns:DateFieldEx2 id="startDateField"  showYearFirstDay="true" />
+											<s:Label text="—" height="100%"/>
+											<ns:DateFieldEx2 id="endDateField"  showToday="true"/>
+										</s:HGroup>
+									</mx:GridItem>
+									<mx:GridItem>
+										<s:HGroup gap="10">
+											<s:Button id="queryBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"  click="queryBt_clickHandler()"/>
+											<s:Button id="exportBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle" />
+											<s:Label id="toolTipLb" color="0xFF0000" height="100%"/>
+										</s:HGroup>
+									</mx:GridItem>
+								</mx:GridRow>
+							</mx:Grid>	
+							<line:HLine width="100%"/>
+						</s:VGroup>
+					</s:NavigatorContent>
+					<s:NavigatorContent label="断面地形展示"  width="100%" height="100%">
+						
+					</s:NavigatorContent>
+					<s:NavigatorContent label="断面对比"  width="100%" height="100%">
+						
+					</s:NavigatorContent>
+				</mx:ViewStack>
+			</s:VGroup>
+		</s:Group>
+		<!--河流信息展示-->
+		<s:Group id="riverGroup" width="100%"  height="100%"  visible="false" visible.riverState="true" >
+			
+		</s:Group>
+	</s:Panel>
 </ns:WidgetBase>

@@ -146,5 +146,22 @@ package sm.wegis.szy.events
 		public static const GET_PWK_DETAIL:String = "GetPWKDetail";
 		/**水功能区排污口污染物入河量详情---3级---接口五*/
 		public static const GET_PWK_DETAIL_RESPONSE:String = "GetPWKDetailResponse";
+		
+		
+		/**---------------------------应急管理查询--------------------------------*/
+		/**水体模型方案，查询水体模型方案列表*/
+		public static const QUERY_MODEL_LIST:String = "QueryModelList";
+		public static const QUERY_MODEL_LIST_RESPONSE:String = "QueryModelListResponse";
+		
+		/**选择单个水体模型方案，查询断面和河流列表*/
+		public static const QUERY_MODEL_RESULT:String = "QueryModelResult";
+		public static const QUERY_MODEL_RESULT_RESPONSE:String = "QueryModelResultResponse";
+		
+		/**断面计算结果查询*/
+		public static const QUERY_BREAK_CALC_RESULT:String = "QueryBreakCalcResult";
+		public static const QUERY_BREAK_CALC_RESULT_RESPONSE:String = "QueryBreakCalcResultResponse";
+		
+		/**显示断面/河流	计算结果展示面板*/
+		public static const SHOW_MODEL_RESULT_WIDGET:String = "ShowModelResultWidget";
 	}
 }

@@ -180,6 +180,9 @@
 					 <value type="Class">sm.wegis.szy.commands.GetPWKDetailCommand
 					</value>				
 					
+		    		<!--水模型方案-->
+			    	<value type="Class">sm.wegis.szy.commands.QueryBreakCalcResultCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -233,6 +236,11 @@
 				<property name="GetRiverWaterFounctionCondition" value="GetRiverWaterFounctionConditionCommand"/>
 				<property name="GetWaterFounctionItemValue" value="GetWaterFounctionItemValueCommand"/>
 				<property name="GetPWKDetail" value="GetPWKDetailCommand"/>
+				
+				
+					<!--水模型方案-->
+				<property name="QueryBreakCalcResult" value="QueryBreakCalcResultCommand"/>			
+							
 							
 				
 			</object>
@@ -271,8 +279,12 @@
 					
 					<value type="Class">sm.wegis.szy.commands.QuerySaveThemeMapCommand
 					</value>
-				
 					
+					<!--应急管理查询-->
+					<value type="Class">sm.wegis.szy.commands.QueryModelListCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryModelResultCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -289,6 +301,11 @@
 				
 					<!--水质评价保存的专题地图查询 -->
 				<property name="QuerySaveThemeMap" value="QuerySaveThemeMapCommand" />
+				
+				
+				<!--应急管理查询-->
+				<property name="QueryModelList" value="QueryModelListCommand" />
+				<property name="QueryModelResult" value="QueryModelResultCommand" />
 				
 				
 			</object>

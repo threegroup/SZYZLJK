@@ -5,7 +5,7 @@ package sm.wegis.szy.vo
 		public function WSMethod()
 		{
 		}
-
+		
 		//----------Web服务API--------//
 		/**登录*/
 		public static const Login:String = "login";
@@ -51,19 +51,19 @@ package sm.wegis.szy.vo
 		 */
 		public static const GetXZQCondition:String = "getXZQCondition";
 		/**
-
+		 
 		/**获取水资源承载力年份列表*/
 		public static const GetSZYYearList:String = "getSZYYearList";
 		
 		/**选择年份，点击查询，获取【行政区】（各县）评价数据，用于地图展示*/
 		public static const GetXZQDataList:String = "getXZQDataList";
-
+		
 		/**
 		 * 获取水资源承载力，市气泡数据
 		 */
-		 public static const GetXZQBubbleDetail:String = "getXZQBubbleDetail";
-		 
-		 /** 
+		public static const GetXZQBubbleDetail:String = "getXZQBubbleDetail";
+		
+		/** 
 		 * 河流水功能区水质达标率及污染物入河量情况统计表---2级---接口三
 		 */
 		public static const GetRiverWaterFounctionCondition:String = "getRiverWaterFounctionCondition";
@@ -75,5 +75,27 @@ package sm.wegis.szy.vo
 		 * 水功能区排污口污染物入河量详情---3级---接口五
 		 */
 		public static const GetPWKDetail:String = "getPWKDetail";
+		
+		
+		/**应急管理----水模型--- 断面计算结果查询*/
+		/**断面【水位】
+		 参数：计算方案_id,断面_id,开始日期，结束日期
+		 */
+		public static const GetWaterDMPositionData:String ="waterDMPositionData";
+		
+		/**断面【水深】
+		 参数：计算方案_id,断面_id,开始日期，结束日期
+		 */
+		public static const GetWaterDMDepthData:String ="waterDMDepthData";
+		
+		/**断面【流量】
+		 参数：计算方案_id,断面_id,开始日期，结束日期
+		 */
+		public static const GetWaterDMFlowData:String ="waterDMFlowData";
+		
+		/**断面【流速】
+		 参数：计算方案_id,断面_id,开始日期，结束日期
+		 */
+		public static const GetWaterDMSpeedData:String ="waterDMSpeedData";
 	}
 }

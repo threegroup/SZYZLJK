@@ -240,8 +240,27 @@ package sm.wegis.szy.commands
 						var waterFunctionDestina:Hashtable = waterEvaluationVO.waterFunctionDestinationResult;
 						var geoLine:GeoLine;
 						var pointFeature:Feature;
-//						var infoStyle:InfoStyle;
-//						var waterEvaluationCls:ClassFactory;
+						var waterFunctionDestionInfo:Object;
+						//						var infoStyle:InfoStyle;
+						//						var waterEvaluationCls:ClassFactory;
+						//显示所有水功能区目标水质
+						for each(ft in waterFunctionFeatureLayer.features) 
+				    	{
+							var waterFunctionId:String = ft.attributes["ID"];
+							colorStr = "0x000000";
+							waterFunctionDestionInfo = waterFunctionDestina.find(waterFunctionId);
+							if (waterFunctionDestionInfo != null && waterFunctionDestionInfo["目标水质颜色"] != null)  {
+								colorStr = waterFunctionDestionInfo["目标水质颜色"];
+								colorStr = colorStr.replace(/#/ig, "0x");
+								ft.alpha = 1;
+								ft.toolTip = waterFunctionDestionInfo["name"];
+							} else {
+								//如果没有对应的目标水质，设置不可见
+								ft.alpha = 0;
+							}
+							ft.style = new PredefinedLineStyle("solid",parseInt(colorStr,16), 1,8);
+					   }
+						
 						for each(riverInfo in waterEvalutions.targetList) {
 						for each(functionInfo in riverInfo.waterFunList) {
 							for each(ft in waterFunctionFeatureLayer.features) {
@@ -250,14 +269,12 @@ package sm.wegis.szy.commands
 									ft.attributes["水质状况"] =  functionInfo["水质状况"];
 									//业务数据中水功能区对应的ID
 									ft.attributes["businessId"] = riverInfo["评价对象_ID"];
-									colorStr = "0x000000";
 									var waterFunctionDestionInfo:Object = waterFunctionDestina.find(ft.attributes["ID"]);
-									if (waterFunctionDestionInfo != null)  {
-										colorStr = waterFunctionDestionInfo["目标水质颜色"];
+									if (waterFunctionDestionInfo != null && waterFunctionDestionInfo["目标水质颜色"] != null)  {
+										ft.toolTip = getWaterFunctionToolTip(functionInfo);
+									}else{
+										ft.toolTip = "没有目标水质数据";
 									}
-									colorStr = colorStr.replace(/#/ig, "0x");
-									ft.style = new PredefinedLineStyle("solid",parseInt(colorStr,16), 1,8);
-									ft.toolTip = getWaterFunctionToolTip(functionInfo);
 									
 									//添加水质评价数据
 									geoLine = ft.geometry as GeoLine;
@@ -267,14 +284,23 @@ package sm.wegis.szy.commands
 									pointFeature = new Feature(geoPoint); 
 									//业务数据中水功能区对应的ID
 									pointFeature.attributes = ft.attributes;  
-//									waterEvaluationCls = new ClassFactory(WaterFunctionEvaluationTarget);
-//									waterEvaluationCls.properties = {targets:getWaterFunctionInfoData(functionInfo), title:functionInfo["WR_SD_NM"]};
-//									infoStyle = new InfoStyle();
-//									infoStyle.infoRenderer = waterEvaluationCls;
-//									infoStyle.containerStyleName = "infoStyle";
-									var textStyle:TextStyle = FeatureLayerUtil.getTextStyle(functionInfo["水质目标"]);
-									textStyle.yOffset = -10;
+									//									waterEvaluationCls = new ClassFactory(WaterFunctionEvaluationTarget);
+									//									waterEvaluationCls.properties = {targets:getWaterFunctionInfoData(functionInfo), title:functionInfo["WR_SD_NM"]};
+									//									infoStyle = new InfoStyle();
+									//									infoStyle.infoRenderer = waterEvaluationCls;
+									//									infoStyle.containerStyleName = "infoStyle";
+									colorStr = functionInfo["表征颜色"];
+									colorStr = colorStr.replace(/#/ig, "0x");
+									var textStyle:TextStyle = FeatureLayerUtil.getTextStyle("表征");
+									textStyle.size = 9;
+									textStyle.yOffset = 20;
+									textStyle.xOffset = -20;
+									textStyle.color = textStyle.backgroundColor = parseInt(colorStr, 16);
+									textStyle.borderColor = 0x2174BB;
+									textStyle.angle = 90;
 									pointFeature.style = 	textStyle;
+									pointFeature.toolTip = ft.toolTip;
+									pointFeature.buttonMode = true;
 									waterFunctionEvalutionFeatureLayer.addFeature(pointFeature);
 									break;
 								}
@@ -342,10 +368,30 @@ package sm.wegis.szy.commands
 			var toolStr:String = "";
 			toolStr += "水功能区：" + attr["WR_SD_NM"] + "\n";
 			toolStr += "目标水质：" + attr["水质目标"] + "\n";
-			toolStr += "水质状况：" + attr["水质状况"] + "\n";
+			toolStr += "水质状况：" + attr["LEVEL_ID"] + "\n";
 			var isPass:String = attr["是否达标"] == "0" ? "达标" : "不达标";
 			toolStr += "达标情况：" + isPass;
 			return toolStr;
+		}
+		
+		//根据水质评价，水质状况，换成对应的中文
+		private function getWaterState(value:String):String
+		{
+			switch(value){
+				case "1":
+					return "Ⅰ类";
+				case "2":
+					return "Ⅱ类";
+				case "3":
+					return "Ⅲ类";
+				case "4":
+					return "Ⅳ类";
+				case "5":
+					return "Ⅴ类";
+				case "6":
+					return "劣Ⅴ类";
+			}
+			return "";
 		}
 		
 		//构建水功能区目标水质和评价水质infostyle信息

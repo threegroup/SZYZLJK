@@ -1,0 +1,33 @@
+﻿{
+	"success": true,
+	"attributes": {
+		"targetList": [{
+			"icoFlag": "1",
+			"id": "4F3CED6787DD422C",
+			"location": "122.70318376592786,41.171766612813556",
+			"mapId": "taizihe",
+			"name": "本溪",
+			"superObjId": "2",
+			"typeIDs": "2,8"
+		},
+		{
+		    "icoFlag": "1",
+			"id": "4F3CED6787DD422C",
+			"location": "122.71686158343172,41.18505587507898",
+			"mapId": "taizihe",
+			"name": "本溪",
+			"superObjId": "2",
+			"typeIDs": "2,8"
+		},
+		{
+		    "icoFlag": "1",
+			"id": "4F3CED6787DD422C",
+			"location": "122.72853232470632,41.204984100827652",
+			"mapId": "taizihe",
+			"name": "本溪",
+			"superObjId": "2",
+			"typeIDs": "2,8"
+		}
+		]
+	}
+}

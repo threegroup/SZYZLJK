@@ -126,7 +126,12 @@ s|RadioButton
 	skinClass:ClassReference("sm.wegis.szy.skins.SubmitRegisterSkin");
 	fontSize:16;
 	fontWeight:normal;
-	color:#ffffff
+	color:#ffffff;
+}
+
+.ListStyle
+{
+	alternatingItemColors:#FFFFFF,#E1DFDA;
 }
 
 .CloseLoginButtonStyle

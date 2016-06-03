@@ -13,6 +13,7 @@ package sm.wegis.szy.models
 	import sm.wegis.szy.vo.WaterCapacityParam;
 	import sm.wegis.szy.vo.WaterEvaluaParam;
 	import sm.wegis.szy.vo.WaterEvaluationVO;
+	import sm.wegis.szy.vo.WaterModelParam;
 
 	[Bindable]
 	public class ApplicationModelLocator implements ModelLocator
@@ -50,6 +51,23 @@ package sm.wegis.szy.models
 		//水资源承载力，专题地图查询参数
 		private var _waterCapacityParam:WaterCapacityParam;
 		
+		//应急管理----水体模型方案 ，查询参数
+		private var _waterModelParam:WaterModelParam;
+		
+		/**应急管理----水体模型方案 ，查询参数*/
+		public function get waterModelParam():WaterModelParam
+		{
+			if (_waterModelParam == null) {
+				_waterModelParam = new WaterModelParam();
+			}
+			return _waterModelParam;
+		}
+
+		public function set waterModelParam(value:WaterModelParam):void
+		{
+			_waterModelParam = value;
+		}
+
 		public function get waterCapacityParam():WaterCapacityParam
 		{
 			return _waterCapacityParam;

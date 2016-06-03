@@ -95,10 +95,23 @@
 			<item>
 				<name>应急管理</name>
 				<key>WaterBodyWarn</key>
-				<url></url>
+				<url>widgets/wateremergency/model/WaterModelSchemeListWidget.swf</url>
 				<mutex>true</mutex>
 				<init></init>
 				<selected></selected>
+				<subitems>
+					<subitem>
+						<key>WaterEvalutionWidget</key>
+						<name>评价指标数据展示面板</name>
+						<url>widgets/wateremergency/model/WaterModelContainerWidget.swf</url>
+						<position>float</position>
+						<mutex>true</mutex>
+						<bottom>0</bottom>
+						<left>0</left>
+						<right>0</right>
+						<top>0</top>
+					</subitem>
+				</subitems>
 			</item>
 		</mapmenu>
 	</menu>

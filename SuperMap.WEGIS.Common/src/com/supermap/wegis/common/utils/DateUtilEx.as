@@ -20,6 +20,21 @@ package   com.supermap.wegis.common.utils
 			return dtf.format(date);
 		}
 		
+		
+		/**
+		 * 将date 转换成 “yyyy-MM-dd HH:mm:ss的字符串
+		 * 如果date为空，返回当前时间的字符串
+		 */
+		public static function getDateYMD(date:Date = null):String{
+			if(date == null){
+				date = new Date();
+			}
+			var dtf:DateTimeFormatter=new DateTimeFormatter("zh-CN");
+			dtf.setDateTimePattern("yyyy-MM-dd");
+			return dtf.format(date);
+		}
+		
+		
 		/**根据时间，计算指点时间差对应的时间*/
 		public static function calcTime(time:Date, gap:Number):String
 		{
@@ -28,6 +43,57 @@ package   com.supermap.wegis.common.utils
 			time.setTime(time.getTime() - gap);
 			return dateFormatter.format(time);
 		}
+		
+		
+		/**
+		 * 获取当天23：59：59 eg:2016-04-10 23:59:59
+		 * */
+		public static function getDayEndTime(date:Date = null):String{
+			if(date == null){
+				date = new Date();
+			} else {
+				date = new Date(date.fullYear, date.month, date.date, 23,59,59);
+			}
+			var dtf:DateTimeFormatter=new DateTimeFormatter("zh-CN");
+			dtf.setDateTimePattern("yyyy-MM-dd HH:mm:ss");
+			return dtf.format(date);
+		}
+		
+		/**
+		 * 获取当前月第一天，eg:2015-01-01
+		 */
+		public static function getMonthFirstDay(date:Date = null):Date{
+			if (date == null) {
+				date = new Date();
+			}
+			var firstDay:Date = new Date(date.fullYear, date.month, 1);
+			return firstDay;
+		}
+		
+		/**
+		 * 获取当前年第一天,eg:2015-01-01
+		 */
+		public static function getYearFirstDay(date:Date = null):Date{
+			if (date == null) {
+				date = new Date();
+			}
+			var firstDay:Date = new Date(date.fullYear, 0, 1);
+			return firstDay;
+		}
+		
+		/**
+		 * 获取当前时间的30天前时间，eg:2015-01-01
+		 */
+		public static function getPreThirtyDayDate(date:Date = null):Date{
+			if (date == null) {
+				date = new Date();
+				date = new Date(date.fullYear, date.month, date.date, 23,59,59);
+			}
+			var gap:Number = 3600*24*30*1000;
+			date.setTime(date.getTime() - gap);
+			return date;
+		}
+		
 		
 		/**
 		 * 获取当前时时间，eg:2015-01-02 09:00:00

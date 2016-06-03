@@ -7,9 +7,9 @@ package sm.wegis.szy.vo
 		
 		
 		/**底图类型，矢量，影像，地形*/
-		public static const VectorType="vectorType";
-		public static const ImageType="imageType";
-		public static const DemType="demType";
+		public static const VectorType:String = "vectorType";
+		public static const ImageType:String = "imageType";
+		public static const DemType:String = "demType";
 		
 		
 		/**矢量底图*/
@@ -74,5 +74,11 @@ package sm.wegis.szy.vo
 		public static const WATER_POLLUTION_DETAIL_TYPE:String = "Water_Pollution_Detail_Type";
 		/**水资源承载能力，第三级表格——水功能区排污口污染物入河量详情*/
 		public static const WATER_DRAIN_POLLUTION_DETAIL_TYPE:String = "Water_Drain_Pollution_Detail_Type";
+		
+		/**----------------------------应急管理------------------------------------*/
+		/**水模型方案打开，展示方案关联的断面*/
+		public static const WATER_MODEL_BREAK_FEATURE_LAYER:String = "WaterModelBreakFeatureLayer";
+		/**水模型方案打开，展示方案关联的河流*/
+		public static const WATER_MODEL_RIVER_FEATURE_LAYER:String = "WaterModelRiverFeatureLayer";
 	}
 }

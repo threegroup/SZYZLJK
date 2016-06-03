@@ -1,8 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ns:WidgetBase xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ns="library://ns.supermap.com/flex/wegis/common" width="100%" height="100%">
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:ns="library://ns.supermap.com/flex/wegis/common" 
+			   xmlns:line="sm.wegis.szy.components.line.*"
+			   width="100%" height="100%" 
+			   creationComplete="this_creationCompleteHandler(event)"
+			   WidgetAddComplete="this_WidgetAddCompleteHandler(event)"
+			   WidgetRemove="this_WidgetRemoveHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.supermap.web.core.Feature;
+			import com.supermap.web.core.geometry.GeoPoint;
+			import com.supermap.web.core.styles.PictureMarkerStyle;
+			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import sm.wegis.szy.events.QueryEvent;
+			import sm.wegis.szy.events.SystemEvent;
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.utils.CairngormEventClass;
+			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.utils.FeatureLayerUtil;
+			import sm.wegis.szy.vo.ConstVO;
+			import sm.wegis.szy.vo.ModelContainerShowVO;
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
+			
+			protected function this_creationCompleteHandler(event:FlexEvent):void
+			{
+				initEventListener();				
+			}
+			
+			public function initEventListener():void{
+				var eList:ArrayCollection = new ArrayCollection([
+					[QueryEvent.QUERY_MODEL_LIST_RESPONSE, queryModelListResponseHandler],//模型方案列表
+					[QueryEvent.QUERY_MODEL_RESULT_RESPONSE, queryModelResultResponseHandler],//模型计算的断面列表
+					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
+				]);
+				var eventObject:CairngormEventClass = new CairngormEventClass();
+				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			
+			protected function this_WidgetAddCompleteHandler(event:BaseWidgetEvent):void
+			{
+				queryModelList();
+			}
+			
+			protected function this_WidgetRemoveHandler(event:BaseWidgetEvent):void
+			{
+				
+			}
+			
+			//获取水模型方案列表
+			private function queryModelListResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					if(targetList != null)
+					{
+						if(targetList is Array)
+						{
+							planList.dataProvider = new ArrayCollection(targetList as Array);
+						}
+					}
+				}
+			}
+			
+			//获取单个水模型方案结果
+			private function queryModelResultResponseHandler(event:CairngormEvent):void
+			{
+				
+				var breakPointLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.WATER_MODEL_BREAK_FEATURE_LAYER,
+					modelLocator.mapCtrl);
+				breakPointLayer.clear();
+				
+				var result:Object = event.data;
+				if (result != null && result.success == true) {
+					var targetList:Object = result.attributes.targetList;
+					for each(var item:Object in targetList) {
+						var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
+						var typeIDs:String = item.typeIDs;
+						pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;
+						
+						var positionStr:String = item.location;
+						if (positionStr != null && positionStr.split(",").length == 2) {
+							var positions:Array = positionStr.split(",");
+							item.x = Number(positions[0]);
+							item.y = Number(positions[1]);
+							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
+							var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
+							feature.id = item.id;
+							feature.toolTip = item.name;
+							feature.addEventListener(MouseEvent.CLICK, beakPointMouseClickHandler);
+							feature.buttonMode = true;
+							breakPointLayer.addFeature(feature);
+						}
+					}
+				}
+			}
+			
+			private function beakPointMouseClickHandler(event:MouseEvent):void
+			{
+				var feature:Feature = event.currentTarget as Feature;
+				modelLocator.waterModelParam.dmId = feature.id;
+				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
+				modelShowVO.state = WaterModelContainerWidget.BREAK_STATE;
+				modelShowVO.title = feature.attributes["name"];
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_MODEL_RESULT_WIDGET);
+				queryEvent.data = modelShowVO;
+				queryEvent.dispatch();
+			}
+			
+			//查询水模型方案列表
+			private function queryModelList():void
+			{
+				planList.dataProvider = null;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MODEL_LIST);
+				queryEvent.dispatch();
+			}
+			
+			//点击当个方案，打开方案
+			protected function planList_clickHandler(event:MouseEvent):void
+			{
+				modelLocator.waterModelParam.planId = planList.selectedItem["planId"];
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MODEL_RESULT);
+				queryEvent.dispatch();
+			}
+			
+			//系统重新加载
+			public function systemReloadHandler(event:CairngormEvent):void
+			{
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<s:VGroup width="100%" height="100%" gap="2">
+		<s:ButtonBar id="waterTypeBTB" width="100%" dataProvider="{featureDetailInfos}"/>
+		<mx:ViewStack id="featureDetailInfos" width="100%" height="100%" creationPolicy="all">
+			<s:NavigatorContent  label="应急信息查询" width="100%" height="100%">
+				<mx:Accordion width="100%" height="100%">
+				</mx:Accordion>
+			</s:NavigatorContent>
+			<s:NavigatorContent  label="水体模型方案" width="100%" height="100%" >
+				<mx:Accordion width="100%" height="100%">
+					<s:NavigatorContent  label="水模型方案" width="100%" height="100%">
+						<s:VGroup width="100%" height="100%" paddingLeft="3"  
+								  paddingRight="3" paddingTop="5">
+							<s:HGroup width="100%" gap="5" height="25">
+								<s:Label text="方案名称" height="100%"/>
+								<s:TextInput id="planTextInput" width="100%"/>
+								<s:Button id="queryBt" label="查询"  styleName="SubmitRegisterStyle" />
+								<s:Button id="createBt" label="新建"  styleName="SubmitRegisterStyle" />
+							</s:HGroup>
+							<line:HLine width="100%"/>
+							<s:List id="planList" borderVisible="false" width="100%" height="100%"
+									itemRenderer="sm.wegis.szy.renders.PlanListItemRenderer"  styleName="ListStyle"
+									click="planList_clickHandler(event)"/>
+						</s:VGroup>
+					</s:NavigatorContent>
+				</mx:Accordion>
+			</s:NavigatorContent>	
+		</mx:ViewStack>
+	</s:VGroup>
 </ns:WidgetBase>
