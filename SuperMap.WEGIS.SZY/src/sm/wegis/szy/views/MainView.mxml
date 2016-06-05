@@ -333,15 +333,12 @@
 			//系统一级菜单响应
 			private function systemMenuHandler(e:MenuEventEx):void
 			{
-				if(e.Message is MenuItem)
+				var item:Object = e.Message;
+				var menuEvent:MenuItemEvent = new MenuItemEvent(MenuItemEvent.SYSTEM_MENU_SELECT_CHANGE);
+				if(item != null)
 				{
-					var item:MenuItem = e.Message as MenuItem;
-					var menuEvent:MenuItemEvent = new MenuItemEvent(MenuItemEvent.SYSTEM_MENU_SELECT_CHANGE);
-					if(item != null)
-					{
-						menuEvent.data = item.data;
-						menuEvent.dispatch();
-					}
+					menuEvent.data = item;
+					menuEvent.dispatch();
 				}
 			}
 			
@@ -385,16 +382,48 @@
 			//切换主体模块内容
 			private function switchBodyContent(event:MenuItemEvent):void
 			{
-				var menuItemData:Object = event.data;
-				if(menuItemData == null) {
+				var subitems:Object;
+				var subWidgets:ArrayCollection;
+				var menuItem:Object = event.data;
+				var curentItem:Object = menuItem.currentItem;
+				var oldItem:Object = menuItem.oldItem;
+				if (oldItem != null) {
+					//若有多个子模块
+					if(oldItem.hasOwnProperty("subitems") && oldItem["subitems"] != null){
+						subitems = oldItem["subitems"];
+						subWidgets =  subitems["subitem"] is  ArrayCollection ? subitems["subitem"] as  ArrayCollection : new ArrayCollection([subitems["subitem"]]);
+						if(subWidgets != null && subWidgets.length > 0) {
+							for each (item in subWidgets) {
+								switch(item["position"]) {
+									case "bottom":
+										item.parent = this.RightDownContainerID;
+										break;
+									case "float":
+										item.parent = this.menuWidgetContainerID;
+										break;
+									case "right":
+										item.parent = this.RightBodyContainerID;
+										break;
+									default:
+										item.parent = this.RightDownContainerID;
+										break;
+								}
+								WidgetManager.getInstance().closeOldMenuWidget(item);
+							}
+						}
+					}
+					oldItem.parent = this.BodyContainerID;
+					WidgetManager.getInstance().closeOldMenuWidget(oldItem);
+				}
+				
+				if(curentItem == null) {
 					return;
 				}
 				
 				//若有多个子模块
-				if(menuItemData.hasOwnProperty("subitems") && menuItemData["subitems"] != null){
-					var subitems:Object = menuItemData["subitems"];
-					var subWidgets:ArrayCollection =  subitems["subitem"] is  ArrayCollection ? subitems["subitem"] as  ArrayCollection
-						: new ArrayCollection([subitems["subitem"]]);
+				if(curentItem.hasOwnProperty("subitems") && curentItem["subitems"] != null){
+					subitems = curentItem["subitems"];
+					subWidgets =  subitems["subitem"] is  ArrayCollection ? subitems["subitem"] as  ArrayCollection : new ArrayCollection([subitems["subitem"]]);
 					if(subWidgets != null && subWidgets.length > 0) {
 						for each (var item:Object in subWidgets) {
 							if(item["legend"] == true)
@@ -413,6 +442,9 @@
 									case "float":
 										item.parent = this.menuWidgetContainerID;
 										break;
+									case "right":
+										item.parent = this.RightBodyContainerID;
+										break;
 									default:
 										item.parent = this.RightDownContainerID;
 										break;
@@ -423,8 +455,8 @@
 					}
 				}
 				
-				menuItemData.parent = this.BodyContainerID;
-				WidgetManager.getInstance().loadWidget(menuItemData);
+				curentItem.parent = this.BodyContainerID;
+				WidgetManager.getInstance().loadWidget(curentItem);
 			}
 			
 			/*****添加二维地图控件******************************************************/
@@ -590,6 +622,7 @@
 								 source="{ResourceManagerEx.FindResource('Left').cls}"/>
 					</s:BorderContainer>
 				</s:HGroup>
+				<s:Group id="RightBodyContainerID" width="100%" height="100%"/>
 			</s:Group> 
 		</s:HGroup>
 	</s:VGroup>
@@ -606,8 +639,8 @@
 								 source="{ResourceManagerEx.FindResource('userIcon').cls}"/>
 						<s:Label width="100%" styleName="LoginLabelStyle" text="登录系统账号"/>
 						<!--<s:Button id="closeLoginId" buttonMode="true"
-								  click="closeLoginId_clickHandler(event)"
-								  styleName="CloseLoginButtonStyle"/>-->
+						click="closeLoginId_clickHandler(event)"
+						styleName="CloseLoginButtonStyle"/>-->
 					</s:HGroup>
 					<s:Line width="100%">
 						<s:stroke>

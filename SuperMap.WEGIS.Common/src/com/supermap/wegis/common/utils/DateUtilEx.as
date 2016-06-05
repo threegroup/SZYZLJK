@@ -22,7 +22,7 @@ package   com.supermap.wegis.common.utils
 		
 		
 		/**
-		 * 将date 转换成 “yyyy-MM-dd HH:mm:ss的字符串
+		 * 将date 转换成 “yyyy-MM-dd的字符串
 		 * 如果date为空，返回当前时间的字符串
 		 */
 		public static function getDateYMD(date:Date = null):String{

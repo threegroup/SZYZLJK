@@ -532,5 +532,30 @@ package com.supermap.wegis.common.core.widget
 			
 			return widget;
 		}
+		
+		/**加载widget对象,参数可以是一个widget的数据，也可以是数组*/
+		public function closeOldMenuWidget(widgetParam:Object):void
+		{
+			var parentContainer:IVisualElementContainer = (widgetParam["parent"] as IVisualElementContainer);
+			if(parentContainer != null)
+			{
+				var len:int = parentContainer.numElements;
+				if(len > 0)
+				{
+					for (var i:int = 0; i < len; i++) 
+					{
+						var childElement:WidgetBase = parentContainer.getElementAt(i) as WidgetBase;
+						//对添加进来的模块，控制是否需要设置其他模块可见，通过single控制,false为不需要移除其他模块
+						if(childElement.widgetId == widgetParam.key)
+						{
+							childElement.visible = false;
+							childElement.includeInLayout = false;
+							widgetBaseRemove(childElement);
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 }

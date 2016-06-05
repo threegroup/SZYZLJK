@@ -419,7 +419,8 @@ package com.supermap.wegis.common.components.menuBar
 									else
 									{
 										//加载需要初始化但不是选中的项目
-										this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, button, true));
+										var param:Object = {currentItem:button.data, oldItem:currentMenuData};
+										this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, param, true));
 									}
 								}
 							}
@@ -431,10 +432,19 @@ package com.supermap.wegis.common.components.menuBar
 					{
 						selectedButton = itemList.getItemAt(0) as MenuItem;
 					}
-					this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, selectedButton, true));
+					var param:Object = {currentItem:selectedButton.data, oldItem:currentMenuData};
+					this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, param, true));
 					updateStatus(selectedButton);
 				}
 			}
+		}
+		
+		private function get currentMenuData():Object
+		{
+			if (currentMenuItem != null) {
+				return currentMenuItem.data;
+			}
+			return null;
 		}
 		
 		/**根据权限，初始化默认项*/
@@ -451,7 +461,8 @@ package com.supermap.wegis.common.components.menuBar
 				//此处要根据权限的类型来处理
 				if(menuItem.visible && menuItem.includeInLayout && menuItem.enabled)
 				{
-					this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, menuItem, true));
+					var param:Object = {currentItem:menuItem.data, oldItem:currentMenuData};
+					this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, param, true));
 					updateStatus(menuItem);
 					break;
 				}
@@ -530,12 +541,12 @@ package com.supermap.wegis.common.components.menuBar
 				{
 					if(currentMenuItem == null || currentMenuItem != clickitem)
 					{
+						var param:Object = {currentItem:clickitem.data, oldItem:currentMenuData};
+						this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, param, true));
 						if(_isUpdateStatus)
+						{
 							this.updateStatus(clickitem);
-						
-						this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, clickitem, true));
-						
-						currentMenuItem = clickitem;
+						}
 					}
 					
 					switch(clickitem.type)
@@ -648,7 +659,9 @@ package com.supermap.wegis.common.components.menuBar
 		
 		private function itemClickHandler(event:MenuEvent):void
 		{
-			this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, event.item, true));
+			var menuItem:Menu = event.currentTarget as Menu;
+			var param:Object = {currentItem:menuItem.data, oldItem:currentMenuData};
+			this.dispatchEvent(new MenuEventEx(MenuEventEx.MENU_CLICK, param, true));
 		}
 		
 		//显示下拉菜单

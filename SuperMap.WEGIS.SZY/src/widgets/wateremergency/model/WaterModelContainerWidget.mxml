@@ -5,14 +5,26 @@
 			   xmlns:ns="library://ns.supermap.com/flex/wegis/common"
 			   xmlns:line="sm.wegis.szy.components.line.*"
 			   width="100%" height="100%"
-			   creationComplete="this_creationCompleteHandler(event)">
+			   creationComplete="this_creationCompleteHandler(event)" xmlns:chart="widgets.wateremergency.chart.*">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.supermap.wegis.common.utils.DateUtilEx;
 			
+			import mx.charts.ChartItem;
+			import mx.charts.HitData;
+			import mx.charts.LegendItem;
+			import mx.charts.chartClasses.CartesianChart;
+			import mx.charts.chartClasses.IAxis;
+			import mx.charts.chartClasses.Series;
+			import mx.charts.events.ChartEvent;
+			import mx.charts.events.ChartItemEvent;
+			import mx.charts.events.LegendMouseEvent;
+			import mx.charts.series.LineSeries;
 			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
 			import mx.events.FlexEvent;
+			import mx.formatters.DateFormatter;
 			
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
@@ -29,7 +41,29 @@
 			public static const BREAK_STATE:String = "breakState";
 			public static const RIVER_STATE:String = "riverState";
 			
+			//--------------------------------断面-------------------------------------------
 			[Bindable]
+			/**断面地形剖面*/
+			private var tpDs:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			/**断面流量过程*/
+			private var wfDs:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			/**断面水深*/
+			private var wdDs:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			/**断面水流流速*/
+			private var wsDs:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			/**断面污染物浓度*/
+			private var wDenDs:ArrayCollection = new ArrayCollection();
+			
+			private var _zoomStart:Object;
+			private var _zoomEnd:Object;
+			
+			//----------------------通用-----------------------------------------------
+			private var canReset:Boolean = false;
+			
 			private var targetsList:ArrayCollection = new ArrayCollection([
 				{label:"水位",value:1}, {label:"水深",value:2},
 				{label:"流量",value:3},{label:"流速",value:4},
@@ -38,14 +72,15 @@
 			private function queryBreakCalcResultResponseHandler(event:CairngormEvent):void
 			{
 				var result:Object = event.data;
-				if (result != null && result.success == true) {
-					var targetList:Object = result.attributes.targetList;
-					if(targetList != null)
-					{
-						if(targetList is Array)
-						{
-						}
-					}
+				if (result != null && result.success == true && result.attributes != null) {
+					var attributes:Object =  result.attributes;
+					waterCPositionLine.displayName = attributes["label"];
+					waterCPositionLine.dataProvider = waterCPositionLine.originalDataProvider = new ArrayCollection(attributes["nodeList"]);
+					//							waterRPositionLine.displayName = wpDs.waterPositionData[0]["label"];
+					//							waterRPositionLine.dataProvider = new ArrayCollection(wpDs.waterPositionData[0]["nodeList"]);
+				}else {
+					waterCPositionLine.dataProvider = null;
+					waterRPositionLine.dataProvider = null;
 				}
 			}
 			
@@ -77,41 +112,18 @@
 				this.currentState = HIDE_STATE;
 			}
 			
-			protected function targetDpList_valueCommitHandler(event:FlexEvent):void
-			{
-				if (targetDpList.selectedItem != null) {
-					var selectedItem:Object = targetDpList.selectedItem;
-					watchTargetCB.enabled = true;
-					switch(selectedItem["value"]) {
-						case 2:
-						case 4:
-							watchTargetCB.enabled = false;
-							break;
-					}
-				}
-			}
-			
 			//点击查询断面计算结果
 			private function queryBt_clickHandler():void
 			{
-				toolTipLb.text = "";
-				var targetSelect:Boolean = false;
-				if (calcTargetCB.selected == true) {
-					targetSelect = true;
-				}
-				if (watchTargetCB.enabled == true && watchTargetCB.selected == true) {
-					targetSelect = true;
-				}
-				if (targetSelect == true) {
-					var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
-					waterModelparam.start = DateUtilEx.getDateYMD(startDateField.selectedDate);
-					waterModelparam.end = DateUtilEx.getDateYMD(endDateField.selectedDate);
-					waterModelparam.method = getQueryMethodHandler();
-					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT);
-					queryEvent.dispatch();
-				} else {
-					toolTipLb.text = "请选择【指标类型】";
-				}
+				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
+				waterModelparam.start = DateUtilEx.getDateYMD(startDateField.selectedDate);
+				waterModelparam.end = DateUtilEx.getDateYMD(endDateField.selectedDate);
+				waterModelparam.method = getQueryMethodHandler();
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT);
+				queryEvent.dispatch();
+				
+				//设置Y轴名称 
+				verticalAxis.title = targetDpList.selectedItem.label;
 			}
 			
 			//根据选择指标类型，获取后台查询方法
@@ -138,11 +150,206 @@
 				
 			}
 			
+			
+			protected function hd_wpLegend_itemClickHandler(event:LegendMouseEvent):void
+			{
+				var currentLegendItem:LegendItem = event.item as LegendItem;
+				var currentChartItem:LineSeries = event.item.source as LineSeries;
+				if(currentLegendItem != null && currentChartItem != null)
+				{
+					currentChartItem.visible = currentChartItem.visible?false:true;
+				}
+			}
+			
+			private function onReset5(event:ChartEvent):void
+			{
+				if(canReset)
+				{
+					var lc:CartesianChart = event.target as CartesianChart;
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeriesEx = lc.series[i] as LineSeriesEx;
+						ls.dataProvider =  ls.originalDataProvider;
+					}
+					canReset = false;
+				}
+			}
+			
+			//将X轴显示转化为具体的日期格式
+			private function dateParseFunction(s:String):Date { 
+				var a:Array = s.split("-");
+				var newDate:Date = new Date(a[0],a[1]-1,a[2]);
+				return newDate;
+			}
+			
+			//X轴时间显示格式
+			private function dateFormatFunction(labelValue:Date, previousValue:Object, axis:IAxis):String
+			{ 
+				var dateFormatter:DateFormatter = new DateFormatter();   
+				dateFormatter.formatString = "YYYY-MM-DD";   
+				var dateValue:String= dateFormatter.format(labelValue);    
+				return dateValue;
+			}
+			
+			//将X轴显示转化为具体的日期格式
+			private function dateParseFunction0(s:String):Date { 
+				var a:Array = s.split("-");
+				var b:Array = a[2].split(" ");
+				var c:Array = b[1].split(":");
+				var newDate:Date = new Date(a[0],a[1]-1,b[0], c[0], c[1]);
+				return newDate;
+			}
+			
+			//X轴时间显示格式
+			private function dateFormatFunction0(labelValue:Date, previousValue:Object, axis:IAxis):String
+			{ 
+				var dateFormatter:DateFormatter = new DateFormatter();   
+				dateFormatter.formatString = "YYYY-MM-DD JJ:NN";   
+				var dateValue:String= dateFormatter.format(labelValue);    
+				return dateValue;
+			}
+			
+			
+			//断面--水位过程统计图
+			private function waterPositionDataTipFunction (hitData:HitData):String { 
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData[waterCPositionLine.yField] + "<br>"+"时间:"+ cntData[waterCPositionLine.xField];
+			}
+			
+			//获取最接近鼠标位置的时间
+			private function getTimeNearMouse(cartesianChart:CartesianChart):Object{
+				if(cartesianChart.series[0]!=null){
+					var series:Series = cartesianChart.series[0];
+					if (series.mouseX >= series.width) {
+						_zoomStart = null;
+					}
+					var leftPoint:Point = new Point(series.mouseX,series.mouseY);
+					var leftArr:Array = series.localToData(leftPoint);
+					var time:String = DateUtilEx.getDayEndTime(new Date(leftArr[0]));
+					var clickObject:Object = {time:time, flow:leftArr[1]};
+					var clickTime:String = leftArr[0];
+					var selectIndex:int;
+					var list:IList = series.dataProvider as IList;
+					for (var index:int=0;index<list.length-1; index++) 
+					{
+						var preItem:Object = list.getItemAt(index);
+						var nextItem:Object = list.getItemAt(index+1);
+						var preDate:Date = dateParseFunction(preItem.time);
+						var nextDate:Date = dateParseFunction(nextItem.time);
+						var selectData:Date = new Date(parseFloat(clickTime));
+						if (nextDate > selectData && preDate < selectData)
+						{
+							selectIndex = index+1;
+							break;
+						}else if (selectData < preDate){
+							selectIndex = 0;
+						}else if (selectData > preDate) {
+							selectIndex = list.length-1;
+						}
+					}
+					return {index:selectIndex, object:clickObject};
+				}else{
+					return null;
+				}
+			}
+			
+			//鼠标按下
+			protected function chart_mouseDownHandler(event:MouseEvent):void
+			{
+				//记下鼠标按下时的时间和位置
+				var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
+				_zoomStart = getTimeNearMouse(cartesianChart);
+				_zoomEnd = null;
+			}
+			
+			//鼠标弹起
+			protected function chart_mouseUpHandler(event:MouseEvent):void
+			{
+				if(_zoomStart !=null && _zoomEnd){
+					//记下鼠标移动时的时间和位置
+					var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
+					zoomIn(cartesianChart)
+				}
+				_zoomStart = null;
+				zoomArea.graphics.clear();
+			}
+			
+			//开始缩放
+			private function zoomIn(cartesianChart:CartesianChart):void{
+				//避免单击也放大
+				if(_zoomStart != null){
+					var lc:CartesianChart = cartesianChart;
+					var ac:ArrayCollection = new ArrayCollection();
+					
+					var tempStart:Object = _zoomStart;
+					var startIndex:int = tempStart.index;
+					var endIndex:int = _zoomEnd.index;
+					if (startIndex == endIndex) {
+						return;
+					}
+					if (startIndex > endIndex) {
+						var temp:Object = tempStart;
+						tempStart = _zoomEnd;
+						_zoomEnd = temp;
+						startIndex = tempStart.index;
+						endIndex = _zoomEnd.index;
+					}
+					for each (var ls:Series in lc.series)
+					{
+						var dp:ArrayCollection = ls.dataProvider as ArrayCollection;
+						if (dp != null) {
+							var lastIndex:int = dp.length > endIndex ? endIndex : dp.length;
+							for (var index:int = startIndex ; index <= endIndex ;index++)
+							{
+								ac.addItem(dp.getItemAt(index));
+							}
+							if (ac.length > 1) {
+								ls.dataProvider = ac;
+							}
+						}
+					}
+					canReset = true;
+				}
+			}
+			
+			
+			protected function chart_mouseMoveHandler(event:MouseEvent):void
+			{
+				if(_zoomStart != null) {
+					var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
+					_zoomEnd = getTimeNearMouse(cartesianChart);
+					//绘制 选中区域背景
+					var startX:Number = cartesianChart.series[0].items[_zoomStart.index]["x"];
+					var endX:Number = cartesianChart.series[0].items[_zoomEnd.index]["x"];;
+					zoomArea.graphics.clear();
+					zoomArea.graphics.beginFill(0x65EEFC,0.4);
+					zoomArea.graphics.drawRect(startX,0,endX-startX,chartBg.height);
+					zoomArea.graphics.endFill();
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:SolidColor id="sc1" color="#F5AC39"/>
+		<mx:SolidColor id="sc2" color="#55D8FE"  />
+		<s:SolidColorStroke id="s1" color="#F5AC39"/>
+		<s:SolidColorStroke id="s2" color="#55D8FE"/>
+		<s:SolidColorStroke id="s3" color="#1D66AE"/>
+		<s:SolidColorStroke id="hd_s3" color="#FF0000"/>
+		<s:SolidColorStroke id="s4" color="#712F82"/>
+		<s:SolidColorStroke id="hd_s5" color="#0000FF"/>
+		<s:SolidColorStroke id="s5" color="#FF00CC"/>
+		<s:SolidColorStroke id="hd_wden_s5" color="#0000FF" weight="10"/>
+		<mx:SeriesInterpolate id="slide" duration="200" elementOffset="0"/>
+		<mx:SeriesInterpolate id="slide2" duration="1000" elementOffset="0"/>
+		<s:SolidColorStroke id="chartAxisStroke" color="#BBCCDD" weight="1" alpha="1"/>
+		<mx:SeriesInterpolate id="areaSlide" duration="200"/>
+		<mx:SeriesInterpolate id="areaSlide2" duration="200"/>
 	</fx:Declarations>
 	<ns:states>
 		<s:State name="hideState"/>
@@ -167,26 +374,16 @@
 				</s:Rect>
 				<mx:ViewStack id="breakVW" width="100%" height="100%">
 					<s:NavigatorContent label="断面计算结果"  width="100%" height="100%">
-						<s:VGroup  width="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
+						<s:VGroup  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
 							<mx:Grid verticalGap="15" horizontalGap="15">
 								<mx:GridRow>
 									<mx:GridItem>
 										<s:HGroup gap="10" >
 											<s:Label text="指标" height="100%"/>
 											<s:DropDownList id="targetDpList" width="160" dataProvider="{targetsList}"  
-															requireSelection="true" styleName="SystemSelectorStyle"
-															valueCommit="targetDpList_valueCommitHandler(event)"/>
+															requireSelection="true" styleName="SystemSelectorStyle"/>
 										</s:HGroup>
 									</mx:GridItem>
-									<mx:GridItem>
-										<s:HGroup gap="10" >
-											<s:Label text="指标类型" height="100%"/>
-											<s:CheckBox id="calcTargetCB" label="计算指标" selected="true" />
-											<s:CheckBox id="watchTargetCB" label="监测指标" />
-										</s:HGroup>
-									</mx:GridItem>
-								</mx:GridRow>
-								<mx:GridRow>
 									<mx:GridItem>
 										<s:HGroup gap="10" >
 											<s:Label text="时间" height="100%"/>
@@ -199,12 +396,64 @@
 										<s:HGroup gap="10">
 											<s:Button id="queryBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"  click="queryBt_clickHandler()"/>
 											<s:Button id="exportBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle" />
-											<s:Label id="toolTipLb" color="0xFF0000" height="100%"/>
 										</s:HGroup>
 									</mx:GridItem>
 								</mx:GridRow>
 							</mx:Grid>	
 							<line:HLine width="100%"/>
+							<mx:LineChart id="waterPositionChart" width="100%" height="100%" 
+										  fontSize="12"
+										  showDataTips="true"
+										  seriesFilters="[]"
+										  selectionMode="none" 
+										  doubleClickEnabled="true"
+										  chartDoubleClick="onReset5(event)"
+										  dataTipFunction="waterPositionDataTipFunction"
+										  mouseDown="chart_mouseDownHandler(event)"
+										  mouseMove="chart_mouseMoveHandler(event)"
+										  mouseUp="chart_mouseUpHandler(event)">
+								<mx:backgroundElements>
+									<s:Group width="100%" height="100%" id="chartBg">
+										<!--<s:Rect left="0" right="1" top="0" bottom="0">
+										<s:fill>
+										<s:SolidColor alpha="1" color="#F5F5F5"/>
+										</s:fill> 
+										<s:stroke>
+										<s:SolidColorStroke color="0xE3E3E3" weight="1"/>
+										</s:stroke>
+										</s:Rect>  -->
+										<s:Group  width="100%" height="100%" id="zoomArea">
+											<!-- 在此绘制选中区域 -->
+										</s:Group>   
+									</s:Group>
+									<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+										<mx:verticalStroke>
+											<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+										</mx:verticalStroke>
+									</mx:GridLines>
+								</mx:backgroundElements>
+								<!-- vertical axis -->
+								<mx:verticalAxis>
+									<mx:LinearAxis id="verticalAxis" baseAtZero="false" />
+								</mx:verticalAxis>
+								<mx:verticalAxisRenderers>
+									<mx:AxisRenderer axis="{verticalAxis}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+								</mx:verticalAxisRenderers>
+								<!-- horizontal axis -->
+								<mx:horizontalAxis>
+									<mx:DateTimeAxis id="ca"  title="时间" interval="1" labelUnits="months" dataUnits="days" displayLocalTime="true" parseFunction="dateParseFunction" labelFunction="dateFormatFunction"/>
+								</mx:horizontalAxis>
+								<!-- horizontal axis renderer -->
+								<mx:horizontalAxisRenderers>
+									<mx:AxisRenderer axis="{ca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+								</mx:horizontalAxisRenderers>
+								<mx:series>
+									<chart:LineSeriesEx id="waterCPositionLine" itemRenderer="widgets.wateremergency.chart.LineChartDataRender" xField="time" yField="value" lineStroke="{s3}" form="curve" showDataEffect="{slide}" />
+									<chart:LineSeriesEx id="waterRPositionLine" itemRenderer="widgets.wateremergency.chart.LineChartDataRenderEx" xField="time" yField="value" lineStroke="{s5}" form="curve" showDataEffect="{slide}" />
+								</mx:series>
+							</mx:LineChart>
+							<mx:Legend dataProvider="{waterPositionChart}"   buttonMode="true" height="70"
+									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
 						</s:VGroup>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面地形展示"  width="100%" height="100%">

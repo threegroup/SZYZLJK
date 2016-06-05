@@ -11,13 +11,13 @@
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
-			import sm.wegis.szy.skins.DropDownPanelSkin;
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.web.core.styles.CompositeStyle;
 			import com.supermap.wegis.common.core.plugin.PluginClass;
 			import com.supermap.wegis.common.core.plugin.PluginManager;
 			import com.supermap.wegis.common.utils.Property;
 			
+			import mx.charts.chartClasses.CartesianChart;
 			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
@@ -29,6 +29,7 @@
 			import org.springextensions.actionscript.context.support.FlexXMLApplicationContext;
 			
 			import sm.wegis.szy.events.SystemEvent;
+			import sm.wegis.szy.skins.DropDownPanelSkin;
 			
 			private var appContext:FlexXMLApplicationContext;
 			private var springContextUrl:String;
@@ -36,7 +37,7 @@
 			private var isReadCreateSpring:Boolean = false;
 			//spring和view都创建完成
 			private var allCreateComplete:Boolean =false;
-			private var lostCls:Array = [CompositeStyle];
+			private var lostCls:Array = [CompositeStyle, CartesianChart];
 			
 			private var sm_wegis_szy_skins_DropDownPanelSkin_obj:sm.wegis.szy.skins.DropDownPanelSkin;
 			
