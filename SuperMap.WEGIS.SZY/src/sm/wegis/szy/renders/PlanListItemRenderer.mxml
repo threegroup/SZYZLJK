@@ -2,11 +2,13 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="true"
+				autoDrawBackground="false"
 				minHeight="25"
 				dataChange="this_dataChangeHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
 			import mx.events.FlexEvent;
 			
 			protected function this_dataChangeHandler(event:FlexEvent):void
@@ -26,8 +28,25 @@
 			
 		]]>
 	</fx:Script>
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0" alpha.selected="1" alpha.hovered="1" alpha="1">
+		<s:fill>
+			<s:SolidColor color.selected="#FFDE45" color.hovered="#3385FF" color.normal="#FFFFFF"/>
+		</s:fill>
+	</s:Rect>
 	<s:HGroup width="100%" height="100%" verticalAlign="middle">
-		<s:Label id="titleLb" height="100%" width="200" />
-		<s:Label id="timeLb"  height="100%"/>
+		<s:Image source="{ResourceManagerEx.FindResource('model').cls}"/>
+		<s:Label id="titleLb" height="100%" width="200" 
+				 color.hovered="#FFFFFF"
+				 color.selected="#000000"
+				 color.normal="#000000"/>
+		<s:Label id="timeLb"  height="100%"
+				 color.hovered="#FFFFFF"
+				 color.selected="#000000"
+				 color.normal="#000000"/>
 	</s:HGroup>
 </s:ItemRenderer>

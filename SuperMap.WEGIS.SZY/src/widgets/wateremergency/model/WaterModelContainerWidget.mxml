@@ -64,6 +64,7 @@
 			//----------------------通用-----------------------------------------------
 			private var canReset:Boolean = false;
 			
+			[Bindable]
 			private var targetsList:ArrayCollection = new ArrayCollection([
 				{label:"水位",value:1}, {label:"水深",value:2},
 				{label:"流量",value:3},{label:"流速",value:4},
@@ -345,7 +346,7 @@
 		<s:SolidColorStroke id="hd_s5" color="#0000FF"/>
 		<s:SolidColorStroke id="s5" color="#FF00CC"/>
 		<s:SolidColorStroke id="hd_wden_s5" color="#0000FF" weight="10"/>
-		<mx:SeriesInterpolate id="slide" duration="200" elementOffset="0"/>
+		<mx:SeriesInterpolate id="slide" duration="500" elementOffset="0"/>
 		<mx:SeriesInterpolate id="slide2" duration="1000" elementOffset="0"/>
 		<s:SolidColorStroke id="chartAxisStroke" color="#BBCCDD" weight="1" alpha="1"/>
 		<mx:SeriesInterpolate id="areaSlide" duration="200"/>
