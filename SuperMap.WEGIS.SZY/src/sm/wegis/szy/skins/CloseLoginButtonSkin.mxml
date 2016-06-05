@@ -45,10 +45,10 @@
     
     <!-- layer 2: fill -->
     <!--- @private -->
-    <s:Rect id="fill" left="0" right="0" top="0" bottom="0">
+    <s:Rect id="fill" left="0" right="5" top="0" bottom="0">
 		<s:fill>
-			<s:BitmapFill fillMode="scale" source="@Embed('assets/image/login/close_normal.png')"
-						  source.over="@Embed('assets/image/login/close_over.png')"
+			<s:BitmapFill fillMode="scale" source="@Embed('assets/image/panel/close.png')"
+						  source.over="@Embed('assets/image/panel/aclose.png')"
 						  smooth="true">
 			</s:BitmapFill>
 		</s:fill>

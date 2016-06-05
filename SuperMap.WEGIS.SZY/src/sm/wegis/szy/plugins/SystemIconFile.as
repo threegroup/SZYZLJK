@@ -1169,6 +1169,11 @@ package sm.wegis.szy.plugins
 		private static var reportCls:Class;
 		private static var reportKey:String = "report";
 		ResourceManagerEx.RegisterResource("",reportKey, reportCls);
+		
+		[Embed(source="assets/image/model.png")]
+		private static var modelCls:Class;
+		private static var modelKey:String = "model";
+		ResourceManagerEx.RegisterResource("",modelKey, modelCls);
 
 		
 		public function SystemIconFile()

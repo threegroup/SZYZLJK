@@ -136,7 +136,7 @@
 				{
 					dg = dgContainer.find(key) as DataGrid;
 				} else {
-					var dg:DataGrid = createDataGrid(dgSrc);
+					dg = createDataGrid(dgSrc);
 					dg.name = key;
 					dgContainer.add(key, dg);
 				}	

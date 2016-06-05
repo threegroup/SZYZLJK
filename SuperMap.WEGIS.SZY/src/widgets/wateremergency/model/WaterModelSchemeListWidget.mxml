@@ -163,7 +163,7 @@
 							</s:HGroup>
 							<line:HLine width="100%"/>
 							<s:List id="planList" borderVisible="false" width="100%" height="100%"
-									itemRenderer="sm.wegis.szy.renders.PlanListItemRenderer"  styleName="ListStyle"
+									itemRenderer="sm.wegis.szy.renders.PlanListItemRenderer"
 									click="planList_clickHandler(event)"/>
 						</s:VGroup>
 					</s:NavigatorContent>
