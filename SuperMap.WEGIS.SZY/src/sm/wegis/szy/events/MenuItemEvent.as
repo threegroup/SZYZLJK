@@ -8,6 +8,7 @@ package sm.wegis.szy.events
 	{
 		/**系统菜单*/
 		public static const SYSTEM_MENU_SELECT_CHANGE:String = "SystemMeunSelectChange";
+		
 //		/**系统二级菜单*/
 //		public static const SYSTEM_SUB_MENU_SELECT_CHANGE:String = "SystemSubMeunSelectChange";
 		public function MenuItemEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)

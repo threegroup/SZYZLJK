@@ -101,10 +101,10 @@
 				<selected></selected>
 				<subitems>
 					<subitem>
-						<key>WaterEvalutionWidget</key>
+						<key>WaterEmergencyWidget</key>
 						<name>评价指标数据展示面板</name>
 						<url>widgets/wateremergency/model/WaterModelContainerWidget.swf</url>
-						<position>float</position>
+						<position>right</position>
 						<mutex>true</mutex>
 						<bottom>0</bottom>
 						<left>0</left>
