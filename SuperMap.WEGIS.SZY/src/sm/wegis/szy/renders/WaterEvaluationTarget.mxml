@@ -81,17 +81,44 @@
 					}
 				}
 			}
+			
+			protected function groupfocusInHandler(event:FocusEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.currentState = "focusIn";
+			}
+			
+			protected function groupfocusOutHandler(event:FocusEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.currentState = "focusOut";
+			}
+			
 		]]>
 	</fx:Script>
-	<s:VGroup width="100%" height="100%" gap="3">
+	<s:states>
+		<s:State name="focusIn"/>
+		<s:State name="focusOut"/>
+	</s:states>
+	<s:VGroup width="100%" height="100%" gap="3" 
+			  focusIn="groupfocusInHandler(event)"
+			  focusOut="groupfocusOutHandler(event)">
 		<s:Group id="titleContent" width="100%" minHeight="20">
 			<s:Rect width="100%" height="100%">
 				<s:fill>
-					<s:SolidColor color="0x3385FF"/>
+					<s:SolidColor id="infoStyleBg" 
+								  color="0x3385FF" 
+								  alpha="0.6" 
+								  alpha.focusIn="1" 
+								  alpha.focusOut="0.6"/>
 				</s:fill>
 			</s:Rect>
 			<s:Label id="titleLb" color="0xFFFFFF" verticalCenter="0" left="5" width="100%"/>
 		</s:Group>
-		<mx:Grid id="gridContent"   width="100%" height="100%" backgroundAlpha="0.8" styleName="gridStyle"/>
+		<mx:Grid id="gridContent"   width="100%" height="100%" 
+				 backgroundAlpha="0.6" 
+				 backgroundAlpha.focusIn="1" 
+				 backgroundAlpha.focusOut="0.6" 
+				 styleName="gridStyle"/>
 	</s:VGroup>
 </s:Group>
