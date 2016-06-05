@@ -72,14 +72,14 @@ in accordance with the terms of the license agreement accompanying it.
 	<!-- layer 2: fill -->
 	<s:Rect id="fill" left="0" right="0" top="0" bottom="0" radiusX="0">
 		<s:fill>
-			<s:SolidColor color="#3385FF" color.overStates="#FFDE45" color.selectedUpStates="#FFDE45"
+			<s:SolidColor color="#FFFFFF" color.overStates="#3385FF" color.selectedUpStates="#FFDE45"
 						  alpha="1" alpha.overStates="1" alpha.selectedUpStates="1"/>
 		</s:fill>
 	</s:Rect>
 	
 	<!-- layer 8: text -->
 	<!---  @copy spark.components.supportClasses.ButtonBase#labelDisplay -->
-	<s:Label id="labelDisplay" left="5" right="5" top="1" bottom="1" color="0xFFFFFF"
+	<s:Label id="labelDisplay" left="5" right="5" top="1" bottom="1" color="0x000000"
 			 horizontalCenter="0" maxDisplayedLines="1" textAlign="center" verticalAlign="middle"
 			 verticalCenter="1"
 			 color.overStates="0xFFFFFF"

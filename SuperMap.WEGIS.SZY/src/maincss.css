@@ -131,7 +131,7 @@ s|RadioButton
 
 .ListStyle
 {
-	alternatingItemColors:#FFFFFF,#E1DFDA;
+	alternatingItemColors:#FFFFFF,#6AC7EF;
 }
 
 .CloseLoginButtonStyle
@@ -213,7 +213,8 @@ mx|AccordionHeader
 	fontSize:12;
 	fontWeight:normal;
 	fillColors:#666666, #666666;
-	selectedColors:#3385FF, #3385FF;
+/*	selectedColors:#3385FF, #3385FF;*/
+	selectedColors:#6AC7EF,#6AC7EF;
 	fillAlphas:1,1;
 /*	textRollOverColor:#000000;
 	textSelectedColor:#000000;*/

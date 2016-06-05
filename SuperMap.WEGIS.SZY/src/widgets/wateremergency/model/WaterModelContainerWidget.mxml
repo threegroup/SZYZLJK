@@ -29,6 +29,7 @@
 			public static const BREAK_STATE:String = "breakState";
 			public static const RIVER_STATE:String = "riverState";
 			
+			[Bindable]
 			private var targetsList:ArrayCollection = new ArrayCollection([
 				{label:"水位",value:1}, {label:"水深",value:2},
 				{label:"流量",value:3},{label:"流速",value:4},
@@ -157,8 +158,13 @@
 		</s:controlBarContent>
 		<!--断面信息展示-->
 		<s:Group id="breakGroup" width="100%" height="100%" visible="false" visible.breakState="true" >
-			<s:VGroup width="100%" height="100%" gap="0">
+			<s:VGroup width="100%" height="100%" gap="3">
 				<s:ButtonBar id="breakBTB" dataProvider="{breakVW}"/>
+				<s:Rect width="100%" height="1">
+					<s:fill>
+						<s:SolidColor color="0x979797" alpha="0.5"/>
+					</s:fill>
+				</s:Rect>
 				<mx:ViewStack id="breakVW" width="100%" height="100%">
 					<s:NavigatorContent label="断面计算结果"  width="100%" height="100%">
 						<s:VGroup  width="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
