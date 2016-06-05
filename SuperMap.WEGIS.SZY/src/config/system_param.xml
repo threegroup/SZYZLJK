@@ -15,6 +15,9 @@
 		<countyMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/行政区划</countyMapUrl>
 		<countyLayerName>市界_太子河流域@MAP</countyLayerName>
 		
+		<dmMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/断面河流线</dmMapUrl>
+		<dmLayerName>断面河流线@新断面2016</dmLayerName>
+		
 		<baseLayerId layerIds="0,1,2,3,23,24,25,32,49,50,52"/>
 		<themeLayerId>
 			<layer label="水库"  selected="true" layerIds="9,10,11,12,28,29,33,34" />

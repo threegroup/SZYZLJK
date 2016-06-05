@@ -44,6 +44,13 @@ package sm.wegis.szy.vo
 		/**县界查询图层名称*/
 		public var countyLayerName:String;
 		
+		
+		/**应急响应断面地图地址*/
+		public var dmMapUrl:String;
+		
+		/**应急响应断面图层名称*/
+		public var dmLayerName:String;
+		
 
 	}
 }

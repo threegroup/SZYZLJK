@@ -35,6 +35,10 @@ package sm.wegis.szy.commands
 					modelLocator.baseMapInfo.countyMapUrl = systemParam.countyMapUrl;
 					modelLocator.baseMapInfo.countyLayerName = systemParam.countyLayerName;
 					
+					//应急响应断面,设置图层名称
+					modelLocator.baseMapInfo.dmMapUrl = systemParam.dmMapUrl;
+					modelLocator.baseMapInfo.dmLayerName = systemParam.dmLayerName;
+					
 					//设置应用系统矢量，影像水利专题地图服务地址
 					modelLocator.baseMapInfo.waterResourceVectorMapUrl = systemParam.vectorMapUrl;
 					modelLocator.baseMapInfo.waterResourceRasterMapUrl = systemParam.rasterMapUrl;
