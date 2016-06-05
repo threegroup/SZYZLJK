@@ -11,6 +11,8 @@
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.supermap.wegis.common.utils.DateUtilEx;
 			
+			import flashx.textLayout.formats.Direction;
+			
 			import mx.charts.ChartItem;
 			import mx.charts.HitData;
 			import mx.charts.LegendItem;
@@ -23,6 +25,8 @@
 			import mx.charts.series.LineSeries;
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
+			import mx.core.UIComponent;
+			import mx.core.UITextFormat;
 			import mx.events.FlexEvent;
 			import mx.formatters.DateFormatter;
 			
@@ -34,6 +38,8 @@
 			import sm.wegis.szy.vo.ModelContainerShowVO;
 			import sm.wegis.szy.vo.WSMethod;
 			import sm.wegis.szy.vo.WaterModelParam;
+			
+			import spark.primitives.Graphic;
 			
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
@@ -233,6 +239,9 @@
 					var clickTime:String = leftArr[0];
 					var selectIndex:int;
 					var list:IList = series.dataProvider as IList;
+					if (list == null) {
+						return null;
+					}
 					for (var index:int=0;index<list.length-1; index++) 
 					{
 						var preItem:Object = list.getItemAt(index);
@@ -274,7 +283,25 @@
 					zoomIn(cartesianChart)
 				}
 				_zoomStart = null;
+				_zoomEnd = null;
 				zoomArea.graphics.clear();
+				zoomArea.removeAllElements();
+				tipGroup.removeAllElements();
+			}
+			
+			//鼠标弹起
+			protected function chart_mouseOutHandler(event:MouseEvent):void
+			{
+				if(_zoomStart !=null && _zoomEnd){
+					//记下鼠标移动时的时间和位置
+					var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
+					zoomIn(cartesianChart)
+				}
+				_zoomStart = null;
+				_zoomEnd = null;
+				zoomArea.graphics.clear();
+				tipGroup.removeAllElements();
+				zoomArea.removeAllElements();
 			}
 			
 			//开始缩放
@@ -318,8 +345,8 @@
 			
 			protected function chart_mouseMoveHandler(event:MouseEvent):void
 			{
+				var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
 				if(_zoomStart != null) {
-					var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
 					_zoomEnd = getTimeNearMouse(cartesianChart);
 					//绘制 选中区域背景
 					var startX:Number = cartesianChart.series[0].items[_zoomStart.index]["x"];
@@ -329,7 +356,59 @@
 					zoomArea.graphics.drawRect(startX,0,endX-startX,chartBg.height);
 					zoomArea.graphics.endFill();
 				} else {
-					var x:Number = cartesianChart.series[0].items[_zoomEnd.index]["x"];;;
+					var currentItem:Object = getTimeNearMouse(cartesianChart);
+					if ( cartesianChart.series[0] != null &&  cartesianChart.series[0].items !=null  && currentItem !=null)
+					{
+						var list:Array = cartesianChart.series[0].items;
+						if (list.length >currentItem.index && currentItem.index >=0) {
+							var x:Number = cartesianChart.series[0].items[currentItem.index]["x"];
+							var g:Graphics = zoomArea.graphics;
+							g.clear();
+							g.moveTo(x,0);
+							g.lineStyle(1,0x000000);
+							g.lineTo(x,chartBg.height);
+							
+							tipGroup.removeAllElements();
+							
+							for each (var ls:Series in cartesianChart.series)
+							{
+								if (ls.items.length > 0 && currentItem.index < ls.items.length)
+								{
+									var item:Object = ls.items[currentItem.index];
+									var UI:UIComponent=new UIComponent();
+									//用于计算表头宽度
+									var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
+									uiTextFormat.antiAliasType = AntiAliasType.NORMAL;
+									uiTextFormat.gridFitType =GridFitType.NONE;
+									uiTextFormat.direction =Direction.LTR;
+									var textLine:TextLineMetrics;
+									textLine = uiTextFormat.measureText(item.yValue);
+									var nWidth:int=textLine.width +10;
+									var nHeight:int = textLine.height +10;
+									var DrawPic:Sprite=new Sprite();
+									DrawPic.graphics.clear();
+									DrawPic.graphics.beginFill(0x3D4852,1);
+									DrawPic.graphics.drawRect(0, 0, nWidth, nHeight);
+									DrawPic.graphics.endFill();
+									//添加输出文本
+									var txtTemp : TextField= new TextField();
+									txtTemp.autoSize = "left";
+									txtTemp.text = item.yValue;
+									var fmt : TextFormat = new TextFormat();
+									fmt.size = 13;
+									fmt.color = 0xFFFFFF;
+									txtTemp.setTextFormat(fmt);
+									txtTemp.x = DrawPic.x + (DrawPic.width - txtTemp.width) /2;
+									txtTemp.y = DrawPic.y + (DrawPic.height - txtTemp.height) / 2;
+									UI.addChild(DrawPic);
+									UI.addChild(txtTemp);
+									UI.x = item.x + 5;
+									UI.y = item.y - nWidth/3;
+									tipGroup.addElement(UI);
+								}
+							}
+						}
+					}
 				}
 			}
 			
@@ -413,27 +492,27 @@
 										  dataTipFunction="waterPositionDataTipFunction"
 										  mouseDown="chart_mouseDownHandler(event)"
 										  mouseMove="chart_mouseMoveHandler(event)"
+										  rollOut="chart_mouseOutHandler(event)"
 										  mouseUp="chart_mouseUpHandler(event)">
 								<mx:backgroundElements>
-									<s:Group width="100%" height="100%" id="chartBg">
-										<!--<s:Rect left="0" right="1" top="0" bottom="0">
-										<s:fill>
-										<s:SolidColor alpha="1" color="#F5F5F5"/>
-										</s:fill> 
-										<s:stroke>
-										<s:SolidColorStroke color="0xE3E3E3" weight="1"/>
-										</s:stroke>
-										</s:Rect>  -->
-										<s:Group  width="100%" height="100%" id="zoomArea">
-											<!-- 在此绘制选中区域 -->
-										</s:Group>   
-									</s:Group>
 									<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
 										<mx:verticalStroke>
 											<s:SolidColorStroke color="#CCCCCC" weight="1"/>
 										</mx:verticalStroke>
 									</mx:GridLines>
+									<s:Group width="100%" height="100%" id="chartBg">
+										<s:Group  width="100%" height="100%" id="zoomArea">
+											<!-- 在此绘制选中区域 -->
+										</s:Group>   
+									</s:Group>
 								</mx:backgroundElements>
+								<mx:annotationElements>
+									<s:Group width="100%" height="100%" id="chartAt">
+										<s:Group  width="100%" height="100%" id="tipGroup">
+											<!-- 在此显示气泡-->
+										</s:Group>   
+									</s:Group>
+								</mx:annotationElements>
 								<!-- vertical axis -->
 								<mx:verticalAxis>
 									<mx:LinearAxis id="verticalAxis" baseAtZero="false" />
