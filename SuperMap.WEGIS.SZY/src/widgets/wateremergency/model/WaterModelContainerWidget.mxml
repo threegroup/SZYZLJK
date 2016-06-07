@@ -289,21 +289,6 @@
 				tipGroup.removeAllElements();
 			}
 			
-			//鼠标弹起
-			protected function chart_mouseOutHandler(event:MouseEvent):void
-			{
-				if(_zoomStart !=null && _zoomEnd){
-					//记下鼠标移动时的时间和位置
-					var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
-					zoomIn(cartesianChart)
-				}
-				_zoomStart = null;
-				_zoomEnd = null;
-				zoomArea.graphics.clear();
-				tipGroup.removeAllElements();
-				zoomArea.removeAllElements();
-			}
-			
 			//开始缩放
 			private function zoomIn(cartesianChart:CartesianChart):void{
 				//避免单击也放大
@@ -492,7 +477,6 @@
 										  dataTipFunction="waterPositionDataTipFunction"
 										  mouseDown="chart_mouseDownHandler(event)"
 										  mouseMove="chart_mouseMoveHandler(event)"
-										  rollOut="chart_mouseOutHandler(event)"
 										  mouseUp="chart_mouseUpHandler(event)">
 								<mx:backgroundElements>
 									<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">

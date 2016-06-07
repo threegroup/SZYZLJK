@@ -10,9 +10,9 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
-      <libraryPathEntry kind="3" linkType="1" path="/SuperMap.WEGIS.Common/bin-debug/SuperMap.WEGIS.Common.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/FlexPaper_SDK4/bin-debug/FlexPaper_SDK4.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/SuperMap.WEGIS.TransData/bin-debug/SuperMap.WEGIS.TransData.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/SuperMap.WEGIS.Common/bin-debug/SuperMap.WEGIS.Common.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
