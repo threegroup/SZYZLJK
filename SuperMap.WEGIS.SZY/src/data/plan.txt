@@ -7,7 +7,7 @@
 			"location": "122.70318376592786,41.171766612813556",
 			"mapId": "taizihe",
 			"name": "本溪",
-			"superObjId": "158",
+			"superObjId": "dm61",
 			"typeIDs": "2,8"
 		},
 		{
@@ -16,7 +16,7 @@
 			"location": "122.71686158343172,41.18505587507898",
 			"mapId": "taizihe",
 			"name": "本溪",
-			"superObjId": "157",
+			"superObjId": "dm60",
 			"typeIDs": "2,8"
 		},
 		{
@@ -25,7 +25,7 @@
 			"location": "122.72853232470632,41.204984100827652",
 			"mapId": "taizihe",
 			"name": "本溪",
-			"superObjId": "156",
+			"superObjId": "dm59",
 			"typeIDs": "2,8"
 		},
 		{
@@ -34,7 +34,7 @@
 			"location": "122.72853232470632,41.204984100827652",
 			"mapId": "taizihe",
 			"name": "本溪",
-			"superObjId": "155",
+			"superObjId": "dm56",
 			"typeIDs": "2,8"
 		}
 		]

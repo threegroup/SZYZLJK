@@ -42,9 +42,7 @@ package sm.wegis.szy.commands
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT_RESPONSE);
 			var resultValue:Object = jsDec.getValue() as Object;
-			if (resultValue.success == true) {
-				queryEvent.data = resultValue;
-			}
+			queryEvent.data = resultValue;
 			queryEvent.dispatch();
 		}
 		

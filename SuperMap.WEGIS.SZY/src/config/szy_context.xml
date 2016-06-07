@@ -183,6 +183,9 @@
 		    		<!--水模型方案-->
 			    	<value type="Class">sm.wegis.szy.commands.QueryBreakCalcResultCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryDMRiverCommand
+					</value>
+					
 				</array>
 			</arg>
 		</method-invocation>
@@ -239,7 +242,9 @@
 				
 				
 					<!--水模型方案-->
-				<property name="QueryBreakCalcResult" value="QueryBreakCalcResultCommand"/>			
+				<property name="QueryBreakCalcResult" value="QueryBreakCalcResultCommand"/>
+				
+				<property name="QueryDMRiver" value="QueryDMRiverCommand"/>			
 							
 							
 				

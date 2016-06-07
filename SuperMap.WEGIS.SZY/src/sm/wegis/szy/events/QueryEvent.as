@@ -163,5 +163,9 @@ package sm.wegis.szy.events
 		
 		/**显示断面/河流	计算结果展示面板*/
 		public static const SHOW_MODEL_RESULT_WIDGET:String = "ShowModelResultWidget";
+		
+		/**查询河流被断面分割后的河流段数据 */
+		public static const QUERY_DM_RIVER:String = "QueryDMRiver";
+		public static const QUERY_DM_RIVER_RESPONSE:String = "QueryDMRiverResponse";
 	}
 }

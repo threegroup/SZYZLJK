@@ -15,12 +15,18 @@
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.geometry.GeoPoint;
 			import com.supermap.web.core.styles.PictureMarkerStyle;
+			import com.supermap.web.iServerJava6R.FilterParameter;
+			import com.supermap.web.iServerJava6R.queryServices.QueryBySQLParameters;
+			import com.supermap.web.iServerJava6R.queryServices.QueryBySQLService;
+			import com.supermap.web.iServerJava6R.queryServices.QueryResult;
+			import com.supermap.web.mapping.FeaturesLayer;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
+			import mx.rpc.AsyncResponder;
 			
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
@@ -34,23 +40,38 @@
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
-				initEventListener();				
+				initEventListener();
+				// 查询断面对应的河流段空间数据，用于河段点击，查询河流计算结果,请求完空间数据后，再请求模型方案列表数据
+				queryDMRiver();
 			}
 			
 			public function initEventListener():void{
 				var eList:ArrayCollection = new ArrayCollection([
 					[QueryEvent.QUERY_MODEL_LIST_RESPONSE, queryModelListResponseHandler],//模型方案列表
 					[QueryEvent.QUERY_MODEL_RESULT_RESPONSE, queryModelResultResponseHandler],//模型计算的断面列表
+					[QueryEvent.QUERY_DM_RIVER_RESPONSE, queryDMRiverResponseHandler],//查询河流断面段空间数据
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
 			}
 			
+			// 查询断面对应的河流段空间数据，用于河段点击，查询河流计算结果
+			public function queryDMRiver():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DM_RIVER);
+				queryEvent.dispatch();
+			}
+			
+			private function queryDMRiverResponseHandler(event:CairngormEvent):void
+			{
+				queryModelList();
+			}
+			
+		
 			
 			protected function this_WidgetAddCompleteHandler(event:BaseWidgetEvent):void
 			{
-				queryModelList();
 			}
 			
 			protected function this_WidgetRemoveHandler(event:BaseWidgetEvent):void
@@ -77,10 +98,15 @@
 			//获取单个水模型方案结果
 			private function queryModelResultResponseHandler(event:CairngormEvent):void
 			{
-				
+				//断面featurelayer
 				var breakPointLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.WATER_MODEL_BREAK_FEATURE_LAYER,
 					modelLocator.mapCtrl);
 				breakPointLayer.clear();
+				
+				//河流段
+				var riverLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.WATER_MODEL_RIVER_FEATURE_LAYER
+					, modelLocator.mapCtrl);
+				resolveRiverFeature(riverLayer);
 				
 				var result:Object = event.data;
 				if (result != null && result.success == true) {
@@ -103,10 +129,38 @@
 							feature.buttonMode = true;
 							breakPointLayer.addFeature(feature);
 						}
+						
+						//关联断面对应的河流段
+						var riverFeature:Feature = riverLayer.getFeatureByID(item.superObjId);
+						if (riverFeature != null) {
+							riverFeature.visible = true;
+							riverFeature.addEventListener(MouseEvent.CLICK, riverClickHandler);
+						}
 					}
 				}
 			}
 			
+			//点击河流段，查询河流计算结果 
+			private function riverClickHandler(event:MouseEvent):void
+			{
+				var feature:Feature = event.currentTarget as Feature;
+				modelLocator.waterModelParam.dmId = feature.id;
+				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
+				modelShowVO.state = WaterModelContainerWidget.RIVER_STATE;
+				modelShowVO.title = feature.attributes["name"];
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_MODEL_RESULT_WIDGET);
+				queryEvent.data = modelShowVO;
+				queryEvent.dispatch();
+			}
+			
+			//设置features都不可见
+			private function resolveRiverFeature(featuresLayer:FeaturesLayer):void
+			{
+				for each(var feature:Feature in featuresLayer.features){
+					feature.visible = false;
+					feature.removeEventListener(MouseEvent.CLICK, riverClickHandler);
+				}
+			}
 			private function beakPointMouseClickHandler(event:MouseEvent):void
 			{
 				var feature:Feature = event.currentTarget as Feature;
