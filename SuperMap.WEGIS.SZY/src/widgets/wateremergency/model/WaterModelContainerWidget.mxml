@@ -77,14 +77,25 @@
 				//设置Y轴名称 
 				verticalAxis.title = targetDpList.selectedItem.title;
 				var result:Object = event.data;
-				if (result != null && (result as Array).length > 0) {
-					if (0 in result && result[0]["success"] == true) {
-						waterCPositionLine.displayName = result[0]["attributes"]["label"];
-						waterCPositionLine.dataProvider = waterCPositionLine.originalDataProvider = new ArrayCollection(result[0]["attributes"]["nodeList"]);
-					}
-					if (1 in result && result[1]["success"] == true) {
-						waterRPositionLine.displayName = result[1]["attributes"]["label"];
-						waterRPositionLine.dataProvider = waterRPositionLine.originalDataProvider = new ArrayCollection(result[1]["attributes"]["nodeList"]);
+				if (result != null) {
+					if (result is Array && (result as Array).length > 0) {
+						if (0 in result && result[0]["success"] == true) {
+							waterCPositionLine.displayName = result[0]["attributes"]["label"];
+							waterCPositionLine.dataProvider = waterCPositionLine.originalDataProvider = new ArrayCollection(result[0]["attributes"]["nodeList"]);
+						}
+						if (1 in result && result[1]["success"] == true) {
+							waterRPositionLine.visible = true;
+							waterRPositionLine.displayName = result[1]["attributes"]["label"];
+							waterRPositionLine.dataProvider = waterRPositionLine.originalDataProvider = new ArrayCollection(result[1]["attributes"]["nodeList"]);
+						}
+					} else {
+						if ( result["success"] == true) {
+							waterCPositionLine.displayName = result["attributes"]["label"];
+							waterCPositionLine.dataProvider = waterCPositionLine.originalDataProvider = new ArrayCollection(result["attributes"]["nodeList"]);
+							waterRPositionLine.visible = false;
+							waterRPositionLine.displayName ="";
+							waterRPositionLine.dataProvider = waterRPositionLine.originalDataProvider = null;
+						}
 					}
 				} else {
 					waterCPositionLine.dataProvider = null;
@@ -169,11 +180,14 @@
 			private function onReset5(event:ChartEvent):void
 			{
 				var lc:CartesianChart = event.target as CartesianChart;
-				for (var i:int = 0; i < lc.series.length; i++)
-				{
-					var ls:LineSeriesEx = lc.series[i] as LineSeriesEx;
-					if (ls.dataProvider is ArrayCollection && (ls.dataProvider as ArrayCollection).length != ls.originalDataProvider.length){
-						ls.dataProvider =  ls.originalDataProvider;
+				if ( lc.series != null) {
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:LineSeriesEx = lc.series[i] as LineSeriesEx;
+						if (ls !=null && ls.dataProvider is ArrayCollection  &&  ls.originalDataProvider is ArrayCollection
+							&& (ls.dataProvider as ArrayCollection).length != ls.originalDataProvider.length){
+							ls.dataProvider =  ls.originalDataProvider;
+						}
 					}
 				}
 			}
@@ -366,7 +380,7 @@
 								fmt.size = 13;
 								fmt.color = 0xFFFFFF;
 								txtTemp.setTextFormat(fmt);
-							
+								
 								
 								var DrawPic:Sprite=new Sprite();
 								DrawPic.graphics.clear();
@@ -400,7 +414,7 @@
 								UI.addChild(txtTemp);
 								UI.x = showX;
 								UI.y = showY;
-							
+								
 								tipGroup.addElement(UI);
 							}
 						}
