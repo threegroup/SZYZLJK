@@ -10,7 +10,10 @@ global
 	backgroundAlpha:1;
 	titleColorFrom:#FBFBFA;
 	titleColorTo:#E1DFDA;
+	titleBgColor:#0A7FCB;
 	contentBackgroundAlpha:1;
+	textSymbolBgColor:#3D4852;
+	textSymbolAlpha:0.8;
 }
 
 

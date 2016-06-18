@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:LineChart xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx"
+			  showDataTips="true"
+			  seriesFilters="[]"
+			  selectionMode="none" 
+			  doubleClickEnabled="true"
+			  chartDoubleClick="onReset(event)"
+			  mouseDown="chart_mouseDownHandler(event)"
+			  mouseMove="chart_mouseMoveHandler(event)"
+			  rollOut="chart_mouseUpHandler(event)"
+			  mouseUp="chart_mouseUpHandler(event)">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.utils.ToolTip;
+			
+			import flashx.textLayout.formats.Direction;
+			
+			import mx.charts.HitData;
+			import mx.charts.chartClasses.CartesianChart;
+			import mx.charts.chartClasses.Series;
+			import mx.charts.events.ChartEvent;
+			import mx.charts.series.ColumnSeries;
+			import mx.charts.series.LineSeries;
+			import mx.collections.ArrayCollection;
+			import mx.core.UIComponent;
+			import mx.core.UITextFormat;
+			private var startPoint:Point;
+			private var endPoint:Point;
+			
+			public var watchField:String
+			
+			//鼠标按下
+			protected function chart_mouseDownHandler(event:MouseEvent):void
+			{
+				clearChartGraphic();
+				//记下鼠标按下时的时间和位置
+				var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
+				if (cartesianChart.series.length > 0){
+					var series:Series = cartesianChart.series[0];
+					startPoint = new Point(series.mouseX, series.mouseY);
+				}
+			}
+			
+			
+			//清除chart控件，背景和前端添加的对象
+			private function clearChartGraphic():void
+			{
+				startPoint = null;
+				endPoint = null;
+				zoomArea.graphics.clear();
+				zoomArea.removeAllElements();
+				tipGroup.graphics.clear();
+				tipGroup.removeAllElements();
+			}
+			
+			//鼠标弹起
+			protected function chart_mouseUpHandler(event:MouseEvent):void
+			{
+				if(startPoint !=null && endPoint != null){
+					//记下鼠标移动时的时间和位置
+					var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
+					zoomIn(cartesianChart)
+					ToolTip.getInstance().BindDO(this, "双击恢复");
+				}
+				clearChartGraphic();
+			}
+			
+			//开始缩放
+			private function zoomIn(cartesianChart:CartesianChart):void{
+				//避免单击也放大
+				if(startPoint != null && endPoint != null){
+					var lc:CartesianChart = cartesianChart;
+					var series:Series = cartesianChart.series[0];
+					var ac:ArrayCollection = new ArrayCollection();
+					var left:Number = startPoint.x > endPoint.x ? endPoint.x : startPoint.x;
+					var right:Number = startPoint.x > endPoint.x ? startPoint.x : endPoint.x;
+					var rect:Rectangle = new Rectangle(left, 0, right-left, chartBg.height);
+					
+					rect.topLeft = series.localToGlobal(rect.topLeft);
+					rect.bottomRight = series.localToGlobal(rect.bottomRight);
+					for each (var ls:Series in lc.series)
+					{
+						var inRectItems:Array = ls.getItemsInRegion(rect);
+						var newDatas:Array = [];
+						for each(var item:Object in inRectItems){
+							var xField:String;
+							var yField:String;
+							if (ls is LineSeries)
+							{
+								xField = (ls as LineSeries).xField;
+								yField = (ls as LineSeries).yField;
+							} else if (ls is ColumnSeries){
+						        xField = (ls as ColumnSeries).xField;
+								yField = (ls as ColumnSeries).yField;
+							}
+							var obj:Object ={};
+							obj[xField] = item["xValue"];
+							obj[yField] = item["yValue"];
+							newDatas.push(obj);
+						}
+						ls.dataProvider = new ArrayCollection(newDatas);
+					}
+				}
+			}
+			
+			private function chart_mouseMoveHandler(event:MouseEvent):void
+			{
+				var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
+				if (cartesianChart.series.length > 0){
+					if (startPoint != null) {
+						var series:Series = cartesianChart.series[0];
+						endPoint = new Point(series.mouseX, series.mouseY);
+						//绘制 选中区域背景
+						zoomArea.graphics.clear();
+						zoomArea.graphics.beginFill(0x65EEFC,0.4);
+						zoomArea.graphics.drawRect(startPoint.x, 0, endPoint.x-startPoint.x, chartBg.height);
+						zoomArea.graphics.endFill();
+					} else {
+						tipGroup.removeAllElements();
+						chartAt.graphics.clear();
+						var seletItem:HitData;
+						var lineX:Number =  Number.MAX_VALUE;
+						//接头处偏移量
+						var horGap:int = 10;
+						var vecGap:int = 5;
+						var minWidth:int = 50;
+						var minHeight:int = 15;
+						for each(var serices:Series in cartesianChart.series) {
+							var items:Array = serices.findDataPoints(serices.mouseX, serices.mouseY,chartAt.height);
+							if (items.length >0) {
+								seletItem = items[0];
+								lineX = seletItem.x;
+								var showText:String = seletItem.item[watchField];
+								var UI:UIComponent=new UIComponent();
+								//用于计算表头宽度
+								var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
+								uiTextFormat.antiAliasType = AntiAliasType.NORMAL;
+								uiTextFormat.gridFitType =GridFitType.NONE;
+								uiTextFormat.direction =Direction.LTR;
+								var textLine:TextLineMetrics;
+								textLine = uiTextFormat.measureText(showText);
+								var nWidth:int=textLine.width+horGap < minWidth ? minWidth : textLine.width+horGap;
+								var nHeight:int = textLine.height + vecGap < minHeight ? minHeight : textLine.height + vecGap;
+								
+								//添加输出文本
+								var txtTemp : TextField= new TextField();
+								txtTemp.autoSize = "left";
+								txtTemp.text = showText;
+								var fmt : TextFormat = new TextFormat();
+								fmt.size = 13;
+								fmt.color = 0xFFFFFF;
+								txtTemp.setTextFormat(fmt);
+								
+								
+								var DrawPic:Sprite=new Sprite();
+								DrawPic.graphics.clear();
+								DrawPic.graphics.beginFill(seletItem.contextColor,1);
+								DrawPic.graphics.lineStyle(1,0x000000);
+								var showX:Number = seletItem.x + 5;
+								var showY:Number = seletItem.y - nWidth/3;
+								if (showX + nWidth >= tipGroup.width) {
+									DrawPic.graphics.moveTo(0, 0);
+									DrawPic.graphics.lineTo(nWidth-horGap,0);
+									DrawPic.graphics.lineTo(nWidth,nHeight/2);
+									DrawPic.graphics.lineTo(nWidth-horGap,nHeight);
+									DrawPic.graphics.lineTo(0,nHeight);
+									DrawPic.graphics.lineTo(0,0);
+									DrawPic.graphics.endFill();
+									showX = showX - nWidth;
+								} else {
+									DrawPic.graphics.moveTo(0, nHeight/2);
+									DrawPic.graphics.lineTo(horGap,0);
+									DrawPic.graphics.lineTo(nWidth,0);
+									DrawPic.graphics.lineTo(nWidth,nHeight);
+									DrawPic.graphics.lineTo(horGap,nHeight);
+									DrawPic.graphics.lineTo(0,nHeight/2);
+									DrawPic.graphics.endFill();
+								}
+								
+								txtTemp.x = DrawPic.x + (DrawPic.width - txtTemp.width) /2 ;
+								txtTemp.y = DrawPic.y + (DrawPic.height - txtTemp.height) / 2;
+								
+								UI.addChild(DrawPic);
+								UI.addChild(txtTemp);
+								UI.x = showX;
+								UI.y = showY;
+								
+								tipGroup.addElement(UI);
+							}
+						}
+						if (lineX != Number.MAX_VALUE){
+							var g:Graphics = chartAt.graphics;
+							g.clear();
+							g.moveTo(lineX, 0);
+							g.lineStyle(1, 0xFF0000);
+							g.lineTo(lineX, chartBg.height);
+						}
+					}
+				}
+			}
+			
+			private function onReset(event:ChartEvent):void
+			{
+				var lc:CartesianChart = event.target as CartesianChart;
+				if ( lc.series != null) {
+					for (var i:int = 0; i < lc.series.length; i++)
+					{
+						var ls:Series = lc.series[i];
+						if (ls is LineSeriesEx) {
+							var lineSeriesEx:LineSeriesEx = ls as LineSeriesEx;
+							if ( lineSeriesEx.dataProvider is ArrayCollection  &&  lineSeriesEx.originalDataProvider is ArrayCollection
+								&& (lineSeriesEx.dataProvider as ArrayCollection).length != lineSeriesEx.originalDataProvider.length){
+								lineSeriesEx.dataProvider =  lineSeriesEx.originalDataProvider;
+							}
+						}
+						
+						if (ls is ColumnSeriesEx) {
+							var columnSeriesEx:ColumnSeriesEx = ls as ColumnSeriesEx;
+							if ( columnSeriesEx.dataProvider is ArrayCollection  &&  columnSeriesEx.originalDataProvider is ArrayCollection
+								&& (columnSeriesEx.dataProvider as ArrayCollection).length != columnSeriesEx.originalDataProvider.length){
+								columnSeriesEx.dataProvider =  columnSeriesEx.originalDataProvider;
+							}
+						}
+					}
+				}
+				ToolTip.getInstance().removeToolTip();
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:backgroundElements>
+		<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+			<mx:verticalStroke>
+				<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+			</mx:verticalStroke>
+		</mx:GridLines>
+		<s:Group width="100%" height="100%" id="chartBg">
+			<s:Group  width="100%" height="100%" id="zoomArea">
+				<!-- 在此绘制选中区域 -->
+			</s:Group>   
+		</s:Group>
+	</mx:backgroundElements>
+	<mx:annotationElements>
+		<s:Group width="100%" height="100%" id="chartAt">
+			<s:Group  width="100%" height="100%" id="tipGroup">
+				<!-- 在此显示气泡-->
+			</s:Group>   
+		</s:Group>
+	</mx:annotationElements>
+</mx:LineChart>
