@@ -19,8 +19,8 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.vo.WSMethod;
 	import sm.wegis.szy.vo.WaterModelParam;
 	
-	//查询断面计算结果
-	public class QueryBreakCalcResultCommand extends CommandBase
+	//查询河道计算结果
+	public class QueryRiverCalcResultCommand extends CommandBase
 	{
 		override public function execute(event:CairngormEvent):void
 		{
@@ -41,7 +41,7 @@ package sm.wegis.szy.commands
 			CursorManager.removeBusyCursor();
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
-			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT_RESPONSE);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CALC_RESULT_RESPONSE);
 			var resultValue:Object = jsDec.getValue() as Object;
 			queryEvent.data = resultValue;
 			queryEvent.dispatch();

@@ -269,7 +269,7 @@ package sm.wegis.szy.commands
 									ft.attributes["水质状况"] =  functionInfo["水质状况"];
 									//业务数据中水功能区对应的ID
 									ft.attributes["businessId"] = riverInfo["评价对象_ID"];
-									var waterFunctionDestionInfo:Object = waterFunctionDestina.find(ft.attributes["ID"]);
+									waterFunctionDestionInfo = waterFunctionDestina.find(ft.attributes["ID"]);
 									if (waterFunctionDestionInfo != null && waterFunctionDestionInfo["目标水质颜色"] != null)  {
 										ft.toolTip = getWaterFunctionToolTip(functionInfo);
 									}else{

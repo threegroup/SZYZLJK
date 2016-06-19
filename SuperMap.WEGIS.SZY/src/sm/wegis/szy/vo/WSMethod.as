@@ -76,26 +76,62 @@ package sm.wegis.szy.vo
 		 */
 		public static const GetPWKDetail:String = "getPWKDetail";
 		
+		/**应急管理----水模型*/
+		/**通用【可对比的方案列表】---是否断面和河道公用，需要确定------------------------------？？？-----
+		 参数：计算方案_id
+		 */
+		public static const GetCompareblePlanList:String ="getCompareblePlanList";
 		
 		/**应急管理----水模型--- 断面计算结果查询*/
 		/**断面【水位】
-		 参数：计算方案_id,断面_id,开始日期，结束日期
+		 参数：计算方案_id,断面_id
 		 */
 		public static const GetWaterDMPositionData:String ="waterDMPositionData";
 		
 		/**断面【水深】
-		 参数：计算方案_id,断面_id,开始日期，结束日期
+		 参数：计算方案_id,断面_id
 		 */
 		public static const GetWaterDMDepthData:String ="waterDMDepthData";
 		
 		/**断面【流量】
-		 参数：计算方案_id,断面_id,开始日期，结束日期
+		 参数：计算方案_id,断面_id
 		 */
 		public static const GetWaterDMFlowData:String ="waterDMFlowData";
 		
 		/**断面【流速】
-		 参数：计算方案_id,断面_id,开始日期，结束日期
+		 参数：计算方案_id,断面_id
 		 */
 		public static const GetWaterDMSpeedData:String ="waterDMSpeedData";
+		
+		/**断面【污染物浓度】
+		 参数：计算方案_id,断面_id
+		 */
+		public static const GetWaterDMDensityData:String ="";//暂时未实现
+		
+		/**应急管理----水模型--- 河道计算结果查询*/
+		/**河道【水位】
+		 参数：计算方案_id,河道_id
+		 */
+		public static const GetWaterHDPositionData:String ="waterHDPositionData";
+		
+		/**河道【水深】
+		 参数：计算方案_id,河道_id
+		 */
+		public static const GetWaterHDDepthData:String ="waterHDDepthData";
+		
+		/**河道【流量】
+		 参数：计算方案_id,河道_id
+		 */
+		public static const GetWaterHDFlowData:String ="waterHDFlowData";
+		
+		/**河道【流速】
+		 参数：计算方案_id,河道_id
+		 */
+		public static const GetWaterHDSpeedData:String ="waterHDSpeedData";
+		
+		/**河道【污染物浓度】
+		 参数：计算方案_id,河道_id
+		 */
+		public static const GetWaterHDDensityData:String ="";//暂时未实现
 	}
 }

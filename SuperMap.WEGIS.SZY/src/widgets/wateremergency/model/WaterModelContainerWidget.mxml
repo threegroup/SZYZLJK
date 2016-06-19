@@ -38,11 +38,21 @@
 			import sm.wegis.szy.vo.WSMethod;
 			import sm.wegis.szy.vo.WaterModelParam;
 			
+			import spark.events.IndexChangeEvent;
+			
+			import widgets.wateremergency.chart.LineChartDataRender;
+			import widgets.wateremergency.chart.LineSeriesEx;
+			
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
 			public static const HIDE_STATE:String = "hideState";
 			public static const BREAK_STATE:String = "breakState";
 			public static const RIVER_STATE:String = "riverState";
+			
+			/**断面标识*/
+			public static const BREAK_COVER:String = "BP";
+			/**河道标识*/
+			public static const RIVER_WAY:String = "RW";
 			
 			//--------------------------------断面-------------------------------------------
 			[Bindable]
@@ -70,37 +80,6 @@
 				{label:"流量",value:3,title:"流量[m³/s]"},{label:"流速",value:4,title:"流速[m/s]"},
 				{label:"污染物浓度",value:5,title:"污染物浓度[mg/L]"}]);
 			
-			private function queryBreakCalcResultResponseHandler(event:CairngormEvent):void
-			{
-				//设置Y轴名称 
-				verticalAxis.title = targetDpList.selectedItem.title;
-				var result:Object = event.data;
-				if (result != null) {
-					if (result is Array && (result as Array).length > 0) {
-						if (0 in result && result[0]["success"] == true) {
-							waterCPositionLine.displayName = result[0]["attributes"]["label"];
-							waterCPositionLine.dataProvider = waterCPositionLine.originalDataProvider = new ArrayCollection(result[0]["attributes"]["nodeList"]);
-						}
-						if (1 in result && result[1]["success"] == true) {
-							waterRPositionLine.visible = true;
-							waterRPositionLine.displayName = result[1]["attributes"]["label"];
-							waterRPositionLine.dataProvider = waterRPositionLine.originalDataProvider = new ArrayCollection(result[1]["attributes"]["nodeList"]);
-						}
-					} else {
-						if ( result["success"] == true) {
-							waterCPositionLine.displayName = result["attributes"]["label"];
-							waterCPositionLine.dataProvider = waterCPositionLine.originalDataProvider = new ArrayCollection(result["attributes"]["nodeList"]);
-							waterRPositionLine.visible = false;
-							waterRPositionLine.displayName ="";
-							waterRPositionLine.dataProvider = waterRPositionLine.originalDataProvider = null;
-						}
-					}
-				} else {
-					waterCPositionLine.dataProvider = null;
-					waterRPositionLine.dataProvider = null;
-				}
-			}
-			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				initEventListener();
@@ -109,11 +88,120 @@
 			public function initEventListener():void{
 				var eList:ArrayCollection = new ArrayCollection([
 					[QueryEvent.QUERY_BREAK_CALC_RESULT_RESPONSE, queryBreakCalcResultResponseHandler],//查询断面计算结果
+					[QueryEvent.QUERY_RIVER_CALC_RESULT_RESPONSE, queryRiverCalcResultResponseHandler],//查询河道计算结果
 					[QueryEvent.SHOW_MODEL_RESULT_WIDGET, showModelResultWidgetHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			//响应河道计算结果
+			private function queryRiverCalcResultResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if(result != null && result["success"] 
+					&& result["attributes"] 
+					&& result["attributes"]["result"] is Array)
+				{
+					var saCol:Array = result["attributes"]["result"] as Array;
+					if (saCol != null && saCol.length > 0) 
+					{
+						//此处动态创建统计图序列，序列数[1-12]
+						var sa:Array = [];
+						for each(var saData:Object in saCol)
+						{
+							var chartType:String = saData["type"];
+							if(chartType == "LineChart")
+							{
+								var ls:LineSeriesEx = new LineSeriesEx();
+								ls.name = saData["label"];
+								ls.xField = saData["xField"];
+								ls.yField = saData["yField"];
+								ls.setStyle("form", "curve");
+								ls.setStyle("showDataEffect", slide);
+								var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+								ls.setStyle("lineStroke", scs);
+								var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+								ls.setStyle("itemRenderer", cf);
+								ls.displayName = saData["label"];
+								var temp:Array = saData["nodeList"];
+								ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+								sa.push(ls);
+							}
+							else if(chartType == "AreaChart")
+							{
+								//略
+							}
+						}
+						this.hdChart.series = sa;
+					}
+				}
+				else
+				{
+					this.hdChart.series = [];
+				}
+			}
+			
+			//响应断面计算结果
+			private function queryBreakCalcResultResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (result != null) 
+				{
+					var saCol:Array = [];
+					if(result is Array)
+					{
+						saCol = result as Array;
+					}
+					else if(result is Object)
+					{
+						saCol = [result];
+					}
+					if (saCol != null && saCol.length > 0) 
+					{
+						//此处动态创建统计图序列，序列数[1-2]
+						var sa:Array = [];
+						for each(var saItem:Object in saCol)
+						{
+							var saData:Object = saItem["attributes"];
+							if(saData != null)
+							{
+								var chartType:String = saData["type"];
+								if(chartType == "LineChart")
+								{
+									var ls:LineSeriesEx = new LineSeriesEx();
+									ls.name = saData["label"];
+									ls.xField = saData["xField"];
+									ls.yField = saData["yField"];
+									ls.setStyle("form", "curve");
+									ls.setStyle("showDataEffect", slide);
+									var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+									ls.setStyle("lineStroke", scs);
+									var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+									ls.setStyle("itemRenderer", cf);
+									ls.displayName = saData["label"];
+									var temp:Array = saData["nodeList"];
+									ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+									sa.push(ls);
+								}
+								else if(chartType == "AreaChart")
+								{
+									//略
+								}
+							}
+							else 
+							{
+								this.dmChart.series = [];
+							}
+						}
+						this.dmChart.series = sa;
+					}
+				} 
+				else 
+				{
+					this.dmChart.series = [];
+				}
 			}
 			
 			private function showModelResultWidgetHandler(event:CairngormEvent):void
@@ -138,24 +226,45 @@
 				queryEvent.dispatch();
 			}
 			
-			//根据选择指标类型，获取后台查询方法
-			private function getQueryMethodHandler():String
+			//根据选择指标类型，获取后台查询方法,默认为断面
+			private function getQueryMethodHandler(methodType:String=BREAK_COVER):String
 			{
-				var selectItem:Object = targetDpList.selectedItem;
-				switch(selectItem["value"]) {
-					case 1:
-						return WSMethod.GetWaterDMPositionData;
-					case 2:
-						return WSMethod.GetWaterDMDepthData;
-					case 3:
-						return WSMethod.GetWaterDMFlowData
-					case 4:
-						return WSMethod.GetWaterDMSpeedData
-						//					case 5:
-						//						return WSMethod.
+				var selectItem:Object = null;
+				if(methodType == BREAK_COVER)//断面
+				{
+					selectItem = targetDpList.selectedItem;
+					switch(selectItem["value"]) {
+						case 1:
+							return WSMethod.GetWaterDMPositionData;
+						case 2:
+							return WSMethod.GetWaterDMDepthData;
+						case 3:
+							return WSMethod.GetWaterDMFlowData;
+						case 4:
+							return WSMethod.GetWaterDMSpeedData;
+						case 5:
+							return "";//断面污染物浓度目前还未实现
+					}
+				}
+				else if(methodType == RIVER_WAY)//河道
+				{
+					selectItem = targetRwList.selectedItem;
+					switch(selectItem["value"]) {
+						case 1:
+							return WSMethod.GetWaterHDPositionData;
+						case 2:
+							return WSMethod.GetWaterHDDepthData;
+						case 3:
+							return WSMethod.GetWaterHDFlowData;
+						case 4:
+							return WSMethod.GetWaterHDSpeedData;
+						case 5:
+							return "";//河道污染物浓度目前还未实现
+					}
 				}
 				return "";
 			}
+			
 			//系统重新加载
 			public function systemReloadHandler(event:CairngormEvent):void
 			{
@@ -198,16 +307,55 @@
 				return newDate;
 			}
 			
-			
-			
-			//断面--水位过程统计图
-			private function waterPositionDataTipFunction (hitData:HitData):String { 
+			//断面通用的显示描述
+			private function dmDataTipFunction (hitData:HitData):String { 
 				var cntData:Object = hitData.item;
 				
 				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
-				var displayName:String = hitData.chartItem.element["displayName"];
+				var displayName:String = targetDpList.selectedItem.title;
 				return displayName+ ":" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"时间:"+ cntData[hitData.chartItem.element["xField"]];
 			}
+			
+			//河道通用的显示描述
+			private function hdDataTipFunction (hitData:HitData):String { 
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = targetRwList.selectedItem.title;
+				return displayName+ ":" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"距离[m]:"+ cntData[hitData.chartItem.element["xField"]];
+			}
+			
+			protected function queryRwBt_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
+				waterModelparam.method = getQueryMethodHandler(RIVER_WAY);
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CALC_RESULT);
+				queryEvent.dispatch();
+			}
+			
+			//断面统计图图例
+			protected function targetDpList_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.dmChart.series = [];
+				//设置Y轴名称 
+				this.verticalAxis.title = targetDpList.selectedItem.title;
+				
+				this.hdChart.clearChartGraphic();
+			}
+			
+			//河道统计图图例
+			protected function targetRwList_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.hdChart.series = [];
+				//设置Y轴名称 
+				this.hdVerticalAxis.title = targetRwList.selectedItem.title;
+				
+				this.hdChart.clearChartGraphic();
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -258,7 +406,8 @@
 										<s:HGroup gap="10" >
 											<s:Label text="指标：" height="100%"/>
 											<s:DropDownList id="targetDpList" width="160" dataProvider="{targetsList}"  
-															requireSelection="true" styleName="SystemSelectorStyle"/>
+															requireSelection="true" styleName="SystemSelectorStyle"
+															change="targetDpList_changeHandler(event)"/>
 										</s:HGroup>
 									</mx:GridItem>
 									<mx:GridItem>
@@ -270,14 +419,14 @@
 								</mx:GridRow>
 							</mx:Grid>	
 							<line:HLine width="100%"/>
-							<chart:LineChartEx id="waterPositionChart" width="100%" height="100%" 
-										  dataTipFunction="waterPositionDataTipFunction">
+							<chart:LineChartEx id="dmChart" width="100%" height="100%" 
+											   dataTipFunction="dmDataTipFunction">
 								<!-- vertical axis -->
 								<chart:verticalAxis>
 									<mx:LinearAxis id="verticalAxis" baseAtZero="false" />
 								</chart:verticalAxis>
 								<chart:verticalAxisRenderers>
-									<mx:AxisRenderer axis="{verticalAxis}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+									<mx:AxisRenderer axis="{verticalAxis}"  fontSize="12" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
 								</chart:verticalAxisRenderers>
 								<!-- horizontal axis -->
 								<chart:horizontalAxis>
@@ -286,32 +435,136 @@
 								</chart:horizontalAxis>
 								<!-- horizontal axis renderer -->
 								<chart:horizontalAxisRenderers>
-									<mx:AxisRenderer axis="{ca}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"
+									<mx:AxisRenderer axis="{ca}"  fontSize="12" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"
 													 tickStroke="{chartAxisStroke}"  labelRenderer="sm.wegis.szy.renders.AxisRendererEx"/>
 								</chart:horizontalAxisRenderers>
 								<chart:series>
-									<chart:LineSeriesEx id="waterCPositionLine" itemRenderer="widgets.wateremergency.chart.LineChartDataRender"
-														xField="time" yField="value" lineStroke="{s3}" form="curve" showDataEffect="{slide}" />
-									<chart:LineSeriesEx id="waterRPositionLine" itemRenderer="widgets.wateremergency.chart.LineChartDataRenderEx"
-														xField="time" yField="value" lineStroke="{s5}" form="curve" showDataEffect="{slide}" />
 								</chart:series>
 							</chart:LineChartEx>
-							<mx:Legend dataProvider="{waterPositionChart}"   buttonMode="true"
-									   direction="horizontal" itemClick="hd_wpLegend_itemClickHandler(event)"/>
 						</s:VGroup>
+						<mx:ControlBar top="40" right="20">
+							<mx:Legend id="dmLegend" dataProvider="{dmChart}" fontSize="12"  buttonMode="true"
+									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+						</mx:ControlBar>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面地形展示"  width="100%" height="100%">
 						
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面对比"  width="100%" height="100%">
-						
+						<s:VGroup  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
+							<s:HGroup gap="10" width="100%">
+								<s:Label text="指标：" height="100%"/>
+								<s:DropDownList id="targetDpCompareList" width="160" dataProvider="{targetsList}"  
+												requireSelection="true" styleName="SystemSelectorStyle"
+												change="targetDpList_changeHandler(event)"/>
+								<s:Spacer width="30"/>
+								<s:Label text="对比方案：" height="100%"/>
+								<s:DropDownList id="dmCompareSchemeList" width="160"  
+												requireSelection="true" styleName="SystemSelectorStyle"
+												change="targetDpList_changeHandler(event)"/>
+								<s:Spacer width="30"/>
+								<s:Label text="对比断面：" height="100%"/>
+								<s:DropDownList id="dmCompareList" width="160" 
+												requireSelection="true" styleName="SystemSelectorStyle"
+												change="targetDpList_changeHandler(event)"/>
+								<s:Spacer width="30"/>
+								<s:Button id="queryCompareBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle" />
+							</s:HGroup>
+							<line:HLine width="100%"/>
+							<chart:LineChartEx id="dmCompareChart" width="100%" height="100%" 
+											   dataTipFunction="dmDataTipFunction">
+								<!-- vertical axis -->
+								<chart:verticalAxis>
+									<mx:LinearAxis id="verticalCompareAxis" baseAtZero="false" />
+								</chart:verticalAxis>
+								<chart:verticalAxisRenderers>
+									<mx:AxisRenderer axis="{verticalCompareAxis}"  fontSize="12" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+								</chart:verticalAxisRenderers>
+								<!-- horizontal axis -->
+								<chart:horizontalAxis>
+									<mx:DateTimeAxis id="compareCa"  title="时间" interval="1" labelUnits="months" dataUnits="days"
+													 displayLocalTime="true" parseFunction="dateParseFunction" labelFunction="dateFormatFunction"/>
+								</chart:horizontalAxis>
+								<!-- horizontal axis renderer -->
+								<chart:horizontalAxisRenderers>
+									<mx:AxisRenderer axis="{compareCa}"  fontSize="12" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"
+													 tickStroke="{chartAxisStroke}"  labelRenderer="sm.wegis.szy.renders.AxisRendererEx"/>
+								</chart:horizontalAxisRenderers>
+								<chart:series>
+								</chart:series>
+							</chart:LineChartEx>
+						</s:VGroup>
+						<mx:ControlBar top="40" right="20">
+							<mx:Legend id="dmCompareLegend" dataProvider="{dmCompareChart}" fontSize="12"  buttonMode="true"
+									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+						</mx:ControlBar>
 					</s:NavigatorContent>
 				</mx:ViewStack>
 			</s:VGroup>
 		</s:Group>
 		<!--河流信息展示-->
 		<s:Group id="riverGroup" width="100%"  height="100%"  visible="false" visible.riverState="true" >
-			
+			<s:VGroup width="100%" height="100%" gap="3">
+				<s:ButtonBar id="riverBTB" dataProvider="{riverVW}"/>
+				<s:Rect width="100%" height="1">
+					<s:fill>
+						<s:SolidColor color="0x979797" alpha="0.5"/>
+					</s:fill>
+				</s:Rect>
+				<mx:ViewStack id="riverVW" width="100%" height="100%">
+					<s:NavigatorContent label="河道计算结果"  width="100%" height="100%">
+						<s:VGroup  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5">
+							<mx:Grid verticalGap="15" horizontalGap="20">
+								<mx:GridRow>
+									<mx:GridItem>
+										<s:HGroup gap="10" >
+											<s:Label text="指标：" height="100%"/>
+											<s:DropDownList id="targetRwList" width="160" dataProvider="{targetsList}"  
+															requireSelection="true" styleName="SystemSelectorStyle"
+															change="targetRwList_changeHandler(event)"/>
+										</s:HGroup>
+									</mx:GridItem>
+									<mx:GridItem>
+										<s:HGroup gap="10">
+											<s:Button id="queryRwBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle" click="queryRwBt_clickHandler(event)"/>
+											<s:Button id="exportRwBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle" />
+										</s:HGroup>
+									</mx:GridItem>
+								</mx:GridRow>
+							</mx:Grid>	
+							<line:HLine width="100%"/>
+							<chart:LineChartEx id="hdChart" width="100%" height="100%" 
+											   dataTipFunction="hdDataTipFunction">
+								<!-- vertical axis -->
+								<chart:verticalAxis>
+									<mx:LinearAxis id="hdVerticalAxis" baseAtZero="false" />
+								</chart:verticalAxis>
+								<chart:verticalAxisRenderers>
+									<mx:AxisRenderer axis="{hdVerticalAxis}" fontSize="12" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+								</chart:verticalAxisRenderers>
+								<!-- horizontal axis -->
+								<chart:horizontalAxis>
+									<mx:LinearAxis id="hdHorizontalAxis" title="距离(m)"/>
+								</chart:horizontalAxis>
+								<!-- horizontal axis renderer -->
+								<chart:horizontalAxisRenderers>
+									<mx:AxisRenderer axis="{hdHorizontalAxis}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"
+													 tickStroke="{chartAxisStroke}" fontSize="12"  labelRenderer="sm.wegis.szy.renders.AxisRendererEx"/>
+								</chart:horizontalAxisRenderers>
+								<chart:series>
+								</chart:series>
+							</chart:LineChartEx>
+						</s:VGroup>
+						<mx:ControlBar top="40" right="20">
+							<mx:Legend id="hdLegend" dataProvider="{hdChart}"  fontSize="12"  buttonMode="true"
+									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+						</mx:ControlBar>
+					</s:NavigatorContent>
+					<s:NavigatorContent label="河道对比"  width="100%" height="100%">
+						
+					</s:NavigatorContent>
+				</mx:ViewStack>
+			</s:VGroup>
 		</s:Group>
 	</s:Panel>
 </ns:WidgetBase>

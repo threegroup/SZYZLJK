@@ -48,7 +48,7 @@
 			
 			
 			//清除chart控件，背景和前端添加的对象
-			private function clearChartGraphic():void
+			public function clearChartGraphic():void
 			{
 				startPoint = null;
 				endPoint = null;
@@ -56,6 +56,7 @@
 				zoomArea.removeAllElements();
 				tipGroup.graphics.clear();
 				tipGroup.removeAllElements();
+				chartAt.graphics.clear();
 			}
 			
 			//鼠标弹起
@@ -95,7 +96,7 @@
 								xField = (ls as LineSeries).xField;
 								yField = (ls as LineSeries).yField;
 							} else if (ls is ColumnSeries){
-						        xField = (ls as ColumnSeries).xField;
+								xField = (ls as ColumnSeries).xField;
 								yField = (ls as ColumnSeries).yField;
 							}
 							var obj:Object ={};
@@ -136,61 +137,64 @@
 								seletItem = items[0];
 								lineX = seletItem.x;
 								var showText:String = seletItem.item[watchField];
-								var UI:UIComponent=new UIComponent();
-								//用于计算表头宽度
-								var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
-								uiTextFormat.antiAliasType = AntiAliasType.NORMAL;
-								uiTextFormat.gridFitType =GridFitType.NONE;
-								uiTextFormat.direction =Direction.LTR;
-								var textLine:TextLineMetrics;
-								textLine = uiTextFormat.measureText(showText);
-								var nWidth:int=textLine.width+horGap < minWidth ? minWidth : textLine.width+horGap;
-								var nHeight:int = textLine.height + vecGap < minHeight ? minHeight : textLine.height + vecGap;
-								
-								//添加输出文本
-								var txtTemp : TextField= new TextField();
-								txtTemp.autoSize = "left";
-								txtTemp.text = showText;
-								var fmt : TextFormat = new TextFormat();
-								fmt.size = 13;
-								fmt.color = 0xFFFFFF;
-								txtTemp.setTextFormat(fmt);
-								
-								
-								var DrawPic:Sprite=new Sprite();
-								DrawPic.graphics.clear();
-								DrawPic.graphics.beginFill(seletItem.contextColor,1);
-								DrawPic.graphics.lineStyle(1,0x000000);
-								var showX:Number = seletItem.x + 5;
-								var showY:Number = seletItem.y - nWidth/3;
-								if (showX + nWidth >= tipGroup.width) {
-									DrawPic.graphics.moveTo(0, 0);
-									DrawPic.graphics.lineTo(nWidth-horGap,0);
-									DrawPic.graphics.lineTo(nWidth,nHeight/2);
-									DrawPic.graphics.lineTo(nWidth-horGap,nHeight);
-									DrawPic.graphics.lineTo(0,nHeight);
-									DrawPic.graphics.lineTo(0,0);
-									DrawPic.graphics.endFill();
-									showX = showX - nWidth;
-								} else {
-									DrawPic.graphics.moveTo(0, nHeight/2);
-									DrawPic.graphics.lineTo(horGap,0);
-									DrawPic.graphics.lineTo(nWidth,0);
-									DrawPic.graphics.lineTo(nWidth,nHeight);
-									DrawPic.graphics.lineTo(horGap,nHeight);
-									DrawPic.graphics.lineTo(0,nHeight/2);
-									DrawPic.graphics.endFill();
+								if(showText != null)
+								{
+									var UI:UIComponent=new UIComponent();
+									//用于计算表头宽度
+									var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
+									uiTextFormat.antiAliasType = AntiAliasType.NORMAL;
+									uiTextFormat.gridFitType =GridFitType.NONE;
+									uiTextFormat.direction =Direction.LTR;
+									var textLine:TextLineMetrics;
+									textLine = uiTextFormat.measureText(showText);
+									var nWidth:int=textLine.width+horGap < minWidth ? minWidth : textLine.width+horGap;
+									var nHeight:int = textLine.height + vecGap < minHeight ? minHeight : textLine.height + vecGap;
+									
+									//添加输出文本
+									var txtTemp : TextField= new TextField();
+									txtTemp.autoSize = "left";
+									txtTemp.text = showText;
+									var fmt : TextFormat = new TextFormat();
+									fmt.size = 13;
+									fmt.color = 0xFFFFFF;
+									txtTemp.setTextFormat(fmt);
+									
+									
+									var DrawPic:Sprite=new Sprite();
+									DrawPic.graphics.clear();
+									DrawPic.graphics.beginFill(seletItem.contextColor,1);
+									DrawPic.graphics.lineStyle(1,0x000000);
+									var showX:Number = seletItem.x + 5;
+									var showY:Number = seletItem.y - nWidth/3;
+									if (showX + nWidth >= tipGroup.width) {
+										DrawPic.graphics.moveTo(0, 0);
+										DrawPic.graphics.lineTo(nWidth-horGap,0);
+										DrawPic.graphics.lineTo(nWidth,nHeight/2);
+										DrawPic.graphics.lineTo(nWidth-horGap,nHeight);
+										DrawPic.graphics.lineTo(0,nHeight);
+										DrawPic.graphics.lineTo(0,0);
+										DrawPic.graphics.endFill();
+										showX = showX - nWidth;
+									} else {
+										DrawPic.graphics.moveTo(0, nHeight/2);
+										DrawPic.graphics.lineTo(horGap,0);
+										DrawPic.graphics.lineTo(nWidth,0);
+										DrawPic.graphics.lineTo(nWidth,nHeight);
+										DrawPic.graphics.lineTo(horGap,nHeight);
+										DrawPic.graphics.lineTo(0,nHeight/2);
+										DrawPic.graphics.endFill();
+									}
+									
+									txtTemp.x = DrawPic.x + (DrawPic.width - txtTemp.width) /2 ;
+									txtTemp.y = DrawPic.y + (DrawPic.height - txtTemp.height) / 2;
+									
+									UI.addChild(DrawPic);
+									UI.addChild(txtTemp);
+									UI.x = showX;
+									UI.y = showY;
+									
+									tipGroup.addElement(UI);
 								}
-								
-								txtTemp.x = DrawPic.x + (DrawPic.width - txtTemp.width) /2 ;
-								txtTemp.y = DrawPic.y + (DrawPic.height - txtTemp.height) / 2;
-								
-								UI.addChild(DrawPic);
-								UI.addChild(txtTemp);
-								UI.x = showX;
-								UI.y = showY;
-								
-								tipGroup.addElement(UI);
 							}
 						}
 						if (lineX != Number.MAX_VALUE){
