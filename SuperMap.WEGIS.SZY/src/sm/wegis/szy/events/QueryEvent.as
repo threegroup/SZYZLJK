@@ -148,6 +148,11 @@ package sm.wegis.szy.events
 		public static const GET_PWK_DETAIL_RESPONSE:String = "GetPWKDetailResponse";
 		
 		/**---------------------------应急管理查询--------------------------------*/
+		/**水体模型方案，查询水体模型可对比方案列表*/
+		public static const QUERY_COMPARE_LIST:String = "QueryCompareList";
+		public static const QUERY_COMPARE_LIST_RESPONSE:String = "QueryCompareListResponse";
+		
+		//---------------------断面相关----------------------------
 		/**水体模型方案，查询水体模型方案列表*/
 		public static const QUERY_MODEL_LIST:String = "QueryModelList";
 		public static const QUERY_MODEL_LIST_RESPONSE:String = "QueryModelListResponse";

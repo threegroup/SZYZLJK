@@ -19,21 +19,20 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.vo.WSMethod;
 	import sm.wegis.szy.vo.WaterModelParam;
 	
-	//查询河道计算结果
-	public class QueryRiverCalcResultCommand extends CommandBase
+	//查询可对比方案列表
+	public class QueryCompareListCommand extends CommandBase
 	{
 		override public function execute(event:CairngormEvent):void
 		{
 			super.execute(event);
 			var waterModel:WaterModelParam = modelLocator.waterModelParam;
 			var params:Array = [];
-			//			params.push("73476806f527419686g18gbca8485689");
-			//			params.push("7BB31696C4EE4D769E0B5151DEBA3015");
-			//方案ID，计算指标ID
-			params.push(waterModel.planId);
-			params.push(waterModel.method);
-			IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
-			CursorManager.setBusyCursor();
+			params.push("73476806f527419686g18gbca8485689");//当前方案id
+			if(waterModel.method != "")
+			{
+				IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
+				CursorManager.setBusyCursor();
+			}
 		}
 		
 		override public function result(data:Object):void
@@ -41,7 +40,7 @@ package sm.wegis.szy.commands
 			CursorManager.removeBusyCursor();
 			//绑定数据源
 			var jsDec:JSONDecoder  = new JSONDecoder(data.result.toString());
-			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CALC_RESULT_RESPONSE);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COMPARE_LIST_RESPONSE);
 			var resultValue:Object = jsDec.getValue() as Object;
 			queryEvent.data = resultValue;
 			queryEvent.dispatch();
@@ -50,9 +49,9 @@ package sm.wegis.szy.commands
 		override public function fault(info:Object):void
 		{
 			CursorManager.removeBusyCursor();
-			Alert.show("获取河道计算结果失败！", "提示", Alert.OK, null, null, 
+			Alert.show("获取可对比方案列表失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
-			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CALC_RESULT_RESPONSE);
+			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COMPARE_LIST_RESPONSE);
 			queryEvent.dispatch();
 		}
 	}

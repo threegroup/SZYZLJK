@@ -77,7 +77,7 @@ package sm.wegis.szy.vo
 		public static const GetPWKDetail:String = "getPWKDetail";
 		
 		/**应急管理----水模型*/
-		/**通用【可对比的方案列表】---是否断面和河道公用，需要确定------------------------------？？？-----
+		/**通用【可对比的方案列表】
 		 参数：计算方案_id
 		 */
 		public static const GetCompareblePlanList:String ="getCompareblePlanList";
