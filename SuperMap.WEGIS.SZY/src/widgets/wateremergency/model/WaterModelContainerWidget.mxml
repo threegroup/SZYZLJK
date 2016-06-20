@@ -65,6 +65,22 @@
 				{label:"流量",value:3,title:"流量[m³/s]"},{label:"流速",value:4,title:"流速[m/s]"},
 				{label:"污染物浓度",value:5,title:"污染物浓度[mg/L]"}]);
 			
+			[Bindable]
+			private var riverCompareMonth:ArrayCollection = new ArrayCollection([
+				{label:"一月",value:1}
+				,{label:"二月",value:2}
+				,{label:"三月",value:3}
+				,{label:"四月",value:4}
+				,{label:"五月",value:5}
+				,{label:"六月",value:6}
+				,{label:"七月",value:7}
+				,{label:"八月",value:8}
+				,{label:"九月",value:9}
+				,{label:"十月",value:10}
+				,{label:"十一月",value:11}
+				,{label:"十二月",value:12}
+			]);
+			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				initEventListener();
@@ -362,7 +378,6 @@
 			}
 			
 			
-			
 		]]>
 	</fx:Script>
 	
@@ -568,7 +583,59 @@
 						</mx:ControlBar>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="河道对比"  width="100%" height="100%">
-						
+						<mx:Grid verticalGap="15" horizontalGap="20">
+							<mx:GridRow>
+								<mx:GridItem>
+									<s:HGroup gap="10" >
+										<s:Label text="指标：" height="100%"/>
+										<s:DropDownList id="riverTargetRwList" width="160" dataProvider="{targetsList}"  
+														requireSelection="true" styleName="SystemSelectorStyle"
+														/>
+										<s:Spacer width="30"/>
+										<s:Label text="对比方案：" height="100%"/>
+										<s:DropDownList id="riverCompareSchemeList" width="160"  
+														requireSelection="true" styleName="SystemSelectorStyle"
+														change="targetDpList_changeHandler(event)"/>
+									</s:HGroup>
+								</mx:GridItem>
+								<mx:GridItem>
+									<s:HGroup gap="10">
+										<s:Button id="riverQueryRwBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"/>
+										<s:Button id="mapCompare" label="浓度地图展示" buttonMode="true" styleName="SubmitRegisterStyle" />
+									</s:HGroup>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>	
+						<line:HLine width="100%"/>
+						<s:HGroup >
+							<s:Label text="对比月份："/>
+							<s:DropDownList id="riverCompareMonthDpList" dataProvider="{riverCompareMonth}"/>
+						</s:HGroup>
+						<chart:LineChartEx id="riverCompareChart" width="100%" height="100%" 
+										   dataTipFunction="hdDataTipFunction">
+							<!-- vertical axis -->
+							<chart:verticalAxis>
+								<mx:LinearAxis id="riverVerticalAxis" baseAtZero="false" />
+							</chart:verticalAxis>
+							<chart:verticalAxisRenderers>
+								<mx:AxisRenderer axis="{riverVerticalAxis}" fontSize="12" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+							</chart:verticalAxisRenderers>
+							<!-- horizontal axis -->
+							<chart:horizontalAxis>
+								<mx:LinearAxis id="riverHorizontalAxis" title="距离(m)"/>
+							</chart:horizontalAxis>
+							<!-- horizontal axis renderer -->
+							<chart:horizontalAxisRenderers>
+								<mx:AxisRenderer axis="{riverHorizontalAxis}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"
+												 tickStroke="{chartAxisStroke}" fontSize="12"  labelRenderer="sm.wegis.szy.renders.AxisRendererEx"/>
+							</chart:horizontalAxisRenderers>
+							<chart:series>
+							</chart:series>
+						</chart:LineChartEx>
+						<mx:ControlBar top="40" right="20">
+							<mx:Legend dataProvider="{riverCompareChart}"  fontSize="12"  buttonMode="true"
+									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+						</mx:ControlBar>
 					</s:NavigatorContent>
 				</mx:ViewStack>
 			</s:VGroup>
