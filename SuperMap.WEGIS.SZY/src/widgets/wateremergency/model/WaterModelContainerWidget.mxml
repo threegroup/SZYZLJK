@@ -427,7 +427,7 @@
 									<mx:GridItem>
 										<s:HGroup gap="10" >
 											<s:Label text="指标：" height="100%"/>
-											<s:DropDownList id="targetDpList" width="160" dataProvider="{targetsList}"  labelField="planNm"
+											<s:DropDownList id="targetDpList" width="160" dataProvider="{targetsList}" 
 															requireSelection="true" styleName="SystemSelectorStyle"
 															change="targetDpList_changeHandler(event)"/>
 										</s:HGroup>
@@ -481,7 +481,7 @@
 												change="targetDpList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
 								<s:Label text="对比方案：" height="100%"/>
-								<s:DropDownList id="dmCompareSchemeList" width="160"  dataProvider="{compareSchemeList}"
+								<s:DropDownList id="dmCompareSchemeList" width="160"  dataProvider="{compareSchemeList}" labelField="planNm"
 												requireSelection="true" styleName="SystemSelectorStyle"
 												change="targetDpList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
