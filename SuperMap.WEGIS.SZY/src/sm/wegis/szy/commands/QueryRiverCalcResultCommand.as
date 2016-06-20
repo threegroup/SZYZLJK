@@ -31,7 +31,6 @@ package sm.wegis.szy.commands
 			//			params.push("7BB31696C4EE4D769E0B5151DEBA3015");
 			//方案ID，计算指标ID
 			params.push(waterModel.planId);
-			params.push(waterModel.method);
 			IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
 			CursorManager.setBusyCursor();
 		}

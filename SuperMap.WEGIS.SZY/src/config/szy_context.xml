@@ -181,6 +181,10 @@
 					</value>				
 					
 		    		<!--水模型方案-->
+					<value type="Class">sm.wegis.szy.commands.QueryModelListCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryModelResultCommand
+					</value>
 			    	<value type="Class">sm.wegis.szy.commands.QueryBreakCalcResultCommand
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryDMRiverCommand
@@ -243,6 +247,8 @@
 				
 				
 					<!--水模型方案-->
+				<property name="QueryModelList" value="QueryModelListCommand" />
+				<property name="QueryModelResult" value="QueryModelResultCommand" />
 				<property name="QueryBreakCalcResult" value="QueryBreakCalcResultCommand"/>
 				<property name="QueryDMRiver" value="QueryDMRiverCommand"/>			
 				<property name="QueryRiverCalcResult" value="QueryRiverCalcResultCommand"/>			
@@ -282,12 +288,6 @@
 					
 					<value type="Class">sm.wegis.szy.commands.QuerySaveThemeMapCommand
 					</value>
-					
-					<!--应急管理查询-->
-					<value type="Class">sm.wegis.szy.commands.QueryModelListCommand
-					</value>
-					<value type="Class">sm.wegis.szy.commands.QueryModelResultCommand
-					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -307,9 +307,6 @@
 				
 				
 				<!--应急管理查询-->
-				<property name="QueryModelList" value="QueryModelListCommand" />
-				<property name="QueryModelResult" value="QueryModelResultCommand" />
-				
 				
 			</object>
 		</constructor-arg>
