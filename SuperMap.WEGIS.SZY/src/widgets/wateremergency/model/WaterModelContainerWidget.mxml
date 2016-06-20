@@ -108,6 +108,10 @@
 				{
 					compareSchemeList = new ArrayCollection(result["attributes"]["targetList"]);
 				}
+				else
+				{
+					compareSchemeList = null;
+				}
 			}
 			
 			//响应河道计算结果
@@ -593,7 +597,7 @@
 														/>
 										<s:Spacer width="30"/>
 										<s:Label text="对比方案：" height="100%"/>
-										<s:DropDownList id="riverCompareSchemeList" width="160"  
+										<s:DropDownList id="riverCompareSchemeList" width="160"  dataProvider="{compareSchemeList}" labelField="planNm"
 														requireSelection="true" styleName="SystemSelectorStyle"
 														change="targetDpList_changeHandler(event)"/>
 									</s:HGroup>
