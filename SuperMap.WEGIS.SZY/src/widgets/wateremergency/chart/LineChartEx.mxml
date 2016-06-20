@@ -136,7 +136,12 @@
 							if (items.length >0) {
 								seletItem = items[0];
 								lineX = seletItem.x;
-								var showText:String = seletItem.item[watchField];
+								var showText:String ="";
+								if (serices is ColumnSeriesEx){
+									showText = seletItem.item[(serices as ColumnSeriesEx).yField];
+								} else if (serices is LineSeriesEx) {
+									showText = seletItem.item[(serices as LineSeriesEx).yField];
+								}
 								if(showText != null)
 								{
 									var UI:UIComponent=new UIComponent();

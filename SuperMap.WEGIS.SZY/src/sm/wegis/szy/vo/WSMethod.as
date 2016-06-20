@@ -82,7 +82,18 @@ package sm.wegis.szy.vo
 		 */
 		public static const GetCompareblePlanList:String ="getCompareblePlanList";
 		
+		
+		
 		/**应急管理----水模型--- 断面计算结果查询*/
+		/**
+		 * 方案列表获取
+		 * */
+		public static const GetPlanInfoList:String = "getPlanInfoList";
+		
+		/**获取单个方案断面列表
+		 * */
+		public static const GetDmInfoList:String = "getDmInfoList";
+		
 		/**断面【水位】
 		 参数：计算方案_id,断面_id
 		 */

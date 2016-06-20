@@ -18,10 +18,11 @@ package sm.wegis.szy.commands
 		{
 			super.execute(event);
 			var params:Array = [];
-			params.push(modelLocator.userVo.userId);
-			params.push(modelLocator.systemInfo.subSystemID);
-//			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetMainTypes, params);
-			IDelegate(this.businessDelegate).executeHttpService("data/plan.txt");
+//			params.push(modelLocator.userVo.userId);
+//			params.push(modelLocator.systemInfo.subSystemID);
+			params.push(modelLocator.waterModelParam.planId);
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetDmInfoList, params);
+//			IDelegate(this.businessDelegate).executeHttpService("data/plan.txt");
 			CursorManager.setBusyCursor();
 		}
 		

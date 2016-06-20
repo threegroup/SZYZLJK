@@ -14,7 +14,7 @@
 			protected function this_dataChangeHandler(event:FlexEvent):void
 			{
 				if (data != null) {
-					var title:String = data["方案名称"];
+					var title:String = data["planNm"];
 					if (title.length > 15) {
 						titleLb.text = title.substr(0,15) +"...";
 						titleLb.toolTip = title;
@@ -22,7 +22,7 @@
 						titleLb.text = title;
 						titleLb.toolTip = null;
 					}
-					timeLb.text = data["创建时间"];
+					timeLb.text = data["createDate"];
 				}
 			}
 			

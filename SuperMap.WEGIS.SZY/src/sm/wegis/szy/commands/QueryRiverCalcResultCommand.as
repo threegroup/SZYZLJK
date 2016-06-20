@@ -27,13 +27,13 @@ package sm.wegis.szy.commands
 			super.execute(event);
 			var waterModel:WaterModelParam = modelLocator.waterModelParam;
 			var params:Array = [];
-			params.push("73476806f527419686g18gbca8485689");
-			params.push("7BB31696C4EE4D769E0B5151DEBA3015");
-			if(waterModel.method != "")
-			{
-				IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
-				CursorManager.setBusyCursor();
-			}
+			//			params.push("73476806f527419686g18gbca8485689");
+			//			params.push("7BB31696C4EE4D769E0B5151DEBA3015");
+			//方案ID，计算指标ID
+			params.push(waterModel.planId);
+			params.push(waterModel.method);
+			IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
+			CursorManager.setBusyCursor();
 		}
 		
 		override public function result(data:Object):void
@@ -50,7 +50,7 @@ package sm.wegis.szy.commands
 		override public function fault(info:Object):void
 		{
 			CursorManager.removeBusyCursor();
-			Alert.show("获取断面计算结果失败！", "提示", Alert.OK, null, null, 
+			Alert.show("获取河道计算结果失败！", "提示", Alert.OK, null, null, 
 				ResourceManagerEx.FindResource("TIP").cls);
 			var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT_RESPONSE);
 			queryEvent.dispatch();

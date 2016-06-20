@@ -16,7 +16,7 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import com.supermap.wegis.common.utils.ToolTip;
+			import com.aerolib.utils.ToolTip;
 			
 			import flashx.textLayout.formats.Direction;
 			

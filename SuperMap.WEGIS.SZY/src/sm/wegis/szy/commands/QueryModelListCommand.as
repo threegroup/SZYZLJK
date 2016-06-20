@@ -10,6 +10,7 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.events.QueryEvent;
+	import sm.wegis.szy.vo.WSMethod;
 	
 	public class QueryModelListCommand extends CommandBase
 	{
@@ -17,10 +18,10 @@ package sm.wegis.szy.commands
 		{
 			super.execute(event);
 			var params:Array = [];
-			params.push(modelLocator.userVo.userId);
-			params.push(modelLocator.systemInfo.subSystemID);
-//			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetMainTypes, params);
-			IDelegate(this.businessDelegate).executeHttpService("data/plans.txt");
+//			params.push(modelLocator.userVo.userId);
+//			params.push(modelLocator.systemInfo.subSystemID);
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetPlanInfoList, params);
+//			IDelegate(this.businessDelegate).executeHttpService("data/plans.txt");
 			CursorManager.setBusyCursor();
 		}
 		

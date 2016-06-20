@@ -8,7 +8,6 @@
 			   creationComplete="this_creationCompleteHandler(event)"
 			   WidgetAddComplete="this_WidgetAddCompleteHandler(event)"
 			   WidgetRemove="this_WidgetRemoveHandler(event)">
-	
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
@@ -110,20 +109,18 @@
 				
 				var result:Object = event.data;
 				if (result != null && result.success == true) {
-					var targetList:Object = result.attributes.targetList;
+					var targetList:Object = result.attributes.attributes;
 					for each(var item:Object in targetList) {
 						var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
 						var typeIDs:String = item.typeIDs;
 						pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;
 						
-						var positionStr:String = item.location;
-						if (positionStr != null && positionStr.split(",").length == 2) {
-							var positions:Array = positionStr.split(",");
-							item.x = Number(positions[0]);
-							item.y = Number(positions[1]);
+						if (item.lgtd && item.lttd) {
+							item.x = Number(item.lgtd);
+							item.y = Number(item.lttd);
 							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
 							var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
-							feature.id = item.id;
+							feature.id = item.sectionCode;
 							feature.toolTip = item.name;
 							feature.addEventListener(MouseEvent.CLICK, beakPointMouseClickHandler);
 							feature.buttonMode = true;
@@ -144,7 +141,7 @@
 			private function riverClickHandler(event:MouseEvent):void
 			{
 				var feature:Feature = event.currentTarget as Feature;
-				modelLocator.waterModelParam.dmId = feature.id;
+//				modelLocator.waterModelParam.dmId = feature.id;
 				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
 				modelShowVO.state = WaterModelContainerWidget.RIVER_STATE;
 				modelShowVO.title = feature.attributes["name"];

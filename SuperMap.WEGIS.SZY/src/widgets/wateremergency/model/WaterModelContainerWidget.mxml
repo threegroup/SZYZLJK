@@ -114,7 +114,15 @@
 							var chartType:String = saData["type"];
 							if(chartType == "LineChart")
 							{
-								var ls:LineSeriesEx = new LineSeriesEx();
+								var ls:LineSeriesEx;
+								for (var index:int = 0 ; index <hdChart.series.length ;index++){
+									if (hdChart.series[index] is LineSeriesEx) {
+										ls = hdChart.series[index] as LineSeriesEx;
+									}
+								}
+								if (ls == null) {
+                                    ls = new LineSeriesEx();
+								}
 								ls.name = saData["label"];
 								ls.xField = saData["xField"];
 								ls.yField = saData["yField"];
@@ -327,7 +335,6 @@
 			
 			protected function queryRwBt_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
 				waterModelparam.method = getQueryMethodHandler(RIVER_WAY);
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CALC_RESULT);
