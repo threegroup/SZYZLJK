@@ -14,10 +14,6 @@
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.geometry.GeoPoint;
 			import com.supermap.web.core.styles.PictureMarkerStyle;
-			import com.supermap.web.iServerJava6R.FilterParameter;
-			import com.supermap.web.iServerJava6R.queryServices.QueryBySQLParameters;
-			import com.supermap.web.iServerJava6R.queryServices.QueryBySQLService;
-			import com.supermap.web.iServerJava6R.queryServices.QueryResult;
 			import com.supermap.web.mapping.FeaturesLayer;
 			import com.supermap.wegis.common.components.events.BaseWidgetEvent;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
@@ -25,7 +21,6 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
-			import mx.rpc.AsyncResponder;
 			
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
@@ -184,6 +179,10 @@
 				modelLocator.waterModelParam.planId = planList.selectedItem["planId"];
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MODEL_RESULT);
 				queryEvent.dispatch();
+				
+				//查询当前方案可对比列表
+				var queryCompareListEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COMPARE_LIST);
+				queryCompareListEvent.dispatch();
 			}
 			
 			//系统重新加载

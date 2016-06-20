@@ -87,6 +87,7 @@
 			
 			public function initEventListener():void{
 				var eList:ArrayCollection = new ArrayCollection([
+					[QueryEvent.QUERY_COMPARE_LIST_RESPONSE, queryCompareListResponseHandler],//查询可对比方案列表
 					[QueryEvent.QUERY_BREAK_CALC_RESULT_RESPONSE, queryBreakCalcResultResponseHandler],//查询断面计算结果
 					[QueryEvent.QUERY_RIVER_CALC_RESULT_RESPONSE, queryRiverCalcResultResponseHandler],//查询河道计算结果
 					[QueryEvent.SHOW_MODEL_RESULT_WIDGET, showModelResultWidgetHandler],
@@ -94,6 +95,16 @@
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			//查询可对比方案列表
+			private function queryCompareListResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if(result)
+				{
+					
+				}
 			}
 			
 			//响应河道计算结果

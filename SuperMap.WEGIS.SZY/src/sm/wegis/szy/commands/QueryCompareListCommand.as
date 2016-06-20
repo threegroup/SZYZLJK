@@ -27,12 +27,10 @@ package sm.wegis.szy.commands
 			super.execute(event);
 			var waterModel:WaterModelParam = modelLocator.waterModelParam;
 			var params:Array = [];
-			params.push("73476806f527419686g18gbca8485689");//当前方案id
-			if(waterModel.method != "")
-			{
-				IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
-				CursorManager.setBusyCursor();
-			}
+			//方案ID，计算指标ID
+			params.push(waterModel.planId);
+			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetCompareblePlanList, params);
+			CursorManager.setBusyCursor();
 		}
 		
 		override public function result(data:Object):void

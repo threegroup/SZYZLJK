@@ -191,6 +191,8 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryRiverCalcResultCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryCompareListCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -251,7 +253,8 @@
 				<property name="QueryModelResult" value="QueryModelResultCommand" />
 				<property name="QueryBreakCalcResult" value="QueryBreakCalcResultCommand"/>
 				<property name="QueryDMRiver" value="QueryDMRiverCommand"/>			
-				<property name="QueryRiverCalcResult" value="QueryRiverCalcResultCommand"/>			
+				<property name="QueryRiverCalcResult" value="QueryRiverCalcResultCommand"/>		
+				<property name="QueryCompareList" value="QueryCompareListCommand"/>		
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />
