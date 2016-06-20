@@ -27,7 +27,7 @@ package sm.wegis.szy.commands
 			super.execute(event);
 			var waterModel:WaterModelParam = modelLocator.waterModelParam;
 			var params:Array = [];
-			//方案ID，计算指标ID
+			//方案ID
 			params.push(waterModel.planId);
 			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetCompareblePlanList, params);
 			CursorManager.setBusyCursor();

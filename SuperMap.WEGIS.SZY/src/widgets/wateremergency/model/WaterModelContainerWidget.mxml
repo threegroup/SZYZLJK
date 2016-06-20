@@ -54,25 +54,10 @@
 			/**河道标识*/
 			public static const RIVER_WAY:String = "RW";
 			
-			//--------------------------------断面-------------------------------------------
+			/**可对比方案列表*/
 			[Bindable]
-			/**断面地形剖面*/
-			private var tpDs:ArrayCollection = new ArrayCollection();
-			[Bindable]
-			/**断面流量过程*/
-			private var wfDs:ArrayCollection = new ArrayCollection();
-			[Bindable]
-			/**断面水深*/
-			private var wdDs:ArrayCollection = new ArrayCollection();
-			[Bindable]
-			/**断面水流流速*/
-			private var wsDs:ArrayCollection = new ArrayCollection();
-			[Bindable]
-			/**断面污染物浓度*/
-			private var wDenDs:ArrayCollection = new ArrayCollection();
-			
-			private var startPoint:Point;
-			private var endPoint:Point;
+			private var compareSchemeList:ArrayCollection = null;
+
 			
 			[Bindable]
 			private var targetsList:ArrayCollection = new ArrayCollection([
@@ -101,9 +86,11 @@
 			private function queryCompareListResponseHandler(event:CairngormEvent):void
 			{
 				var result:Object = event.data;
-				if(result)
+				if(result != null && result["success"] 
+					&& result["attributes"] 
+					&& result["attributes"]["targetList"] is Array)
 				{
-					
+					compareSchemeList = new ArrayCollection(result["attributes"]["targetList"]);
 				}
 			}
 			
@@ -374,16 +361,7 @@
 				this.hdChart.clearChartGraphic();
 			}
 			
-			//河道对比图例
-			protected function targetDpList_changeHandler(event:IndexChangeEvent):void
-			{
-				// TODO Auto-generated method stub
-				this.dmChart.series = [];
-				//设置Y轴名称 
-				this.verticalAxis.title = targetDpList.selectedItem.title;
-				
-				this.hdChart.clearChartGraphic();
-			}
+			
 			
 		]]>
 	</fx:Script>
@@ -434,7 +412,7 @@
 									<mx:GridItem>
 										<s:HGroup gap="10" >
 											<s:Label text="指标：" height="100%"/>
-											<s:DropDownList id="targetDpList" width="160" dataProvider="{targetsList}"  
+											<s:DropDownList id="targetDpList" width="160" dataProvider="{targetsList}"  labelField="planNm"
 															requireSelection="true" styleName="SystemSelectorStyle"
 															change="targetDpList_changeHandler(event)"/>
 										</s:HGroup>
@@ -488,7 +466,7 @@
 												change="targetDpList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
 								<s:Label text="对比方案：" height="100%"/>
-								<s:DropDownList id="dmCompareSchemeList" width="160"  
+								<s:DropDownList id="dmCompareSchemeList" width="160"  dataProvider="{compareSchemeList}"
 												requireSelection="true" styleName="SystemSelectorStyle"
 												change="targetDpList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
@@ -590,56 +568,7 @@
 						</mx:ControlBar>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="河道对比"  width="100%" height="100%">
-						<mx:Grid verticalGap="15" horizontalGap="20">
-							<mx:GridRow>
-								<mx:GridItem>
-									<s:HGroup gap="10" >
-										<s:Label text="指标：" height="100%"/>
-										<s:DropDownList id="targetRwList" width="160" dataProvider="{targetsList}"  
-														requireSelection="true" styleName="SystemSelectorStyle"
-														change="targetRwList_changeHandler(event)"/>
-										<s:Spacer width="30"/>
-										<s:Label text="对比方案：" height="100%"/>
-										<s:DropDownList id="riverCompareSchemeList" width="160"  
-														requireSelection="true" styleName="SystemSelectorStyle"
-														change="targetDpList_changeHandler(event)"/>
-									</s:HGroup>
-								</mx:GridItem>
-								<mx:GridItem>
-									<s:HGroup gap="10">
-										<s:Button id="queryRwBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle" click="queryRwBt_clickHandler(event)"/>
-										<s:Button id="mapCompare" label="浓度地图展示" buttonMode="true" styleName="SubmitRegisterStyle" />
-									</s:HGroup>
-								</mx:GridItem>
-							</mx:GridRow>
-						</mx:Grid>	
-						<line:HLine width="100%"/>
-						<chart:LineChartEx id="hdChart" width="100%" height="100%" 
-										   dataTipFunction="hdDataTipFunction">
-							<!-- vertical axis -->
-							<chart:verticalAxis>
-								<mx:LinearAxis id="hdVerticalAxis" baseAtZero="false" />
-							</chart:verticalAxis>
-							<chart:verticalAxisRenderers>
-								<mx:AxisRenderer axis="{hdVerticalAxis}" fontSize="12" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
-							</chart:verticalAxisRenderers>
-							<!-- horizontal axis -->
-							<chart:horizontalAxis>
-								<mx:LinearAxis id="hdHorizontalAxis" title="距离(m)"/>
-							</chart:horizontalAxis>
-							<!-- horizontal axis renderer -->
-							<chart:horizontalAxisRenderers>
-								<mx:AxisRenderer axis="{hdHorizontalAxis}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"
-												 tickStroke="{chartAxisStroke}" fontSize="12"  labelRenderer="sm.wegis.szy.renders.AxisRendererEx"/>
-							</chart:horizontalAxisRenderers>
-							<chart:series>
-							</chart:series>
-						</chart:LineChartEx>
-			</s:VGroup>
-			<mx:ControlBar top="40" right="20">
-				<mx:Legend id="hdLegend" dataProvider="{hdChart}"  fontSize="12"  buttonMode="true"
-						   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
-			</mx:ControlBar>
+						
 					</s:NavigatorContent>
 				</mx:ViewStack>
 			</s:VGroup>
