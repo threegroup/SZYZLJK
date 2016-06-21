@@ -10,22 +10,13 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
-			import com.supermap.wegis.common.utils.DateUtilEx;
-			
-			import flashx.textLayout.formats.Direction;
 			
 			import mx.charts.HitData;
 			import mx.charts.LegendItem;
-			import mx.charts.chartClasses.CartesianChart;
 			import mx.charts.chartClasses.IAxis;
-			import mx.charts.chartClasses.Series;
-			import mx.charts.events.ChartEvent;
 			import mx.charts.events.LegendMouseEvent;
 			import mx.charts.series.LineSeries;
 			import mx.collections.ArrayCollection;
-			import mx.collections.IList;
-			import mx.core.UIComponent;
-			import mx.core.UITextFormat;
 			import mx.events.FlexEvent;
 			import mx.formatters.DateFormatter;
 			
@@ -62,6 +53,11 @@
 			[Bindable]
 			private var dmList:ArrayCollection = null;
 			
+			/**当前断面对象*/
+			private var sameItem:Object = null;
+			/**当前断面对象索引*/
+			private var sameItemIndex:int = -1;
+			
 			
 			[Bindable]
 			private var targetsList:ArrayCollection = new ArrayCollection([
@@ -85,6 +81,13 @@
 				,{label:"十二月",value:12}
 			]);
 			
+			private function clear():void
+			{
+				this.sameItem = null;
+				this.sameItemIndex = -1;
+				this.resetDmChart();
+			}
+			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				initEventListener();
@@ -106,16 +109,15 @@
 			//查询可对比方案列表
 			private function queryCompareListResponseHandler(event:CairngormEvent):void
 			{
+				clear();
+				
+				compareSchemeList = null;
 				var result:Object = event.data;
 				if(result != null && result["success"] 
 					&& result["attributes"] 
 					&& result["attributes"]["targetList"] is Array)
 				{
 					compareSchemeList = new ArrayCollection(result["attributes"]["targetList"]);
-				}
-				else
-				{
-					compareSchemeList = null;
 				}
 			}
 			
@@ -125,7 +127,19 @@
 				dmList = null;
 				var result:Object = event.data;
 				if (result != null && result.success == true && result.attributes && result.attributes.attributes is Array) {
-					dmList = new ArrayCollection(result.attributes.attributes as Array);
+					var tempCol:Array = result.attributes.attributes as Array;
+					var sectionCol:Array = [];
+					if(tempCol != null && tempCol.length > 0)
+					{
+						for each(var section:Object in tempCol)
+						{
+							if(section != null && section["sectionName"] != null)
+							{
+								sectionCol.push(section);
+							}
+						}
+					}
+					dmList = new ArrayCollection(sectionCol);
 				}
 			}
 			
@@ -262,18 +276,18 @@
 			private function queryBt_clickHandler():void
 			{
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
-				waterModelparam.method = getQueryMethodHandler();
+				waterModelparam.method = getQueryMethodHandler(targetDpList, BREAK_COVER);
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT);
 				queryEvent.dispatch();
 			}
 			
 			//根据选择指标类型，获取后台查询方法,默认为断面
-			private function getQueryMethodHandler(methodType:String=BREAK_COVER):String
+			private function getQueryMethodHandler(hostDdl:DropDownList, methodType:String=BREAK_COVER):String
 			{
 				var selectItem:Object = null;
 				if(methodType == BREAK_COVER)//断面
 				{
-					selectItem = targetDpList.selectedItem;
+					selectItem = hostDdl.selectedItem;
 					switch(selectItem["value"]) {
 						case 1:
 							return WSMethod.GetWaterDMPositionData;
@@ -289,7 +303,7 @@
 				}
 				else if(methodType == RIVER_WAY)//河道
 				{
-					selectItem = targetRwList.selectedItem;
+					selectItem = hostDdl.selectedItem;
 					switch(selectItem["value"]) {
 						case 1:
 							return WSMethod.GetWaterHDPositionData;
@@ -369,7 +383,7 @@
 			protected function queryRwBt_clickHandler(event:MouseEvent):void
 			{
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
-				waterModelparam.method = getQueryMethodHandler(RIVER_WAY);
+				waterModelparam.method = getQueryMethodHandler(targetRwList, RIVER_WAY);
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CALC_RESULT);
 				queryEvent.dispatch();
 			}
@@ -382,7 +396,7 @@
 				//设置Y轴名称 
 				this.verticalAxis.title = targetDpList.selectedItem.title;
 				
-				this.hdChart.clearChartGraphic();
+				this.dmChart.clearChartGraphic();
 			}
 			
 			//河道统计图图例
@@ -396,6 +410,80 @@
 				this.hdChart.clearChartGraphic();
 			}
 			
+			//重置断面对比图表内容
+			private function resetDmChart():void
+			{
+				if(this.dmCompareList)
+				{
+					// TODO Auto-generated method stub
+					this.dmCompareChart.series = [];
+					//设置Y轴名称 
+					this.verticalCompareAxis.title = targetDpCompareList.selectedItem.title;
+					
+					this.dmCompareChart.clearChartGraphic();
+				}
+			}
+			
+			//断面对比指标选择
+			protected function targetDpCompareList_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.resetDmChart();
+			}
+			
+			//断面对比方案选择
+			protected function dmCompareSchemeList_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.resetDmChart();
+				var schemeItem:Object = this.dmCompareSchemeList.selectedItem;
+				if(schemeItem != null)
+				{
+					if(dmList && dmList.length > 0)
+					{
+						for each (var tempItem:Object in dmList)
+						{
+							if(tempItem && tempItem["sectionCode"] == modelLocator.waterModelParam.dmId)
+							{
+								sameItem = tempItem;//定位下拉列表中与当前断面相同的断面
+								sameItemIndex = dmList.getItemIndex(tempItem);
+								break;
+							}
+						}
+					}
+					
+					//同一个方案，对比不同的断面，此处断面可选
+					if(schemeItem["planId"] == modelLocator.waterModelParam.planId)
+					{
+						dmList.removeItemAt(sameItemIndex);
+						this.dmCompareList.enabled = true;
+						this.dmCompareList.selectedIndex = 0;
+					}
+					else//不同的方案对比同一个断面，此处断面不可选
+					{
+						dmList.addItemAt(sameItem,sameItemIndex);
+						this.dmCompareList.selectedItem = sameItem;
+						this.dmCompareList.enabled = false;
+					}
+				}
+			}
+			
+			//断面对比断面选择
+			protected function dmCompareList_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.resetDmChart();
+			}
+			
+			//执行断面对比
+			protected function queryCompareBt_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
+				waterModelparam.method = getQueryMethodHandler(targetDpCompareList, BREAK_COVER);
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT);
+				queryEvent.dispatch();
+			}
 			
 		]]>
 	</fx:Script>
@@ -497,19 +585,19 @@
 								<s:Label text="指标：" height="100%"/>
 								<s:DropDownList id="targetDpCompareList" width="160" dataProvider="{targetsList}"  
 												requireSelection="true" styleName="SystemSelectorStyle"
-												change="targetDpList_changeHandler(event)"/>
+												change="targetDpCompareList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
 								<s:Label text="对比方案：" height="100%"/>
 								<s:DropDownList id="dmCompareSchemeList" width="160"  dataProvider="{compareSchemeList}" labelField="planNm"
-												requireSelection="true" styleName="SystemSelectorStyle"
-												change="targetDpList_changeHandler(event)"/>
+												requireSelection="false" styleName="SystemSelectorStyle"
+												change="dmCompareSchemeList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
 								<s:Label text="对比断面：" height="100%"/>
-								<s:DropDownList id="dmCompareList" width="160" 
-												requireSelection="true" styleName="SystemSelectorStyle"
-												change="targetDpList_changeHandler(event)"/>
+								<s:DropDownList id="dmCompareList" width="160" dataProvider="{dmList}" labelField="sectionName"
+												requireSelection="false" styleName="SystemSelectorStyle"
+												change="dmCompareList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
-								<s:Button id="queryCompareBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle" />
+								<s:Button id="queryCompareBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle" click="queryCompareBt_clickHandler(event)"/>
 							</s:HGroup>
 							<line:HLine width="100%"/>
 							<chart:LineChartEx id="dmCompareChart" width="100%" height="100%" 

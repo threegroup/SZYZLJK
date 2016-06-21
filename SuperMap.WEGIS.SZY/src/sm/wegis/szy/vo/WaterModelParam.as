@@ -20,5 +20,7 @@ package sm.wegis.szy.vo
 		/**断面&河道查询方法ID*/
 		public var method:String;
 		
+		/**是否为查询断面对比数据*/
+		public var isDmCompare:Boolean = false;
 	}
 }

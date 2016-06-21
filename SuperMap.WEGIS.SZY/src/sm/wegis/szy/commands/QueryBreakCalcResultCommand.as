@@ -27,8 +27,11 @@ package sm.wegis.szy.commands
 			super.execute(event);
 			var waterModel:WaterModelParam = modelLocator.waterModelParam;
 			var params:Array = [];
-			params.push("73476806f527419686g18gbca8485689");
-			params.push("7BB31696C4EE4D769E0B5151DEBA3015");
+//			params.push("73476806f527419686g18gbca8485689");
+//			params.push("7BB31696C4EE4D769E0B5151DEBA3015");
+			//方案ID,断面ID
+			params.push(waterModel.planId);
+			params.push(waterModel.dmId);
 			if(waterModel.method != "")
 			{
 				IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
