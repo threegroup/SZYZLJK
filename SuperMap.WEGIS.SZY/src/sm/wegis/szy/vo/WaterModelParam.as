@@ -1,5 +1,7 @@
 package sm.wegis.szy.vo
 {
+	import mx.collections.ArrayCollection;
+
 	public class WaterModelParam
 	{
 		public function WaterModelParam()
@@ -17,5 +19,6 @@ package sm.wegis.szy.vo
 		
 		/**断面&河道查询方法ID*/
 		public var method:String;
+		
 	}
 }
