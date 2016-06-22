@@ -141,7 +141,7 @@
 //				modelLocator.waterModelParam.dmId = feature.id;
 				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
 				modelShowVO.state = WaterModelContainerWidget.RIVER_STATE;
-				modelShowVO.title = feature.attributes["name"];
+				modelShowVO.title = feature.attributes["sectionName"];
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_MODEL_RESULT_WIDGET);
 				queryEvent.data = modelShowVO;
 				queryEvent.dispatch();
@@ -161,7 +161,7 @@
 				modelLocator.waterModelParam.dmId = feature.id;
 				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
 				modelShowVO.state = WaterModelContainerWidget.BREAK_STATE;
-				modelShowVO.title = feature.attributes["name"];
+				modelShowVO.title = feature.attributes["sectionName"];
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_MODEL_RESULT_WIDGET);
 				queryEvent.data = modelShowVO;
 				queryEvent.dispatch();

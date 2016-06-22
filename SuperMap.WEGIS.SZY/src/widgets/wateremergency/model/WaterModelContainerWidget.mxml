@@ -167,6 +167,8 @@
 					if (saCol != null && saCol.length > 0) 
 					{
 						//此处动态创建统计图序列，序列数[1-12]
+						//设置Y轴名称 
+						this.hdVerticalAxis.title = targetRwList.selectedItem.title;
 						var sa:Array = [];
 						for each(var saData:Object in saCol)
 						{
@@ -227,6 +229,8 @@
 					}
 					if (saCol != null && saCol.length > 0) 
 					{
+						//设置Y轴名称 
+						this.verticalAxis.title = targetDpList.selectedItem.title;
 						//此处动态创建统计图序列，序列数[1-2]
 						var sa:Array = [];
 						for each(var saItem:Object in saCol)
@@ -544,6 +548,8 @@
 			private function showDMCompareChart():void
 			{
 				//显示当前方案的数据
+				//设置Y轴名称 
+				this.verticalCompareAxis.title = targetDpCompareList.selectedItem.title;
 				var saData:Object;
 				var saDatas:Array = [];
 				var sa:Array = [];
@@ -566,11 +572,22 @@
 						ls.yField = saData["yField"];
 						ls.setStyle("form", "curve");
 						ls.setStyle("showDataEffect", slide);
-						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						//var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						var scs:SolidColorStroke = null;
+						if(index == 0)
+						{
+							scs = new SolidColorStroke(0xFF0000);
+							ls.displayName = "当前断面：" + saData["sectionName"];
+						}
+						else
+						{
+							scs = new SolidColorStroke(0x0000FF);
+							ls.displayName = "对比断面：" + saData["sectionName"];
+						}
 						ls.setStyle("lineStroke", scs);
 						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
 						ls.setStyle("itemRenderer", cf);
-						ls.displayName = saData["sectionName"];
+						//ls.displayName = saData["sectionName"];
 						var temp:Array = saData["nodeList"];
 						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
 						sa.push(ls);
@@ -633,6 +650,8 @@
 			/**显示对比chart*/
 			private function showRiverCompareChart():void
 			{
+				//设置Y轴名称 
+				this.riverVerticalAxis.title = riverTargetRwList.selectedItem.title;
 				var selectMonth:int = riverCompareMonthDpList.selectedItem.value;
 				//显示当前方案的数据
 				var saData:Object;
@@ -681,11 +700,22 @@
 						ls.yField = saData["yField"];
 						ls.setStyle("form", "curve");
 						ls.setStyle("showDataEffect", slide);
-						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						//var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						var scs:SolidColorStroke = null;
+						if(index == 0)
+						{
+							scs = new SolidColorStroke(0xFF0000);
+							ls.displayName = "当前河道：" + saData["schemeName"];
+						}
+						else
+						{
+							scs = new SolidColorStroke(0x0000FF);
+							ls.displayName = "当前河道：" + saData["schemeName"];
+						}
 						ls.setStyle("lineStroke", scs);
 						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
 						ls.setStyle("itemRenderer", cf);
-						ls.displayName = saData["schemeName"];
+						//ls.displayName = saData["schemeName"];
 						var temp:Array = saData["nodeList"];
 						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
 						sa.push(ls);
