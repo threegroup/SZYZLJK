@@ -165,6 +165,10 @@ package sm.wegis.szy.events
 		public static const QUERY_BREAK_CALC_RESULT:String = "QueryBreakCalcResult";
 		public static const QUERY_BREAK_CALC_RESULT_RESPONSE:String = "QueryBreakCalcResultResponse";
 		
+		/**断面结果对比查询*/
+		public static const QUERY_BREAK_COMPARE_CALC_RESULT:String = "QueryBreakCompareCalcResult";
+		public static const QUERY_BREAK_COMPARE_CALC_RESULT_RESPONSE:String = "QueryBreakCompareCalcResultResponse";
+		
 		/**显示断面/河流	计算结果展示面板*/
 		public static const SHOW_MODEL_RESULT_WIDGET:String = "ShowModelResultWidget";
 		
@@ -176,6 +180,20 @@ package sm.wegis.szy.events
 		/**河道计算结果查询*/
 		public static const QUERY_RIVER_CALC_RESULT:String = "QueryRiverCalcResult";
 		public static const QUERY_RIVER_CALC_RESULT_RESPONSE:String = "QueryRiverCalcResultResponse";
+		
+	   /**河道计算结果导出*/
+		public static const EXPORT_QUERY_RIVER_CALC_RESULT:String = "ExportQueryRiverCalcResult";
+		public static const EXPORT_QUERY_RIVER_CALC_RESULT_RESPONSE:String = "ExportQueryRiverCalcResultResponse";
+		
+		/**断面计算结果导出*/
+		public static const EXPORT_QUERY_DM_CALC_RESULT:String = "ExportQueryDMCalcResult";
+		public static const EXPORT_QUERY_DM_CALC_RESULT_RESPONSE:String = "ExportQueryDMCalcResultResponse";
+		
+		/**河道计算结果对比查询*/
+		public static const QUERY_RIVER_COMPARE_CALC_RESULT:String = "QueryRiverCompareCalcResult";
+		public static const QUERY_RIVER_COMPARE_CALC_RESULT_RESPONSE:String = "QueryRiverCompareCalcResultResponse";
+		
+		
 		
 	}
 }

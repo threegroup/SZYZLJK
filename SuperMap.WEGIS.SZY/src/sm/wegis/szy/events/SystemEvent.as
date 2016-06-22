@@ -45,6 +45,9 @@ package sm.wegis.szy.events
 		/**系统全屏*/
 		public static const SYSTEM_FULLSCREEN:String = "SystemFullScreen";
 		
+		/**系统提示信息*/
+		public static const SYSTEM_TOOL_TIP:String = "SystemToolTip";
+		
 		
 		public function SystemEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

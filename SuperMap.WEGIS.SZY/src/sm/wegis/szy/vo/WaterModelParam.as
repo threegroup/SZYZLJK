@@ -22,5 +22,10 @@ package sm.wegis.szy.vo
 		
 		/**是否为查询断面对比数据*/
 		public var isDmCompare:Boolean = false;
+		
+		/**查询结果导入，计算指标*/
+		public var jisuanid:String;
+		
+		public var keyWord:String;
 	}
 }

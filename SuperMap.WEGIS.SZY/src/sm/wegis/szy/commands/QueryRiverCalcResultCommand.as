@@ -4,19 +4,12 @@ package sm.wegis.szy.commands
 	import com.adobe.serialization.json.JSONDecoder;
 	import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 	
-	import flash.net.URLVariables;
-	
-	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.managers.CursorManager;
 	
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
-	import sm.wegis.szy.events.MapLayerEvent;
 	import sm.wegis.szy.events.QueryEvent;
-	import sm.wegis.szy.events.SystemEvent;
-	import sm.wegis.szy.vo.ConstVO;
-	import sm.wegis.szy.vo.WSMethod;
 	import sm.wegis.szy.vo.WaterModelParam;
 	
 	//查询河道计算结果

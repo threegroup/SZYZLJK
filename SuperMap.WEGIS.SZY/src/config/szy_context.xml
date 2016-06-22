@@ -193,6 +193,15 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryCompareListCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryRiverCampareCalcResultCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.ExportQueryRiverCalcResultCommand
+					</value>
+				    <value type="Class">sm.wegis.szy.commands.ExportQueryDMCalcResultCommand
+					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryBreakCompareCalcResultCommand
+					</value>
+					
 				</array>
 			</arg>
 		</method-invocation>
@@ -248,13 +257,19 @@
 				<property name="GetPWKDetail" value="GetPWKDetailCommand"/>
 				
 				
-					<!--水模型方案-->
+				<!--水模型方案-->
 				<property name="QueryModelList" value="QueryModelListCommand" />
 				<property name="QueryModelResult" value="QueryModelResultCommand" />
 				<property name="QueryBreakCalcResult" value="QueryBreakCalcResultCommand"/>
 				<property name="QueryDMRiver" value="QueryDMRiverCommand"/>			
 				<property name="QueryRiverCalcResult" value="QueryRiverCalcResultCommand"/>		
-				<property name="QueryCompareList" value="QueryCompareListCommand"/>		
+				<property name="QueryCompareList" value="QueryCompareListCommand"/>
+				<property name="QueryRiverCompareCalcResult" value="QueryRiverCampareCalcResultCommand"/>
+				<property name="ExportQueryRiverCalcResult" value="ExportQueryRiverCalcResultCommand"/>
+				<property name="ExportQueryDMCalcResult" value="ExportQueryDMCalcResultCommand"/>
+				<property name="QueryBreakCompareCalcResult" value="QueryBreakCompareCalcResultCommand"/>
+				
+				
 			</object>
 		</constructor-arg>
 		<constructor-arg value="sm.wegis.szy.commands" />

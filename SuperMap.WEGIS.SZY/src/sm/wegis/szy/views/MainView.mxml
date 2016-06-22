@@ -29,6 +29,8 @@
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.core.widget.WidgetManager;
 			
+			import flash.utils.setTimeout;
+			
 			import mx.collections.ArrayCollection;
 			import mx.core.IVisualElement;
 			import mx.core.IVisualElementContainer;
@@ -114,6 +116,9 @@
 				
 				//是否全屏
 				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_FULLSCREEN, fullScreenHandler);
+				
+				//监听提示信息
+				CairngormEventDispatcher.getInstance().addEventListener(SystemEvent.SYSTEM_TOOL_TIP,showToolTipHandler);
 			}
 			
 			//用户或子系统发生变化，刷新数据
@@ -542,6 +547,22 @@
 				this.choosePanel(false,false,true);
 			}
 			
+			//显示系统提示信息
+			private function showToolTipHandler(event:CairngormEvent):void
+			{
+				var data:Object = event.data;
+				toolTipGroup.visible = true;
+				if (data is String) {
+					toolTipLb.text = data as String;
+				}
+				setTimeout(hideToolTipHandle,1000);
+			}
+			
+			private function hideToolTipHandle():void
+			{
+				toolTipGroup.visible = false;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -695,4 +716,14 @@
 			</s:VGroup>
 		</s:BorderContainer>
 	</s:VGroup>
+	<s:HGroup id="toolTipGroup" visible="false" width="100%"  horizontalAlign="center" bottom="50">
+		<s:Group minWidth="200"  minHeight="35">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:SolidColor  id="fillColor" color="{getStyle('textSymbolBgColor')}" alpha="{getStyle('textSymbolAlpha')}"/>
+				</s:fill>
+			</s:Rect>
+			<s:Label id="toolTipLb" color="0xFFFFFF" fontSize="14" horizontalCenter="0" verticalCenter="0" />
+		</s:Group>
+	</s:HGroup>
 </baseclass:ViewBase>

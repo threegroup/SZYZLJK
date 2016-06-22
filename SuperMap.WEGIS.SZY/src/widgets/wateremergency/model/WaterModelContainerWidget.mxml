@@ -10,6 +10,8 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.supermap.wegis.common.utils.DateUtilEx;
 			
 			import mx.charts.HitData;
 			import mx.charts.LegendItem;
@@ -25,6 +27,7 @@
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.ModelContainerShowVO;
 			import sm.wegis.szy.vo.WSMethod;
 			import sm.wegis.szy.vo.WaterModelParam;
@@ -48,6 +51,10 @@
 			/**可对比方案列表*/
 			[Bindable]
 			private var compareSchemeList:ArrayCollection = null;
+			
+			/**断面对比方案列表*/
+			[Bindable]
+			private var DMcompareSchemeList:ArrayCollection = null;
 			
 			/**当前方案断面列表*/
 			[Bindable]
@@ -118,6 +125,11 @@
 					&& result["attributes"]["targetList"] is Array)
 				{
 					compareSchemeList = new ArrayCollection(result["attributes"]["targetList"]);
+					//断面对比，需要增加当前方案
+					var currentPlan:Object = {planNm:"当前方案"};
+					var temp:ArrayCollection = new ArrayCollection(result["attributes"]["targetList"]);
+					temp.addItemAt(currentPlan,0);
+					DMcompareSchemeList = temp;
 				}
 			}
 			
@@ -476,13 +488,273 @@
 			}
 			
 			//执行断面对比
+			private var queryCompareDMCalc:Boolean = false;
+			private var DMCompareResult:Object = {};
 			protected function queryCompareBt_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
 				waterModelparam.method = getQueryMethodHandler(targetDpCompareList, BREAK_COVER);
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_CALC_RESULT);
+				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT_RESPONSE
+					, queryDMCompareHandler);
+				//设置flag，标识开始请求数据
+				queryCompareDMCalc = false;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT);
+				queryEvent.data = waterModelparam;
 				queryEvent.dispatch();
+			}
+			
+			private function queryDMCompareHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (queryCompareDMCalc == false){
+					if (result is Array) {
+						if ((result as Array).length == 2) {
+							DMCompareResult.currentPlan = result[0].attributes;
+						}
+					}
+					queryCompareDMCalc = true;
+					
+					var currentWaterModelparam:WaterModelParam = modelLocator.waterModelParam;
+					
+					var waterModelparam:WaterModelParam = new WaterModelParam();
+					waterModelparam.method = getQueryMethodHandler(targetDpCompareList, BREAK_COVER);
+					//当前方案，不同断面对比
+					if (dmCompareSchemeList.selectedIndex == 0) {
+						waterModelparam.planId = currentWaterModelparam.planId;
+						waterModelparam.dmId = dmCompareList.selectedItem.sectionCode;
+					}else{
+						waterModelparam.planId = dmCompareSchemeList.selectedItem.planId;
+						waterModelparam.dmId = currentWaterModelparam.dmId;
+					}
+					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT);
+					queryEvent.data = waterModelparam;
+					queryEvent.dispatch();
+				} else if (queryCompareDMCalc == true){
+					if (result is Array) {
+						if ((result as Array).length == 2) {
+							DMCompareResult.comparePlan = result[0].attributes;
+						}
+					}
+					//显示对比chart
+					showDMCompareChart();
+				}
+			}
+			
+			/**显示对比chart*/
+			private function showDMCompareChart():void
+			{
+				//显示当前方案的数据
+				var saData:Object;
+				var saDatas:Array = [];
+				var sa:Array = [];
+				var month:int;
+				var label:String;
+				saDatas.push(DMCompareResult.currentPlan);
+				saDatas.push(DMCompareResult.comparePlan);
+				for (var index:int = 0 ; index < saDatas.length ; index++) {
+					saData = saDatas[index];
+					var ls:LineSeriesEx;
+					if(saData["type"] == "LineChart")
+					{
+						if (dmCompareChart.series.length > index) {
+							ls = dmCompareChart.series[index] as LineSeriesEx;
+						} else {
+							ls = new LineSeriesEx();
+						}
+						ls.name = saData["label"];
+						ls.xField = saData["xField"];
+						ls.yField = saData["yField"];
+						ls.setStyle("form", "curve");
+						ls.setStyle("showDataEffect", slide);
+						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						ls.setStyle("lineStroke", scs);
+						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+						ls.setStyle("itemRenderer", cf);
+						ls.displayName = saData["sectionName"];
+						var temp:Array = saData["nodeList"];
+						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+						sa.push(ls);
+					}
+				}
+				dmCompareChart.series = sa;
+			}
+			
+			
+			protected function riverTargetRwList_valueCommitHandler(event:FlexEvent):void
+			{
+				mapCompare.visible = mapCompare.includeInLayout = false;
+				var dropDownList:DropDownList = event.currentTarget as DropDownList;
+				if (dropDownList.selectedIndex == 4){
+					mapCompare.visible = mapCompare.includeInLayout = true;
+				}
+			}
+			
+			private var queryCompareRiverCalc:Boolean = false;
+			private var riverCompareResult:Object = {};
+			//先请求当前方案的河道对应计算指标计算结果
+			protected function riverQueryRwBt_clickHandler(event:MouseEvent):void
+			{
+				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
+				waterModelparam.method = getQueryMethodHandler(riverTargetRwList, RIVER_WAY);
+				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT_RESPONSE
+					, queryRiverCompareHandler);
+				//设置flag，标识开始请求数据
+				queryCompareRiverCalc = false;
+				riverCompareMonthDpList.enabled = false;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT);
+				queryEvent.data = waterModelparam;
+				queryEvent.dispatch();
+			}
+			
+			private function queryRiverCompareHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (queryCompareRiverCalc == false){
+					if (result.success == true) {
+						riverCompareResult.currentPlan = result.attributes.result;
+					}
+					queryCompareRiverCalc = true;
+					var waterModelparam:WaterModelParam = new WaterModelParam();
+					waterModelparam.method = getQueryMethodHandler(riverTargetRwList, RIVER_WAY);
+					waterModelparam.planId = riverCompareSchemeList.selectedItem.planId;
+					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT);
+					queryEvent.data = waterModelparam;
+					queryEvent.dispatch();
+				} else if (queryCompareRiverCalc == true){
+					if (result.success == true) {
+						riverCompareResult.comparePlan = result.attributes.result;
+					}
+					riverCompareMonthDpList.enabled = true;
+					//显示对比chart
+					showRiverCompareChart();
+				}
+			}
+			
+			/**显示对比chart*/
+			private function showRiverCompareChart():void
+			{
+				var selectMonth:int = riverCompareMonthDpList.selectedItem.value;
+				//显示当前方案的数据
+				var saData:Object;
+				var saDatas:Array = [];
+				var sa:Array = [];
+				var month:int;
+				var label:String;
+				for each(saData in riverCompareResult.currentPlan)
+				{
+					label =saData["label"];
+					month = -1;
+					if (label.split("-").length == 2){
+						month = parseInt(label.split("-")[1]);
+					}
+					if (month == selectMonth) {
+						saDatas.push(saData);
+						break;
+					}
+				}
+				
+				//遍历对比方案的数据
+				for each(saData in riverCompareResult.comparePlan)
+				{
+					label =saData["label"];
+					month = -1;
+					if (label.split("-").length == 2){
+						month = parseInt(label.split("-")[1]);
+					}
+					if (month == selectMonth) {
+						saDatas.push(saData);
+						break;
+					}
+				}
+				for (var index:int = 0 ; index < saDatas.length ; index++) {
+					saData = saDatas[index];
+					var ls:LineSeriesEx;
+					if(saData["type"] == "LineChart")
+					{
+						if (riverCompareChart.series.length > index) {
+							ls = riverCompareChart.series[index] as LineSeriesEx;
+						} else {
+							ls = new LineSeriesEx();
+						}
+						ls.name = saData["label"];
+						ls.xField = saData["xField"];
+						ls.yField = saData["yField"];
+						ls.setStyle("form", "curve");
+						ls.setStyle("showDataEffect", slide);
+						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						ls.setStyle("lineStroke", scs);
+						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+						ls.setStyle("itemRenderer", cf);
+						ls.displayName = saData["schemeName"];
+						var temp:Array = saData["nodeList"];
+						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+						sa.push(ls);
+					}
+				}
+				riverCompareChart.series = sa;
+			}
+			
+			protected function riverCompareMonthDpList_changeHandler(event:IndexChangeEvent):void
+			{
+				showRiverCompareChart();
+			}
+			
+			//河道计算结果导出
+			protected function exportRwBt_clickHandler(event:MouseEvent):void
+			{
+				var requestParam:WaterModelParam = new WaterModelParam();
+				requestParam.planId =  modelLocator.waterModelParam.planId;
+				requestParam.jisuanid = getExportCalcTypeHandler(targetRwList);
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.EXPORT_QUERY_RIVER_CALC_RESULT);
+				queryEvent.data = requestParam;
+				queryEvent.dispatch();
+			}
+			
+			private function getExportCalcTypeHandler(hostDdl:DropDownList):String
+			{
+				var selectItem:Object = null;
+				selectItem = hostDdl.selectedItem;
+				switch(selectItem["value"]) {
+					case 1:
+						return ConstVO.WaterLevel;
+					case 2:
+						return ConstVO.WaterDepth;
+					case 3:
+						return ConstVO.WaterQuality;
+					case 4:
+						return ConstVO.WaterFlow;
+					case 5:
+						return "";//断面污染物浓度目前还未实现
+				}
+				return "";
+			}
+			
+			//断面计算结果导出
+			protected function dmExportBt_clickHandler(event:MouseEvent):void
+			{
+				var requestParam:WaterModelParam = new WaterModelParam();
+				requestParam.planId =  modelLocator.waterModelParam.planId;
+				requestParam.dmId = modelLocator.waterModelParam.dmId;
+				requestParam.jisuanid = getExportCalcTypeHandler(targetDpList);
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.EXPORT_QUERY_DM_CALC_RESULT);
+				queryEvent.data = requestParam;
+				queryEvent.dispatch();
+			}
+			
+			protected function dmCompareSchemeList_valueCommitHandler(event:FlexEvent):void
+			{
+				var dropdownList:DropDownList = event.currentTarget as DropDownList;
+				dmCompareList.enabled = true;
+				//选择的是非当前方案，断面设置为当前断面id------不同方案，相同断面比较
+				if (dropdownList.selectedIndex != 0 && dropdownList.selectedIndex != -1) {
+					for each(var item:Object in dmCompareList.dataProvider){
+						if (item.sectionCode == modelLocator.waterModelParam.dmId) {
+							dmCompareList.selectedItem = item;
+							dmCompareList.enabled = false;
+							break;
+						}
+					}
+				}
 			}
 			
 		]]>
@@ -542,7 +814,8 @@
 									<mx:GridItem>
 										<s:HGroup gap="10">
 											<s:Button id="queryBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"  click="queryBt_clickHandler()"/>
-											<s:Button id="exportBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle" />
+											<s:Button id="dmExportBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle"
+													  click="dmExportBt_clickHandler(event)"/>
 										</s:HGroup>
 									</mx:GridItem>
 								</mx:GridRow>
@@ -588,16 +861,17 @@
 												change="targetDpCompareList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
 								<s:Label text="对比方案：" height="100%"/>
-								<s:DropDownList id="dmCompareSchemeList" width="160"  dataProvider="{compareSchemeList}" labelField="planNm"
-												requireSelection="false" styleName="SystemSelectorStyle"
-												change="dmCompareSchemeList_changeHandler(event)"/>
+								<s:DropDownList id="dmCompareSchemeList" width="160"  dataProvider="{DMcompareSchemeList}" labelField="planNm"
+												requireSelection="true" styleName="SystemSelectorStyle"
+												valueCommit="dmCompareSchemeList_valueCommitHandler(event)"/>
 								<s:Spacer width="30"/>
 								<s:Label text="对比断面：" height="100%"/>
 								<s:DropDownList id="dmCompareList" width="160" dataProvider="{dmList}" labelField="sectionName"
-												requireSelection="false" styleName="SystemSelectorStyle"
+												requireSelection="true" styleName="SystemSelectorStyle"
 												change="dmCompareList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
-								<s:Button id="queryCompareBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle" click="queryCompareBt_clickHandler(event)"/>
+								<s:Button id="queryCompareBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"
+										  click="queryCompareBt_clickHandler(event)"/>
 							</s:HGroup>
 							<line:HLine width="100%"/>
 							<chart:LineChartEx id="dmCompareChart" width="100%" height="100%" 
@@ -655,8 +929,12 @@
 									</mx:GridItem>
 									<mx:GridItem>
 										<s:HGroup gap="10">
-											<s:Button id="queryRwBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle" click="queryRwBt_clickHandler(event)"/>
-											<s:Button id="exportRwBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle" />
+											<s:Button id="queryRwBt" label="查询" buttonMode="true"
+													  styleName="SubmitRegisterStyle"
+													  click="queryRwBt_clickHandler(event)"/>
+											<s:Button id="exportRwBt" label="导出计算结果" buttonMode="true" 
+													  styleName="SubmitRegisterStyle"
+													  click="exportRwBt_clickHandler(event)"/>
 										</s:HGroup>
 									</mx:GridItem>
 								</mx:GridRow>
@@ -673,15 +951,13 @@
 								</chart:verticalAxisRenderers>
 								<!-- horizontal axis -->
 								<chart:horizontalAxis>
-									<mx:LinearAxis id="hdHorizontalAxis" title="距离(m)"/>
+									<mx:LinearAxis id="hdHorizontalAxis" title="距离(m)" baseAtZero="false"/>
 								</chart:horizontalAxis>
 								<!-- horizontal axis renderer -->
 								<chart:horizontalAxisRenderers>
 									<mx:AxisRenderer axis="{hdHorizontalAxis}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"
 													 tickStroke="{chartAxisStroke}" fontSize="12"  labelRenderer="sm.wegis.szy.renders.AxisRendererEx"/>
 								</chart:horizontalAxisRenderers>
-								<chart:series>
-								</chart:series>
 							</chart:LineChartEx>
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
@@ -689,15 +965,16 @@
 									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
 						</mx:ControlBar>
 					</s:NavigatorContent>
+					<!--河道对比-->
 					<s:NavigatorContent label="河道对比"  width="100%" height="100%">
-						<s:VGroup width="100%" height="100%">
+						<s:VGroup width="100%" height="100%" paddingLeft="5">
 							<mx:Grid verticalGap="15" horizontalGap="20">
 								<mx:GridRow>
 									<mx:GridItem>
 										<s:HGroup gap="10" >
 											<s:Label text="指标：" height="100%"/>
 											<s:DropDownList id="riverTargetRwList" width="160" dataProvider="{targetsList}"  
-															requireSelection="true" styleName="SystemSelectorStyle"
+															requireSelection="true" styleName="SystemSelectorStyle" valueCommit="riverTargetRwList_valueCommitHandler(event)"
 															/>
 											<s:Spacer width="30"/>
 											<s:Label text="对比方案：" height="100%"/>
@@ -708,7 +985,8 @@
 									</mx:GridItem>
 									<mx:GridItem>
 										<s:HGroup gap="10">
-											<s:Button id="riverQueryRwBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"/>
+											<s:Button id="riverQueryRwBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"
+													  click="riverQueryRwBt_clickHandler(event)"/>
 											<s:Button id="mapCompare" label="浓度地图展示" buttonMode="true" styleName="SubmitRegisterStyle" />
 										</s:HGroup>
 									</mx:GridItem>
@@ -717,7 +995,9 @@
 							<line:HLine width="100%"/>
 							<s:HGroup>
 								<s:Label text="对比月份：" height="100%"/>
-								<s:DropDownList id="riverCompareMonthDpList"  styleName="SystemSelectorStyle" dataProvider="{riverCompareMonth}"/>
+								<s:DropDownList id="riverCompareMonthDpList"  enabled="false" requireSelection="true" width="160"
+												styleName="SystemSelectorStyle" dataProvider="{riverCompareMonth}" 
+												change="riverCompareMonthDpList_changeHandler(event)"/>
 							</s:HGroup>
 							<chart:LineChartEx id="riverCompareChart" width="100%" height="100%" 
 											   dataTipFunction="hdDataTipFunction">
@@ -730,15 +1010,13 @@
 								</chart:verticalAxisRenderers>
 								<!-- horizontal axis -->
 								<chart:horizontalAxis>
-									<mx:LinearAxis id="riverHorizontalAxis" title="距离(m)"/>
+									<mx:LinearAxis id="riverHorizontalAxis" title="距离(m)" baseAtZero="false"/>
 								</chart:horizontalAxis>
 								<!-- horizontal axis renderer -->
 								<chart:horizontalAxisRenderers>
 									<mx:AxisRenderer axis="{riverHorizontalAxis}" canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"
 													 tickStroke="{chartAxisStroke}" fontSize="12"  labelRenderer="sm.wegis.szy.renders.AxisRendererEx"/>
 								</chart:horizontalAxisRenderers>
-								<chart:series>
-								</chart:series>
 							</chart:LineChartEx>
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">

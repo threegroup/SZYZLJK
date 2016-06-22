@@ -80,5 +80,16 @@ package sm.wegis.szy.vo
 		public static const WATER_MODEL_BREAK_FEATURE_LAYER:String = "WaterModelBreakFeatureLayer";
 		/**水模型方案打开，展示方案关联的河流*/
 		public static const WATER_MODEL_RIVER_FEATURE_LAYER:String = "WaterModelRiverFeatureLayer";
+		
+		/**计算指标ID*/
+		/**水位*/
+		public static const WaterLevel:String = "38d5d1f65bc24641a6010759b949473b";
+		/**(水深)*/
+		public static const WaterDepth:String = " ae0f48e69e0d4dc79d4a995303b4d9c9";
+		/**(流量) */
+		public static const WaterQuality:String = "e6e886de83254958a024f33e010700aa";
+		/**(流速)*/
+		public static const WaterFlow:String = "6641d96650694ce2a704dd1b3f71052d";
+
 	}
 }

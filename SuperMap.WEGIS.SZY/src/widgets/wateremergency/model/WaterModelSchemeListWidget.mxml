@@ -11,6 +11,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
+			import com.adobe.utils.StringUtil;
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.core.geometry.GeoPoint;
 			import com.supermap.web.core.styles.PictureMarkerStyle;
@@ -30,6 +31,7 @@
 			import sm.wegis.szy.utils.FeatureLayerUtil;
 			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.ModelContainerShowVO;
+			import sm.wegis.szy.vo.WaterModelParam;
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
@@ -169,7 +171,14 @@
 			private function queryModelList():void
 			{
 				planList.dataProvider = null;
+				var param:WaterModelParam = new WaterModelParam(); 
+				if (planTextInput.text != null && StringUtil.trim(planTextInput.text) && StringUtil.trim(planTextInput.text).length !=0){
+					param.keyWord = StringUtil.trim(planTextInput.text);
+				} else {
+					param.keyWord = "";
+				}
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MODEL_LIST);
+				queryEvent.data = param;
 				queryEvent.dispatch();
 			}
 			
@@ -191,6 +200,11 @@
 				
 			}
 			
+			protected function queryBt_clickHandler(event:MouseEvent):void
+			{
+			   queryModelList();	
+			}
+			
 		]]>
 	</fx:Script>
 	<s:VGroup width="100%" height="100%" gap="2">
@@ -207,13 +221,14 @@
 								  paddingRight="3" paddingTop="5">
 							<s:HGroup width="100%" gap="5" height="25">
 								<s:Label text="方案名称" height="100%"/>
-								<s:TextInput id="planTextInput" width="100%"/>
-								<s:Button id="queryBt" label="查询"  styleName="SubmitRegisterStyle" />
+								<s:TextInput id="planTextInput" width="100%" prompt="输入方案名称"/>
+								<s:Button id="queryBt" label="查询"  styleName="SubmitRegisterStyle"
+										  click="queryBt_clickHandler(event)" />
 								<s:Button id="createBt" label="新建"  styleName="SubmitRegisterStyle" />
 							</s:HGroup>
 							<line:HLine width="100%"/>
 							<s:List id="planList" borderVisible="false" width="100%" height="100%"
-									itemRenderer="sm.wegis.szy.renders.PlanListItemRenderer"
+									itemRenderer="sm.wegis.szy.renders.PlanListItemRenderer" 
 									click="planList_clickHandler(event)"/>
 						</s:VGroup>
 					</s:NavigatorContent>
