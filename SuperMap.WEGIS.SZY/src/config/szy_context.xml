@@ -201,7 +201,8 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryBreakCompareCalcResultCommand
 					</value>
-					
+					<value type="Class">sm.wegis.szy.commands.QueryDMProfileCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -268,7 +269,7 @@
 				<property name="ExportQueryRiverCalcResult" value="ExportQueryRiverCalcResultCommand"/>
 				<property name="ExportQueryDMCalcResult" value="ExportQueryDMCalcResultCommand"/>
 				<property name="QueryBreakCompareCalcResult" value="QueryBreakCompareCalcResultCommand"/>
-				
+				<property name="QueryDMProfile" value="QueryDMProfileCommand"/>
 				
 			</object>
 		</constructor-arg>

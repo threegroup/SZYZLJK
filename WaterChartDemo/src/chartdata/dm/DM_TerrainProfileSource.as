@@ -37,15 +37,15 @@ package chartdata.dm
 						},
 						{
 							"date": "2016-02",
-							"altitude": 60
+							"altitude": 65
 						},
 						{
 							"date": "2016-03",
-							"altitude": 80
+							"altitude": 70
 						},
 						{
 							"date": "2016-04",
-							"altitude": 80
+							"altitude": 75
 						},
 						{
 							"date": "2016-05",
@@ -53,7 +53,23 @@ package chartdata.dm
 						},
 						{
 							"date": "2016-06",
+							"altitude": 60
+						},
+						{
+							"date": "2016-07",
+							"altitude": 55
+						},
+						{
+							"date": "2016-08",
+							"altitude": 60
+						},
+						{
+							"date": "2016-09",
 							"altitude": 70
+						},
+						{
+							"date": "2016-10",
+							"altitude": 80
 						}
 					]
 				},

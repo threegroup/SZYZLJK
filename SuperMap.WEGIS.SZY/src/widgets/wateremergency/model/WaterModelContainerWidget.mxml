@@ -17,6 +17,7 @@
 			import mx.charts.LegendItem;
 			import mx.charts.chartClasses.IAxis;
 			import mx.charts.events.LegendMouseEvent;
+			import mx.charts.series.AreaSeries;
 			import mx.charts.series.LineSeries;
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
@@ -34,9 +35,11 @@
 			
 			import spark.events.IndexChangeEvent;
 			
+			import widgets.wateremergency.chart.AreaChartDataRender;
 			import widgets.wateremergency.chart.LineChartDataRender;
 			import widgets.wateremergency.chart.LineSeriesEx;
 			
+			[Bindable]
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
 			public static const HIDE_STATE:String = "hideState";
@@ -106,12 +109,79 @@
 					[QueryEvent.QUERY_COMPARE_LIST_RESPONSE, queryCompareListResponseHandler],//查询可对比方案列表
 					[QueryEvent.QUERY_BREAK_CALC_RESULT_RESPONSE, queryBreakCalcResultResponseHandler],//查询断面计算结果
 					[QueryEvent.QUERY_RIVER_CALC_RESULT_RESPONSE, queryRiverCalcResultResponseHandler],//查询河道计算结果
+					[QueryEvent.QUERY_DM_PROFILE_RESPONSE, queryDmProfileResponseHandler],//查询断面地形剖面数据
 					[QueryEvent.SHOW_MODEL_RESULT_WIDGET, showModelResultWidgetHandler],
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
 			}
+			
+			//断面地形剖面数据
+			private function queryDmProfileResponseHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if(result != null && result["success"]
+					&& result["attributes"]["targetList"] 
+					&& result["attributes"]["targetList"] is Array
+					&& (result["attributes"]["targetList"] as Array).length==2)
+				{
+					decodeDmProfileData(result);
+				}
+			}
+			
+			//断面剖面数据解码
+			private function decodeDmProfileData(dpData:Object):void
+			{
+				var tp:Object = dpData["attributes"]["targetList"][0];//地形剖面数据
+				var wp:Object = dpData["attributes"]["targetList"][1];//水位时相数据
+				
+				//绘制剖面图形
+				var tpscs:SolidColorStroke = new SolidColorStroke(tp["color"]);
+				dmTerrainProfile.setStyle("areaStroke", tpscs);
+				var tpsc:SolidColor = new SolidColor(tp["color"]);
+				dmTerrainProfile.setStyle("areaFill", tpsc);
+				dmTerrainProfile.displayName = "地形剖面";
+				dmTerrainProfile.dataProvider = new ArrayCollection(tp["nodeList"]);
+				
+				//绘制水位图形,默认显示第一个时间的水位
+				var wpValue:Number = wp["nodeList"][0]["altitude"];//第一时间水位值
+				var minDistance:Number = tp["nodeList"][0]["distance"];//最近
+				var maxDistance:Number = tp["nodeList"][tp["nodeList"].length - 1]["distance"];//最远
+				
+				modelLocator.waterModelParam.wpValue = wpValue;
+				modelLocator.waterModelParam.minDistance = minDistance;
+				modelLocator.waterModelParam.maxDistance = maxDistance;
+				
+				var wpscs:SolidColorStroke = new SolidColorStroke(wp["color"]);
+				dmWaterPosition.setStyle("areaStroke", wpscs);
+				var wpsc:SolidColor = new SolidColor(wp["color"]);
+				dmWaterPosition.setStyle("areaFill", wpsc);
+				dmWaterPosition.displayName = "水位";
+				dmWaterPosition.dataProvider = new ArrayCollection(rewriteWaterPositionData(minDistance,maxDistance,wpValue));
+				
+				//初始化时间轴
+				var wpTimeData:Array = wp["nodeList"];
+				modelLocator.waterModelParam.wpTimeData = wpTimeData;
+				modelLocator.waterModelParam.wpIndex = 0;
+				dmTimeSlider.minimum = 0;
+				dmTimeSlider.maximum = wpTimeData.length - 1;
+				dmTimeLabel.text = wpTimeData[0]["date"];
+				dmWpLabel.text = wpTimeData[0]["altitude"];
+			}
+			
+			//将断面水位数据转化为面统计图数据
+			private function rewriteWaterPositionData(minDistance:Number, maxDistance:Number, wpValue:Number):Array
+			{
+				var wpArray:Array = [];
+				wpArray.push({"distance": minDistance, "altitude": 0});
+				wpArray.push({"distance": minDistance, "altitude": wpValue});
+				wpArray.push({"distance": maxDistance, "altitude": wpValue});
+				wpArray.push({"distance": maxDistance, "altitude": 0});
+				return wpArray;
+			}
+			
+			
 			
 			//查询可对比方案列表
 			private function queryCompareListResponseHandler(event:CairngormEvent):void
@@ -335,14 +405,23 @@
 				
 			}
 			
-			
+			//通过的图例控制
 			protected function hd_wpLegend_itemClickHandler(event:LegendMouseEvent):void
 			{
 				var currentLegendItem:LegendItem = event.item as LegendItem;
 				var currentChartItem:LineSeries = event.item.source as LineSeries;
+				var currentChartItem0:AreaSeries = event.item.source as AreaSeries;
 				if(currentLegendItem != null && currentChartItem != null)
 				{
 					currentChartItem.visible = currentChartItem.visible?false:true;
+					var lc:Number=SolidColorStroke(currentChartItem.getStyle("lineStroke")).color;
+					currentChartItem.setStyle("color", currentChartItem.visible?lc:0x959695);
+				}
+				else if(currentChartItem0 != null && currentChartItem0 != null)
+				{
+					currentChartItem0.visible = currentChartItem0.visible?false:true;
+					var ac:Number=SolidColorStroke(currentChartItem0.getStyle("areaStroke")).color;
+					currentChartItem0.setStyle("color", currentChartItem0.visible?ac:0x959695);
 				}
 			}
 			
@@ -369,6 +448,15 @@
 				var c:Array = b[1].split(":");
 				var newDate:Date = new Date(a[0],a[1]-1,b[0], c[0], c[1]);
 				return newDate;
+			}
+			
+			//断面--地形剖面统计图
+			private function terrainProfileDataTipFunction (hitData:HitData):String { 
+				var cntData:Object = hitData.item;
+				
+				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
+				var displayName:String = hitData.chartItem.element["displayName"];
+				return displayName+ ":" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"距离:"+ cntData[hitData.chartItem.element["xField"]];
 			}
 			
 			//断面通用的显示描述
@@ -780,6 +868,53 @@
 				}
 			}
 			
+			//断面地形剖面数据
+			private function dmProfileDataTipFunc(val:String):String
+			{
+				if(modelLocator.waterModelParam.wpTimeData != null 
+					&& modelLocator.waterModelParam.wpTimeData.length > 0)
+				{
+					return "当前日期: " + modelLocator.waterModelParam.wpTimeData[val]["date"];
+				}
+				return "";
+			}
+			
+			//开始断面地形水位推演
+			protected function dmStartBt_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.startDmWaterLevelSimulate();
+			}
+			
+			//停止断面地形水位推演
+			protected function dmStopBt_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			private function startDmWaterLevelSimulate():void
+			{
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DM_PROFILE);
+				queryEvent.dispatch();
+			}
+			
+			private function stopDmWaterLevelSimulate():void
+			{
+				
+			}
+			
+			protected function dmTimeSlider_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				dmTimeLabel.text = modelLocator.waterModelParam.wpTimeData[dmTimeSlider.value]["date"];
+				dmWpLabel.text =  modelLocator.waterModelParam.wpTimeData[dmTimeSlider.value]["altitude"];
+				modelLocator.waterModelParam.wpIndex = dmTimeSlider.value;
+				//更新水位统计图
+				dmWaterPosition.dataProvider = new ArrayCollection(rewriteWaterPositionData(modelLocator.waterModelParam.minDistance,
+					modelLocator.waterModelParam.maxDistance,modelLocator.waterModelParam.wpValue));
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -873,7 +1008,55 @@
 						</mx:ControlBar>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面地形展示"  width="100%" height="100%">
-						
+						<s:VGroup  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
+							<s:HGroup gap="10" width="100%">
+								<s:Label text="水位(米)：" height="100%"/>
+								<s:Label id="dmWpLabel" width="80" height="100%"/>
+								<s:Label text="时间：" height="100%"/>
+								<s:Label id="dmTimeLabel" width="80" height="100%"/>
+								<s:HSlider id="dmTimeSlider" width="100%" height="100%" 
+										   liveDragging="true" doubleClickEnabled="false"
+										   showDataTip="true" slideDuration="200" 
+										   snapInterval="1" 
+										   dataTipFormatFunction="dmProfileDataTipFunc"
+										   change="dmTimeSlider_changeHandler(event)"/>
+								<s:Button id="dmStartBt" label="开始" buttonMode="true" styleName="SubmitRegisterStyle" click="dmStartBt_clickHandler(event)"/>
+								<s:Button id="dmStopBt" label="停止" buttonMode="true" styleName="SubmitRegisterStyle" click="dmStopBt_clickHandler(event)"/>
+							</s:HGroup>
+							<line:HLine width="100%"/>
+							<mx:AreaChart id="terrainProfileChart" height="100%" width="100%" showDataTips="true" 
+										  seriesFilters="[]"
+										  dataTipFunction="terrainProfileDataTipFunction">
+								<mx:backgroundElements>
+									<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
+										<mx:verticalStroke>
+											<s:SolidColorStroke color="#CCCCCC" weight="1"/>
+										</mx:verticalStroke>
+									</mx:GridLines>
+								</mx:backgroundElements>
+								<!--用于定义统计图的XY轴样式及数值范围-->
+								<mx:verticalAxis>
+									<mx:LinearAxis  id="dmVerticalAxis" baseAtZero="true" title="高程"/>
+								</mx:verticalAxis>
+								<mx:verticalAxisRenderers>
+									<mx:AxisRenderer axis="{dmVerticalAxis}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+								</mx:verticalAxisRenderers>
+								<mx:horizontalAxis>
+									<mx:LinearAxis id="dmHorizontalAxis" title="距离"/>
+								</mx:horizontalAxis>
+								<mx:horizontalAxisRenderers>
+									<mx:AxisRenderer axis="{dmHorizontalAxis}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+								</mx:horizontalAxisRenderers>
+								<mx:series>
+									<mx:AreaSeries id="dmWaterPosition" itemRenderer="widgets.wateremergency.chart.AreaChartDataRender" xField="distance" yField="altitude" form="curve" showDataEffect="{areaSlide2}" />
+									<mx:AreaSeries id="dmTerrainProfile" itemRenderer="widgets.wateremergency.chart.AreaChartDataRender" xField="distance" yField="altitude" form="curve" showDataEffect="{areaSlide}" />
+								</mx:series>
+							</mx:AreaChart>
+						</s:VGroup>
+						<mx:ControlBar top="40" right="20">
+							<mx:Legend id="dmterrainProfileLegend" dataProvider="{terrainProfileChart}" fontSize="12"  buttonMode="true"
+									   direction="vertical"/>
+						</mx:ControlBar>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面对比"  width="100%" height="100%">
 						<s:VGroup  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >

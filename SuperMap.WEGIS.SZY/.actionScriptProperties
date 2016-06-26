@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="index.mxml" projectUUID="96791c8b-95c7-4ad3-b8d6-6c073018aa76" version="10">
+<actionScriptProperties analytics="false" mainApplicationPath="widgets/wateremergency/model/WaterModelContainerWidget.mxml" projectUUID="96791c8b-95c7-4ad3-b8d6-6c073018aa76" version="10">
   <compiler additionalCompilerArguments="-locale en_US&#13;&#10;-load-config+=config/szy.config&#13;&#10;-keep-all-type-selectors=true" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="D:/tomcat9/webapps/szy" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
@@ -17,7 +17,7 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="Main.mxml"/>
+    <application path="widgets/wateremergency/model/WaterModelContainerWidget.mxml"/>
     <application path="index.mxml"/>
   </applications>
   <modules>

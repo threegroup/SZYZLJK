@@ -43,8 +43,8 @@ package widgets.wateremergency.chart
 					_label.text=_chartItem.yValue.toString();
 				}
 				_color=SolidColorStroke(AreaSeries(_chartItem.element).getStyle("areaStroke")).color;
-				//_label.setStyle("color", _color);
-				_label.setStyle("color", "#FF0000");
+				_label.setStyle("color", _color);
+				//_label.setStyle("color", "#FF0000");
 				_label.setStyle("fontSize",16);
 			}
 			else if (value is LegendData)

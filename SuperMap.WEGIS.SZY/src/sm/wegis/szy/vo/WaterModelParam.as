@@ -2,6 +2,7 @@ package sm.wegis.szy.vo
 {
 	import mx.collections.ArrayCollection;
 
+	[Bindable]
 	public class WaterModelParam
 	{
 		public function WaterModelParam()
@@ -27,5 +28,17 @@ package sm.wegis.szy.vo
 		public var jisuanid:String;
 		
 		public var keyWord:String;
+		
+		//断面地形剖面相关数据
+		/**最小距离*/
+		public var minDistance:Number;
+		/**最大距离*/
+		public var maxDistance:Number;
+		/**当前水位*/
+		public var wpValue:Number;
+		/**水位时相数据*/
+		public var wpTimeData:Array = [];
+		/**当期水位索引*/
+		public var wpIndex:int = 0;
 	}
 }

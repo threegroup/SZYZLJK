@@ -176,6 +176,10 @@ package sm.wegis.szy.events
 		public static const QUERY_DM_RIVER:String = "QueryDMRiver";
 		public static const QUERY_DM_RIVER_RESPONSE:String = "QueryDMRiverResponse";
 		
+		/**查询断面地形剖面数据 */
+		public static const QUERY_DM_PROFILE:String = "QueryDMProfile";
+		public static const QUERY_DM_PROFILE_RESPONSE:String = "QueryDMProfileResponse";
+		
 		//--------------------河道相关-----------------------------
 		/**河道计算结果查询*/
 		public static const QUERY_RIVER_CALC_RESULT:String = "QueryRiverCalcResult";

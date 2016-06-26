@@ -117,7 +117,12 @@ package sm.wegis.szy.vo
 		/**断面【污染物浓度】
 		 参数：计算方案_id,断面_id
 		 */
-		public static const GetWaterDMDensityData:String ="";//暂时未实现
+		public static const GetWaterDMDensityData:String ="";//暂时未实现 
+		
+		/**断面【地形剖面】
+		 参数：计算方案_id,断面_id
+		 */
+		public static const GetTerrainProfileData:String ="getTerrainProfileData";
 		
 		/**应急管理----水模型--- 河道计算结果查询*/
 		/**河道【水位】
