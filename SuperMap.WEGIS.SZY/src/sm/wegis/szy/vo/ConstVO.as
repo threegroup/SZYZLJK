@@ -90,6 +90,10 @@ package sm.wegis.szy.vo
 		public static const WaterQuality:String = "e6e886de83254958a024f33e010700aa";
 		/**(流速)*/
 		public static const WaterFlow:String = "6641d96650694ce2a704dd1b3f71052d";
+		
+		
+		/**河道污染物浓度对比*/
+		public static const River_Pollution_Compare_Layer:String = "RiverPollutionCompareLayer";
 
 	}
 }

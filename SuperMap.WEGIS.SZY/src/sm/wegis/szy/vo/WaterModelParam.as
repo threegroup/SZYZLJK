@@ -40,5 +40,8 @@ package sm.wegis.szy.vo
 		public var wpTimeData:Array = [];
 		/**当期水位索引*/
 		public var wpIndex:int = 0;
+		
+		/**方案对应的河段列表数据*/
+		public var riverDMList:Array;
 	}
 }

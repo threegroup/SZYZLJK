@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Metadata>
+		[Event(name="change", type="sm.wegis.szy.events.TimeSliderEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			
+			import flash.utils.setTimeout;
+			
+			import sm.wegis.szy.events.TimeSliderEvent;
+			private var _data:Array;
+			private var dataChange:Boolean = false;
+			
+			private var isPlay:Boolean = false;
+			
+			
+			public function get data():Array
+			{
+				return _data;
+			}
+			
+			public function set data(value:Array):void
+			{
+				_data = value;
+				dataChange = true;
+				invalidateProperties();
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				if (dataChange == true) {
+					dataChange = false;
+					timeSlider.maximum = data.length;
+					initParam();
+				}
+			}
+			
+			private function initParam():void
+			{
+				timeSlider.value = 0;
+				play.source = ResourceManagerEx.FindResource('play').cls;
+				isPlay = false;
+			}
+			
+			protected function play_clickHandler(event:MouseEvent):void
+			{
+				if (isPlay == false) {
+					play.source = ResourceManagerEx.FindResource('pause').cls;
+					isPlay = true;
+					playHandler();
+				} else {
+					play.source = ResourceManagerEx.FindResource('play').cls;
+					isPlay = false;
+				}
+			}
+			
+			private function playHandler():void
+			{
+				if (isPlay == true) {
+					if (timeSlider.value < data.length) {
+						dispatchChangeEvent();
+					}
+					setTimeout(playHandler,1000);
+				}
+			}
+			
+			private function dispatchChangeEvent():void
+			{
+				var event:TimeSliderEvent = new TimeSliderEvent(TimeSliderEvent.Change);
+				event.data = data[timeSlider.value];
+				dispatchEvent(event);
+			}
+			
+			protected function stop_clickHandler(event:MouseEvent):void
+			{
+				play.source = ResourceManagerEx.FindResource('play').cls;
+				timeSlider.value = timeSlider.minimum;
+				isPlay = false;
+			}
+			
+			protected function timeSlider_changeHandler(event:Event):void
+			{
+				dispatchChangeEvent();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:HGroup width="100%" height="100%" verticalAlign="middle">
+		<s:Image id="play" width="48" height="48"  source="{ResourceManagerEx.FindResource('play').cls}"
+				 click="play_clickHandler(event)"/>
+		<s:Image id="stop"  width="48" height="48"   source="{ResourceManagerEx.FindResource('stop').cls}"
+				 click="stop_clickHandler(event)"/>
+		<s:HSlider id="timeSlider" width="100%" minimum="0" stepSize="1" snapInterval="1"
+				   change="timeSlider_changeHandler(event)"/>
+	</s:HGroup>
+</s:Group>

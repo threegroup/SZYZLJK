@@ -67,6 +67,8 @@ package sm.wegis.szy.commands
 					featuresLayer.style = new PredefinedLineStyle("solid", 0x0160C6);
 					featuresLayer.clear();
 					
+					//存储河道段列表,用于河道污染浓度对比展示
+					modelLocator.waterModelParam.riverDMList = recordSets;
 					for each(var recordSet:Recordset in recordSets)
 					{
 						if (recordSet.features != null && recordSet.features.length != 0)

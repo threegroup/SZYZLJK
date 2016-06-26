@@ -1174,6 +1174,22 @@ package sm.wegis.szy.plugins
 		private static var modelCls:Class;
 		private static var modelKey:String = "model";
 		ResourceManagerEx.RegisterResource("",modelKey, modelCls);
+		
+		/**播放*/
+		[Embed(source="assets/image/play/play.png")]
+		private static var playCls:Class;
+		private static var playKey:String = "play";
+		ResourceManagerEx.RegisterResource("",playKey, playCls);
+		
+		[Embed(source="assets/image/play/pause.png")]
+		private static var pauseCls:Class;
+		private static var pauseKey:String = "pause";
+		ResourceManagerEx.RegisterResource("",pauseKey, pauseCls);
+		
+		[Embed(source="assets/image/play/stop.png")]
+		private static var stopCls:Class;
+		private static var stopKey:String = "stop";
+		ResourceManagerEx.RegisterResource("",stopKey, stopCls);
 
 		
 		public function SystemIconFile()
