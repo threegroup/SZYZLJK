@@ -64,7 +64,7 @@
 				queryModelList();
 			}
 			
-		
+			
 			
 			protected function this_WidgetAddCompleteHandler(event:BaseWidgetEvent):void
 			{
@@ -108,22 +108,23 @@
 				if (result != null && result.success == true) {
 					var targetList:Object = result.attributes.attributes;
 					for each(var item:Object in targetList) {
-						var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
-						var typeIDs:String = item.typeIDs;
-						pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;
-						
-						if (item.lgtd && item.lttd) {
-							item.x = Number(item.lgtd);
-							item.y = Number(item.lttd);
-							var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
-							var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
-							feature.id = item.sectionCode;
-							feature.toolTip = item.name;
-							feature.addEventListener(MouseEvent.CLICK, beakPointMouseClickHandler);
-							feature.buttonMode = true;
-							breakPointLayer.addFeature(feature);
+						if (item.type == "计算"){
+							var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
+							var typeIDs:String = item.typeIDs;
+							pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;
+							
+							if (item.lgtd && item.lttd) {
+								item.x = Number(item.lgtd);
+								item.y = Number(item.lttd);
+								var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
+								var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
+								feature.id = item.sectionCode;
+								feature.toolTip = item.name;
+								feature.addEventListener(MouseEvent.CLICK, beakPointMouseClickHandler);
+								feature.buttonMode = true;
+								breakPointLayer.addFeature(feature);
+							}
 						}
-						
 						//关联断面对应的河流段
 						var riverFeature:Feature = riverLayer.getFeatureByID(item.superObjId);
 						if (riverFeature != null) {
@@ -138,7 +139,7 @@
 			private function riverClickHandler(event:MouseEvent):void
 			{
 				var feature:Feature = event.currentTarget as Feature;
-//				modelLocator.waterModelParam.dmId = feature.id;
+				//				modelLocator.waterModelParam.dmId = feature.id;
 				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
 				modelShowVO.state = WaterModelContainerWidget.RIVER_STATE;
 				modelShowVO.title = feature.attributes["sectionName"];
@@ -202,7 +203,7 @@
 			
 			protected function queryBt_clickHandler(event:MouseEvent):void
 			{
-			   queryModelList();	
+				queryModelList();	
 			}
 			
 		]]>

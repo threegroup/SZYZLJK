@@ -145,7 +145,7 @@
 					{
 						for each(var section:Object in tempCol)
 						{
-							if(section != null && section["sectionName"] != null)
+							if(section != null && section["sectionName"] != null && section.type == "计算")
 							{
 								sectionCol.push(section);
 							}
@@ -216,54 +216,47 @@
 			private function queryBreakCalcResultResponseHandler(event:CairngormEvent):void
 			{
 				var result:Object = event.data;
-				if (result != null) 
+				if (result.success == true) 
 				{
 					var saCol:Array = [];
-					if(result is Array)
+					if(result.attributes && result.attributes.targetList)
 					{
-						saCol = result as Array;
+						if (result.attributes.targetList is Array) {
+							saCol = result.attributes.targetList as Array;
+						} else if(result.attributes.targetList is Object)
+						{
+							saCol = [result.attributes.targetList];
+						}
 					}
-					else if(result is Object)
-					{
-						saCol = [result];
-					}
-					if (saCol != null && saCol.length > 0) 
+					if (saCol.length > 0) 
 					{
 						//设置Y轴名称 
 						this.verticalAxis.title = targetDpList.selectedItem.title;
 						//此处动态创建统计图序列，序列数[1-2]
 						var sa:Array = [];
-						for each(var saItem:Object in saCol)
+						for each(var saData:Object in saCol)
 						{
-							var saData:Object = saItem["attributes"];
-							if(saData != null)
+							var chartType:String = saData["type"];
+							if(chartType == "LineChart")
 							{
-								var chartType:String = saData["type"];
-								if(chartType == "LineChart")
-								{
-									var ls:LineSeriesEx = new LineSeriesEx();
-									ls.name = saData["label"];
-									ls.xField = saData["xField"];
-									ls.yField = saData["yField"];
-									ls.setStyle("form", "curve");
-									ls.setStyle("showDataEffect", slide);
-									var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
-									ls.setStyle("lineStroke", scs);
-									var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-									ls.setStyle("itemRenderer", cf);
-									ls.displayName = saData["label"];
-									var temp:Array = saData["nodeList"];
-									ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
-									sa.push(ls);
-								}
-								else if(chartType == "AreaChart")
-								{
-									//略
-								}
+								var ls:LineSeriesEx = new LineSeriesEx();
+								ls.name = saData["label"];
+								ls.xField = saData["xField"];
+								ls.yField = saData["yField"];
+								ls.setStyle("form", "curve");
+								ls.setStyle("showDataEffect", slide);
+								var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+								ls.setStyle("lineStroke", scs);
+								var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+								ls.setStyle("itemRenderer", cf);
+								ls.displayName = saData["label"];
+								var temp:Array = saData["nodeList"];
+								ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+								sa.push(ls);
 							}
-							else 
+							else if(chartType == "AreaChart")
 							{
-								this.dmChart.series = [];
+								//略
 							}
 						}
 						this.dmChart.series = sa;
@@ -511,9 +504,9 @@
 			{
 				var result:Object = event.data;
 				if (queryCompareDMCalc == false){
-					if (result is Array) {
-						if ((result as Array).length == 2) {
-							DMCompareResult.currentPlan = result[0].attributes;
+					if (result.success == true && result.attributes && result.attributes.targetList &&  result.attributes.targetList is Array) {
+						if ((result.attributes.targetList as Array).length == 2) {
+							DMCompareResult.currentPlan =  result.attributes.targetList[0];
 						}
 					}
 					queryCompareDMCalc = true;
@@ -534,9 +527,9 @@
 					queryEvent.data = waterModelparam;
 					queryEvent.dispatch();
 				} else if (queryCompareDMCalc == true){
-					if (result is Array) {
-						if ((result as Array).length == 2) {
-							DMCompareResult.comparePlan = result[0].attributes;
+					if (result.success == true && result.attributes && result.attributes.targetList &&  result.attributes.targetList is Array) {
+						if ((result.attributes.targetList as Array).length == 2) {
+							DMCompareResult.comparePlan =  result.attributes.targetList[0];
 						}
 					}
 					//显示对比chart
