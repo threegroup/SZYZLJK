@@ -23,6 +23,7 @@
 			import mx.charts.HitData;
 			import mx.charts.LegendItem;
 			import mx.charts.chartClasses.IAxis;
+			import mx.charts.chartClasses.Series;
 			import mx.charts.events.LegendMouseEvent;
 			import mx.charts.series.AreaSeries;
 			import mx.charts.series.LineSeries;
@@ -42,6 +43,7 @@
 			import sm.wegis.szy.vo.WSMethod;
 			import sm.wegis.szy.vo.WaterModelParam;
 			
+			import spark.components.CheckBox;
 			import spark.events.IndexChangeEvent;
 			
 			import widgets.wateremergency.chart.AreaChartDataRender;
@@ -301,9 +303,18 @@
 			private function queryBreakCalcResultResponseHandler(event:CairngormEvent):void
 			{
 				var result:Object = event.data;
+				var index:int = 0;
+				var saCol:Array = [];
+				var saData:Object;
+				var serises:Array = [];
+				//				if (targetDpList.selectedIndex != 4){
+				if (result is Array){
+					for each(var item:Object in result) {
+						saCol.push(item.attributes);
+					}
+				}
 				if (result.success == true) 
 				{
-					var saCol:Array = [];
 					if(result.attributes) 
 					{ 
 						if (result.attributes.targetList)
@@ -316,46 +327,70 @@
 							saCol = [result.attributes];
 						}
 					}
-					if (saCol.length > 0) 
-					{
-						//设置Y轴名称 
-						this.verticalAxis.title = targetDpList.selectedItem.title;
-						//此处动态创建统计图序列，序列数[1-2]
-						var sa:Array = [];
-						for (var index:int = 0 ; index < saCol.length ; index++)
-						{
-							var saData:Object = saCol[index];
-							var chartType:String = saData["type"];
-							if(chartType == "LineChart")
-							{
-								var ls:LineSeriesEx = null;
-								if (dmChart.series != null && index < dmChart.series.length && dmChart.series[index] is LineSeriesEx) {
-									ls = dmChart.series[index] as LineSeriesEx;
-								}
-								if (ls == null) {
-									ls = new LineSeriesEx();
-								}
-								ls.name = saData["label"];
-								ls.xField = saData["xField"];
-								ls.yField = saData["yField"];
-								ls.setStyle("form", "curve");
-								ls.setStyle("showDataEffect", slide);
-								var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
-								ls.setStyle("lineStroke", scs);
-								var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-								ls.setStyle("itemRenderer", cf);
-								ls.displayName = saData["label"];
-								var temp:Array = saData["nodeList"];
-								ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
-								sa.push(ls);
-							}
-						}
-						this.dmChart.series = sa;
-					}
-				} 
-				else 
+				}
+				if (saCol.length > 0) 
 				{
-					this.dmChart.series = [];
+					//设置Y轴名称 
+					this.verticalAxis.title = targetDpList.selectedItem.title;
+					//此处动态创建统计图序列，序列数[1-2]
+					var sa:Array = [];
+					for (index = 0 ; index < saCol.length ; index++)
+					{
+						saData = saCol[index];
+						var chartType:String = saData["type"];
+						if(chartType == "LineChart")
+						{
+							var ls:LineSeriesEx = null;
+							if (dmChart.series != null && index < dmChart.series.length && dmChart.series[index] is LineSeriesEx) {
+								ls = dmChart.series[index] as LineSeriesEx;
+							}
+							if (ls == null) {
+								ls = new LineSeriesEx();
+							}
+							ls.name = saData["label"];
+							ls.xField = saData["xField"];
+							ls.yField = saData["yField"];
+							ls.setStyle("form", "curve");
+							ls.setStyle("showDataEffect", slide);
+							var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+							ls.setStyle("lineStroke", scs);
+						//	var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+						//	ls.setStyle("itemRenderer", cf);
+							ls.displayName = saData["label"];
+							var temp:Array = saData["nodeList"];
+							ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+							serises.push(ls);
+						}
+					}
+					dmChart.series = serises;
+				} 
+				//				} else if (targetDpList.selectedIndex == 4) {
+				//					if (result is Array){
+				//						saCol = result;
+				//					} else {
+				//						saCol = [result];
+				//					}
+				//					dmPollutionTypeGroup.removeAllElements();
+				//					for (index = 0 ; index < saCol.length ; index++){
+				//						saData = saCol[index];
+				//						var checkBox:CheckBox = new CheckBox();
+				//						checkBox.selected = true;
+				//						checkBox.label = saData.label;
+				//						checkBox.id = saData.label;
+				//						checkBox.addEventListener(Event.CHANGE, lineSelectChangeHandler);
+				//						dmPollutionTypeGroup.addElement(checkBox);
+				//					}
+				//				}
+			}
+			
+			private function lineSelectChangeHandler(event:Event):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				var id:String = checkBox.id;
+				for each(var series:Series in  dmChart.series) {
+					if (id == series.id) {
+						series.visible
+					}
 				}
 			}
 			
@@ -738,7 +773,7 @@
 			//先请求当前方案的河道对应计算指标计算结果
 			protected function riverQueryRwBt_clickHandler(event:MouseEvent):void
 			{
-				 clickButton = event.currentTarget as Button;
+				clickButton = event.currentTarget as Button;
 				if (clickButton == mapCompare)
 				{
 					//点击河道污染物浓度对比
@@ -1217,6 +1252,7 @@
 											<s:Button id="dmExportBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle"
 													  click="dmExportBt_clickHandler(event)"/>
 										</s:HGroup>
+										<s:HGroup id="dmPollutionTypeGroup"/>
 									</mx:GridItem>
 								</mx:GridRow>
 							</mx:Grid>	
