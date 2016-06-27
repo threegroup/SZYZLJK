@@ -80,10 +80,7 @@
 			
 			
 			[Bindable]
-			private var targetsList:ArrayCollection = new ArrayCollection([
-				{label:"水位",value:1,title:"水位[m]"}, {label:"水深",value:2,title:"水深[m]"},
-				{label:"流量",value:3,title:"流量[m³/s]"},{label:"流速",value:4,title:"流速[m/s]"},
-				{label:"污染物浓度",value:5,title:"污染物浓度[mg/L]"}]);
+			private var targetsList:ArrayCollection;
 			
 			[Bindable]
 			private var riverCompareMonth:ArrayCollection = new ArrayCollection([
@@ -122,6 +119,8 @@
 					[QueryEvent.QUERY_RIVER_CALC_RESULT_RESPONSE, queryRiverCalcResultResponseHandler],//查询河道计算结果
 					[QueryEvent.QUERY_DM_PROFILE_RESPONSE, queryDmProfileResponseHandler],//查询断面地形剖面数据
 					[QueryEvent.SHOW_MODEL_RESULT_WIDGET, showModelResultWidgetHandler],
+					[QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT_RESPONSE, queryRiverCompareHandler],//河道对比
+					[QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT_RESPONSE, queryDMCompareHandler],//断面对比
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
@@ -305,13 +304,16 @@
 				if (result.success == true) 
 				{
 					var saCol:Array = [];
-					if(result.attributes && result.attributes.targetList)
-					{
-						if (result.attributes.targetList is Array) {
-							saCol = result.attributes.targetList as Array;
-						} else if(result.attributes.targetList is Object)
+					if(result.attributes) 
+					{ 
+						if (result.attributes.targetList)
 						{
-							saCol = [result.attributes.targetList];
+							if (result.attributes.targetList is Array) {
+								saCol = result.attributes.targetList as Array;
+							} 
+						}else if(result.attributes is Object)
+						{
+							saCol = [result.attributes];
 						}
 					}
 					if (saCol.length > 0) 
@@ -320,12 +322,19 @@
 						this.verticalAxis.title = targetDpList.selectedItem.title;
 						//此处动态创建统计图序列，序列数[1-2]
 						var sa:Array = [];
-						for each(var saData:Object in saCol)
+						for (var index:int = 0 ; index < saCol.length ; index++)
 						{
+							var saData:Object = saCol[index];
 							var chartType:String = saData["type"];
 							if(chartType == "LineChart")
 							{
-								var ls:LineSeriesEx = new LineSeriesEx();
+								var ls:LineSeriesEx = null;
+								if (dmChart.series != null && index < dmChart.series.length && dmChart.series[index] is LineSeriesEx) {
+									ls = dmChart.series[index] as LineSeriesEx;
+								}
+								if (ls == null) {
+									ls = new LineSeriesEx();
+								}
 								ls.name = saData["label"];
 								ls.xField = saData["xField"];
 								ls.yField = saData["yField"];
@@ -339,10 +348,6 @@
 								var temp:Array = saData["nodeList"];
 								ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
 								sa.push(ls);
-							}
-							else if(chartType == "AreaChart")
-							{
-								//略
 							}
 						}
 						this.dmChart.series = sa;
@@ -359,6 +364,17 @@
 				var modelShowVO:ModelContainerShowVO =  event.data as  ModelContainerShowVO;
 				panel.title = modelShowVO.title;
 				this.currentState = modelShowVO.state;
+				
+				if (modelLocator.waterModelParam.isHave == true) {
+					targetsList = new ArrayCollection([
+						{label:"水位",value:1,title:"水位[m]"}, {label:"水深",value:2,title:"水深[m]"},
+						{label:"流量",value:3,title:"流量[m³/s]"},{label:"流速",value:4,title:"流速[m/s]"},
+						{label:"污染物浓度",value:5,title:"污染物浓度[mg/L]"}]);
+				} else {
+					targetsList = new ArrayCollection([
+						{label:"水位",value:1,title:"水位[m]"}, {label:"水深",value:2,title:"水深[m]"},
+						{label:"流量",value:3,title:"流量[m³/s]"},{label:"流速",value:4,title:"流速[m/s]"}]);	
+				}
 			}
 			
 			
@@ -601,8 +617,6 @@
 			{
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
 				waterModelparam.method = getQueryMethodHandler(targetDpCompareList, BREAK_COVER);
-				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT_RESPONSE
-					, queryDMCompareHandler);
 				//设置flag，标识开始请求数据
 				queryCompareDMCalc = false;
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT);
@@ -680,12 +694,21 @@
 						if(index == 0)
 						{
 							scs = new SolidColorStroke(0xFF0000);
-							ls.displayName = "当前断面：" + saData["sectionName"];
+							if (dmCompareSchemeList.selectedIndex == 0){
+								ls.displayName =  saData["sectionName"];
+							} else {
+								ls.displayName = "当前方案：" + saData["sectionName"];
+							}
 						}
 						else
 						{
 							scs = new SolidColorStroke(0x0000FF);
-							ls.displayName = "对比断面：" + saData["sectionName"];
+							if (dmCompareSchemeList.selectedIndex == 0){
+								ls.displayName = saData["sectionName"];
+							} else {
+								ls.displayName = "对比方案：" + saData["sectionName"];
+							}
+							
 						}
 						ls.setStyle("lineStroke", scs);
 						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
@@ -709,53 +732,53 @@
 				}
 			}
 			
-			private var queryCompareRiverCalc:Boolean = false;
 			private var riverCompareResult:Object = {};
+			private var queryCompareRiverCalc:Boolean = false;
+			private var clickButton:Button;
 			//先请求当前方案的河道对应计算指标计算结果
 			protected function riverQueryRwBt_clickHandler(event:MouseEvent):void
 			{
-				var button:Button = event.currentTarget as Button;
-				if (button == mapCompare)
+				 clickButton = event.currentTarget as Button;
+				if (clickButton == mapCompare)
 				{
 					//点击河道污染物浓度对比
 					this.currentState = POLLUTION_COMPARE_STATE;
 				}
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
 				waterModelparam.method = getQueryMethodHandler(riverTargetRwList, RIVER_WAY);
-				CairngormEventDispatcher.getInstance().addEventListener(QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT_RESPONSE
-					, queryRiverCompareHandler);
+				
 				//设置flag，标识开始请求数据
 				queryCompareRiverCalc = false;
 				riverCompareMonthDpList.enabled = false;
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT);
 				queryEvent.data = waterModelparam;
 				queryEvent.dispatch();
-				
-				function queryRiverCompareHandler(event:CairngormEvent):void
-				{
-					var result:Object = event.data;
-					if (queryCompareRiverCalc == false){
-						if (result.success == true) {
-							riverCompareResult.currentPlan = result.attributes.result;
-						}
-						queryCompareRiverCalc = true;
-						var waterModelparam:WaterModelParam = new WaterModelParam();
-						waterModelparam.method = getQueryMethodHandler(riverTargetRwList, RIVER_WAY);
-						waterModelparam.planId = riverCompareSchemeList.selectedItem.planId;
-						var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT);
-						queryEvent.data = waterModelparam;
-						queryEvent.dispatch();
-					} else if (queryCompareRiverCalc == true){
-						if (result.success == true) {
-							riverCompareResult.comparePlan = result.attributes.result;
-						}
-						riverCompareMonthDpList.enabled = true;
-						//显示对比chart
-						if (button == riverQueryRwBt) {
-							showRiverCompareChart();
-						} else {
-							//处理数据，供Hslider使用
-						}
+			}
+			
+			private function queryRiverCompareHandler(event:CairngormEvent):void
+			{
+				var result:Object = event.data;
+				if (queryCompareRiverCalc == false){
+					if (result.success == true) {
+						riverCompareResult.currentPlan = result.attributes.result;
+					}
+					queryCompareRiverCalc = true;
+					var waterModelparam:WaterModelParam = new WaterModelParam();
+					waterModelparam.method = getQueryMethodHandler(riverTargetRwList, RIVER_WAY);
+					waterModelparam.planId = riverCompareSchemeList.selectedItem.planId;
+					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT);
+					queryEvent.data = waterModelparam;
+					queryEvent.dispatch();
+				} else if (queryCompareRiverCalc == true){
+					if (result.success == true) {
+						riverCompareResult.comparePlan = result.attributes.result;
+					}
+					riverCompareMonthDpList.enabled = true;
+					//显示对比chart
+					if (clickButton == riverQueryRwBt) {
+						showRiverCompareChart();
+					} else {
+						//处理数据，供Hslider使用
 					}
 				}
 			}
@@ -810,13 +833,15 @@
 				for each(saData in riverCompareResult.currentPlan)
 				{
 					label =saData["label"];
-					month = -1;
-					if (label.split("-").length == 2){
-						month = parseInt(label.split("-")[1]);
-					}
-					if (month == selectMonth) {
-						saDatas.push(saData);
-						break;
+					if (label != null) {
+						month = -1;
+						if (label.split("-").length == 2){
+							month = parseInt(label.split("-")[1]);
+						}
+						if (month == selectMonth) {
+							saDatas.push(saData);
+							break;
+						}
 					}
 				}
 				
@@ -824,13 +849,15 @@
 				for each(saData in riverCompareResult.comparePlan)
 				{
 					label =saData["label"];
-					month = -1;
-					if (label.split("-").length == 2){
-						month = parseInt(label.split("-")[1]);
-					}
-					if (month == selectMonth) {
-						saDatas.push(saData);
-						break;
+					if (label != null) {
+						month = -1;
+						if (label.split("-").length == 2){
+							month = parseInt(label.split("-")[1]);
+						}
+						if (month == selectMonth) {
+							saDatas.push(saData);
+							break;
+						}
 					}
 				}
 				for (var index:int = 0 ; index < saDatas.length ; index++) {
@@ -853,12 +880,12 @@
 						if(index == 0)
 						{
 							scs = new SolidColorStroke(0xFF0000);
-							ls.displayName = "当前河道：" + saData["schemeName"];
+							ls.displayName =  saData["schemeName"];
 						}
 						else
 						{
 							scs = new SolidColorStroke(0x0000FF);
-							ls.displayName = "当前河道：" + saData["schemeName"];
+							ls.displayName = saData["schemeName"];
 						}
 						ls.setStyle("lineStroke", scs);
 						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
@@ -1067,8 +1094,8 @@
 			
 			private function initCompareMapViewBoundsHandler():void
 			{
-//				currentPlanMap.addEventListener(ViewBoundsEvent.VIEW_BOUNDS_CHANGE, viewBoundsChangeHandler);
-//				comparePlanMap.addEventListener(ViewBoundsEvent.VIEW_BOUNDS_CHANGE, viewBoundsChangeHandler);
+				//				currentPlanMap.addEventListener(ViewBoundsEvent.VIEW_BOUNDS_CHANGE, viewBoundsChangeHandler);
+				//				comparePlanMap.addEventListener(ViewBoundsEvent.VIEW_BOUNDS_CHANGE, viewBoundsChangeHandler);
 			}
 			
 			private function viewBoundsChangeHandler(event:ViewBoundsEvent):void

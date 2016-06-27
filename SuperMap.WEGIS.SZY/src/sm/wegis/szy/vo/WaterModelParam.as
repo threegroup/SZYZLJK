@@ -12,6 +12,9 @@ package sm.wegis.szy.vo
 		/**方案ID*/
 		public var planId:String;
 		
+		/**当前方案是否有污染物浓度指标,false:没有污染物浓度指标项*/
+		public var isHave:Boolean = false;
+		
 		/**断面ID*/
 		public var dmId:String;
 		

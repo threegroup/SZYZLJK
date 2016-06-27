@@ -30,7 +30,7 @@ package sm.wegis.szy.commands
 //			params.push(waterModel.planId);
 //			params.push(waterModel.dmId);
 			params.push("73476806f527419686g18gbca8485689");
-			params.push("7BB31696C4EE4D769E0B5151DEBA3015");
+			params.push("86D18F0FF30A4957B20A00BD091532DA");
 			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTerrainProfileData, params);
 			CursorManager.setBusyCursor();
 		}

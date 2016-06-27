@@ -119,7 +119,7 @@
 								var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
 								var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
 								feature.id = item.sectionCode;
-								feature.toolTip = item.name;
+								feature.toolTip = item.sectionName;
 								feature.addEventListener(MouseEvent.CLICK, beakPointMouseClickHandler);
 								feature.buttonMode = true;
 								breakPointLayer.addFeature(feature);
@@ -186,13 +186,25 @@
 			//点击当个方案，打开方案
 			protected function planList_clickHandler(event:MouseEvent):void
 			{
+				hideWaterModelContainerHandler();
 				modelLocator.waterModelParam.planId = planList.selectedItem["planId"];
+				modelLocator.waterModelParam.isHave = planList.selectedItem["isHave"] == "false" ? false : true;
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MODEL_RESULT);
 				queryEvent.dispatch();
 				
 				//查询当前方案可对比列表
 				var queryCompareListEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COMPARE_LIST);
 				queryCompareListEvent.dispatch();
+			}
+			
+			//隐藏右侧断面，河道计算结果展示
+			private function hideWaterModelContainerHandler():void
+			{
+				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
+				modelShowVO.state = WaterModelContainerWidget.HIDE_STATE;
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_MODEL_RESULT_WIDGET);
+				queryEvent.data = modelShowVO;
+				queryEvent.dispatch();
 			}
 			
 			//系统重新加载
@@ -203,6 +215,7 @@
 			
 			protected function queryBt_clickHandler(event:MouseEvent):void
 			{
+				hideWaterModelContainerHandler();
 				queryModelList();	
 			}
 			
