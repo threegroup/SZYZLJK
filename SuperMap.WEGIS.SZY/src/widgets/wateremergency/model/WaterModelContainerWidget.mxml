@@ -354,8 +354,8 @@
 							ls.setStyle("showDataEffect", slide);
 							var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
 							ls.setStyle("lineStroke", scs);
-						//	var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-						//	ls.setStyle("itemRenderer", cf);
+							//	var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+							//	ls.setStyle("itemRenderer", cf);
 							ls.displayName = saData["label"];
 							var temp:Array = saData["nodeList"];
 							ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
@@ -381,17 +381,6 @@
 				//						dmPollutionTypeGroup.addElement(checkBox);
 				//					}
 				//				}
-			}
-			
-			private function lineSelectChangeHandler(event:Event):void
-			{
-				var checkBox:CheckBox = event.currentTarget as CheckBox;
-				var id:String = checkBox.id;
-				for each(var series:Series in  dmChart.series) {
-					if (id == series.id) {
-						series.visible
-					}
-				}
 			}
 			
 			private function showModelResultWidgetHandler(event:CairngormEvent):void
@@ -662,11 +651,20 @@
 			private function queryDMCompareHandler(event:CairngormEvent):void
 			{
 				var result:Object = event.data;
+				var saData:Array = [];
 				if (queryCompareDMCalc == false){
 					if (result.success == true && result.attributes && result.attributes.targetList &&  result.attributes.targetList is Array) {
 						if ((result.attributes.targetList as Array).length == 2) {
 							DMCompareResult.currentPlan =  result.attributes.targetList[0];
 						}
+					}
+					if (result is Array)
+					{
+						for each(var item:Object in result)
+						{
+							saData.push(item.attributes);
+						}
+						DMCompareResult.currentPlan =  saData;
 					}
 					queryCompareDMCalc = true;
 					
@@ -691,6 +689,16 @@
 							DMCompareResult.comparePlan =  result.attributes.targetList[0];
 						}
 					}
+					
+					if (result is Array)
+					{
+						for each(var item:Object in result)
+						{
+							saData.push(item.attributes);
+						}
+						DMCompareResult.comparePlan =  saData;
+					}
+					
 					//显示对比chart
 					showDMCompareChart();
 				}
@@ -702,13 +710,37 @@
 				//显示当前方案的数据
 				//设置Y轴名称 
 				this.verticalCompareAxis.title = targetDpCompareList.selectedItem.title;
+				
+				
 				var saData:Object;
 				var saDatas:Array = [];
 				var sa:Array = [];
 				var month:int;
 				var label:String;
-				saDatas.push(DMCompareResult.currentPlan);
-				saDatas.push(DMCompareResult.comparePlan);
+				
+				if (DMCompareResult.currentPlan is Array){
+					dmCompareType.removeAllElements();
+					for each(var item:Object in DMCompareResult.currentPlan){
+						var checkBox:CheckBox = new CheckBox();
+						checkBox.name = item.label;
+						checkBox.selected = true;
+						checkBox.label = item.label;
+						checkBox.addEventListener(Event.CHANGE, lineSelectChangeHandler);
+						dmCompareType.addElement(checkBox);
+						saDatas.push(item);
+					}
+				} else {
+					saDatas.push(DMCompareResult.currentPlan);
+				}
+				
+				if (DMCompareResult.comparePlan is Array){
+					for each(var item:Object in DMCompareResult.comparePlan){
+						saDatas.push(item);
+					}
+				} else {
+					saDatas.push(DMCompareResult.comparePlan);
+				}
+				
 				for (var index:int = 0 ; index < saDatas.length ; index++) {
 					saData = saDatas[index];
 					var ls:LineSeriesEx;
@@ -724,37 +756,28 @@
 						ls.yField = saData["yField"];
 						ls.setStyle("form", "curve");
 						ls.setStyle("showDataEffect", slide);
-						//var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
-						var scs:SolidColorStroke = null;
-						if(index == 0)
-						{
-							scs = new SolidColorStroke(0xFF0000);
-							if (dmCompareSchemeList.selectedIndex == 0){
-								ls.displayName =  saData["sectionName"];
-							} else {
-								ls.displayName = "当前方案：" + saData["sectionName"];
-							}
-						}
-						else
-						{
-							scs = new SolidColorStroke(0x0000FF);
-							if (dmCompareSchemeList.selectedIndex == 0){
-								ls.displayName = saData["sectionName"];
-							} else {
-								ls.displayName = "对比方案：" + saData["sectionName"];
-							}
-							
-						}
+						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						ls.displayName = saData.schemeName + saData["sectionName"];
 						ls.setStyle("lineStroke", scs);
-						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-						ls.setStyle("itemRenderer", cf);
-						//ls.displayName = saData["sectionName"];
+//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+//						ls.setStyle("itemRenderer", cf);
 						var temp:Array = saData["nodeList"];
 						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
 						sa.push(ls);
 					}
 				}
 				dmCompareChart.series = sa;
+			}
+			
+			private function lineSelectChangeHandler(event:Event):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				var name:String = checkBox.name;
+				for each(var series:Series in  dmCompareChart.series) {
+					if (series.name.search(name) != -1) {
+						series.visible = checkBox.selected;
+					}
+				}
 			}
 			
 			
@@ -1356,6 +1379,7 @@
 								<s:Spacer width="30"/>
 								<s:Button id="queryCompareBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"
 										  click="queryCompareBt_clickHandler(event)"/>
+								<s:HGroup id="dmCompareType"/>
 							</s:HGroup>
 							<line:HLine width="100%"/>
 							<chart:LineChartEx id="dmCompareChart" width="100%" height="100%" 

@@ -16,16 +16,18 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import com.aerolib.utils.ToolTip;
+			import com.supermap.wegis.common.utils.ToolTip;
 			
 			import flashx.textLayout.formats.Direction;
 			
+			import mx.charts.ChartItem;
 			import mx.charts.HitData;
 			import mx.charts.chartClasses.CartesianChart;
 			import mx.charts.chartClasses.Series;
 			import mx.charts.events.ChartEvent;
 			import mx.charts.series.ColumnSeries;
 			import mx.charts.series.LineSeries;
+			import mx.charts.series.items.LineSeriesItem;
 			import mx.collections.ArrayCollection;
 			import mx.core.UIComponent;
 			import mx.core.UITextFormat;
@@ -121,7 +123,6 @@
 					} else {
 						tipGroup.removeAllElements();
 						chartAt.graphics.clear();
-						var seletItem:HitData;
 						var lineX:Number =  Number.MAX_VALUE;
 						//接头处偏移量
 						var horGap:int = 10;
@@ -129,16 +130,36 @@
 						var minWidth:int = 50;
 						var minHeight:int = 15;
 						for each(var serices:Series in cartesianChart.series) {
-							var items:Array = serices.findDataPoints(serices.mouseX, serices.mouseY,chartAt.height);
-							if (items.length >0) {
-								seletItem = items[0];
-								lineX = seletItem.x;
-								var showText:String ="";
-								if (serices is ColumnSeriesEx){
-									showText = seletItem.item[(serices as ColumnSeriesEx).yField];
-								} else if (serices is LineSeriesEx) {
-									showText = seletItem.item[(serices as LineSeriesEx).yField];
+							if (serices.visible == false || serices.items == null || serices.items.length == 0)
+							{
+								continue;
+							}
+							var mouseLoc:Point = new Point(serices.mouseX, serices.mouseY);
+							
+							var valueAtMouse:Array = serices.localToData(mouseLoc);
+							
+							var seletItem:LineSeriesItem = null;
+							for each (var item:LineSeriesItem in serices.items) {
+								if (item.xNumber >= valueAtMouse[0]) { 
+									seletItem = item;
+									break;
 								}
+							}
+							if (lineX == Number.MAX_VALUE)
+							{
+								lineX = seletItem.x;
+							}
+							if (lineX - seletItem.x != 0){
+								continue;
+							}
+							var showText:String ="";
+							if (serices is ColumnSeriesEx){
+								showText = seletItem.item[(serices as ColumnSeriesEx).yField];
+							} else if (serices is LineSeriesEx) {
+								showText = seletItem.item[(serices as LineSeriesEx).yField];
+							}
+							if(showText != null)
+							{
 								var UI:UIComponent=new UIComponent();
 								//用于计算表头宽度
 								var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
@@ -162,7 +183,9 @@
 								
 								var DrawPic:Sprite=new Sprite();
 								DrawPic.graphics.clear();
-								DrawPic.graphics.beginFill(seletItem.contextColor,1);
+								var scs:SolidColorStroke = serices.getStyle("lineStroke");
+								var color:uint = scs.color;
+								DrawPic.graphics.beginFill(color, 1);
 								DrawPic.graphics.lineStyle(1,0x000000);
 								var showX:Number = seletItem.x + 5;
 								var showY:Number = seletItem.y - nWidth/3;
