@@ -35,6 +35,11 @@ s|BorderContainer
 	borderVisible:false
 }
 
+s|HSlider
+{
+	skinClass:ClassReference("sm.wegis.szy.skins.HSliderSkinEx");
+}
+
 s|RadioButton
 {
 	skinClass:ClassReference("sm.wegis.szy.skins.radioButton.RadioButtonSkinEx");

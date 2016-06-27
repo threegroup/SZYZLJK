@@ -1295,7 +1295,7 @@
 								<s:HSlider id="dmTimeSlider" width="100%" height="100%" 
 										   liveDragging="true" doubleClickEnabled="false"
 										   showDataTip="true" slideDuration="200" 
-										   snapInterval="1" 
+										   minimum="0" stepSize="1" snapInterval="1"
 										   dataTipFormatFunction="dmProfileDataTipFunc"
 										   change="dmTimeSlider_changeHandler(event)"/>
 								<s:Button id="dmStartBt" label="开始" buttonMode="true" styleName="SubmitRegisterStyle" click="dmStartBt_clickHandler(event)"/>
@@ -1330,11 +1330,11 @@
 									<mx:AreaSeries id="dmTerrainProfile" itemRenderer="widgets.wateremergency.chart.AreaChartDataRender" xField="distance" yField="altitude" form="curve" showDataEffect="{areaSlide}" />
 								</mx:series>
 							</mx:AreaChart>
+							<mx:ControlBar>
+								<mx:Legend id="dmterrainProfileLegend" dataProvider="{terrainProfileChart}" fontSize="12"  buttonMode="true"
+										   direction="horizontal"/>
+							</mx:ControlBar>
 						</s:VGroup>
-						<mx:ControlBar top="40" right="20">
-							<mx:Legend id="dmterrainProfileLegend" dataProvider="{terrainProfileChart}" fontSize="12"  buttonMode="true"
-									   direction="vertical"/>
-						</mx:ControlBar>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面对比"  width="100%" height="100%">
 						<s:VGroup  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
