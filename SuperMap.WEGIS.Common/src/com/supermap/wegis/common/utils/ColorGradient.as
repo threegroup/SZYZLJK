@@ -67,7 +67,12 @@ package com.supermap.wegis.common.utils
 			colors.addItem( color2 );   
 			
 			return colors;
-		}  
+		}
+		
+		public static function getRandomColor():uint{ 
+			var colorStr:String = "0x"+("00000"+((Math.random()*16777215+0.5)>>0).toString(16)).slice(-6); 
+			return parseInt(colorStr,16);
+		} 
 		
 	}
 }

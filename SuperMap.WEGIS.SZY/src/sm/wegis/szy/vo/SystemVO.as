@@ -51,8 +51,20 @@ package sm.wegis.szy.vo
 		
 		private var _measureUrl:String;
 		
+		private var _colors:Array;
+		
 		//水质评价，测站评价指标表格数据展示列
 		private var _waterEvaluationGridColumn:String;
+
+		public function get colors():Array
+		{
+			return _colors;
+		}
+
+		public function set colors(value:Array):void
+		{
+			_colors = value;
+		}
 
 		public function get measureUrl():String
 		{

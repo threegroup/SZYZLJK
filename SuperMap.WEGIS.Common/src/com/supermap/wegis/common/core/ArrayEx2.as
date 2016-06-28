@@ -1,8 +1,8 @@
 package com.supermap.wegis.common.core
 {
-	public dynamic class ArrayEx extends Array
+	public dynamic class ArrayEx2 extends Array
 	{
-		public function ArrayEx(arrayStr:String=null)
+		public function ArrayEx2(arrayStr:String=null)
 		{
 			if(arrayStr != null)
 			{
@@ -12,7 +12,7 @@ package com.supermap.wegis.common.core
 					var len:int = arr.length;
 					for (var i:int = 0; i < len; i++) 
 					{
-						this.push(parseFloat(arr[i].replace(/\s+/g, "")));
+						this.push(parseInt(arr[i].replace(/\s+/g, ""),16));
 					}
 				}
 			}

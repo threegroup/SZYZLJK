@@ -19,9 +19,9 @@ copyRight=2015  版权所有：中国水利水电科学研究院  技术支持�
 
 #========服务地址配置============#
 #WebServices地址
-wsdl=http://7.77.55.56:8080/waterEnv/services/query?wsdl
+#wsdl=http://7.77.55.56:8080/waterEnv/services/query?wsdl
 #wsdl=http://192.168.117.199:8080/waterEnv/services/query?wsdl
-
+wsdl=http://192.169.11.84:8080/waterEnv/services/query?wsdl
 #============测距测面服务地址===============#
 measureUrl=http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap
 
@@ -49,6 +49,9 @@ maxLevel=3
 
 #水质评价，评价指标表格列
 waterEvaluationGridColumn=序号:index:40,指标名称:指标名称,测量值:测量值,评价结果:评价结果,超标情况:超标情况,历史情况:history:70
+
+#配置颜色池
+colors=0xFC987D,0xF9F380,0xB3F683,0x7EFBF9,0x818BF8,0xF881F4,0xB2C7BE
 
 
 

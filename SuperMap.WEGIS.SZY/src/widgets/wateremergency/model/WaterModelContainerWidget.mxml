@@ -18,7 +18,10 @@
 			import com.supermap.web.utils.Hashtable;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			import com.supermap.wegis.common.mappingEx.TiledDynamicRESTLayerEx;
+			import com.supermap.wegis.common.utils.ColorGradient;
 			import com.supermap.wegis.common.utils.DateUtilEx;
+			
+			import flash.utils.setTimeout;
 			
 			import mx.charts.HitData;
 			import mx.charts.LegendItem;
@@ -30,6 +33,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.formatters.DateFormatter;
+			import mx.utils.ColorUtil;
 			
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
@@ -37,6 +41,7 @@
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
+			import sm.wegis.szy.utils.ColorUtils;
 			import sm.wegis.szy.utils.FeatureLayerUtil;
 			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.ModelContainerShowVO;
@@ -120,7 +125,7 @@
 					[QueryEvent.QUERY_BREAK_CALC_RESULT_RESPONSE, queryBreakCalcResultResponseHandler],//查询断面计算结果
 					[QueryEvent.QUERY_RIVER_CALC_RESULT_RESPONSE, queryRiverCalcResultResponseHandler],//查询河道计算结果
 					[QueryEvent.QUERY_DM_PROFILE_RESPONSE, queryDmProfileResponseHandler],//查询断面地形剖面数据
-					[QueryEvent.SHOW_MODEL_RESULT_WIDGET, showModelResultWidgetHandler],
+					[QueryEvent.SHOW_MODEL_RESULT_WIDGET, showModelResultWidgetHandler], //显示当前断面河道结果面板
 					[QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT_RESPONSE, queryRiverCompareHandler],//河道对比
 					[QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT_RESPONSE, queryDMCompareHandler],//断面对比
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
@@ -138,6 +143,7 @@
 					&& result["attributes"]["targetList"] is Array
 					&& (result["attributes"]["targetList"] as Array).length==2)
 				{
+					dmProfileGroup.enabled = true;
 					decodeDmProfileData(result);
 				}
 			}
@@ -155,11 +161,34 @@
 				dmTerrainProfile.setStyle("areaFill", tpsc);
 				dmTerrainProfile.displayName = "地形剖面";
 				dmTerrainProfile.dataProvider = new ArrayCollection(tp["nodeList"]);
-				
+			
+				if ((wp["nodeList"] as Array).length == 0 || (tp["nodeList"] as Array).length == 0) {
+					return;
+				}
 				//绘制水位图形,默认显示第一个时间的水位
 				var wpValue:Number = wp["nodeList"][0]["altitude"];//第一时间水位值
 				var minDistance:Number = tp["nodeList"][0]["distance"];//最近
 				var maxDistance:Number = tp["nodeList"][tp["nodeList"].length - 1]["distance"];//最远
+				
+				dmHorizontalAxis.minimum = minDistance;
+				dmHorizontalAxis.maximum = maxDistance;
+				
+				//获取剖面最低、最高高程 dmVerticalAxis
+				var minAltitude:Number = Number.MAX_VALUE;
+				var maxAltitude:Number = Number.MIN_VALUE;
+				for each(var item:Object in tp["nodeList"]) {
+					if (minAltitude >item.altitude) {
+						minAltitude = item.altitude;
+					}
+					if (maxAltitude <item.altitude) {
+						maxAltitude = item.altitude;
+					}
+				}
+				//最大，最小，上下浮动10%
+				minAltitude = minAltitude - minAltitude*0.1;
+				maxAltitude = maxAltitude + maxAltitude*0.1;
+				dmVerticalAxis.minimum = minAltitude;
+				dmVerticalAxis.maximum = maxAltitude;
 				
 				modelLocator.waterModelParam.wpValue = wpValue;
 				modelLocator.waterModelParam.minDistance = minDistance;
@@ -180,6 +209,9 @@
 				dmTimeSlider.maximum = wpTimeData.length - 1;
 				dmTimeLabel.text = wpTimeData[0]["date"];
 				dmWpLabel.text = wpTimeData[0]["altitude"];
+				
+				//播放
+				updateWaterLevelHandler();
 			}
 			
 			//将断面水位数据转化为面统计图数据
@@ -278,8 +310,8 @@
 										ls.setStyle("showDataEffect", slide);
 										var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
 										ls.setStyle("lineStroke", scs);
-										var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-										ls.setStyle("itemRenderer", cf);
+//										var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+//										ls.setStyle("itemRenderer", cf);
 										ls.displayName = saData["label"];
 										var temp:Array = saData["nodeList"];
 										ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
@@ -388,7 +420,11 @@
 				var modelShowVO:ModelContainerShowVO =  event.data as  ModelContainerShowVO;
 				panel.title = modelShowVO.title;
 				this.currentState = modelShowVO.state;
-				
+				if (this.currentState == BREAK_STATE) {
+					breakBTB.selectedIndex = 0;
+				} else if (this.currentState == RIVER_STATE) {
+					riverBTB.selectedIndex = 0;
+				}
 				if (modelLocator.waterModelParam.isHave == true) {
 					targetsList = new ArrayCollection([
 						{label:"水位",value:1,title:"水位[m]"}, {label:"水深",value:2,title:"水深[m]"},
@@ -399,6 +435,8 @@
 						{label:"水位",value:1,title:"水位[m]"}, {label:"水深",value:2,title:"水深[m]"},
 						{label:"流量",value:3,title:"流量[m³/s]"},{label:"流速",value:4,title:"流速[m/s]"}]);	
 				}
+				//请求剖面展示数据
+				this.startDmWaterLevelSimulate();
 			}
 			
 			
@@ -756,7 +794,11 @@
 						ls.yField = saData["yField"];
 						ls.setStyle("form", "curve");
 						ls.setStyle("showDataEffect", slide);
-						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+//						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						var scs:SolidColorStroke = new SolidColorStroke();
+						if (index < modelLocator.systemInfo.colors.length) {
+							scs.color = modelLocator.systemInfo.colors[index];
+						}
 						ls.displayName = saData.schemeName + saData["sectionName"];
 						ls.setStyle("lineStroke", scs);
 //						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
@@ -946,8 +988,8 @@
 							ls.displayName = saData["schemeName"];
 						}
 						ls.setStyle("lineStroke", scs);
-						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-						ls.setStyle("itemRenderer", cf);
+//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+//						ls.setStyle("itemRenderer", cf);
 						//ls.displayName = saData["schemeName"];
 						var temp:Array = saData["nodeList"];
 						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
@@ -1032,16 +1074,23 @@
 			}
 			
 			//开始断面地形水位推演
+			private var playDMProfile:Boolean = false;
 			protected function dmStartBt_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				this.startDmWaterLevelSimulate();
+				if (playDMProfile == false) {
+					dmStartBt.label = "暂停";
+					playDMProfile = true;
+				}
+			
+				dmTimeSlider.value = dmTimeSlider.minimum;
+			
 			}
 			
 			//停止断面地形水位推演
 			protected function dmStopBt_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
+				playDMProfile = false;
 				
 			}
 			
@@ -1049,6 +1098,7 @@
 			{
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DM_PROFILE);
 				queryEvent.dispatch();
+				dmProfileGroup.enabled = false;
 			}
 			
 			private function stopDmWaterLevelSimulate():void
@@ -1058,13 +1108,27 @@
 			
 			protected function dmTimeSlider_changeHandler(event:Event):void
 			{
-				// TODO Auto-generated method stub
-				dmTimeLabel.text = modelLocator.waterModelParam.wpTimeData[dmTimeSlider.value]["date"];
-				dmWpLabel.text =  modelLocator.waterModelParam.wpTimeData[dmTimeSlider.value]["altitude"];
+				updateWaterLevelHandler();
+			}
+			
+			private function updateWaterLevelHandler():void
+			{
+				var currentItem:Object = modelLocator.waterModelParam.wpTimeData[dmTimeSlider.value];
+				dmTimeLabel.text = currentItem["date"];
+				dmWpLabel.text = currentItem["altitude"];
+				modelLocator.waterModelParam.wpValue = Number(dmWpLabel.text );
 				modelLocator.waterModelParam.wpIndex = dmTimeSlider.value;
 				//更新水位统计图
 				dmWaterPosition.dataProvider = new ArrayCollection(rewriteWaterPositionData(modelLocator.waterModelParam.minDistance,
 					modelLocator.waterModelParam.maxDistance,modelLocator.waterModelParam.wpValue));
+				if (playDMProfile == true ) {
+					dmTimeSlider.value += dmTimeSlider.stepSize;
+					setTimeout(updateWaterLevelHandler, 1000);
+					if (dmTimeSlider.value == dmTimeSlider.maximum) {
+						playDMProfile = false;
+						dmTimeSlider.value = dmTimeSlider.minimum;
+					}
+				}
 			}
 			
 			protected function riverPollutionCompareInitHandler():void
@@ -1310,11 +1374,7 @@
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面地形展示"  width="100%" height="100%">
 						<s:VGroup  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
-							<s:HGroup gap="10" width="100%">
-								<s:Label text="水位(米)：" height="100%"/>
-								<s:Label id="dmWpLabel" width="80" height="100%"/>
-								<s:Label text="时间：" height="100%"/>
-								<s:Label id="dmTimeLabel" width="80" height="100%"/>
+							<s:HGroup id="dmProfileGroup" gap="10" width="100%">
 								<s:HSlider id="dmTimeSlider" width="100%" height="100%" 
 										   liveDragging="true" doubleClickEnabled="false"
 										   showDataTip="true" slideDuration="200" 
@@ -1325,6 +1385,12 @@
 								<s:Button id="dmStopBt" label="停止" buttonMode="true" styleName="SubmitRegisterStyle" click="dmStopBt_clickHandler(event)"/>
 							</s:HGroup>
 							<line:HLine width="100%"/>
+							<s:HGroup width="100%" horizontalAlign="center" fontWeight="bold">
+								<s:Label text="时间：" height="100%"/>
+								<s:Label id="dmTimeLabel" width="80" height="100%"/>
+								<s:Label text="水位(米)：" height="100%"/>
+								<s:Label id="dmWpLabel" width="80" height="100%"/>
+							</s:HGroup>
 							<mx:AreaChart id="terrainProfileChart" height="100%" width="100%" showDataTips="true" 
 										  seriesFilters="[]"
 										  dataTipFunction="terrainProfileDataTipFunction">
@@ -1337,7 +1403,7 @@
 								</mx:backgroundElements>
 								<!--用于定义统计图的XY轴样式及数值范围-->
 								<mx:verticalAxis>
-									<mx:LinearAxis  id="dmVerticalAxis" baseAtZero="true" title="高程"/>
+									<mx:LinearAxis  id="dmVerticalAxis"  title="高程"/>
 								</mx:verticalAxis>
 								<mx:verticalAxisRenderers>
 									<mx:AxisRenderer axis="{dmVerticalAxis}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
@@ -1349,8 +1415,8 @@
 									<mx:AxisRenderer axis="{dmHorizontalAxis}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
 								</mx:horizontalAxisRenderers>
 								<mx:series>
-									<mx:AreaSeries id="dmWaterPosition" itemRenderer="widgets.wateremergency.chart.AreaChartDataRender" xField="distance" yField="altitude" form="curve" showDataEffect="{areaSlide2}" />
-									<mx:AreaSeries id="dmTerrainProfile" itemRenderer="widgets.wateremergency.chart.AreaChartDataRender" xField="distance" yField="altitude" form="curve" showDataEffect="{areaSlide}" />
+									<mx:AreaSeries id="dmWaterPosition"  xField="distance" yField="altitude" form="curve" />
+									<mx:AreaSeries id="dmTerrainProfile"  xField="distance" yField="altitude" form="curve" />
 								</mx:series>
 							</mx:AreaChart>
 							<mx:ControlBar>

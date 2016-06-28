@@ -18,6 +18,12 @@
 	<object id="LayerScales" class="com.supermap.wegis.common.core.ArrayEx">
 		<constructor-arg value="${layerScales}" />
 	</object>
+	
+	<!--颜色池-->
+	<object id="colors" class="com.supermap.wegis.common.core.ArrayEx2">
+		<constructor-arg value="${colors}" />
+	</object>
+	
 	<!--地图控件 -->
 	<object id="MapCtrl"
 		class="com.supermap.wegis.common.components.mapCtrl.MapCtrl">
@@ -64,6 +70,7 @@
 		<property name="maxCols" value="${maxCols}" type="number" />
 		<property name="maxLevel" value="${maxLevel}" type="number" />
 		<property name="waterEvaluationGridColumn" value="${waterEvaluationGridColumn}"/>
+		<property name="colors"  ref="colors"/>
 		
 	</object>
 

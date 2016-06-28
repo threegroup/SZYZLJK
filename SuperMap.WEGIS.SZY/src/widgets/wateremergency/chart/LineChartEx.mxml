@@ -148,6 +148,9 @@
 									break;
 								}
 							}
+							if (seletItem == null) {
+								continue;
+							}
 							if (lineX == Number.MAX_VALUE)
 							{
 								lineX = seletItem.x;

@@ -27,10 +27,11 @@ package sm.wegis.szy.commands
 			var waterModel:WaterModelParam = modelLocator.waterModelParam;
 			var params:Array = [];
 			//方案ID,断面ID
-//			params.push(waterModel.planId);
-//			params.push(waterModel.dmId);
-			params.push("73476806f527419686g18gbca8485689");
-			params.push("86D18F0FF30A4957B20A00BD091532DA");
+			params.push(waterModel.planId);
+			params.push(waterModel.dmId);
+//			params.push("73476806f527419686g18gbca8485689");
+//			params.push("0A0B60799C9547ACBCBCF6989AD7AE48");
+//			params.push("0A0B60799C9547ACBCBCF6989AD7AE48");
 			IDelegate(this.businessDelegate).executeWebServiceEx(WSMethod.GetTerrainProfileData, params);
 			CursorManager.setBusyCursor();
 		}

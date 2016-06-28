@@ -214,7 +214,7 @@
 				if (resultList.scrollRect) {
 					resultList.scrollRect.y = 0;
 				}
-				if (data.success == true) 
+				if (data != null && data.success == true) 
 				{
 					if(!this.ResultContentPanel.visible)
 						this.ResultContentPanel.visible = true;
