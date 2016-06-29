@@ -143,7 +143,9 @@
 					&& result["attributes"]["targetList"] is Array
 					&& (result["attributes"]["targetList"] as Array).length==2)
 				{
-					dmProfileGroup.enabled = true;
+					if (dmProfileGroup != null) {
+						dmProfileGroup.enabled = true;
+					}
 					decodeDmProfileData(result);
 				}
 			}
@@ -161,7 +163,7 @@
 				dmTerrainProfile.setStyle("areaFill", tpsc);
 				dmTerrainProfile.displayName = "地形剖面";
 				dmTerrainProfile.dataProvider = new ArrayCollection(tp["nodeList"]);
-			
+				
 				if ((wp["nodeList"] as Array).length == 0 || (tp["nodeList"] as Array).length == 0) {
 					return;
 				}
@@ -310,8 +312,8 @@
 										ls.setStyle("showDataEffect", slide);
 										var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
 										ls.setStyle("lineStroke", scs);
-//										var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-//										ls.setStyle("itemRenderer", cf);
+										//										var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+										//										ls.setStyle("itemRenderer", cf);
 										ls.displayName = saData["label"];
 										var temp:Array = saData["nodeList"];
 										ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
@@ -436,7 +438,9 @@
 						{label:"流量",value:3,title:"流量[m³/s]"},{label:"流速",value:4,title:"流速[m/s]"}]);	
 				}
 				//请求剖面展示数据
-				this.startDmWaterLevelSimulate();
+				if (dmProfileGroup != null){
+					this.startDmWaterLevelSimulate();
+				}
 			}
 			
 			
@@ -794,15 +798,15 @@
 						ls.yField = saData["yField"];
 						ls.setStyle("form", "curve");
 						ls.setStyle("showDataEffect", slide);
-//						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+						//						var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
 						var scs:SolidColorStroke = new SolidColorStroke();
 						if (index < modelLocator.systemInfo.colors.length) {
 							scs.color = modelLocator.systemInfo.colors[index];
 						}
 						ls.displayName = saData.schemeName + saData["sectionName"];
 						ls.setStyle("lineStroke", scs);
-//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-//						ls.setStyle("itemRenderer", cf);
+						//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+						//						ls.setStyle("itemRenderer", cf);
 						var temp:Array = saData["nodeList"];
 						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
 						sa.push(ls);
@@ -988,8 +992,8 @@
 							ls.displayName = saData["schemeName"];
 						}
 						ls.setStyle("lineStroke", scs);
-//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-//						ls.setStyle("itemRenderer", cf);
+						//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+						//						ls.setStyle("itemRenderer", cf);
 						//ls.displayName = saData["schemeName"];
 						var temp:Array = saData["nodeList"];
 						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
@@ -1080,18 +1084,19 @@
 				if (playDMProfile == false) {
 					dmStartBt.label = "暂停";
 					playDMProfile = true;
+					updateWaterLevelHandler();
+				} else {
+					dmStartBt.label = "播放";
+					playDMProfile = false;
 				}
-			
-				dmTimeSlider.value = dmTimeSlider.minimum;
-			
 			}
 			
 			//停止断面地形水位推演
 			protected function dmStopBt_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
 				playDMProfile = false;
-				
+				dmStartBt.label = "播放";
+				dmTimeSlider.value = dmTimeSlider.minimum;
 			}
 			
 			private function startDmWaterLevelSimulate():void
@@ -1099,11 +1104,6 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DM_PROFILE);
 				queryEvent.dispatch();
 				dmProfileGroup.enabled = false;
-			}
-			
-			private function stopDmWaterLevelSimulate():void
-			{
-				
 			}
 			
 			protected function dmTimeSlider_changeHandler(event:Event):void
@@ -1126,6 +1126,7 @@
 					setTimeout(updateWaterLevelHandler, 1000);
 					if (dmTimeSlider.value == dmTimeSlider.maximum) {
 						playDMProfile = false;
+						dmStartBt.label = "播放";
 						dmTimeSlider.value = dmTimeSlider.minimum;
 					}
 				}
@@ -1277,6 +1278,11 @@
 				}
 			}
 			
+			protected function dmProfileNC_creationCompleteHandler(event:FlexEvent):void
+			{
+				startDmWaterLevelSimulate();
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -1373,7 +1379,8 @@
 						</mx:ControlBar>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面地形展示"  width="100%" height="100%">
-						<s:VGroup  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5" >
+						<s:VGroup  id="dmProfileNC"  width="100%" height="100%" paddingLeft="5"  paddingTop="5" paddingRight="5"
+								   creationComplete="dmProfileNC_creationCompleteHandler(event)">
 							<s:HGroup id="dmProfileGroup" gap="10" width="100%">
 								<s:HSlider id="dmTimeSlider" width="100%" height="100%" 
 										   liveDragging="true" doubleClickEnabled="false"

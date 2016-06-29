@@ -19,9 +19,9 @@ copyRight=2015  版权所有：中国水利水电科学研究院  技术支持�
 
 #========服务地址配置============#
 #WebServices地址
-#wsdl=http://7.77.55.56:8080/waterEnv/services/query?wsdl
+wsdl=http://7.77.55.56:8080/waterEnv/services/query?wsdl
 #wsdl=http://192.168.117.199:8080/waterEnv/services/query?wsdl
-wsdl=http://192.169.11.84:8080/waterEnv/services/query?wsdl
+#wsdl=http://192.169.11.84:8080/waterEnv/services/query?wsdl
 #============测距测面服务地址===============#
 measureUrl=http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap
 
