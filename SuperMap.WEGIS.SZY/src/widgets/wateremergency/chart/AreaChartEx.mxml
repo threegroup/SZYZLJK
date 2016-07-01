@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:AreaChart xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx"
+			  showDataTips="true"
+			  seriesFilters="[]"
+			  selectionMode="none" 
+			  doubleClickEnabled="false"
+			  mouseMove="chart_mouseMoveHandler(event)"
+			  rollOut="chart_mouseUpHandler(event)">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.supermap.wegis.common.utils.ToolTip;
+			
+			import flashx.textLayout.formats.Direction;
+			
+			import mx.charts.HitData;
+			import mx.charts.chartClasses.CartesianChart;
+			import mx.charts.chartClasses.Series;
+			import mx.charts.events.ChartEvent;
+			import mx.charts.series.AreaSeries;
+			import mx.charts.series.ColumnSeries;
+			import mx.charts.series.LineSeries;
+			import mx.charts.series.items.AreaSeriesItem;
+			import mx.charts.series.items.LineSeriesItem;
+			import mx.collections.ArrayCollection;
+			import mx.core.UIComponent;
+			import mx.core.UITextFormat;
+			import mx.graphics.SolidColor;
+			import mx.graphics.SolidColorStroke;
+			
+			//清除chart控件，背景和前端添加的对象
+			public function clearChartGraphic():void
+			{
+				zoomArea.graphics.clear();
+				zoomArea.removeAllElements();
+				tipGroup.graphics.clear();
+				tipGroup.removeAllElements();
+				chartAt.graphics.clear();
+			}
+			
+			//鼠标弹起
+			protected function chart_mouseUpHandler(event:MouseEvent):void
+			{
+				clearChartGraphic();
+			}
+			
+			private function chart_mouseMoveHandler(event:MouseEvent):void
+			{
+				var cartesianChart:CartesianChart = event.currentTarget as CartesianChart;
+				if (cartesianChart.series.length > 0){
+					tipGroup.removeAllElements();
+					chartAt.graphics.clear();
+					var lineX:Number =  Number.MAX_VALUE;
+					//接头处偏移量
+					var horGap:int = 10;
+					var vecGap:int = 5;
+					var minWidth:int = 50;
+					var minHeight:int = 15;
+					for each(var serices:Series in cartesianChart.series) {
+						if (serices.visible == false || serices.items == null || serices.items.length == 0)
+						{
+							continue;
+						}
+						var mouseLoc:Point = new Point(serices.mouseX, serices.mouseY);
+						
+						var valueAtMouse:Array = serices.localToData(mouseLoc);
+						
+						var seletItem:AreaSeriesItem = null;
+						for each (var item:AreaSeriesItem in serices.items) {
+							if (item.xValue >= valueAtMouse[0] && serices.items.length >2 ) { 
+								seletItem = item;
+								break;
+							}
+						}
+						if (seletItem == null) {
+							continue;
+						}
+						if (lineX == Number.MAX_VALUE)
+						{
+							lineX = seletItem.x;
+						}
+						if (lineX - seletItem.x != 0){
+							continue;
+						}
+						var showText:String ="";
+						if (serices is AreaSeries){
+							showText = seletItem.item[(serices as AreaSeries).yField];
+						} else if (serices is LineSeriesEx) {
+							showText = seletItem.item[(serices as LineSeriesEx).yField];
+						}
+						if(showText != null)
+						{
+							var UI:UIComponent=new UIComponent();
+							//用于计算表头宽度
+							var uiTextFormat:UITextFormat = new UITextFormat(systemManager);
+							uiTextFormat.antiAliasType = AntiAliasType.NORMAL;
+							uiTextFormat.gridFitType =GridFitType.NONE;
+							uiTextFormat.direction =Direction.LTR;
+							var textLine:TextLineMetrics;
+							textLine = uiTextFormat.measureText(showText);
+							var nWidth:int=textLine.width+horGap < minWidth ? minWidth : textLine.width+horGap;
+							var nHeight:int = textLine.height + vecGap < minHeight ? minHeight : textLine.height + vecGap;
+							
+							//添加输出文本
+							var txtTemp : TextField= new TextField();
+							txtTemp.autoSize = "left";
+							txtTemp.text = showText;
+							var fmt : TextFormat = new TextFormat();
+							fmt.size = 13;
+							fmt.color = 0xFFFFFF;
+							txtTemp.setTextFormat(fmt);
+							
+							
+							var DrawPic:Sprite=new Sprite();
+							DrawPic.graphics.clear();
+							var scs:SolidColorStroke = serices.getStyle("areaStroke");
+							var color:uint = scs.color;
+							DrawPic.graphics.beginFill(color, 1);
+							DrawPic.graphics.lineStyle(1,0x000000);
+							var showX:Number = seletItem.x + 5;
+							var showY:Number = seletItem.y - nWidth/3;
+							if (showX + nWidth >= tipGroup.width) {
+								DrawPic.graphics.moveTo(0, 0);
+								DrawPic.graphics.lineTo(nWidth-horGap,0);
+								DrawPic.graphics.lineTo(nWidth,nHeight/2);
+								DrawPic.graphics.lineTo(nWidth-horGap,nHeight);
+								DrawPic.graphics.lineTo(0,nHeight);
+								DrawPic.graphics.lineTo(0,0);
+								DrawPic.graphics.endFill();
+								showX = showX - nWidth;
+							} else {
+								DrawPic.graphics.moveTo(0, nHeight/2);
+								DrawPic.graphics.lineTo(horGap,0);
+								DrawPic.graphics.lineTo(nWidth,0);
+								DrawPic.graphics.lineTo(nWidth,nHeight);
+								DrawPic.graphics.lineTo(horGap,nHeight);
+								DrawPic.graphics.lineTo(0,nHeight/2);
+								DrawPic.graphics.endFill();
+							}
+							
+							txtTemp.x = DrawPic.x + (DrawPic.width - txtTemp.width) /2 ;
+							txtTemp.y = DrawPic.y + (DrawPic.height - txtTemp.height) / 2;
+							
+							UI.addChild(DrawPic);
+							UI.addChild(txtTemp);
+							UI.x = showX;
+							UI.y = showY;
+							
+							tipGroup.addElement(UI);
+						}
+					}
+					if (lineX != Number.MAX_VALUE){
+						var g:Graphics = chartAt.graphics;
+						g.clear();
+						g.moveTo(lineX, 0);
+						g.lineStyle(1, 0xFF0000);
+						g.lineTo(lineX, chartBg.height);
+					}
+				}
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<mx:backgroundElements>
+		<s:Group width="100%" height="100%" id="chartBg">
+			<s:Group  width="100%" height="100%" id="zoomArea">
+				<!-- 在此绘制选中区域 -->
+			</s:Group>   
+		</s:Group>
+	</mx:backgroundElements>
+	<mx:annotationElements>
+		<s:Group width="100%" height="100%" id="chartAt">
+			<s:Group  width="100%" height="100%" id="tipGroup">
+				<!-- 在此显示气泡-->
+			</s:Group>   
+		</s:Group>
+	</mx:annotationElements>
+</mx:AreaChart>

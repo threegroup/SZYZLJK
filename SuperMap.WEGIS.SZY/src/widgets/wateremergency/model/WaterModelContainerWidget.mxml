@@ -85,6 +85,8 @@
 			/**当前断面对象索引*/
 			private var sameItemIndex:int = -1;
 			
+			/**不同方案，相同断面对比，提示文本字段*/
+			private var toolTipField:String = "toolTip";
 			
 			[Bindable]
 			private var targetsList:ArrayCollection;
@@ -210,7 +212,7 @@
 				dmTimeSlider.minimum = 0;
 				dmTimeSlider.maximum = wpTimeData.length - 1;
 				dmTimeLabel.text = wpTimeData[0]["date"];
-				dmWpLabel.text = wpTimeData[0]["altitude"];
+				dmWpLabel.text = Number(wpTimeData[0]["altitude"]).toFixed(2);
 				
 				//播放
 				updateWaterLevelHandler();
@@ -261,7 +263,7 @@
 					{
 						for each(var section:Object in tempCol)
 						{
-							if(section != null && section["sectionName"] != null && section.type == "计算")
+							if(section != null && section["sectionName"] != null && section.type == "差值")
 							{
 								sectionCol.push(section);
 							}
@@ -540,7 +542,7 @@
 			private function dateFormatFunction(labelValue:Date, previousValue:Object, axis:IAxis):String
 			{ 
 				var dateFormatter:DateFormatter = new DateFormatter();   
-				dateFormatter.formatString = "YYYY-MM-DD";   
+				dateFormatter.formatString = "MM-DD";   
 				var dateValue:String= dateFormatter.format(labelValue);    
 				return dateValue;
 			}
@@ -560,7 +562,7 @@
 				
 				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
 				var displayName:String = hitData.chartItem.element["displayName"];
-				return displayName+ ":" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"距离:"+ cntData[hitData.chartItem.element["xField"]];
+				return "高程:" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"距离:"+ cntData[hitData.chartItem.element["xField"]];
 			}
 			
 			//断面通用的显示描述
@@ -569,7 +571,13 @@
 				
 				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
 				var displayName:String = targetDpList.selectedItem.title;
-				return displayName+ ":" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"时间:"+ cntData[hitData.chartItem.element["xField"]];
+				var tipStr:String = displayName+ ":" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"时间:";
+				if (dmCompareSchemeList.selectedIndex != 0){
+					tipStr += cntData[toolTipField];
+				} else {
+					tipStr += cntData[hitData.chartItem.element["xField"]];
+				}
+				return tipStr;
 			}
 			
 			//河道通用的显示描述
@@ -741,6 +749,21 @@
 						DMCompareResult.comparePlan =  saData;
 					}
 					
+					//对不同方案，相同断面进行处理
+					if (dmCompareSchemeList.selectedIndex != 0) {
+						for each(var item:Object in DMCompareResult.currentPlan.nodeList){
+							item[toolTipField] = item.time;
+							var times:Array = item.time.split("-");
+							times["0"] = "1900"; // 年份，我自己指定的，主要是让两组数据，年份相同
+							item.time = times.join("-");
+						}
+						for each(var item:Object in DMCompareResult.comparePlan.nodeList){
+							item[toolTipField] = item.time;
+							var times:Array = item.time.split("-");
+							times["0"] = "1900";
+							item.time = times.join("-");
+						}
+					}
 					//显示对比chart
 					showDMCompareChart();
 				}
@@ -1115,7 +1138,7 @@
 			{
 				var currentItem:Object = modelLocator.waterModelParam.wpTimeData[dmTimeSlider.value];
 				dmTimeLabel.text = currentItem["date"];
-				dmWpLabel.text = currentItem["altitude"];
+				dmWpLabel.text = Number(currentItem["altitude"]).toFixed(2);
 				modelLocator.waterModelParam.wpValue = Number(dmWpLabel.text );
 				modelLocator.waterModelParam.wpIndex = dmTimeSlider.value;
 				//更新水位统计图
@@ -1398,34 +1421,27 @@
 								<s:Label text="水位(米)：" height="100%"/>
 								<s:Label id="dmWpLabel" width="80" height="100%"/>
 							</s:HGroup>
-							<mx:AreaChart id="terrainProfileChart" height="100%" width="100%" showDataTips="true" 
+							<chart:AreaChartEx id="terrainProfileChart" height="100%" width="100%" showDataTips="true" 
 										  seriesFilters="[]"
 										  dataTipFunction="terrainProfileDataTipFunction">
-								<mx:backgroundElements>
-									<mx:GridLines gridDirection="both" verticalShowOrigin="true" verticalTickAligned="true">
-										<mx:verticalStroke>
-											<s:SolidColorStroke color="#CCCCCC" weight="1"/>
-										</mx:verticalStroke>
-									</mx:GridLines>
-								</mx:backgroundElements>
 								<!--用于定义统计图的XY轴样式及数值范围-->
-								<mx:verticalAxis>
+								<chart:verticalAxis>
 									<mx:LinearAxis  id="dmVerticalAxis"  title="高程"/>
-								</mx:verticalAxis>
-								<mx:verticalAxisRenderers>
+								</chart:verticalAxis>
+								<chart:verticalAxisRenderers>
 									<mx:AxisRenderer axis="{dmVerticalAxis}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
-								</mx:verticalAxisRenderers>
-								<mx:horizontalAxis>
+								</chart:verticalAxisRenderers>
+								<chart:horizontalAxis>
 									<mx:LinearAxis id="dmHorizontalAxis" title="距离"/>
-								</mx:horizontalAxis>
-								<mx:horizontalAxisRenderers>
+								</chart:horizontalAxis>
+								<chart:horizontalAxisRenderers>
 									<mx:AxisRenderer axis="{dmHorizontalAxis}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
-								</mx:horizontalAxisRenderers>
-								<mx:series>
-									<mx:AreaSeries id="dmWaterPosition"  xField="distance" yField="altitude" form="curve" />
+								</chart:horizontalAxisRenderers>
+								<chart:series>
+									<mx:AreaSeries id="dmWaterPosition"  xField="distance" yField="altitude" form="curve"/>
 									<mx:AreaSeries id="dmTerrainProfile"  xField="distance" yField="altitude" form="curve" />
-								</mx:series>
-							</mx:AreaChart>
+								</chart:series>
+							</chart:AreaChartEx>
 							<mx:ControlBar>
 								<mx:Legend id="dmterrainProfileLegend" dataProvider="{terrainProfileChart}" fontSize="12"  buttonMode="true"
 										   direction="horizontal"/>
@@ -1572,15 +1588,18 @@
 													  click="riverQueryRwBt_clickHandler(event)"/>
 										</s:HGroup>
 									</mx:GridItem>
+									<mx:GridItem>
+										<s:HGroup gap="10">
+											<s:Label text="选择对比月份：" height="100%"/>
+											<s:DropDownList id="riverCompareMonthDpList"  enabled="false" requireSelection="true" width="160"
+															styleName="SystemSelectorStyle" dataProvider="{riverCompareMonth}" 
+															change="riverCompareMonthDpList_changeHandler(event)"/>
+										</s:HGroup>
+									</mx:GridItem>
 								</mx:GridRow>
 							</mx:Grid>	
 							<line:HLine width="100%"/>
-							<s:HGroup>
-								<s:Label text="对比月份：" height="100%"/>
-								<s:DropDownList id="riverCompareMonthDpList"  enabled="false" requireSelection="true" width="160"
-												styleName="SystemSelectorStyle" dataProvider="{riverCompareMonth}" 
-												change="riverCompareMonthDpList_changeHandler(event)"/>
-							</s:HGroup>
+							
 							<chart:LineChartEx id="riverCompareChart" width="100%" height="100%" 
 											   dataTipFunction="hdDataTipFunction">
 								<!-- vertical axis -->
