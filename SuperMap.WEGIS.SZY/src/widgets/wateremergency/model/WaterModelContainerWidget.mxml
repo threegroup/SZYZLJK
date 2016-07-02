@@ -742,9 +742,9 @@
 					
 					if (result is Array)
 					{
-						for each(var item:Object in result)
+						for each(var item0:Object in result)
 						{
-							saData.push(item.attributes);
+							saData.push(item0.attributes);
 						}
 						DMCompareResult.comparePlan =  saData;
 					}
@@ -799,8 +799,8 @@
 				}
 				
 				if (DMCompareResult.comparePlan is Array){
-					for each(var item:Object in DMCompareResult.comparePlan){
-						saDatas.push(item);
+					for each(var item0:Object in DMCompareResult.comparePlan){
+						saDatas.push(item0);
 					}
 				} else {
 					saDatas.push(DMCompareResult.comparePlan);
