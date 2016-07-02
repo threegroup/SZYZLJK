@@ -11,17 +11,12 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
-			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.supermap.web.core.Feature;
 			import com.supermap.web.events.ViewBoundsEvent;
 			import com.supermap.web.iServerJava6R.Recordset;
 			import com.supermap.web.utils.Hashtable;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			import com.supermap.wegis.common.mappingEx.TiledDynamicRESTLayerEx;
-			import com.supermap.wegis.common.utils.ColorGradient;
-			import com.supermap.wegis.common.utils.DateUtilEx;
-			
-			import flash.utils.setTimeout;
 			
 			import mx.charts.HitData;
 			import mx.charts.LegendItem;
@@ -33,7 +28,6 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.formatters.DateFormatter;
-			import mx.utils.ColorUtil;
 			
 			import sm.wegis.szy.events.QueryEvent;
 			import sm.wegis.szy.events.SystemEvent;
@@ -41,7 +35,6 @@
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			import sm.wegis.szy.utils.CairngormEventClass;
 			import sm.wegis.szy.utils.CairngormEventManager;
-			import sm.wegis.szy.utils.ColorUtils;
 			import sm.wegis.szy.utils.FeatureLayerUtil;
 			import sm.wegis.szy.vo.ConstVO;
 			import sm.wegis.szy.vo.ModelContainerShowVO;
@@ -51,8 +44,7 @@
 			import spark.components.CheckBox;
 			import spark.events.IndexChangeEvent;
 			
-			import widgets.wateremergency.chart.AreaChartDataRender;
-			import widgets.wateremergency.chart.LineChartDataRender;
+			import widgets.wateremergency.chart.LegendItemEx;
 			import widgets.wateremergency.chart.LineSeriesEx;
 			
 			[Bindable]
@@ -80,10 +72,10 @@
 			[Bindable]
 			private var dmList:ArrayCollection = null;
 			
-			/**当前断面对象*/
-			private var sameItem:Object = null;
-			/**当前断面对象索引*/
-			private var sameItemIndex:int = -1;
+//			/**当前断面对象*/
+//			private var sameItem:Object = null;
+//			/**当前断面对象索引*/
+//			private var sameItemIndex:int = -1;
 			
 			/**不同方案，相同断面对比，提示文本字段*/
 			private var toolTipField:String = "toolTip";
@@ -109,8 +101,8 @@
 			
 			private function clear():void
 			{
-				this.sameItem = null;
-				this.sameItemIndex = -1;
+//				this.sameItem = null;
+//				this.sameItemIndex = -1;
 				this.resetDmChart();
 			}
 			
@@ -421,6 +413,9 @@
 			
 			private function showModelResultWidgetHandler(event:CairngormEvent):void
 			{
+				//此处需要清空已有的数据
+				this.clear();
+				
 				var modelShowVO:ModelContainerShowVO =  event.data as  ModelContainerShowVO;
 				panel.title = modelShowVO.title;
 				this.currentState = modelShowVO.state;
@@ -444,7 +439,6 @@
 					this.startDmWaterLevelSimulate();
 				}
 			}
-			
 			
 			protected function closeBt_clickHandler(event:MouseEvent):void
 			{
@@ -514,7 +508,7 @@
 			//通过的图例控制
 			protected function hd_wpLegend_itemClickHandler(event:LegendMouseEvent):void
 			{
-				var currentLegendItem:LegendItem = event.item as LegendItem;
+				var currentLegendItem:LegendItemEx = event.item as LegendItemEx;
 				var currentChartItem:LineSeries = event.item.source as LineSeries;
 				var currentChartItem0:AreaSeries = event.item.source as AreaSeries;
 				if(currentLegendItem != null && currentChartItem != null)
@@ -630,6 +624,27 @@
 					this.verticalCompareAxis.title = targetDpCompareList.selectedItem.title;
 					
 					this.dmCompareChart.clearChartGraphic();
+					
+					if(this.dmCompareLegend.dataProvider)
+					{
+						(this.dmCompareLegend.dataProvider as ArrayCollection).refresh();
+					}
+				}
+				
+				//重置断面计算结果展示
+				if(this.currentState == BREAK_STATE)
+				{
+					this.dmChart.series = [];
+					this.dmChart.clearChartGraphic();
+					if(this.targetDpList && this.targetDpList.dataProvider)
+					{
+						this.targetDpList.selectedIndex = 0;
+					}
+					
+					if(this.dmLegend.dataProvider)
+					{
+						(this.dmLegend.dataProvider as ArrayCollection).refresh();
+					}
 				}
 			}
 			
@@ -640,42 +655,42 @@
 				this.resetDmChart();
 			}
 			
-			//断面对比方案选择
-			protected function dmCompareSchemeList_changeHandler(event:IndexChangeEvent):void
-			{
-				// TODO Auto-generated method stub
-				this.resetDmChart();
-				var schemeItem:Object = this.dmCompareSchemeList.selectedItem;
-				if(schemeItem != null)
-				{
-					if(dmList && dmList.length > 0)
-					{
-						for each (var tempItem:Object in dmList)
-						{
-							if(tempItem && tempItem["sectionCode"] == modelLocator.waterModelParam.dmId)
-							{
-								sameItem = tempItem;//定位下拉列表中与当前断面相同的断面
-								sameItemIndex = dmList.getItemIndex(tempItem);
-								break;
-							}
-						}
-					}
-					
-					//同一个方案，对比不同的断面，此处断面可选
-					if(schemeItem["planId"] == modelLocator.waterModelParam.planId)
-					{
-						dmList.removeItemAt(sameItemIndex);
-						this.dmCompareList.enabled = true;
-						this.dmCompareList.selectedIndex = 0;
-					}
-					else//不同的方案对比同一个断面，此处断面不可选
-					{
-						dmList.addItemAt(sameItem,sameItemIndex);
-						this.dmCompareList.selectedItem = sameItem;
-						this.dmCompareList.enabled = false;
-					}
-				}
-			}
+//			//断面对比方案选择
+//			protected function dmCompareSchemeList_changeHandler(event:IndexChangeEvent):void
+//			{
+//				// TODO Auto-generated method stub
+//				this.resetDmChart();
+//				var schemeItem:Object = this.dmCompareSchemeList.selectedItem;
+//				if(schemeItem != null)
+//				{
+//					if(dmList && dmList.length > 0)
+//					{
+//						for each (var tempItem:Object in dmList)
+//						{
+//							if(tempItem && tempItem["sectionCode"] == modelLocator.waterModelParam.dmId)
+//							{
+//								sameItem = tempItem;//定位下拉列表中与当前断面相同的断面
+//								sameItemIndex = dmList.getItemIndex(tempItem);
+//								break;
+//							}
+//						}
+//					}
+//					
+//					//同一个方案，对比不同的断面，此处断面可选
+//					if(schemeItem["planId"] == modelLocator.waterModelParam.planId)
+//					{
+//						dmList.removeItemAt(sameItemIndex);
+//						this.dmCompareList.enabled = true;
+//						this.dmCompareList.selectedIndex = 0;
+//					}
+//					else//不同的方案对比同一个断面，此处断面不可选
+//					{
+//						dmList.addItemAt(sameItem,sameItemIndex);
+//						this.dmCompareList.selectedItem = sameItem;
+//						this.dmCompareList.enabled = false;
+//					}
+//				}
+//			}
 			
 			//断面对比断面选择
 			protected function dmCompareList_changeHandler(event:IndexChangeEvent):void
@@ -751,17 +766,17 @@
 					
 					//对不同方案，相同断面进行处理
 					if (dmCompareSchemeList.selectedIndex != 0) {
-						for each(var item:Object in DMCompareResult.currentPlan.nodeList){
-							item[toolTipField] = item.time;
-							var times:Array = item.time.split("-");
+						for each(var item1:Object in DMCompareResult.currentPlan.nodeList){
+							item1[toolTipField] = item1.time;
+							var times:Array = item1.time.split("-");
 							times["0"] = "1900"; // 年份，我自己指定的，主要是让两组数据，年份相同
-							item.time = times.join("-");
+							item1.time = times.join("-");
 						}
-						for each(var item:Object in DMCompareResult.comparePlan.nodeList){
-							item[toolTipField] = item.time;
-							var times:Array = item.time.split("-");
-							times["0"] = "1900";
-							item.time = times.join("-");
+						for each(var item2:Object in DMCompareResult.comparePlan.nodeList){
+							item2[toolTipField] = item2.time;
+							var times0:Array = item2.time.split("-");
+							times0["0"] = "1900";
+							item2.time = times0.join("-");
 						}
 					}
 					//显示对比chart
@@ -1398,7 +1413,8 @@
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
 							<mx:Legend id="dmLegend" dataProvider="{dmChart}" fontSize="12"  buttonMode="true"
-									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"
+									   legendItemClass="widgets.wateremergency.chart.LegendItemEx"/>
 						</mx:ControlBar>
 					</s:NavigatorContent>
 					<s:NavigatorContent label="断面地形展示"  width="100%" height="100%">
@@ -1496,7 +1512,8 @@
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
 							<mx:Legend id="dmCompareLegend" dataProvider="{dmCompareChart}" fontSize="12"  buttonMode="true"
-									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"
+									   legendItemClass="widgets.wateremergency.chart.LegendItemEx"/>
 						</mx:ControlBar>
 					</s:NavigatorContent>
 				</mx:ViewStack>
