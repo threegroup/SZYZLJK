@@ -10,17 +10,17 @@ package widgets.wateremergency.chart
 		
 		public function LegendItemEx()
 		{
-			super();
-			
 			if(checkBox == null)
 			{
 				checkBox = new CheckBox();
 			}
 			addChild(checkBox);
+			super();
 		}
 		
 		override protected function createChildren():void
 		{
+			super.createChildren();
 			if(checkBox != null)
 			{
 				checkBox.percentWidth = 100;
@@ -31,6 +31,7 @@ package widgets.wateremergency.chart
 		
 		override protected function commitProperties():void
 		{
+			super.commitProperties();
 			if(checkBox != null)
 			{
 				this.visible = this.checkBox.selected;

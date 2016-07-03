@@ -276,6 +276,28 @@
 					datas = [result];
 				}
 				if (datas.length > 0) {
+					
+					//污染物浓度展示
+					riverCompareType.removeAllElements();
+					if (targetRwList.selectedItem.value == 5){
+						var tip:Label = new Label();
+						tip.text = "污染物展示类型：";
+						tip.percentHeight = 100;
+						riverCompareType.addElement(tip);
+						
+						var nh3Ck:CheckBox = new CheckBox();
+						nh3Ck.label = "NH3-N";
+						nh3Ck.selected = true;
+						nh3Ck.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
+						riverCompareType.addElement(nh3Ck);
+						
+						var codCk:CheckBox = new CheckBox();
+						codCk.label = "COD";
+						codCk.selected = true;
+						codCk.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
+						riverCompareType.addElement(codCk);
+					} 
+					
 					for each(var item:Object in datas) {
 						if(item != null && item["success"] && item["attributes"] && item["attributes"]["result"] is Array)
 						{
@@ -362,6 +384,26 @@
 					this.verticalAxis.title = targetDpList.selectedItem.title;
 					//此处动态创建统计图序列，序列数[1-2]
 					var sa:Array = [];
+					//污染物浓度展示
+					dmPollutionTypeGroup.removeAllElements();
+					if (targetDpList.selectedItem.value == 5){
+						var tip:Label = new Label();
+						tip.text = "污染物展示类型：";
+						tip.percentHeight = 100;
+						dmPollutionTypeGroup.addElement(tip);
+						
+						var nh3Ck:CheckBox = new CheckBox();
+						nh3Ck.label = "NH3-N";
+						nh3Ck.selected = true;
+						nh3Ck.addEventListener(Event.CHANGE, dmResultHandler);
+						dmPollutionTypeGroup.addElement(nh3Ck);
+						
+						var codCk:CheckBox = new CheckBox();
+						codCk.label = "COD";
+						codCk.selected = true;
+						codCk.addEventListener(Event.CHANGE, dmResultHandler);
+						dmPollutionTypeGroup.addElement(codCk);
+					} 
 					for (index = 0 ; index < saCol.length ; index++)
 					{
 						saData = saCol[index];
@@ -380,7 +422,11 @@
 							ls.yField = saData["yField"];
 							ls.setStyle("form", "curve");
 							ls.setStyle("showDataEffect", slide);
-							var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+//							var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+							var scs:SolidColorStroke = new SolidColorStroke();
+							if (index < modelLocator.systemInfo.colors.length) {
+								scs.color = modelLocator.systemInfo.colors[index];
+							}
 							ls.setStyle("lineStroke", scs);
 							//	var cf:ClassFactory = new ClassFactory(LineChartDataRender);
 							//	ls.setStyle("itemRenderer", cf);
@@ -409,6 +455,19 @@
 				//						dmPollutionTypeGroup.addElement(checkBox);
 				//					}
 				//				}
+			}
+			
+			//断面计算结果展示，污染物浓度指标控制显示
+			private function dmResultHandler(event:Event):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				var pollutionName:String = checkBox.name;
+				for each(var series:Series in dmChart.series)
+				{
+					if (series.name.search(pollutionName) != -1) {
+						series.visible = false;
+					}
+				}
 			}
 			
 			private function showModelResultWidgetHandler(event:CairngormEvent):void
@@ -566,7 +625,7 @@
 				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
 				var displayName:String = targetDpList.selectedItem.title;
 				var tipStr:String = displayName+ ":" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"时间:";
-				if (dmCompareSchemeList.selectedIndex != 0){
+				if (dmCompareSchemeList != null && dmCompareSchemeList.selectedIndex != 0){
 					tipStr += cntData[toolTipField];
 				} else {
 					tipStr += cntData[hitData.chartItem.element["xField"]];
@@ -627,7 +686,7 @@
 					
 					if(this.dmCompareLegend.dataProvider)
 					{
-						(this.dmCompareLegend.dataProvider as ArrayCollection).refresh();
+//						(this.dmCompareLegend.dataProvider as ArrayCollection).refresh();
 					}
 				}
 				
@@ -643,7 +702,7 @@
 					
 					if(this.dmLegend.dataProvider)
 					{
-						(this.dmLegend.dataProvider as ArrayCollection).refresh();
+//						(this.dmLegend.dataProvider as ArrayCollection).refresh();
 					}
 				}
 			}
@@ -799,14 +858,7 @@
 				var label:String;
 				
 				if (DMCompareResult.currentPlan is Array){
-					dmCompareType.removeAllElements();
 					for each(var item:Object in DMCompareResult.currentPlan){
-						var checkBox:CheckBox = new CheckBox();
-						checkBox.name = item.label;
-						checkBox.selected = true;
-						checkBox.label = item.label;
-						checkBox.addEventListener(Event.CHANGE, lineSelectChangeHandler);
-						dmCompareType.addElement(checkBox);
 						saDatas.push(item);
 					}
 				} else {
@@ -820,6 +872,27 @@
 				} else {
 					saDatas.push(DMCompareResult.comparePlan);
 				}
+				
+				//污染物浓度展示
+				dmCompareType.removeAllElements();
+				if (targetDpCompareList.selectedItem.value == 5){
+					var tip:Label = new Label();
+					tip.text = "污染物展示类型：";
+					tip.percentHeight = 100;
+					dmCompareType.addElement(tip);
+					
+					var nh3Ck:CheckBox = new CheckBox();
+					nh3Ck.label = "NH3-N";
+					nh3Ck.selected = true;
+					nh3Ck.addEventListener(Event.CHANGE, dmComparePollutionChangeHandler);
+					dmCompareType.addElement(nh3Ck);
+					
+					var codCk:CheckBox = new CheckBox();
+					codCk.label = "COD";
+					codCk.selected = true;
+					codCk.addEventListener(Event.CHANGE, dmComparePollutionChangeHandler);
+					dmCompareType.addElement(codCk);
+				} 
 				
 				for (var index:int = 0 ; index < saDatas.length ; index++) {
 					saData = saDatas[index];
@@ -853,11 +926,23 @@
 				dmCompareChart.series = sa;
 			}
 			
-			private function lineSelectChangeHandler(event:Event):void
+			private function dmComparePollutionChangeHandler(event:Event):void
 			{
 				var checkBox:CheckBox = event.currentTarget as CheckBox;
 				var name:String = checkBox.name;
 				for each(var series:Series in  dmCompareChart.series) {
+					if (series.name.search(name) != -1) {
+						series.visible = checkBox.selected;
+					}
+				}
+			}
+			
+			//河道计算结果，污染物展示控制
+			private function riverPollutionChangeHandler(event:Event):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				var name:String = checkBox.name;
+				for each(var series:Series in  hdChart.series) {
 					if (series.name.search(name) != -1) {
 						series.visible = checkBox.selected;
 					}
@@ -1327,13 +1412,13 @@
 	<fx:Declarations>
 		<mx:SolidColor id="sc1" color="#F5AC39"/>
 		<mx:SolidColor id="sc2" color="#55D8FE"  />
-		<s:SolidColorStroke id="s1" color="#F5AC39"/>
-		<s:SolidColorStroke id="s2" color="#55D8FE"/>
-		<s:SolidColorStroke id="s3" color="#1D66AE"/>
-		<s:SolidColorStroke id="hd_s3" color="#FF0000"/>
-		<s:SolidColorStroke id="s4" color="#712F82"/>
-		<s:SolidColorStroke id="hd_s5" color="#0000FF"/>
-		<s:SolidColorStroke id="s5" color="#FF00CC"/>
+		<s:SolidColorStroke id="s1" color="#F5AC39" weight="2"/>
+		<s:SolidColorStroke id="s2" color="#55D8FE" weight="2"/>
+		<s:SolidColorStroke id="s3" color="#1D66AE" weight="2"/>
+		<s:SolidColorStroke id="hd_s3" color="#FF0000" weight="2"/>
+		<s:SolidColorStroke id="s4" color="#712F82" weight="2"/>
+		<s:SolidColorStroke id="hd_s5" color="#0000FF" weight="2"/>
+		<s:SolidColorStroke id="s5" color="#FF00CC" weight="2"/>
 		<s:SolidColorStroke id="hd_wden_s5" color="#0000FF" weight="10"/>
 		<mx:SeriesSlide  id="slide"  direction="up" elementOffset="0"/>
 		<mx:SeriesSlide  id="slide2" direction="up"  elementOffset="0"/>
@@ -1379,11 +1464,12 @@
 									</mx:GridItem>
 									<mx:GridItem>
 										<s:HGroup gap="10">
-											<s:Button id="queryBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"  click="queryBt_clickHandler()"/>
+											<s:Button id="queryBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle" 
+													  click="queryBt_clickHandler()"/>
 											<s:Button id="dmExportBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle"
 													  click="dmExportBt_clickHandler(event)"/>
 										</s:HGroup>
-										<s:HGroup id="dmPollutionTypeGroup"/>
+										<s:HGroup id="dmPollutionTypeGroup" paddingLeft="20"/>
 									</mx:GridItem>
 								</mx:GridRow>
 							</mx:Grid>	
@@ -1484,7 +1570,7 @@
 								<s:Spacer width="30"/>
 								<s:Button id="queryCompareBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"
 										  click="queryCompareBt_clickHandler(event)"/>
-								<s:HGroup id="dmCompareType"/>
+								<s:HGroup id="dmCompareType" paddingLeft="20"/>
 							</s:HGroup>
 							<line:HLine width="100%"/>
 							<chart:LineChartEx id="dmCompareChart" width="100%" height="100%" 
@@ -1550,6 +1636,7 @@
 													  styleName="SubmitRegisterStyle"
 													  click="exportRwBt_clickHandler(event)"/>
 										</s:HGroup>
+										<s:HGroup id="riverCompareType" paddingLeft="20"/>
 									</mx:GridItem>
 								</mx:GridRow>
 							</mx:Grid>	
