@@ -118,7 +118,6 @@ package sm.wegis.szy.vo
 		 参数：计算方案_id,断面_id
 		 */
 		public static const GetWaterDMDensitySource:String ="waterDMDensitySource";//暂时未实现
-		
 		/**断面【地形剖面】
 		 参数：计算方案_id,断面_id
 		 */
