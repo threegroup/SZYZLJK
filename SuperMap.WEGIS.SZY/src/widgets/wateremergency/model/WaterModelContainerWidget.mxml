@@ -564,26 +564,6 @@
 				
 			}
 			
-			//通过的图例控制
-			protected function hd_wpLegend_itemClickHandler(event:LegendMouseEvent):void
-			{
-				var currentLegendItem:LegendItemEx = event.item as LegendItemEx;
-				var currentChartItem:LineSeries = event.item.source as LineSeries;
-				var currentChartItem0:AreaSeries = event.item.source as AreaSeries;
-				if(currentLegendItem != null && currentChartItem != null)
-				{
-					currentChartItem.visible = currentChartItem.visible?false:true;
-					var lc:Number=SolidColorStroke(currentChartItem.getStyle("lineStroke")).color;
-					currentChartItem.setStyle("color", currentChartItem.visible?lc:0x959695);
-				}
-				else if(currentChartItem0 != null && currentChartItem0 != null)
-				{
-					currentChartItem0.visible = currentChartItem0.visible?false:true;
-					var ac:Number=SolidColorStroke(currentChartItem0.getStyle("areaStroke")).color;
-					currentChartItem0.setStyle("color", currentChartItem0.visible?ac:0x959695);
-				}
-			}
-			
 			//将X轴显示转化为具体的日期格式
 			private function dateParseFunction(s:String):Date { 
 				var a:Array = s.split("-");
@@ -686,7 +666,7 @@
 					
 					if(this.dmCompareLegend.dataProvider)
 					{
-//						(this.dmCompareLegend.dataProvider as ArrayCollection).refresh();
+						(this.dmCompareLegend.dataProvider as ArrayCollection).refresh();
 					}
 				}
 				
@@ -702,7 +682,7 @@
 					
 					if(this.dmLegend.dataProvider)
 					{
-//						(this.dmLegend.dataProvider as ArrayCollection).refresh();
+						(this.dmLegend.dataProvider as ArrayCollection).refresh();
 					}
 				}
 			}
@@ -1499,7 +1479,7 @@
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
 							<mx:Legend id="dmLegend" dataProvider="{dmChart}" fontSize="12"  buttonMode="true"
-									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"
+									   direction="vertical" 
 									   legendItemClass="widgets.wateremergency.chart.LegendItemEx"/>
 						</mx:ControlBar>
 					</s:NavigatorContent>
@@ -1598,7 +1578,7 @@
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
 							<mx:Legend id="dmCompareLegend" dataProvider="{dmCompareChart}" fontSize="12"  buttonMode="true"
-									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"
+									   direction="vertical" 
 									   legendItemClass="widgets.wateremergency.chart.LegendItemEx"/>
 						</mx:ControlBar>
 					</s:NavigatorContent>
@@ -1663,7 +1643,8 @@
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
 							<mx:Legend id="hdLegend" dataProvider="{hdChart}"  fontSize="12"  buttonMode="true"
-									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+									   direction="vertical"
+									   legendItemClass="widgets.wateremergency.chart.LegendItemEx"/>
 						</mx:ControlBar>
 					</s:NavigatorContent>
 					<!--河道对比-->
@@ -1726,7 +1707,8 @@
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
 							<mx:Legend dataProvider="{riverCompareChart}"  fontSize="12"  buttonMode="true"
-									   direction="vertical" itemClick="hd_wpLegend_itemClickHandler(event)"/>
+									   direction="vertical"
+									   legendItemClass="widgets.wateremergency.chart.LegendItemEx"/>
 						</mx:ControlBar>
 					</s:NavigatorContent>
 				</mx:ViewStack>
