@@ -663,11 +663,6 @@
 					this.verticalCompareAxis.title = targetDpCompareList.selectedItem.title;
 					
 					this.dmCompareChart.clearChartGraphic();
-					
-					if(this.dmCompareLegend.dataProvider)
-					{
-						(this.dmCompareLegend.dataProvider as ArrayCollection).refresh();
-					}
 				}
 				
 				//重置断面计算结果展示
@@ -678,11 +673,6 @@
 					if(this.targetDpList && this.targetDpList.dataProvider)
 					{
 						this.targetDpList.selectedIndex = 0;
-					}
-					
-					if(this.dmLegend.dataProvider)
-					{
-						(this.dmLegend.dataProvider as ArrayCollection).refresh();
 					}
 				}
 			}
