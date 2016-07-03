@@ -21,6 +21,8 @@ package widgets.wateremergency.chart
 		
 		override protected function createChildren():void
 		{
+			super.createChildren();
+			
 			if(checkBox != null)
 			{
 				checkBox.percentWidth = 100;
@@ -31,6 +33,7 @@ package widgets.wateremergency.chart
 		
 		override protected function commitProperties():void
 		{
+			super.commitProperties();
 			if(checkBox != null)
 			{
 				this.visible = this.checkBox.selected;
