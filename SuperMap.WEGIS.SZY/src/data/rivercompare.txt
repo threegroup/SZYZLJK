@@ -1,0 +1,1284 @@
+﻿{
+	"success": true,
+	"attributes": {
+		"targetList": [{
+			"pollutionType": "NH3-N",
+			"result": [{
+				"type": "LineChart",
+				"schemeName": "所属方案名称",
+				"schemeCode": "所属方案编码",
+				"sectionName": "太子河河道",
+				"sectionCode": "太子河河道",
+				"year": "2016",
+				"label": "1996-01",
+				"color": "0x8F8FD2",
+				"xField": "distance",
+				"yField": "value",
+				"xFieldName": "距离",
+				"yFieldName": "浓度(mg/l)",
+				"nodeList": [{
+					"distance": "0",
+					"value": "194.84",
+					"super_obj_id": "1",
+					"color_value": "0x02FF93"
+				},
+				{
+					"distance": "0.45",
+					"value": "193.53",
+					"super_obj_id": "2",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "0.89",
+					"value": "192.16",
+					"super_obj_id": "3",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "1.34",
+					"value": "190.79",
+					"super_obj_id": "4",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "1.79",
+					"value": "190.09",
+					"super_obj_id": "5",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "2.23",
+					"value": "190.09",
+					"super_obj_id": "6",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "2.68",
+					"value": "190.09",
+					"super_obj_id": "7",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "3.75",
+					"value": "190.09",
+					"super_obj_id": "8",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "4.82",
+					"value": "190.09",
+					"super_obj_id": "9",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "5.89",
+					"value": "181.83",
+					"super_obj_id": "10",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "6.96",
+					"value": "180.26",
+					"super_obj_id": "11",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "8.02",
+					"value": "179.39",
+					"super_obj_id": "12",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "9.08",
+					"value": "178.2",
+					"super_obj_id": "13",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "10.07",
+					"value": "176.54",
+					"super_obj_id": "14",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "11.06",
+					"value": "174.85",
+					"super_obj_id": "15",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "12.05",
+					"value": "173.21",
+					"super_obj_id": "16",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "13.03",
+					"value": "171.8",
+					"super_obj_id": "17",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "14.02",
+					"value": "170.42",
+					"super_obj_id": "18",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "15",
+					"value": "169.1",
+					"super_obj_id": "19",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "15.92",
+					"value": "167.87",
+					"super_obj_id": "20",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "17.04",
+					"value": "166.42",
+					"super_obj_id": "21",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "18.16",
+					"value": "164.99",
+					"super_obj_id": "22",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "19.28",
+					"value": "163.45",
+					"super_obj_id": "23",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "20.37",
+					"value": "162.2",
+					"super_obj_id": "24",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "21.46",
+					"value": "160.91",
+					"super_obj_id": "25",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "22.75",
+					"value": "159.13",
+					"super_obj_id": "26",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "24.04",
+					"value": "157.36",
+					"super_obj_id": "27",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "25.33",
+					"value": "155.56",
+					"super_obj_id": "28",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "26.62",
+					"value": "153.8",
+					"super_obj_id": "29",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "27.91",
+					"value": "152.04",
+					"super_obj_id": "30",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "29.2",
+					"value": "150.54",
+					"super_obj_id": "31",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "30.09",
+					"value": "149.17",
+					"super_obj_id": "32",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "30.99",
+					"value": "147.84",
+					"super_obj_id": "33",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "31.88",
+					"value": "146.56",
+					"super_obj_id": "34",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "32.77",
+					"value": "145.23",
+					"super_obj_id": "35",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "33.88",
+					"value": "143.84",
+					"super_obj_id": "36",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "35",
+					"value": "142.44",
+					"super_obj_id": "37",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "35.8",
+					"value": "141.4",
+					"super_obj_id": "38",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "36.6",
+					"value": "140.31",
+					"super_obj_id": "39",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "37.73",
+					"value": "138.47",
+					"super_obj_id": "40",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "38.86",
+					"value": "136.64",
+					"super_obj_id": "41",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "40.49",
+					"value": "134.84",
+					"super_obj_id": "42",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "42.12",
+					"value": "133.07",
+					"super_obj_id": "43",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "43.62",
+					"value": "131.26",
+					"super_obj_id": "44",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "45.12",
+					"value": "129.52",
+					"super_obj_id": "45",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "46.62",
+					"value": "127.75",
+					"super_obj_id": "46",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "48.12",
+					"value": "126.76",
+					"super_obj_id": "47",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "49.07",
+					"value": "124.65",
+					"super_obj_id": "48",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "50.27",
+					"value": "123.15",
+					"super_obj_id": "49",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "51.47",
+					"value": "121.47",
+					"super_obj_id": "50",
+					"color_value": "0xFFFF93"
+				}]
+			}
+			,{
+				"type": "LineChart",
+				"schemeName": "所属方案名称",
+				"schemeCode": "所属方案编码",
+				"sectionName": "太子河河道",
+				"sectionCode": "太子河河道",
+				"year": "2016",
+				"label": "1996-02",
+				"color": "0x8F8FD2",
+				"xField": "distance",
+				"yField": "value",
+				"xFieldName": "距离",
+				"yFieldName": "浓度(mg/l)",
+				"nodeList": [{
+					"distance": "0",
+					"value": "194.84",
+					"super_obj_id": "1",
+					"color_value": "0x02FF93"
+				},
+				{
+					"distance": "0.45",
+					"value": "193.53",
+					"super_obj_id": "2",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "0.89",
+					"value": "192.16",
+					"super_obj_id": "3",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "1.34",
+					"value": "190.79",
+					"super_obj_id": "4",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "1.79",
+					"value": "190.09",
+					"super_obj_id": "5",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "2.23",
+					"value": "190.09",
+					"super_obj_id": "6",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "2.68",
+					"value": "190.09",
+					"super_obj_id": "7",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "3.75",
+					"value": "190.09",
+					"super_obj_id": "8",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "4.82",
+					"value": "190.09",
+					"super_obj_id": "9",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "5.89",
+					"value": "181.83",
+					"super_obj_id": "10",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "6.96",
+					"value": "180.26",
+					"super_obj_id": "11",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "8.02",
+					"value": "179.39",
+					"super_obj_id": "12",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "9.08",
+					"value": "178.2",
+					"super_obj_id": "13",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "10.07",
+					"value": "176.54",
+					"super_obj_id": "14",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "11.06",
+					"value": "174.85",
+					"super_obj_id": "15",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "12.05",
+					"value": "173.21",
+					"super_obj_id": "16",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "13.03",
+					"value": "171.8",
+					"super_obj_id": "17",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "14.02",
+					"value": "170.42",
+					"super_obj_id": "18",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "15",
+					"value": "169.1",
+					"super_obj_id": "19",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "15.92",
+					"value": "167.87",
+					"super_obj_id": "20",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "17.04",
+					"value": "166.42",
+					"super_obj_id": "21",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "18.16",
+					"value": "164.99",
+					"super_obj_id": "22",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "19.28",
+					"value": "163.45",
+					"super_obj_id": "23",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "20.37",
+					"value": "162.2",
+					"super_obj_id": "24",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "21.46",
+					"value": "160.91",
+					"super_obj_id": "25",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "22.75",
+					"value": "159.13",
+					"super_obj_id": "26",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "24.04",
+					"value": "157.36",
+					"super_obj_id": "27",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "25.33",
+					"value": "155.56",
+					"super_obj_id": "28",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "26.62",
+					"value": "153.8",
+					"super_obj_id": "29",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "27.91",
+					"value": "152.04",
+					"super_obj_id": "30",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "29.2",
+					"value": "150.54",
+					"super_obj_id": "31",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "30.09",
+					"value": "149.17",
+					"super_obj_id": "32",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "30.99",
+					"value": "147.84",
+					"super_obj_id": "33",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "31.88",
+					"value": "146.56",
+					"super_obj_id": "34",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "32.77",
+					"value": "145.23",
+					"super_obj_id": "35",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "33.88",
+					"value": "143.84",
+					"super_obj_id": "36",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "35",
+					"value": "142.44",
+					"super_obj_id": "37",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "35.8",
+					"value": "141.4",
+					"super_obj_id": "38",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "36.6",
+					"value": "140.31",
+					"super_obj_id": "39",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "37.73",
+					"value": "138.47",
+					"super_obj_id": "40",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "38.86",
+					"value": "136.64",
+					"super_obj_id": "41",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "40.49",
+					"value": "134.84",
+					"super_obj_id": "42",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "42.12",
+					"value": "133.07",
+					"super_obj_id": "43",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "43.62",
+					"value": "131.26",
+					"super_obj_id": "44",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "45.12",
+					"value": "129.52",
+					"super_obj_id": "45",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "46.62",
+					"value": "127.75",
+					"super_obj_id": "46",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "48.12",
+					"value": "126.76",
+					"super_obj_id": "47",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "49.07",
+					"value": "124.65",
+					"super_obj_id": "48",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "50.27",
+					"value": "123.15",
+					"super_obj_id": "49",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "51.47",
+					"value": "121.47",
+					"super_obj_id": "50",
+					"color_value": "0xFFFF93"
+				}]
+			}
+			,{
+				"type": "LineChart",
+				"schemeName": "所属方案名称",
+				"schemeCode": "所属方案编码",
+				"sectionName": "太子河河道",
+				"sectionCode": "太子河河道",
+				"year": "2016",
+				"label": "1996-03",
+				"color": "0x8F8FD2",
+				"xField": "distance",
+				"yField": "value",
+				"xFieldName": "距离",
+				"yFieldName": "浓度(mg/l)",
+				"nodeList": [{
+					"distance": "0",
+					"value": "194.84",
+					"super_obj_id": "1",
+					"color_value": "0x02FF93"
+				},
+				{
+					"distance": "0.45",
+					"value": "193.53",
+					"super_obj_id": "2",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "0.89",
+					"value": "192.16",
+					"super_obj_id": "3",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "1.34",
+					"value": "190.79",
+					"super_obj_id": "4",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "1.79",
+					"value": "190.09",
+					"super_obj_id": "5",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "2.23",
+					"value": "190.09",
+					"super_obj_id": "6",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "2.68",
+					"value": "190.09",
+					"super_obj_id": "7",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "3.75",
+					"value": "190.09",
+					"super_obj_id": "8",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "4.82",
+					"value": "190.09",
+					"super_obj_id": "9",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "5.89",
+					"value": "181.83",
+					"super_obj_id": "10",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "6.96",
+					"value": "180.26",
+					"super_obj_id": "11",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "8.02",
+					"value": "179.39",
+					"super_obj_id": "12",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "9.08",
+					"value": "178.2",
+					"super_obj_id": "13",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "10.07",
+					"value": "176.54",
+					"super_obj_id": "14",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "11.06",
+					"value": "174.85",
+					"super_obj_id": "15",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "12.05",
+					"value": "173.21",
+					"super_obj_id": "16",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "13.03",
+					"value": "171.8",
+					"super_obj_id": "17",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "14.02",
+					"value": "170.42",
+					"super_obj_id": "18",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "15",
+					"value": "169.1",
+					"super_obj_id": "19",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "15.92",
+					"value": "167.87",
+					"super_obj_id": "20",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "17.04",
+					"value": "166.42",
+					"super_obj_id": "21",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "18.16",
+					"value": "164.99",
+					"super_obj_id": "22",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "19.28",
+					"value": "163.45",
+					"super_obj_id": "23",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "20.37",
+					"value": "162.2",
+					"super_obj_id": "24",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "21.46",
+					"value": "160.91",
+					"super_obj_id": "25",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "22.75",
+					"value": "159.13",
+					"super_obj_id": "26",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "24.04",
+					"value": "157.36",
+					"super_obj_id": "27",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "25.33",
+					"value": "155.56",
+					"super_obj_id": "28",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "26.62",
+					"value": "153.8",
+					"super_obj_id": "29",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "27.91",
+					"value": "152.04",
+					"super_obj_id": "30",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "29.2",
+					"value": "150.54",
+					"super_obj_id": "31",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "30.09",
+					"value": "149.17",
+					"super_obj_id": "32",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "30.99",
+					"value": "147.84",
+					"super_obj_id": "33",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "31.88",
+					"value": "146.56",
+					"super_obj_id": "34",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "32.77",
+					"value": "145.23",
+					"super_obj_id": "35",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "33.88",
+					"value": "143.84",
+					"super_obj_id": "36",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "35",
+					"value": "142.44",
+					"super_obj_id": "37",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "35.8",
+					"value": "141.4",
+					"super_obj_id": "38",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "36.6",
+					"value": "140.31",
+					"super_obj_id": "39",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "37.73",
+					"value": "138.47",
+					"super_obj_id": "40",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "38.86",
+					"value": "136.64",
+					"super_obj_id": "41",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "40.49",
+					"value": "134.84",
+					"super_obj_id": "42",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "42.12",
+					"value": "133.07",
+					"super_obj_id": "43",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "43.62",
+					"value": "131.26",
+					"super_obj_id": "44",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "45.12",
+					"value": "129.52",
+					"super_obj_id": "45",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "46.62",
+					"value": "127.75",
+					"super_obj_id": "46",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "48.12",
+					"value": "126.76",
+					"super_obj_id": "47",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "49.07",
+					"value": "124.65",
+					"super_obj_id": "48",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "50.27",
+					"value": "123.15",
+					"super_obj_id": "49",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "51.47",
+					"value": "121.47",
+					"super_obj_id": "50",
+					"color_value": "0xFFFF93"
+				}]
+			}
+			]
+		},
+		{
+			"pollutionType": "COD",
+			"result": [{
+				"type": "LineChart",
+				"schemeName": "所属方案名称",
+				"schemeCode": "所属方案编码",
+				"sectionName": "太子河河道",
+				"sectionCode": "太子河河道",
+				"year": "2016",
+				"label": "1996-01",
+				"color": "0x8F8FD2",
+				"xField": "distance",
+				"yField": "value",
+				"xFieldName": "距离",
+				"yFieldName": "浓度(mg/l)",
+				"nodeList": [{
+					"distance": "0",
+					"value": "194.84",
+					"super_obj_id": "1",
+					"color_value": "0x02FF93"
+				},
+				{
+					"distance": "0.45",
+					"value": "193.53",
+					"super_obj_id": "2",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "0.89",
+					"value": "192.16",
+					"super_obj_id": "3",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "1.34",
+					"value": "190.79",
+					"super_obj_id": "4",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "1.79",
+					"value": "190.09",
+					"super_obj_id": "5",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "2.23",
+					"value": "190.09",
+					"super_obj_id": "6",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "2.68",
+					"value": "190.09",
+					"super_obj_id": "7",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "3.75",
+					"value": "190.09",
+					"super_obj_id": "8",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "4.82",
+					"value": "190.09",
+					"super_obj_id": "9",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "5.89",
+					"value": "181.83",
+					"super_obj_id": "10",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "6.96",
+					"value": "180.26",
+					"super_obj_id": "11",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "8.02",
+					"value": "179.39",
+					"super_obj_id": "12",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "9.08",
+					"value": "178.2",
+					"super_obj_id": "13",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "10.07",
+					"value": "176.54",
+					"super_obj_id": "14",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "11.06",
+					"value": "174.85",
+					"super_obj_id": "15",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "12.05",
+					"value": "173.21",
+					"super_obj_id": "16",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "13.03",
+					"value": "171.8",
+					"super_obj_id": "17",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "14.02",
+					"value": "170.42",
+					"super_obj_id": "18",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "15",
+					"value": "169.1",
+					"super_obj_id": "19",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "15.92",
+					"value": "167.87",
+					"super_obj_id": "20",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "17.04",
+					"value": "166.42",
+					"super_obj_id": "21",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "18.16",
+					"value": "164.99",
+					"super_obj_id": "22",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "19.28",
+					"value": "163.45",
+					"super_obj_id": "23",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "20.37",
+					"value": "162.2",
+					"super_obj_id": "24",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "21.46",
+					"value": "160.91",
+					"super_obj_id": "25",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "22.75",
+					"value": "159.13",
+					"super_obj_id": "26",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "24.04",
+					"value": "157.36",
+					"super_obj_id": "27",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "25.33",
+					"value": "155.56",
+					"super_obj_id": "28",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "26.62",
+					"value": "153.8",
+					"super_obj_id": "29",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "27.91",
+					"value": "152.04",
+					"super_obj_id": "30",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "29.2",
+					"value": "150.54",
+					"super_obj_id": "31",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "30.09",
+					"value": "149.17",
+					"super_obj_id": "32",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "30.99",
+					"value": "147.84",
+					"super_obj_id": "33",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "31.88",
+					"value": "146.56",
+					"super_obj_id": "34",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "32.77",
+					"value": "145.23",
+					"super_obj_id": "35",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "33.88",
+					"value": "143.84",
+					"super_obj_id": "36",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "35",
+					"value": "142.44",
+					"super_obj_id": "37",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "35.8",
+					"value": "141.4",
+					"super_obj_id": "38",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "36.6",
+					"value": "140.31",
+					"super_obj_id": "39",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "37.73",
+					"value": "138.47",
+					"super_obj_id": "40",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "38.86",
+					"value": "136.64",
+					"super_obj_id": "41",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "40.49",
+					"value": "134.84",
+					"super_obj_id": "42",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "42.12",
+					"value": "133.07",
+					"super_obj_id": "43",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "43.62",
+					"value": "131.26",
+					"super_obj_id": "44",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "45.12",
+					"value": "129.52",
+					"super_obj_id": "45",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "46.62",
+					"value": "127.75",
+					"super_obj_id": "46",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "48.12",
+					"value": "126.76",
+					"super_obj_id": "47",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "49.07",
+					"value": "124.65",
+					"super_obj_id": "48",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "50.27",
+					"value": "123.15",
+					"super_obj_id": "49",
+					"color_value": "0xFFFF93"
+				},
+				{
+					"distance": "51.47",
+					"value": "121.47",
+					"super_obj_id": "50",
+					"color_value": "0xFFFF93"
+				}]
+			}]
+		}],
+		"legends": [{
+			"color": "0xF23012",
+			"label": "0-0.3"
+		},
+		{
+			"color": "0xF0845F",
+			"label": "0.3-0.6"
+		},
+		{
+			"color": "0xA2F012",
+			"label": "0.6-0.0.8"
+		},
+		{
+			"color": "0x02FF93",
+			"label": "0.6-1.3"
+		}]
+	}
+}

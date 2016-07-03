@@ -64,8 +64,6 @@
 				queryModelList();
 			}
 			
-			
-			
 			protected function this_WidgetAddCompleteHandler(event:BaseWidgetEvent):void
 			{
 			}

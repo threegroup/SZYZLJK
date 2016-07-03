@@ -7,23 +7,30 @@
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import com.supermap.web.core.Feature;
+			import com.supermap.web.mapping.FeaturesLayer;
 			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
+			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
 			import flash.utils.setTimeout;
 			
 			import sm.wegis.szy.events.TimeSliderEvent;
-			private var _data:Array;
+			import sm.wegis.szy.models.ApplicationModelLocator;
+			import sm.wegis.szy.utils.FeatureLayerUtil;
+			import sm.wegis.szy.vo.ConstVO;
+			private var _data:Object;
 			private var dataChange:Boolean = false;
+			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
 			private var isPlay:Boolean = false;
 			
 			
-			public function get data():Array
+			public function get data():Object
 			{
 				return _data;
 			}
 			
-			public function set data(value:Array):void
+			public function set data(value:Object):void
 			{
 				_data = value;
 				dataChange = true;
@@ -35,7 +42,10 @@
 				super.commitProperties();
 				if (dataChange == true) {
 					dataChange = false;
-					timeSlider.maximum = data.length;
+					if (data != null && data.currentPlan is Array &&  (data.currentPlan as Array).length > 0 
+						&& (data.currentPlan as Array)[0]["result"] && (data.currentPlan as Array)[0]["result"] is Array){
+						timeSlider.maximum = ((data.currentPlan as Array)[0]["result"] as Array).length -1;
+					}
 					initParam();
 				}
 			}
@@ -43,42 +53,84 @@
 			private function initParam():void
 			{
 				timeSlider.value = 0;
-				play.source = ResourceManagerEx.FindResource('play').cls;
+//				play.source = ResourceManagerEx.FindResource('play').cls;
+				dmStartBt.label = "开始";
 				isPlay = false;
 			}
 			
 			protected function play_clickHandler(event:MouseEvent):void
 			{
 				if (isPlay == false) {
-					play.source = ResourceManagerEx.FindResource('pause').cls;
+//					play.source = ResourceManagerEx.FindResource('pause').cls;
+					dmStartBt.label = "开始";
 					isPlay = true;
 					playHandler();
 				} else {
-					play.source = ResourceManagerEx.FindResource('play').cls;
+//					play.source = ResourceManagerEx.FindResource('play').cls;
+					dmStartBt.label = "暂停";
 					isPlay = false;
 				}
 			}
 			
 			private function playHandler():void
 			{
-				if (isPlay == true) {
-					if (timeSlider.value < data.length) {
-						dispatchChangeEvent();
+				if (isPlay == true && timeSlider.value <= timeSlider.maximum) {
+					dispatchChangeEvent();
+					if (timeSlider.value == timeSlider.maximum){
+//						play.source = ResourceManagerEx.FindResource('play').cls;
+						dmStartBt.label = "开始";
+						isPlay = false;
+					} else {
+						timeSlider.value += timeSlider.stepSize;
+						setTimeout(playHandler,2000);
 					}
-					setTimeout(playHandler,1000);
 				}
 			}
 			
 			private function dispatchChangeEvent():void
 			{
 				var event:TimeSliderEvent = new TimeSliderEvent(TimeSliderEvent.Change);
-				event.data = data[timeSlider.value];
+				//月份索引
+				var index:int = timeSlider.value;
+				var showData:Array = [];
+				var pollutionItem:Object;
+				var monthItem:Object;
+				var chartDatas:Object = {};
+				var label:String;
+				//解析当前方案
+				if (data.currentPlan != null){
+					for each(pollutionItem in data.currentPlan) {
+						//解析污染物
+						if (pollutionItem.pollutionType == riverCompareBG.selectedValue){
+							monthItem = pollutionItem.result[index];
+							//解析月份
+							monLb.text = monthItem.label;
+							chartDatas.currentPlan = monthItem;
+							break;
+						}
+					}
+				}
+				
+				//解析对比方案
+				if (data.comparePlan != null){
+					for each(pollutionItem in data.comparePlan) {
+						//解析污染物
+						if (pollutionItem.pollutionType == riverCompareBG.selectedValue){
+							//解析月份
+							monthItem = pollutionItem.result[index];
+							chartDatas.comparePlan = monthItem;
+							break;
+						}
+					}
+				}
+				event.data = chartDatas;
 				dispatchEvent(event);
 			}
 			
 			protected function stop_clickHandler(event:MouseEvent):void
 			{
-				play.source = ResourceManagerEx.FindResource('play').cls;
+				//				play.source = ResourceManagerEx.FindResource('play').cls;
+				dmStartBt.label = "开始";
 				timeSlider.value = timeSlider.minimum;
 				isPlay = false;
 			}
@@ -90,12 +142,26 @@
 			
 		]]>
 	</fx:Script>
-	<s:HGroup width="100%" height="100%" verticalAlign="middle">
-		<s:Image id="play" width="48" height="48"  source="{ResourceManagerEx.FindResource('play').cls}"
-				 click="play_clickHandler(event)"/>
-		<s:Image id="stop"  width="48" height="48"   source="{ResourceManagerEx.FindResource('stop').cls}"
-				 click="stop_clickHandler(event)"/>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="riverCompareBG"/>
+	</fx:Declarations>
+	<s:HGroup width="100%" height="100%" verticalAlign="middle" paddingRight="10" paddingLeft="10">
+		<s:Label text="时间："/>	
+		<s:Label id="monLb" height="100%" width="60"/>
 		<s:HSlider id="timeSlider" width="100%" minimum="0" stepSize="1" snapInterval="1"
 				   change="timeSlider_changeHandler(event)"/>
+		<s:HGroup id="riverCompareType">
+			<s:Label text="污染物类型:" height="100%"/>
+			<s:RadioButton id="NH3N" value="NH3-N" label="NH3-N"  groupName="riverCompareBG" selected="true"/>
+			<s:RadioButton id="COD" value="COD-N" label="COD"  groupName="riverCompareBG"/>
+		</s:HGroup>
+		<!--		<s:Image id="play" width="48" height="48"  source="{ResourceManagerEx.FindResource('play').cls}"
+		click="play_clickHandler(event)"/>
+		<s:Image id="stop"  width="48" height="48"   source="{ResourceManagerEx.FindResource('stop').cls}"
+		click="stop_clickHandler(event)"/>-->
+		<s:Button id="dmStartBt" label="开始" buttonMode="true" styleName="SubmitRegisterStyle"
+				  click="play_clickHandler(event)"/>
+		<s:Button id="dmStopBt" label="停止" buttonMode="true" styleName="SubmitRegisterStyle"
+				  click="stop_clickHandler(event)"/>
 	</s:HGroup>
 </s:Group>

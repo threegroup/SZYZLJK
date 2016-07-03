@@ -200,8 +200,8 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryCompareListCommand
 					</value>
-					<value type="Class">sm.wegis.szy.commands.QueryRiverCampareCalcResultCommand
-					</value>
+					<!--<value type="Class">sm.wegis.szy.commands.QueryRiverCampareCalcResultCommand
+					</value>-->
 					<value type="Class">sm.wegis.szy.commands.ExportQueryRiverCalcResultCommand
 					</value>
 				    <value type="Class">sm.wegis.szy.commands.ExportQueryDMCalcResultCommand
@@ -272,7 +272,7 @@
 				<property name="QueryDMRiver" value="QueryDMRiverCommand"/>			
 				<property name="QueryRiverCalcResult" value="QueryRiverCalcResultCommand"/>		
 				<property name="QueryCompareList" value="QueryCompareListCommand"/>
-				<property name="QueryRiverCompareCalcResult" value="QueryRiverCampareCalcResultCommand"/>
+				<!--<property name="QueryRiverCompareCalcResult" value="QueryRiverCampareCalcResultCommand"/>-->
 				<property name="ExportQueryRiverCalcResult" value="ExportQueryRiverCalcResultCommand"/>
 				<property name="ExportQueryDMCalcResult" value="ExportQueryDMCalcResultCommand"/>
 				<property name="QueryBreakCompareCalcResult" value="QueryBreakCompareCalcResultCommand"/>
@@ -314,6 +314,9 @@
 					
 					<value type="Class">sm.wegis.szy.commands.QuerySaveThemeMapCommand
 					</value>
+					
+					<value type="Class">sm.wegis.szy.commands.QueryRiverCampareCalcResultCommand
+					</value>
 				</array>
 			</arg>
 		</method-invocation>
@@ -330,7 +333,7 @@
 				
 					<!--水质评价保存的专题地图查询 -->
 				<property name="QuerySaveThemeMap" value="QuerySaveThemeMapCommand" />
-				
+				<property name="QueryRiverCompareCalcResult" value="QueryRiverCampareCalcResultCommand"/>
 				
 				<!--应急管理查询-->
 				

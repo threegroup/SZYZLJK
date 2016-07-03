@@ -51,7 +51,7 @@ maxLevel=3
 waterEvaluationGridColumn=序号:index:40,指标名称:指标名称,测量值:测量值,评价结果:评价结果,超标情况:超标情况,历史情况:history:70
 
 #配置颜色池
-colors=0xFC987D,0xF9F380,0xB3F683,0x7EFBF9,0x818BF8,0xF881F4,0xB2C7BE
+colors=0xFC987D,0x14176A,0xB3F683,0x7EFBF9,0x818BF8,0xF881F4,0xB2C7BE
 
 
 

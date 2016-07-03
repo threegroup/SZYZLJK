@@ -12,8 +12,10 @@
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.supermap.web.core.Feature;
+			import com.supermap.web.core.styles.PredefinedLineStyle;
 			import com.supermap.web.events.ViewBoundsEvent;
 			import com.supermap.web.iServerJava6R.Recordset;
+			import com.supermap.web.mapping.FeaturesLayer;
 			import com.supermap.web.utils.Hashtable;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			import com.supermap.wegis.common.mappingEx.TiledDynamicRESTLayerEx;
@@ -46,6 +48,7 @@
 			
 			import widgets.wateremergency.chart.LegendItemEx;
 			import widgets.wateremergency.chart.LineSeriesEx;
+			import widgets.wateremergency.model.components.PollutionLegendItem;
 			
 			[Bindable]
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
@@ -72,10 +75,10 @@
 			[Bindable]
 			private var dmList:ArrayCollection = null;
 			
-//			/**当前断面对象*/
-//			private var sameItem:Object = null;
-//			/**当前断面对象索引*/
-//			private var sameItemIndex:int = -1;
+			//			/**当前断面对象*/
+			//			private var sameItem:Object = null;
+			//			/**当前断面对象索引*/
+			//			private var sameItemIndex:int = -1;
 			
 			/**不同方案，相同断面对比，提示文本字段*/
 			private var toolTipField:String = "toolTip";
@@ -101,15 +104,14 @@
 			
 			private function clear():void
 			{
-//				this.sameItem = null;
-//				this.sameItemIndex = -1;
+				//				this.sameItem = null;
+				//				this.sameItemIndex = -1;
 				this.resetDmChart();
 			}
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				initEventListener();
-				riverPollutionCompareInitHandler();
 			}
 			
 			public function initEventListener():void{
@@ -122,10 +124,16 @@
 					[QueryEvent.SHOW_MODEL_RESULT_WIDGET, showModelResultWidgetHandler], //显示当前断面河道结果面板
 					[QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT_RESPONSE, queryRiverCompareHandler],//河道对比
 					[QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT_RESPONSE, queryDMCompareHandler],//断面对比
+					[QueryEvent.QUERY_DM_RIVER_RESPONSE, queryDMRiverResponseHandler],//查询河流断面段空间数据
 					[SystemEvent.SYSTEM_RELOAD, systemReloadHandler]
 				]);
 				var eventObject:CairngormEventClass = new CairngormEventClass();
 				CairngormEventManager.getInstance().attachEvent(eventObject.encode(eList));
+			}
+			
+			private function queryDMRiverResponseHandler(event:CairngormEvent):void
+			{
+				riverPollutionCompareInitHandler();
 			}
 			
 			//断面地形剖面数据
@@ -278,24 +286,24 @@
 				if (datas.length > 0) {
 					
 					//污染物浓度展示
-					riverCompareType.removeAllElements();
+					riverCalcType.removeAllElements();
 					if (targetRwList.selectedItem.value == 5){
 						var tip:Label = new Label();
 						tip.text = "污染物展示类型：";
 						tip.percentHeight = 100;
-						riverCompareType.addElement(tip);
+						riverCalcType.addElement(tip);
 						
 						var nh3Ck:CheckBox = new CheckBox();
 						nh3Ck.label = "NH3-N";
 						nh3Ck.selected = true;
 						nh3Ck.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
-						riverCompareType.addElement(nh3Ck);
+						riverCalcType.addElement(nh3Ck);
 						
 						var codCk:CheckBox = new CheckBox();
 						codCk.label = "COD";
 						codCk.selected = true;
 						codCk.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
-						riverCompareType.addElement(codCk);
+						riverCalcType.addElement(codCk);
 					} 
 					
 					for each(var item:Object in datas) {
@@ -327,6 +335,7 @@
 										ls.setStyle("form", "curve");
 										ls.setStyle("showDataEffect", slide);
 										var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+										scs.weight = 2;
 										ls.setStyle("lineStroke", scs);
 										//										var cf:ClassFactory = new ClassFactory(LineChartDataRender);
 										//										ls.setStyle("itemRenderer", cf);
@@ -422,11 +431,12 @@
 							ls.yField = saData["yField"];
 							ls.setStyle("form", "curve");
 							ls.setStyle("showDataEffect", slide);
-//							var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+							//							var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
 							var scs:SolidColorStroke = new SolidColorStroke();
 							if (index < modelLocator.systemInfo.colors.length) {
 								scs.color = modelLocator.systemInfo.colors[index];
 							}
+							scs.weight = 2;
 							ls.setStyle("lineStroke", scs);
 							//	var cf:ClassFactory = new ClassFactory(LineChartDataRender);
 							//	ls.setStyle("itemRenderer", cf);
@@ -461,7 +471,7 @@
 			private function dmResultHandler(event:Event):void
 			{
 				var checkBox:CheckBox = event.currentTarget as CheckBox;
-				var pollutionName:String = checkBox.name;
+				var pollutionName:String = checkBox.label;
 				for each(var series:Series in dmChart.series)
 				{
 					if (series.name.search(pollutionName) != -1) {
@@ -480,8 +490,14 @@
 				this.currentState = modelShowVO.state;
 				if (this.currentState == BREAK_STATE) {
 					breakBTB.selectedIndex = 0;
+					if (dmChart != null){
+						dmChart.series = [];
+					}
 				} else if (this.currentState == RIVER_STATE) {
 					riverBTB.selectedIndex = 0;
+					if (hdChart != null) {
+						hdChart.series = [];
+					}
 				}
 				if (modelLocator.waterModelParam.isHave == true) {
 					targetsList = new ArrayCollection([
@@ -684,42 +700,42 @@
 				this.resetDmChart();
 			}
 			
-//			//断面对比方案选择
-//			protected function dmCompareSchemeList_changeHandler(event:IndexChangeEvent):void
-//			{
-//				// TODO Auto-generated method stub
-//				this.resetDmChart();
-//				var schemeItem:Object = this.dmCompareSchemeList.selectedItem;
-//				if(schemeItem != null)
-//				{
-//					if(dmList && dmList.length > 0)
-//					{
-//						for each (var tempItem:Object in dmList)
-//						{
-//							if(tempItem && tempItem["sectionCode"] == modelLocator.waterModelParam.dmId)
-//							{
-//								sameItem = tempItem;//定位下拉列表中与当前断面相同的断面
-//								sameItemIndex = dmList.getItemIndex(tempItem);
-//								break;
-//							}
-//						}
-//					}
-//					
-//					//同一个方案，对比不同的断面，此处断面可选
-//					if(schemeItem["planId"] == modelLocator.waterModelParam.planId)
-//					{
-//						dmList.removeItemAt(sameItemIndex);
-//						this.dmCompareList.enabled = true;
-//						this.dmCompareList.selectedIndex = 0;
-//					}
-//					else//不同的方案对比同一个断面，此处断面不可选
-//					{
-//						dmList.addItemAt(sameItem,sameItemIndex);
-//						this.dmCompareList.selectedItem = sameItem;
-//						this.dmCompareList.enabled = false;
-//					}
-//				}
-//			}
+			//			//断面对比方案选择
+			//			protected function dmCompareSchemeList_changeHandler(event:IndexChangeEvent):void
+			//			{
+			//				// TODO Auto-generated method stub
+			//				this.resetDmChart();
+			//				var schemeItem:Object = this.dmCompareSchemeList.selectedItem;
+			//				if(schemeItem != null)
+			//				{
+			//					if(dmList && dmList.length > 0)
+			//					{
+			//						for each (var tempItem:Object in dmList)
+			//						{
+			//							if(tempItem && tempItem["sectionCode"] == modelLocator.waterModelParam.dmId)
+			//							{
+			//								sameItem = tempItem;//定位下拉列表中与当前断面相同的断面
+			//								sameItemIndex = dmList.getItemIndex(tempItem);
+			//								break;
+			//							}
+			//						}
+			//					}
+			//					
+			//					//同一个方案，对比不同的断面，此处断面可选
+			//					if(schemeItem["planId"] == modelLocator.waterModelParam.planId)
+			//					{
+			//						dmList.removeItemAt(sameItemIndex);
+			//						this.dmCompareList.enabled = true;
+			//						this.dmCompareList.selectedIndex = 0;
+			//					}
+			//					else//不同的方案对比同一个断面，此处断面不可选
+			//					{
+			//						dmList.addItemAt(sameItem,sameItemIndex);
+			//						this.dmCompareList.selectedItem = sameItem;
+			//						this.dmCompareList.enabled = false;
+			//					}
+			//				}
+			//			}
 			
 			//断面对比断面选择
 			protected function dmCompareList_changeHandler(event:IndexChangeEvent):void
@@ -730,7 +746,7 @@
 			
 			//执行断面对比
 			private var queryCompareDMCalc:Boolean = false;
-			private var DMCompareResult:Object = {};
+			private var dMCompareResult:Object;
 			protected function queryCompareBt_clickHandler(event:MouseEvent):void
 			{
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
@@ -740,6 +756,8 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_BREAK_COMPARE_CALC_RESULT);
 				queryEvent.data = waterModelparam;
 				queryEvent.dispatch();
+				
+				dMCompareResult = {};
 			}
 			
 			private function queryDMCompareHandler(event:CairngormEvent):void
@@ -749,7 +767,7 @@
 				if (queryCompareDMCalc == false){
 					if (result.success == true && result.attributes && result.attributes.targetList &&  result.attributes.targetList is Array) {
 						if ((result.attributes.targetList as Array).length == 2) {
-							DMCompareResult.currentPlan =  result.attributes.targetList[0];
+							dMCompareResult.currentPlan =  result.attributes.targetList[0];
 						}
 					}
 					if (result is Array)
@@ -758,7 +776,7 @@
 						{
 							saData.push(item.attributes);
 						}
-						DMCompareResult.currentPlan =  saData;
+						dMCompareResult.currentPlan =  saData;
 					}
 					queryCompareDMCalc = true;
 					
@@ -780,7 +798,7 @@
 				} else if (queryCompareDMCalc == true){
 					if (result.success == true && result.attributes && result.attributes.targetList &&  result.attributes.targetList is Array) {
 						if ((result.attributes.targetList as Array).length == 2) {
-							DMCompareResult.comparePlan =  result.attributes.targetList[0];
+							dMCompareResult.comparePlan =  result.attributes.targetList[0];
 						}
 					}
 					
@@ -790,22 +808,26 @@
 						{
 							saData.push(item0.attributes);
 						}
-						DMCompareResult.comparePlan =  saData;
+						dMCompareResult.comparePlan =  saData;
 					}
 					
 					//对不同方案，相同断面进行处理
 					if (dmCompareSchemeList.selectedIndex != 0) {
-						for each(var item1:Object in DMCompareResult.currentPlan.nodeList){
-							item1[toolTipField] = item1.time;
-							var times:Array = item1.time.split("-");
-							times["0"] = "1900"; // 年份，我自己指定的，主要是让两组数据，年份相同
-							item1.time = times.join("-");
+						if ( dMCompareResult.currentPlan != null){
+							for each(var item1:Object in dMCompareResult.currentPlan.nodeList){
+								item1[toolTipField] = item1.time;
+								var times:Array = item1.time.split("-");
+								times["0"] = "1900"; // 年份，我自己指定的，主要是让两组数据，年份相同
+								item1.time = times.join("-");
+							}
 						}
-						for each(var item2:Object in DMCompareResult.comparePlan.nodeList){
-							item2[toolTipField] = item2.time;
-							var times0:Array = item2.time.split("-");
-							times0["0"] = "1900";
-							item2.time = times0.join("-");
+						if ( dMCompareResult.comparePlan != null){
+							for each(var item2:Object in dMCompareResult.comparePlan.nodeList){
+								item2[toolTipField] = item2.time;
+								var times0:Array = item2.time.split("-");
+								times0["0"] = "1900";
+								item2.time = times0.join("-");
+							}
 						}
 					}
 					//显示对比chart
@@ -827,20 +849,23 @@
 				var month:int;
 				var label:String;
 				
-				if (DMCompareResult.currentPlan is Array){
-					for each(var item:Object in DMCompareResult.currentPlan){
-						saDatas.push(item);
+				if (dMCompareResult.currentPlan != null){
+					if (dMCompareResult.currentPlan is Array){
+						for each(var item:Object in dMCompareResult.currentPlan){
+							saDatas.push(item);
+						}
+					} else {
+						saDatas.push(dMCompareResult.currentPlan);
 					}
-				} else {
-					saDatas.push(DMCompareResult.currentPlan);
 				}
-				
-				if (DMCompareResult.comparePlan is Array){
-					for each(var item0:Object in DMCompareResult.comparePlan){
-						saDatas.push(item0);
+				if (dMCompareResult.comparePlan != null){
+					if (dMCompareResult.comparePlan is Array){
+						for each(var item0:Object in dMCompareResult.comparePlan){
+							saDatas.push(item0);
+						}
+					} else {
+						saDatas.push(dMCompareResult.comparePlan);
 					}
-				} else {
-					saDatas.push(DMCompareResult.comparePlan);
 				}
 				
 				//污染物浓度展示
@@ -884,6 +909,7 @@
 						if (index < modelLocator.systemInfo.colors.length) {
 							scs.color = modelLocator.systemInfo.colors[index];
 						}
+						scs.weight = 2;
 						ls.displayName = saData.schemeName + saData["sectionName"];
 						ls.setStyle("lineStroke", scs);
 						//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
@@ -899,8 +925,19 @@
 			private function dmComparePollutionChangeHandler(event:Event):void
 			{
 				var checkBox:CheckBox = event.currentTarget as CheckBox;
-				var name:String = checkBox.name;
+				var name:String = checkBox.label;
 				for each(var series:Series in  dmCompareChart.series) {
+					if (series.name.search(name) != -1) {
+						series.visible = checkBox.selected;
+					}
+				}
+			}
+			
+			private function riverComparePollutionChangeHandler(event:Event):void
+			{
+				var checkBox:CheckBox = event.currentTarget as CheckBox;
+				var name:String = checkBox.label;
+				for each(var series:Series in  riverCompareChart.series) {
 					if (series.name.search(name) != -1) {
 						series.visible = checkBox.selected;
 					}
@@ -911,7 +948,7 @@
 			private function riverPollutionChangeHandler(event:Event):void
 			{
 				var checkBox:CheckBox = event.currentTarget as CheckBox;
-				var name:String = checkBox.name;
+				var name:String = checkBox.label;
 				for each(var series:Series in  hdChart.series) {
 					if (series.name.search(name) != -1) {
 						series.visible = checkBox.selected;
@@ -929,7 +966,7 @@
 				}
 			}
 			
-			private var riverCompareResult:Object = {};
+			private var riverCompareResult:Object;
 			private var queryCompareRiverCalc:Boolean = false;
 			private var clickButton:Button;
 			//先请求当前方案的河道对应计算指标计算结果
@@ -950,14 +987,22 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_COMPARE_CALC_RESULT);
 				queryEvent.data = waterModelparam;
 				queryEvent.dispatch();
+				
+				riverCompareResult = {};
 			}
 			
 			private function queryRiverCompareHandler(event:CairngormEvent):void
 			{
 				var result:Object = event.data;
+				var legendData:Array;
 				if (queryCompareRiverCalc == false){
 					if (result.success == true) {
-						riverCompareResult.currentPlan = result.attributes.result;
+						//污染物对比
+						if (riverTargetRwList.selectedItem.value == 5) {
+							riverCompareResult.currentPlan = result.attributes.targetList;
+						} else {
+							riverCompareResult.currentPlan = result.attributes.result;
+						}
 					}
 					queryCompareRiverCalc = true;
 					var waterModelparam:WaterModelParam = new WaterModelParam();
@@ -968,7 +1013,13 @@
 					queryEvent.dispatch();
 				} else if (queryCompareRiverCalc == true){
 					if (result.success == true) {
-						riverCompareResult.comparePlan = result.attributes.result;
+						//污染物对比
+						if (riverTargetRwList.selectedItem.value == 5) {
+							riverCompareResult.comparePlan = result.attributes.targetList;
+							legendData = result.attributes.legends;
+						} else {
+							riverCompareResult.comparePlan = result.attributes.result;
+						}
 					}
 					riverCompareMonthDpList.enabled = true;
 					//显示对比chart
@@ -976,6 +1027,33 @@
 						showRiverCompareChart();
 					} else {
 						//处理数据，供Hslider使用
+						riverCompareTimeSlider.data = riverCompareResult;
+						showRiverCompareLegend(legendData);
+					}
+				}
+			}
+			
+			private function showRiverCompareLegend(legendData:Array):void
+			{
+				if (legendData != null) {
+					var index:int = 0;
+					for ( ; index < legendData.length ; index++) {
+						var itemData:Object = legendData[index];
+						var legendItem:PollutionLegendItem;
+						if (content.numElements > index && content.getElementAt(index) is PollutionLegendItem) {
+							legendItem = content.getElementAt(index) as PollutionLegendItem;
+						} else {
+							legendItem = new PollutionLegendItem();
+							content.addElementAt(legendItem,index);
+						}
+						legendItem.color =  parseInt(itemData["color"], 16);
+						legendItem.label = itemData["label"];
+					}
+					if (content.numElements > index) {
+						var remainNum:int = content.numElements;
+						for (; index < remainNum ; index ++) {
+							content.removeElementAt(content.numElements-1);
+						}
 					}
 				}
 			}
@@ -1027,33 +1105,99 @@
 				var sa:Array = [];
 				var month:int;
 				var label:String;
-				for each(saData in riverCompareResult.currentPlan)
-				{
-					label =saData["label"];
-					if (label != null) {
-						month = -1;
-						if (label.split("-").length == 2){
-							month = parseInt(label.split("-")[1]);
-						}
-						if (month == selectMonth) {
-							saDatas.push(saData);
-							break;
+				//污染物指标
+				if (riverTargetRwList.selectedItem.value == 5){
+					//污染物浓度展示
+					riverCompareType.removeAllElements();
+					if (riverTargetRwList.selectedItem.value == 5){
+						var tip:Label = new Label();
+						tip.text = "污染物展示类型：";
+						tip.percentHeight = 100;
+						riverCompareType.addElement(tip);
+						
+						var nh3Ck:CheckBox = new CheckBox();
+						nh3Ck.label = "NH3-N";
+						nh3Ck.selected = true;
+						nh3Ck.addEventListener(Event.CHANGE, riverComparePollutionChangeHandler);
+						riverCompareType.addElement(nh3Ck);
+						
+						var codCk:CheckBox = new CheckBox();
+						codCk.label = "COD";
+						codCk.selected = true;
+						codCk.addEventListener(Event.CHANGE, riverComparePollutionChangeHandler);
+						riverCompareType.addElement(codCk);
+					} 
+					
+					if (riverCompareResult.currentPlan && riverCompareResult.currentPlan){
+						for each(var pollutionItem:Object in riverCompareResult.currentPlan)
+						{
+							for  each (saData in pollutionItem.result)
+							{
+								label =saData["label"];
+								saData.name = pollutionItem.pollutionType;
+								if (label != null) {
+									month = -1;
+									if (label.split("-").length == 2){
+										month = parseInt(label.split("-")[1]);
+									}
+									if (month == selectMonth) {
+										saDatas.push(saData);
+										break;
+									}
+								}
+							}
 						}
 					}
-				}
-				
-				//遍历对比方案的数据
-				for each(saData in riverCompareResult.comparePlan)
-				{
-					label =saData["label"];
-					if (label != null) {
-						month = -1;
-						if (label.split("-").length == 2){
-							month = parseInt(label.split("-")[1]);
+					//遍历对比方案
+					if (riverCompareResult.comparePlan && riverCompareResult.comparePlan){
+						for each(var pollutionItem:Object in riverCompareResult.comparePlan)
+						{
+							for  each (saData in pollutionItem.result)
+							{
+								label =saData["label"];
+								saData.name = pollutionItem.pollutionType;
+								if (label != null) {
+									month = -1;
+									if (label.split("-").length == 2){
+										month = parseInt(label.split("-")[1]);
+									}
+									if (month == selectMonth) {
+										saDatas.push(saData);
+										break;
+									}
+								}
+							}
 						}
-						if (month == selectMonth) {
-							saDatas.push(saData);
-							break;
+					}
+				} else { // 非污染物指标对比
+					for each(saData in riverCompareResult.currentPlan)
+					{
+						label =saData["label"];
+						if (label != null) {
+							month = -1;
+							if (label.split("-").length == 2){
+								month = parseInt(label.split("-")[1]);
+							}
+							if (month == selectMonth) {
+								saDatas.push(saData);
+								break;
+							}
+						}
+					}
+					
+					//遍历对比方案的数据
+					for each(saData in riverCompareResult.comparePlan)
+					{
+						label =saData["label"];
+						if (label != null) {
+							month = -1;
+							if (label.split("-").length == 2){
+								month = parseInt(label.split("-")[1]);
+							}
+							if (month == selectMonth) {
+								saDatas.push(saData);
+								break;
+							}
 						}
 					}
 				}
@@ -1067,23 +1211,18 @@
 						} else {
 							ls = new LineSeriesEx();
 						}
-						ls.name = saData["label"];
+						ls.name = saData["name"] != null ? saData["name"] : saData["label"];
 						ls.xField = saData["xField"];
 						ls.yField = saData["yField"];
 						ls.setStyle("form", "curve");
 						ls.setStyle("showDataEffect", slide);
 						//var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
-						var scs:SolidColorStroke = null;
-						if(index == 0)
-						{
-							scs = new SolidColorStroke(0xFF0000);
-							ls.displayName =  saData["schemeName"];
+						var scs:SolidColorStroke = new SolidColorStroke();
+						if (index < modelLocator.systemInfo.colors.length) {
+							scs.color = modelLocator.systemInfo.colors[index];
 						}
-						else
-						{
-							scs = new SolidColorStroke(0x0000FF);
-							ls.displayName = saData["schemeName"];
-						}
+						scs.weight = 2;
+						ls.displayName =  saData["schemeName"];
 						ls.setStyle("lineStroke", scs);
 						//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
 						//						ls.setStyle("itemRenderer", cf);
@@ -1310,8 +1449,22 @@
 			
 			private function initCompareMapViewBoundsHandler():void
 			{
-				//				currentPlanMap.addEventListener(ViewBoundsEvent.VIEW_BOUNDS_CHANGE, viewBoundsChangeHandler);
-				//				comparePlanMap.addEventListener(ViewBoundsEvent.VIEW_BOUNDS_CHANGE, viewBoundsChangeHandler);
+				currentPlanMap.addEventListener(MouseEvent.ROLL_OVER, mapRollOverHandler);
+				comparePlanMap.addEventListener(MouseEvent.ROLL_OVER, mapRollOverHandler);
+			}
+			
+			private function mapRollOverHandler(event:MouseEvent):void
+			{
+				var map:MapCtrl = event.currentTarget as MapCtrl;
+				map.addEventListener(ViewBoundsEvent.VIEW_BOUNDS_CHANGE, viewBoundsChangeHandler);
+				map.addEventListener(MouseEvent.ROLL_OUT, mapRollOutrHandler);
+			}
+			
+			private function mapRollOutrHandler(event:MouseEvent):void
+			{
+				var map:MapCtrl = event.currentTarget as MapCtrl;
+				map.removeEventListener(MouseEvent.ROLL_OUT, mapRollOutrHandler);
+				map.removeEventListener(ViewBoundsEvent.VIEW_BOUNDS_CHANGE, viewBoundsChangeHandler);
 			}
 			
 			private function viewBoundsChangeHandler(event:ViewBoundsEvent):void
@@ -1330,44 +1483,42 @@
 			//当前时间轴选择的月份数据，根据月份数据，刷新河流段
 			protected function timeSlider_changeHandler(event:TimeSliderEvent):void
 			{
-				var selectMonth:int = event.data as int; 
-				//显示当前方案的数据
-				var saData:Object;
-				var month:int;
-				var label:String;
-				for each(saData in riverCompareResult.currentPlan)
-				{
-					label =saData["label"];
-					month = -1;
-					if (label.split("-").length == 2){
-						month = parseInt(label.split("-")[1]);
-					}
-					if (month == selectMonth) {
-						refreshPollutionRiver(saData, currentPlanMap);
-						break;
-					}
+				var showDatas:Object = event.data;
+				if (showDatas.currentPlan != null){
+					showRiverMap(showDatas.currentPlan, currentPlanMap);
 				}
-				
-				//遍历对比方案的数据
-				for each(saData in riverCompareResult.comparePlan)
-				{
-					label =saData["label"];
-					month = -1;
-					if (label.split("-").length == 2){
-						month = parseInt(label.split("-")[1]);
-					}
-					if (month == selectMonth) {
-						refreshPollutionRiver(saData, comparePlanMap);
-						break;
+				if (showDatas.comparePlan != null){
+					showRiverMap(showDatas.comparePlan, comparePlanMap);
+				}
+			}
+			
+			private function showRiverMap(data:Object, map:MapCtrl):void
+			{
+				//关联断面对应的河流段
+				//河流段
+				var riverLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, map);
+				resolveRiverFeature(riverLayer);
+				//设置河段颜色
+				var preLineStyle:PredefinedLineStyle;
+				for each(var item:Object in data.nodeList){
+					var riverFeature:Feature = riverLayer.getFeatureByID(item.super_obj_id);
+					if (riverFeature != null) {
+						riverFeature.visible = true;
+						preLineStyle = riverFeature.style as PredefinedLineStyle;
+						if (preLineStyle == null) {
+							preLineStyle = new PredefinedLineStyle("solid");
+							riverFeature.style = preLineStyle;
+						}
+						preLineStyle.color = parseInt(item.color_value, 16);
 					}
 				}
 			}
 			
-			private function refreshPollutionRiver(datas:Object, map:MapCtrl):void
+			//设置features都不可见
+			private function resolveRiverFeature(featuresLayer:FeaturesLayer):void
 			{
-				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, map);
-				for each(var item:Object in datas["nodeList"]) {
-					
+				for each(var feature:Feature in featuresLayer.features){
+					feature.visible = false;
 				}
 			}
 			
@@ -1380,21 +1531,8 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<mx:SolidColor id="sc1" color="#F5AC39"/>
-		<mx:SolidColor id="sc2" color="#55D8FE"  />
-		<s:SolidColorStroke id="s1" color="#F5AC39" weight="2"/>
-		<s:SolidColorStroke id="s2" color="#55D8FE" weight="2"/>
-		<s:SolidColorStroke id="s3" color="#1D66AE" weight="2"/>
-		<s:SolidColorStroke id="hd_s3" color="#FF0000" weight="2"/>
-		<s:SolidColorStroke id="s4" color="#712F82" weight="2"/>
-		<s:SolidColorStroke id="hd_s5" color="#0000FF" weight="2"/>
-		<s:SolidColorStroke id="s5" color="#FF00CC" weight="2"/>
-		<s:SolidColorStroke id="hd_wden_s5" color="#0000FF" weight="10"/>
 		<mx:SeriesSlide  id="slide"  direction="up" elementOffset="0"/>
-		<mx:SeriesSlide  id="slide2" direction="up"  elementOffset="0"/>
 		<s:SolidColorStroke id="chartAxisStroke" color="#BBCCDD" weight="1" alpha="1"/>
-		<mx:SeriesInterpolate id="areaSlide" duration="200"/>
-		<mx:SeriesInterpolate id="areaSlide2" duration="200"/>
 	</fx:Declarations>
 	<ns:states>
 		<s:State name="hideState"/>
@@ -1494,8 +1632,8 @@
 								<s:Label id="dmWpLabel" width="80" height="100%"/>
 							</s:HGroup>
 							<chart:AreaChartEx id="terrainProfileChart" height="100%" width="100%" showDataTips="true" 
-										  seriesFilters="[]"
-										  dataTipFunction="terrainProfileDataTipFunction">
+											   seriesFilters="[]"
+											   dataTipFunction="terrainProfileDataTipFunction">
 								<!--用于定义统计图的XY轴样式及数值范围-->
 								<chart:verticalAxis>
 									<mx:LinearAxis  id="dmVerticalAxis"  title="高程"/>
@@ -1606,7 +1744,7 @@
 													  styleName="SubmitRegisterStyle"
 													  click="exportRwBt_clickHandler(event)"/>
 										</s:HGroup>
-										<s:HGroup id="riverCompareType" paddingLeft="20"/>
+										<s:HGroup id="riverCalcType" paddingLeft="20"/>
 									</mx:GridItem>
 								</mx:GridRow>
 							</mx:Grid>	
@@ -1662,6 +1800,7 @@
 											<s:Button id="mapCompare" label="浓度地图展示" buttonMode="true" styleName="SubmitRegisterStyle"
 													  click="riverQueryRwBt_clickHandler(event)"/>
 										</s:HGroup>
+										<s:HGroup id="riverCompareType" paddingLeft="20"/>
 									</mx:GridItem>
 									<mx:GridItem>
 										<s:HGroup gap="10">
@@ -1721,8 +1860,21 @@
 					<line:VLine height="100%"/>
 					<ns:MapCtrl id="comparePlanMap" width="100%" height="100%"/>
 				</s:HGroup>
+				<s:BorderContainer  borderVisible="true" borderColor="0xEAEAEA" right="5" bottom="5">
+					<s:VGroup  gap="5">
+						<s:Group height="25" width="100%"  minWidth="50">
+							<s:Rect width="100%" height="100%">
+								<s:fill>
+									<s:SolidColor  color="0x00A8F3" />
+								</s:fill>
+							</s:Rect>
+							<s:Label id="label" text="图例(单位:mg/L)" color="0xFFFFFF"   verticalAlign="middle"  horizontalCenter="0" height="100%" />
+						</s:Group> 
+						<s:VGroup id="content"   paddingLeft="5"  paddingRight="5" paddingBottom="5"/>
+					</s:VGroup>
+				</s:BorderContainer>
 			</s:BorderContainer>
-			<components:TimeSlider id="timeSlider" width="100%" change="timeSlider_changeHandler(event)"/>
+			<components:TimeSlider id="riverCompareTimeSlider"  width="100%" change="timeSlider_changeHandler(event)"/>
 		</s:VGroup>
 	</s:Panel>
 </ns:WidgetBase>

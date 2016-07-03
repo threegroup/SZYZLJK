@@ -10,6 +10,7 @@ package sm.wegis.szy.commands
 	import sm.wegis.szy.businesses.IDelegate;
 	import sm.wegis.szy.core.baseclass.CommandBase;
 	import sm.wegis.szy.events.QueryEvent;
+	import sm.wegis.szy.vo.WSMethod;
 	import sm.wegis.szy.vo.WaterModelParam;
 	
 	//查询河道对比计算结果
@@ -22,7 +23,11 @@ package sm.wegis.szy.commands
 			var params:Array = [];
 			//方案ID，计算指标ID
 			params.push(waterModel.planId);
-			IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
+			if (waterModel.method == WSMethod.GetWaterHDDensitySource){
+				IDelegate(this.businessDelegate).executeHttpService("data/rivercompare.txt");
+			} else {
+				IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
+			}
 			CursorManager.setBusyCursor();
 		}
 		

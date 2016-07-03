@@ -125,7 +125,8 @@
 						zoomArea.graphics.endFill();
 					} else {
 						tipGroup.removeAllElements();
-						chartAt.graphics.clear();
+						var g:Graphics = chartAt.graphics;
+						g.clear();
 						var lineX:Number =  Number.MAX_VALUE;
 						//接头处偏移量
 						var horGap:int = 10;
@@ -194,7 +195,7 @@
 								DrawPic.graphics.beginFill(color, 1);
 								DrawPic.graphics.lineStyle(1,0x000000);
 								var showX:Number = seletItem.x + 5;
-								var showY:Number = seletItem.y - nWidth/3;
+								var showY:Number = seletItem.y - nHeight/2;
 								if (showX + nWidth >= tipGroup.width) {
 									DrawPic.graphics.moveTo(0, 0);
 									DrawPic.graphics.lineTo(nWidth-horGap,0);
@@ -222,12 +223,16 @@
 								UI.x = showX;
 								UI.y = showY;
 								
+								var circleRadius:int = 3;
+								g.beginFill(0xffffff);
+								g.lineStyle(2,0x000000);
+								g.drawCircle(seletItem.x, seletItem.y, circleRadius);
+								g.endFill();
+								
 								tipGroup.addElement(UI);
 							}
 						}
 						if (lineX != Number.MAX_VALUE){
-							var g:Graphics = chartAt.graphics;
-							g.clear();
 							g.moveTo(lineX, 0);
 							g.lineStyle(1, 0xFF0000);
 							g.lineTo(lineX, chartBg.height);
