@@ -1535,7 +1535,7 @@
 							preLineStyle = new PredefinedLineStyle("solid");
 							riverFeature.style = preLineStyle;
 						}
-						preLineStyle.color = parseInt(item.color_value, 16);
+						preLineStyle.color = parseInt(item.colo_value, 16);
 					}
 				}
 			}
