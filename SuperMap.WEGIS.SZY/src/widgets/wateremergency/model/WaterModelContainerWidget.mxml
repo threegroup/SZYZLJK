@@ -107,6 +107,7 @@
 				//				this.sameItem = null;
 				//				this.sameItemIndex = -1;
 				this.resetDmChart();
+				this.resetDmCompareChart();
 			}
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
@@ -279,9 +280,10 @@
 				var result:Object = event.data;
 				var datas:Array = [];
 				//污染物对比
-				riverCalcType.removeAllElements();
+				/* riverCalcType.removeAllElements(); */
 				if (targetRwList.selectedItem.value == 5) {
-					var tip:Label = new Label();
+					//是否显示通过图例控制
+					/* var tip:Label = new Label();
 					tip.text = "污染物展示类型：";
 					tip.percentHeight = 100;
 					riverCalcType.addElement(tip);
@@ -296,7 +298,7 @@
 					codCk.label = "COD";
 					codCk.selected = true;
 					codCk.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
-					riverCalcType.addElement(codCk);
+					riverCalcType.addElement(codCk); */
 					
 					if (result.attributes && result.attributes.targetList is Array)
 					{
@@ -349,8 +351,11 @@
 							displayName += saData["name"] != null ?  saData["name"] : "";
 							ls.displayName = displayName;
 							var temp:Array = saData["nodeList"];
-							ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
-							sa.push(ls);
+							if(temp.length >0)//没有数据则不显示
+							{
+								ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+								sa.push(ls);
+							}
 						}
 						else if(chartType == "AreaChart")
 						{
@@ -371,10 +376,10 @@
 				var saCol:Array = [];
 				var saData:Object;
 				var serises:Array = [];
-				dmPollutionTypeGroup.removeAllElements();
+				//dmPollutionTypeGroup.removeAllElements();
 				if (targetDpList.selectedItem.value == 5){
 					//污染物浓度展示
-					var tip:Label = new Label();
+					/* var tip:Label = new Label();
 					tip.text = "污染物展示类型：";
 					tip.percentHeight = 100;
 					dmPollutionTypeGroup.addElement(tip);
@@ -389,7 +394,7 @@
 					codCk.label = "COD";
 					codCk.selected = true;
 					codCk.addEventListener(Event.CHANGE, dmResultHandler);
-					dmPollutionTypeGroup.addElement(codCk);
+					dmPollutionTypeGroup.addElement(codCk); */
 					for each(var pollutionItem:Object in result.attributes.targetList) {
 						for each(var seriesItem:Object in pollutionItem.nodeList) 
 						{
@@ -449,8 +454,11 @@
 							//	ls.setStyle("itemRenderer", cf);
 							ls.displayName = saData["label"];
 							var temp:Array = saData["nodeList"];
-							ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
-							serises.push(ls);
+							if(temp.length > 0)
+							{
+								ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+								serises.push(ls);
+							}
 						}
 					}
 					dmChart.series = serises;
@@ -664,19 +672,9 @@
 				this.hdChart.clearChartGraphic();
 			}
 			
-			//重置断面对比图表内容
+			//重置断面图表内容
 			private function resetDmChart():void
 			{
-				if(this.dmCompareList)
-				{
-					// TODO Auto-generated method stub
-					this.dmCompareChart.series = [];
-					//设置Y轴名称 
-					this.verticalCompareAxis.title = targetDpCompareList.selectedItem.title;
-					
-					this.dmCompareChart.clearChartGraphic();
-				}
-				
 				//重置断面计算结果展示
 				if(this.currentState == BREAK_STATE)
 				{
@@ -689,11 +687,25 @@
 				}
 			}
 			
+			//重置断面对比图表内容
+			private function resetDmCompareChart():void
+			{
+				if(this.dmCompareList)
+				{
+					// TODO Auto-generated method stub
+					this.dmCompareChart.series = [];
+					//设置Y轴名称 
+					this.verticalCompareAxis.title = targetDpCompareList.selectedItem.title;
+					
+					this.dmCompareChart.clearChartGraphic();
+				}
+			}
+			
 			//断面对比指标选择
 			protected function targetDpCompareList_changeHandler(event:IndexChangeEvent):void
 			{
 				// TODO Auto-generated method stub
-				this.resetDmChart();
+				this.resetDmCompareChart();
 			}
 			
 			//			//断面对比方案选择
@@ -737,7 +749,7 @@
 			protected function dmCompareList_changeHandler(event:IndexChangeEvent):void
 			{
 				// TODO Auto-generated method stub
-				this.resetDmChart();
+				this.resetDmCompareChart();
 			}
 			
 			//执行断面对比
@@ -895,9 +907,9 @@
 				}
 				
 				//污染物浓度展示
-				dmCompareType.removeAllElements();
+				/* dmCompareType.removeAllElements(); */
 				if (targetDpCompareList.selectedItem.value == 5){
-					var tip:Label = new Label();
+					/* var tip:Label = new Label();
 					tip.text = "污染物展示类型：";
 					tip.percentHeight = 100;
 					dmCompareType.addElement(tip);
@@ -912,7 +924,7 @@
 					codCk.label = "COD";
 					codCk.selected = true;
 					codCk.addEventListener(Event.CHANGE, dmComparePollutionChangeHandler);
-					dmCompareType.addElement(codCk);
+					dmCompareType.addElement(codCk); */
 				} 
 				
 				for (var index:int = 0 ; index < saDatas.length ; index++) {
@@ -941,8 +953,11 @@
 						//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
 						//						ls.setStyle("itemRenderer", cf);
 						var temp:Array = saData["nodeList"];
-						ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
-						sa.push(ls);
+						if(temp.length > 0)
+						{
+							ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+							sa.push(ls);
+						}
 					}
 				}
 				dmCompareChart.series = sa;
@@ -1381,7 +1396,7 @@
 					modelLocator.waterModelParam.maxDistance,modelLocator.waterModelParam.wpValue));
 				if (playDMProfile == true ) {
 					dmTimeSlider.value += dmTimeSlider.stepSize;
-					setTimeout(updateWaterLevelHandler, 1000);
+					setTimeout(updateWaterLevelHandler, 50);
 					if (dmTimeSlider.value == dmTimeSlider.maximum) {
 						playDMProfile = false;
 						dmStartBt.label = "播放";
@@ -1603,7 +1618,7 @@
 											<s:Button id="dmExportBt" label="导出计算结果" buttonMode="true" styleName="SubmitRegisterStyle"
 													  click="dmExportBt_clickHandler(event)"/>
 										</s:HGroup>
-										<s:HGroup id="dmPollutionTypeGroup" paddingLeft="20"/>
+										<!--<s:HGroup id="dmPollutionTypeGroup" paddingLeft="20"/>-->
 									</mx:GridItem>
 								</mx:GridRow>
 							</mx:Grid>	
@@ -1704,7 +1719,7 @@
 								<s:Spacer width="30"/>
 								<s:Button id="queryCompareBt" label="查询" buttonMode="true" styleName="SubmitRegisterStyle"
 										  click="queryCompareBt_clickHandler(event)"/>
-								<s:HGroup id="dmCompareType" paddingLeft="20"/>
+								<!--<s:HGroup id="dmCompareType" paddingLeft="20"/>-->
 							</s:HGroup>
 							<line:HLine width="100%"/>
 							<chart:LineChartEx id="dmCompareChart" width="100%" height="100%" 
@@ -1770,7 +1785,7 @@
 													  styleName="SubmitRegisterStyle"
 													  click="exportRwBt_clickHandler(event)"/>
 										</s:HGroup>
-										<s:HGroup id="riverCalcType" paddingLeft="20"/>
+										<!--<s:HGroup id="riverCalcType" paddingLeft="20"/>-->
 									</mx:GridItem>
 								</mx:GridRow>
 							</mx:Grid>	

@@ -184,15 +184,18 @@
 			//点击当个方案，打开方案
 			protected function planList_clickHandler(event:MouseEvent):void
 			{
-				hideWaterModelContainerHandler();
-				modelLocator.waterModelParam.planId = planList.selectedItem["planId"];
-				modelLocator.waterModelParam.isHave = planList.selectedItem["isHave"] == "false" ? false : true;
-				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MODEL_RESULT);
-				queryEvent.dispatch();
-				
-				//查询当前方案可对比列表
-				var queryCompareListEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COMPARE_LIST);
-				queryCompareListEvent.dispatch();
+				if(event.target is Label)
+				{
+					hideWaterModelContainerHandler();
+					modelLocator.waterModelParam.planId = planList.selectedItem["planId"];
+					modelLocator.waterModelParam.isHave = planList.selectedItem["isHave"] == "false" ? false : true;
+					var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_MODEL_RESULT);
+					queryEvent.dispatch();
+					
+					//查询当前方案可对比列表
+					var queryCompareListEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_COMPARE_LIST);
+					queryCompareListEvent.dispatch();
+				}
 			}
 			
 			//隐藏右侧断面，河道计算结果展示
