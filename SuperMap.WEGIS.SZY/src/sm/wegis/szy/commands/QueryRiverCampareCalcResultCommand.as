@@ -23,11 +23,11 @@ package sm.wegis.szy.commands
 			var params:Array = [];
 			//方案ID，计算指标ID
 			params.push(waterModel.planId);
-			if (waterModel.method == WSMethod.GetWaterHDDensitySource){
-				IDelegate(this.businessDelegate).executeHttpService("data/rivercompare.txt");
-			} else {
-				IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
-			}
+			//			if (waterModel.method == WSMethod.GetWaterHDDensitySource){
+			//				IDelegate(this.businessDelegate).executeHttpService("data/rivercompare.txt");
+			//			} else {
+			IDelegate(this.businessDelegate).executeWebServiceEx(waterModel.method, params);
+			//			}
 			CursorManager.setBusyCursor();
 		}
 		
