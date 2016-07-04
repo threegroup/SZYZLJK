@@ -72,7 +72,7 @@
 						
 						var seletItem:AreaSeriesItem = null;
 						for each (var item:AreaSeriesItem in serices.items) {
-							if (item.xValue >= valueAtMouse[0] && serices.items.length >2 ) { 
+							if (Number(item.xValue) >= Number(valueAtMouse[0]) && serices.items.length >2 && Math.abs(Number(item.xValue) - Number(valueAtMouse[0])) < 5 ) { 
 								seletItem = item;
 								break;
 							}

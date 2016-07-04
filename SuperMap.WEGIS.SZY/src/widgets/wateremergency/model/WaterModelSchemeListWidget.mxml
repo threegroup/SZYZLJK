@@ -106,7 +106,7 @@
 				if (result != null && result.success == true) {
 					var targetList:Object = result.attributes.attributes;
 					for each(var item:Object in targetList) {
-						if (item.type == "差值"){
+						if (item.type == "计算"){
 							var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
 							var typeIDs:String = item.typeIDs;
 							pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;

@@ -263,7 +263,7 @@
 					{
 						for each(var section:Object in tempCol)
 						{
-							if(section != null && section["sectionName"] != null && section.type == "差值")
+							if(section != null && section["sectionName"] != null && section.type == "计算")
 							{
 								sectionCol.push(section);
 							}
@@ -278,81 +278,86 @@
 			{
 				var result:Object = event.data;
 				var datas:Array = [];
-				if (result is Array) {
-					datas = result as Array;
-				} else if (result is Object) {
-					datas = [result];
-				}
-				if (datas.length > 0) {
+				//污染物对比
+				riverCalcType.removeAllElements();
+				if (targetRwList.selectedItem.value == 5) {
+					var tip:Label = new Label();
+					tip.text = "污染物展示类型：";
+					tip.percentHeight = 100;
+					riverCalcType.addElement(tip);
 					
-					//污染物浓度展示
-					riverCalcType.removeAllElements();
-					if (targetRwList.selectedItem.value == 5){
-						var tip:Label = new Label();
-						tip.text = "污染物展示类型：";
-						tip.percentHeight = 100;
-						riverCalcType.addElement(tip);
-						
-						var nh3Ck:CheckBox = new CheckBox();
-						nh3Ck.label = "NH3-N";
-						nh3Ck.selected = true;
-						nh3Ck.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
-						riverCalcType.addElement(nh3Ck);
-						
-						var codCk:CheckBox = new CheckBox();
-						codCk.label = "COD";
-						codCk.selected = true;
-						codCk.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
-						riverCalcType.addElement(codCk);
-					} 
+					var nh3Ck:CheckBox = new CheckBox();
+					nh3Ck.label = "NH3-N";
+					nh3Ck.selected = true;
+					nh3Ck.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
+					riverCalcType.addElement(nh3Ck);
 					
-					for each(var item:Object in datas) {
-						if(item != null && item["success"] && item["attributes"] && item["attributes"]["result"] is Array)
+					var codCk:CheckBox = new CheckBox();
+					codCk.label = "COD";
+					codCk.selected = true;
+					codCk.addEventListener(Event.CHANGE, riverPollutionChangeHandler);
+					riverCalcType.addElement(codCk);
+					
+					if (result.attributes && result.attributes.targetList is Array)
+					{
+						for each(var pollutionItem:Object in result.attributes.targetList)
 						{
-							var saCol:Array = item["attributes"]["result"] as Array;
-							if (saCol != null && saCol.length > 0) 
+							for each(var item:Object in pollutionItem.result)
 							{
-								//此处动态创建统计图序列，序列数[1-12]
-								//设置Y轴名称 
-								this.hdVerticalAxis.title = targetRwList.selectedItem.title;
-								var sa:Array = [];
-								for (var index:int = 0 ; index < saCol.length ;index++)
-								{
-									var saData:Object = saCol[index];
-									var chartType:String = saData["type"];
-									if(chartType == "LineChart")
-									{
-										var ls:LineSeriesEx = null;
-										if (hdChart.series != null && index in hdChart.series && hdChart.series[index] is LineSeriesEx) {
-											ls = hdChart.series[index] as LineSeriesEx;
-										}
-										if (ls == null) {
-											ls = new LineSeriesEx();
-										}
-										ls.name = saData["label"];
-										ls.xField = saData["xField"];
-										ls.yField = saData["yField"];
-										ls.setStyle("form", "curve");
-										ls.setStyle("showDataEffect", slide);
-										var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
-										scs.weight = 2;
-										ls.setStyle("lineStroke", scs);
-										//										var cf:ClassFactory = new ClassFactory(LineChartDataRender);
-										//										ls.setStyle("itemRenderer", cf);
-										ls.displayName = saData["label"];
-										var temp:Array = saData["nodeList"];
-										ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
-										sa.push(ls);
-									}
-									else if(chartType == "AreaChart")
-									{
-										//略
-									}
-								}
-								this.hdChart.series = sa;
+								item["name"] = pollutionItem.pollutionType;
+								datas.push(item);
 							}
 						}
 					}
+				} else {
+					if (result.attributes &&  result.attributes.result is Array) {
+						for each(var subItem:Object in result.attributes.result)
+						{
+							datas.push(subItem);
+						}
+					}
+				}
+				if (datas.length > 0) {
+					//此处动态创建统计图序列，序列数[1-12]
+					//设置Y轴名称 
+					this.hdVerticalAxis.title = targetRwList.selectedItem.title;
+					var sa:Array = [];
+					for (var index:int = 0 ; index < datas.length ;index++)
+					{
+						var saData:Object = datas[index];
+						var chartType:String = saData["type"];
+						if(chartType == "LineChart")
+						{
+							var ls:LineSeriesEx = null;
+							if (hdChart.series != null && index in hdChart.series && hdChart.series[index] is LineSeriesEx) {
+								ls = hdChart.series[index] as LineSeriesEx;
+							}
+							if (ls == null) {
+								ls = new LineSeriesEx();
+							}
+							ls.name = saData["name"] != null ? saData["name"] : saData["label"];
+							ls.xField = saData["xField"];
+							ls.yField = saData["yField"];
+							ls.setStyle("form", "curve");
+							ls.setStyle("showDataEffect", slide);
+							var scs:SolidColorStroke = new SolidColorStroke(saData["color"]);
+							scs.weight = 2;
+							ls.setStyle("lineStroke", scs);
+							//										var cf:ClassFactory = new ClassFactory(LineChartDataRender);
+							//										ls.setStyle("itemRenderer", cf);
+							var displayName:String = saData["label"];
+							displayName += saData["name"] != null ?  saData["name"] : "";
+							ls.displayName = displayName;
+							var temp:Array = saData["nodeList"];
+							ls.dataProvider = ls.originalDataProvider = new ArrayCollection(temp);
+							sa.push(ls);
+						}
+						else if(chartType == "AreaChart")
+						{
+							//略
+						}
+					}
+					this.hdChart.series = sa;
 				}else {
 					this.hdChart.series = [];
 				}
@@ -366,24 +371,46 @@
 				var saCol:Array = [];
 				var saData:Object;
 				var serises:Array = [];
-				//				if (targetDpList.selectedIndex != 4){
-				if (result is Array){
-					for each(var item:Object in result) {
-						saCol.push(item.attributes);
+				dmPollutionTypeGroup.removeAllElements();
+				if (targetDpList.selectedItem.value == 5){
+					//污染物浓度展示
+					var tip:Label = new Label();
+					tip.text = "污染物展示类型：";
+					tip.percentHeight = 100;
+					dmPollutionTypeGroup.addElement(tip);
+					
+					var nh3Ck:CheckBox = new CheckBox();
+					nh3Ck.label = "NH3-N";
+					nh3Ck.selected = true;
+					nh3Ck.addEventListener(Event.CHANGE, dmResultHandler);
+					dmPollutionTypeGroup.addElement(nh3Ck);
+					
+					var codCk:CheckBox = new CheckBox();
+					codCk.label = "COD";
+					codCk.selected = true;
+					codCk.addEventListener(Event.CHANGE, dmResultHandler);
+					dmPollutionTypeGroup.addElement(codCk);
+					for each(var pollutionItem:Object in result.attributes.targetList) {
+						for each(var seriesItem:Object in pollutionItem.nodeList) 
+						{
+							seriesItem.name = pollutionItem.pollutionType;
+							saCol.push(seriesItem);
+						}
 					}
-				}
-				if (result.success == true) 
-				{
-					if(result.attributes) 
-					{ 
-						if (result.attributes.targetList)
-						{
-							if (result.attributes.targetList is Array) {
-								saCol = result.attributes.targetList as Array;
-							} 
-						}else if(result.attributes is Object)
-						{
-							saCol = [result.attributes];
+				}else{ 
+					if (result.success == true) 
+					{
+						if(result.attributes) 
+						{ 
+							if (result.attributes.targetList)
+							{
+								if (result.attributes.targetList is Array) {
+									saCol = result.attributes.targetList as Array;
+								} 
+							}else if(result.attributes is Object)
+							{
+								saCol = [result.attributes];
+							}
 						}
 					}
 				}
@@ -393,26 +420,6 @@
 					this.verticalAxis.title = targetDpList.selectedItem.title;
 					//此处动态创建统计图序列，序列数[1-2]
 					var sa:Array = [];
-					//污染物浓度展示
-					dmPollutionTypeGroup.removeAllElements();
-					if (targetDpList.selectedItem.value == 5){
-						var tip:Label = new Label();
-						tip.text = "污染物展示类型：";
-						tip.percentHeight = 100;
-						dmPollutionTypeGroup.addElement(tip);
-						
-						var nh3Ck:CheckBox = new CheckBox();
-						nh3Ck.label = "NH3-N";
-						nh3Ck.selected = true;
-						nh3Ck.addEventListener(Event.CHANGE, dmResultHandler);
-						dmPollutionTypeGroup.addElement(nh3Ck);
-						
-						var codCk:CheckBox = new CheckBox();
-						codCk.label = "COD";
-						codCk.selected = true;
-						codCk.addEventListener(Event.CHANGE, dmResultHandler);
-						dmPollutionTypeGroup.addElement(codCk);
-					} 
 					for (index = 0 ; index < saCol.length ; index++)
 					{
 						saData = saCol[index];
@@ -426,7 +433,7 @@
 							if (ls == null) {
 								ls = new LineSeriesEx();
 							}
-							ls.name = saData["label"];
+							ls.name = saData["name"] != null ?  saData["name"]  : saData["label"];
 							ls.xField = saData["xField"];
 							ls.yField = saData["yField"];
 							ls.setStyle("form", "curve");
@@ -448,23 +455,6 @@
 					}
 					dmChart.series = serises;
 				} 
-				//				} else if (targetDpList.selectedIndex == 4) {
-				//					if (result is Array){
-				//						saCol = result;
-				//					} else {
-				//						saCol = [result];
-				//					}
-				//					dmPollutionTypeGroup.removeAllElements();
-				//					for (index = 0 ; index < saCol.length ; index++){
-				//						saData = saCol[index];
-				//						var checkBox:CheckBox = new CheckBox();
-				//						checkBox.selected = true;
-				//						checkBox.label = saData.label;
-				//						checkBox.id = saData.label;
-				//						checkBox.addEventListener(Event.CHANGE, lineSelectChangeHandler);
-				//						dmPollutionTypeGroup.addElement(checkBox);
-				//					}
-				//				}
 			}
 			
 			//断面计算结果展示，污染物浓度指标控制显示
@@ -475,7 +465,7 @@
 				for each(var series:Series in dmChart.series)
 				{
 					if (series.name.search(pollutionName) != -1) {
-						series.visible = false;
+						series.visible = checkBox.selected;
 					}
 				}
 			}
@@ -619,7 +609,13 @@
 				var cntData:Object = hitData.item;
 				
 				var cnt:int = hitData.item[hitData.chartItem.element["yField"]];
-				var displayName:String = targetDpList.selectedItem.title;
+				var displayName:String;//targetDpList.selectedItem.title;
+				if (hitData.chartItem.element is LineSeries){
+					displayName = (hitData.chartItem.element as LineSeries).displayName;
+				}
+				if (hitData.chartItem.element is AreaSeries){
+					displayName = (hitData.chartItem.element as AreaSeries).displayName;
+				}
 				var tipStr:String = displayName+ ":" + cntData[hitData.chartItem.element["yField"]] + "<br>"+"时间:";
 				if (dmCompareSchemeList != null && dmCompareSchemeList.selectedIndex != 0){
 					tipStr += cntData[toolTipField];
@@ -765,19 +761,30 @@
 				var result:Object = event.data;
 				var saData:Array = [];
 				if (queryCompareDMCalc == false){
-					if (result.success == true && result.attributes && result.attributes.targetList &&  result.attributes.targetList is Array) {
-						if ((result.attributes.targetList as Array).length == 2) {
-							dMCompareResult.currentPlan =  result.attributes.targetList[0];
+					if (targetDpCompareList.selectedItem.value == 5){
+						for each(var pollutionItem:Object in result.attributes.targetList) {
+							if (pollutionItem.nodeList is Array && (pollutionItem.nodeList as Array).length >0) 
+							{
+								var item:Object =  pollutionItem.nodeList[0];
+								item.name =  pollutionItem.pollutionType;
+								saData.push(item);
+							}
 						}
-					}
-					if (result is Array)
-					{
-						for each(var item:Object in result)
+					}else{ 
+						if (result.success == true && result.attributes) 
 						{
-							saData.push(item.attributes);
+							if (result.attributes.targetList)
+							{
+								if (result.attributes.targetList is Array && (result.attributes.targetList as Array).length >0) {
+									saData = [result.attributes.targetList[0]];
+								} 
+							}else if(result.attributes is Object)
+							{
+								saData = [result.attributes];
+							}
 						}
-						dMCompareResult.currentPlan =  saData;
 					}
+					dMCompareResult.currentPlan =  saData;
 					queryCompareDMCalc = true;
 					
 					var currentWaterModelparam:WaterModelParam = modelLocator.waterModelParam;
@@ -796,37 +803,56 @@
 					queryEvent.data = waterModelparam;
 					queryEvent.dispatch();
 				} else if (queryCompareDMCalc == true){
-					if (result.success == true && result.attributes && result.attributes.targetList &&  result.attributes.targetList is Array) {
-						if ((result.attributes.targetList as Array).length == 2) {
-							dMCompareResult.comparePlan =  result.attributes.targetList[0];
+					if (targetDpCompareList.selectedItem.value == 5){
+						for each(var pollutionItem:Object in result.attributes.targetList) {
+							if (pollutionItem.nodeList is Array && (pollutionItem.nodeList as Array).length >0) 
+							{
+								var item:Object =  pollutionItem.nodeList[0];
+								item.name =  pollutionItem.pollutionType;
+								saData.push(item);
+							}
 						}
-					}
-					
-					if (result is Array)
-					{
-						for each(var item0:Object in result)
+					}else{ 
+						if (result.success == true && result.attributes) 
 						{
-							saData.push(item0.attributes);
+							if (result.attributes.targetList)
+							{
+								if (result.attributes.targetList is Array && (result.attributes.targetList as Array).length >0) {
+									saData = [result.attributes.targetList[0]];
+								} 
+							}else if(result.attributes is Object)
+							{
+								saData = [result.attributes];
+							}
 						}
-						dMCompareResult.comparePlan =  saData;
 					}
+					dMCompareResult.comparePlan =  saData;
 					
 					//对不同方案，相同断面进行处理
+					var typeItem:Object;
+					var item:Object;
+					var times:Array;
 					if (dmCompareSchemeList.selectedIndex != 0) {
 						if ( dMCompareResult.currentPlan != null){
-							for each(var item1:Object in dMCompareResult.currentPlan.nodeList){
-								item1[toolTipField] = item1.time;
-								var times:Array = item1.time.split("-");
-								times["0"] = "1900"; // 年份，我自己指定的，主要是让两组数据，年份相同
-								item1.time = times.join("-");
+							for each(typeItem in dMCompareResult.currentPlan){
+								for each(item in typeItem.nodeList)
+								{
+									item[toolTipField] = item.time;
+									times = item.time.split("-");
+									times["0"] = "1900"; // 年份，我自己指定的，主要是让两组数据，年份相同
+									item.time = times.join("-");
+								}
 							}
 						}
 						if ( dMCompareResult.comparePlan != null){
-							for each(var item2:Object in dMCompareResult.comparePlan.nodeList){
-								item2[toolTipField] = item2.time;
-								var times0:Array = item2.time.split("-");
-								times0["0"] = "1900";
-								item2.time = times0.join("-");
+							for each(typeItem in dMCompareResult.comparePlan){
+								for each(item in typeItem.nodeList)
+								{
+									item[toolTipField] = item.time;
+									times = item.time.split("-");
+									times["0"] = "1900";
+									item.time = times.join("-");
+								}
 							}
 						}
 					}
@@ -899,7 +925,7 @@
 						} else {
 							ls = new LineSeriesEx();
 						}
-						ls.name = saData["label"];
+						ls.name = saData["name"] != null ? saData["name"]  : saData["label"];
 						ls.xField = saData["xField"];
 						ls.yField = saData["yField"];
 						ls.setStyle("form", "curve");
@@ -910,7 +936,7 @@
 							scs.color = modelLocator.systemInfo.colors[index];
 						}
 						scs.weight = 2;
-						ls.displayName = saData.schemeName + saData["sectionName"];
+						ls.displayName = saData["schemeName"] + saData["sectionName"] + saData["label"];
 						ls.setStyle("lineStroke", scs);
 						//						var cf:ClassFactory = new ClassFactory(LineChartDataRender);
 						//						ls.setStyle("itemRenderer", cf);
@@ -961,7 +987,7 @@
 			{
 				mapCompare.visible = mapCompare.includeInLayout = false;
 				var dropDownList:DropDownList = event.currentTarget as DropDownList;
-				if (dropDownList.selectedIndex == 4){
+				if (dropDownList.selectedItem.value == 5){
 					mapCompare.visible = mapCompare.includeInLayout = true;
 				}
 			}
