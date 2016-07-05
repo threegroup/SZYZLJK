@@ -52,41 +52,8 @@ package widgets.wateremergency.chart
 		{
 			if(this.source != null)
 			{
-				if(this.source is LineSeriesEx)
-				{
-					var lsex:LineSeriesEx = this.source as LineSeriesEx;
-					if(lsex.name != "COD" && lsex.name != "NH3-N")
-					{
-						lsex.visible = isSelected;
-					}
-					else
-					{
-						//COD或NH3-N联动显隐控制
-						var legendItemName:String = lsex.displayName;
-						var lcex:LineChartEx = this.owner["dataProvider"] as LineChartEx;
-						for each(var series:Series in lcex.series)
-						{
-							if (series.displayName.search(lsex.name) != -1) {
-								series.visible = isSelected;
-							}
-						}
-						
-						var ld:Legend = this.owner as Legend;
-						for each(var liex:LegendItemEx in ld.getChildren())
-						{
-							if(liex.checkBox.label.search(lsex.name) != -1)
-							{
-								liex.checkBox.selected = isSelected;
-							}
-						}
-					}
-				}
-				else if(this.source is AreaSeries)
-				{
-					//面图无需联动处理
-					var ases:AreaSeries = this.source as AreaSeries;
-					ases.visible = isSelected;
-				}
+				var lsex:Series = this.source as Series;
+				lsex.visible = isSelected;
 			}
 		}
 		
