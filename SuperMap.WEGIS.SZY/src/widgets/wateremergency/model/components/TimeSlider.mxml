@@ -18,6 +18,9 @@
 			private var isPlay:Boolean = false;
 			private const interval:int = 2000;
 			
+			[Bindable]
+			private var currentValue:int = - 1;
+			
 			
 			public function get data():Object
 			{
@@ -42,13 +45,13 @@
 						timeSlider.maximum = ((data.currentPlan as Array)[0]["result"] as Array).length -1;
 						timeSlider.enabled = dmStartBt.enabled = dmStopBt.enabled = true;
 					}
-					
 				}
 			}
 			
 			private function resetPlay():void
 			{
 				timeSlider.value = timeSlider.minimum;
+				currentValue = -1;
 				dmStartBt.label = "开始";
 				isPlay = false;
 				monLb.text = "";
@@ -57,6 +60,7 @@
 			public function initParam():void
 			{
 				timeSlider.value = timeSlider.minimum;
+				currentValue = -1;
 				dmStartBt.label = "开始";
 				isPlay = false;
 				monLb.text = "";
@@ -82,7 +86,6 @@
 					if (timeSlider.value == timeSlider.maximum){
 						setTimeout(stopPlayer, interval);
 					} else {
-						timeSlider.value += timeSlider.stepSize;
 						setTimeout(playHandler, interval);
 					}
 				}
@@ -92,15 +95,23 @@
 			{
 				dmStartBt.label = "开始";
 				timeSlider.value = timeSlider.minimum;
+				currentValue = -1;
 				isPlay = false;
 				monLb.text = "";
 			}
 			
-			private function dispatchChangeEvent():void
+			private function dispatchChangeEvent(isPlay:Boolean = true):void
 			{
 				var event:TimeSliderEvent = new TimeSliderEvent(TimeSliderEvent.Change);
+				if (isPlay == true)
+				{
+					currentValue += 1 ;
+					if ( currentValue > timeSlider.maximum){
+						return;
+					}
+				}
+				timeSlider.value = currentValue;
 				//月份索引
-				var index:int = timeSlider.value;
 				var showData:Array = [];
 				var pollutionItem:Object;
 				var monthItem:Object;
@@ -111,7 +122,7 @@
 					for each(pollutionItem in data.currentPlan) {
 						//解析污染物
 						if (pollutionItem.pollutionType == riverCompareBG.selectedValue){
-							monthItem = pollutionItem.result[index];
+							monthItem = pollutionItem.result[currentValue];
 							//解析月份
 							monLb.text = resolveMonth(monthItem.label);
 							chartDatas.currentPlan = monthItem;
@@ -126,7 +137,7 @@
 						//解析污染物
 						if (pollutionItem.pollutionType == riverCompareBG.selectedValue){
 							//解析月份
-							monthItem = pollutionItem.result[index];
+							monthItem = pollutionItem.result[currentValue];
 							chartDatas.comparePlan = monthItem;
 							break;
 						}
@@ -134,7 +145,6 @@
 				}
 				event.data = chartDatas;
 				dispatchEvent(event);
-				
 			}
 			
 			protected function stop_clickHandler(event:MouseEvent):void
@@ -144,7 +154,8 @@
 			
 			protected function timeSlider_changeHandler(event:Event):void
 			{
-				dispatchChangeEvent();
+				currentValue = timeSlider.value;
+				dispatchChangeEvent(false);
 			}
 			
 			protected function riverCompareBG_changeHandler(event:Event):void
@@ -189,10 +200,14 @@
 	</fx:Declarations>
 	<s:HGroup width="100%" height="100%" minHeight="35"  verticalAlign="middle" paddingRight="10" paddingLeft="10">
 		<s:Label text="时间："/>	
-		<s:Label id="monLb" height="100%"  minWidth="20"/>
-		<s:Label  text="月份" height="100%"/>
+		<s:Label id="monLb" height="100%" />
+		<s:Label  text="月" height="100%"/>
+		<s:Label text="最高浓度断面："/>
+		<s:Label  id="maxPollutionDm"/>
+		<s:Label text="浓度："/>
+		<s:Label  id="maxPollution"/>
 		<s:HSlider id="timeSlider" width="100%" minimum="0" stepSize="1" snapInterval="1"
-				   dataTipFormatFunction="dmProfileDataTipFunc"
+				   dataTipFormatFunction="dmProfileDataTipFunc" 
 				   change="timeSlider_changeHandler(event)"/>
 		<s:HGroup id="riverCompareType">
 			<s:Label text="污染物类型:" height="100%"/>

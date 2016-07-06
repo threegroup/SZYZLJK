@@ -34,14 +34,15 @@
 	</subSystem>
     <subSystem name="yuqiao">
 		<viewBounds>117.43, 39.94, 118.18, 40.37</viewBounds>
-		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/yuqiao</baseVectorMapUrl>
-        <baseImageMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/yuqiao</baseImageMapUrl>
-		<vectorMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/yuqiao</vectorMapUrl>
-		<rasterMapUrl>http://localhost:8090/iserver/services/map-SZYNew/rest/maps/yuqiao</rasterMapUrl>
-		<baseLayerId layerIds="0"/>
+		<baseVectorMapUrl>http://localhost:8090/iserver/services/map-YQ/rest/maps/basemapV</baseVectorMapUrl>
+        <baseImageMapUrl>http://localhost:8090/iserver/services/map-YQ/rest/maps/basemapV</baseImageMapUrl>
+		<vectorMapUrl>http://localhost:8090/iserver/services/map-YQ/rest/maps/YQ_V</vectorMapUrl>
+		<rasterMapUrl>http://localhost:8090/iserver/services/map-YQ/rest/maps/YQ_R</rasterMapUrl>
+		<baseLayerId layerIds="3,4,5,6,7,9,10,11,12,27"/>
 		<themeLayerId>
-			<layer label="水库" selected="true" layerIds="1" />
-			<layer label="河流" selected="true" layerIds="2" />
+			<layer label="河流" selected="true" layerIds="8,28" />
+			<layer label="水功能区" selected="true" layerIds="26" />
+			<layer label="路网" selected="true" layerIds="0,1,2,13,14,15,16,17,18,19,20,21,22,23,24,25" />
 		</themeLayerId>
 	</subSystem>
 </system>

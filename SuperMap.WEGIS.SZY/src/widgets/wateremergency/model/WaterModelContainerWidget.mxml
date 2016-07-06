@@ -1965,6 +1965,37 @@
 							</s:Rect>
 							<s:Label id="comparePanel" color="0xFFFFFF" fontSize="14" horizontalCenter="0" verticalCenter="0" />
 						</s:Group>
+						<s:Group id="comparePollutionInfo" minWidth="100" left="5">
+							<mx:Grid>
+								<mx:GridRow>
+									<mx:GridItem>
+										<s:Label text="时间："/>	
+									</mx:GridItem>
+									<mx:GridItem>
+										<s:HGroup>
+											<s:Label id="monLb" height="100%"  minWidth="20"/>
+											<s:Label  text="月" height="100%"/>
+										</s:HGroup>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow>
+									<mx:GridItem>
+										<s:Label text="最高浓度断面："/>
+									</mx:GridItem>
+									<mx:GridItem>
+										<s:Label  id="maxPollutionDm"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow>
+									<mx:GridItem>
+										<s:Label text="浓度："/>
+									</mx:GridItem>
+									<mx:GridItem>
+										<s:Label  id="maxPollution"/>
+									</mx:GridItem>
+								</mx:GridRow>
+							</mx:Grid>
+						</s:Group>
 					</s:Group>
 				</s:HGroup>
 				<s:BorderContainer  borderVisible="true" borderColor="0xEAEAEA" right="5" bottom="5">
