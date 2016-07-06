@@ -21,10 +21,7 @@
 			import com.supermap.wegis.common.mappingEx.TiledDynamicRESTLayerEx;
 			
 			import mx.charts.HitData;
-			import mx.charts.LegendItem;
 			import mx.charts.chartClasses.IAxis;
-			import mx.charts.chartClasses.Series;
-			import mx.charts.events.LegendMouseEvent;
 			import mx.charts.series.AreaSeries;
 			import mx.charts.series.LineSeries;
 			import mx.collections.ArrayCollection;
@@ -65,6 +62,7 @@
 			/**河道标识*/
 			public static const RIVER_WAY:String = "RW";
 			
+			
 			/**可对比方案列表*/
 			[Bindable]
 			private var compareSchemeList:ArrayCollection = null;
@@ -104,12 +102,34 @@
 				,{label:"十二月",value:12}
 			]);
 			
-			private function clear():void
+			/**切换断面，河道，重置页面*/
+			private function resetCurrentWidget():void
 			{
-				//				this.sameItem = null;
-				//				this.sameItemIndex = -1;
-				this.resetDmChart();
-				this.resetDmCompareChart();
+				if (dmChart != null) {
+					clearDMCalcResult();
+					targetDpList.selectedIndex = 0;
+				}
+				if (terrainProfileChart != null){
+					dmWaterPosition.dataProvider = new ArrayCollection();
+					dmTerrainProfile.dataProvider = new ArrayCollection();
+				}
+				if (dmCompareChart != null) {
+					clearDMCompareResult();
+					targetDpCompareList.selectedIndex = 0;
+					dmCompareSchemeList.selectedIndex = 0;
+				}
+				
+				//河道
+				if (hdChart != null){
+					clearRiverCalcResult();
+					targetRwList.selectedIndex = 0;
+				}
+				
+				if (riverCompareChart != null) {
+					clearRiverCompareResult();
+					riverTargetRwList.selectedIndex = 0;
+					riverCompareSchemeList.selectedIndex = 0;
+				}
 			}
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
@@ -241,8 +261,6 @@
 			//查询可对比方案列表
 			private function queryCompareListResponseHandler(event:CairngormEvent):void
 			{
-				clear();
-				
 				compareSchemeList = null;
 				var result:Object = event.data;
 				if(result != null && result["success"] 
@@ -339,6 +357,7 @@
 				hdVerticalAxis.title = targetRwList.selectedItem.title;
 				
 				hdChart.series = createChartSeries(datas, false, false, true);
+				hdLegend.visible = true;
 				
 				//河道计算结果，污染物展示控制
 				function riverPollutionChangeHandler(event:Event):void
@@ -417,7 +436,7 @@
 				//设置Y轴名称 
 				this.dmCalcVerticalAxis.title = targetDpList.selectedItem.title;
 				dmChart.series = createChartSeries(saCol, false ,true, isPollution);
-				
+				dmLegend.visible = true;
 				//断面计算结果展示，污染物浓度指标控制显示
 				function dmResultHandler(event:Event):void
 				{
@@ -509,22 +528,12 @@
 			private function showModelResultWidgetHandler(event:CairngormEvent):void
 			{
 				//此处需要清空已有的数据
-				this.clear();
+				resetCurrentWidget();
 				
 				var modelShowVO:ModelContainerShowVO =  event.data as  ModelContainerShowVO;
 				panel.title = modelShowVO.title;
 				this.currentState = modelShowVO.state;
-				if (this.currentState == BREAK_STATE) {
-					breakBTB.selectedIndex = 0;
-					if (dmChart != null){
-						dmChart.series = [];
-					}
-				} else if (this.currentState == RIVER_STATE) {
-					riverBTB.selectedIndex = 0;
-					if (hdChart != null) {
-						hdChart.series = [];
-					}
-				}
+				
 				if (modelLocator.waterModelParam.isHave == true) {
 					targetsList = new ArrayCollection([
 						{label:"水位",value:1,title:"水位[m]"}, {label:"水深",value:2,title:"水深[m]"},
@@ -569,12 +578,8 @@
 			{
 				dmPollutionTypeGroup.removeAllElements();
 				dmChart.series = null;
-				//				for each(var lineSeries:LineSeriesEx in dmChart.series)
-				//				{
-				//					if (lineSeries != null){
-				//						lineSeries.dataProvider = lineSeries.originalDataProvider  = null;
-				//					}
-				//				}
+				dmLegend.visible = false;
+				dmCalcVerticalAxis.title = "";
 			}
 			
 			//根据选择指标类型，获取后台查询方法,默认为断面
@@ -696,7 +701,7 @@
 				
 				var displayName:String;
 				displayName = (hitData.chartItem.element as LineSeries).displayName + "<br>";
-			
+				
 				if (riverTargetRwList.selectedItem.value == 5){
 					displayName += hitData.chartItem.element.name;
 				} else {
@@ -708,7 +713,7 @@
 			//河道计算结果查询
 			protected function queryRwBt_clickHandler(event:MouseEvent):void
 			{
-				clearRiverLastResult();
+				clearRiverCalcResult();
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
 				waterModelparam.method = getQueryMethodHandler(targetRwList, RIVER_WAY);
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_CALC_RESULT);
@@ -716,68 +721,31 @@
 			}
 			
 			/**河道计算结果展示，清除上次查询结果*/
-			private function clearRiverLastResult():void
+			private function clearRiverCalcResult():void
 			{
 				riverCalcType.removeAllElements();
 				hdChart.series = null;
+				hdLegend.visible = false;
+				hdVerticalAxis.title = "";
 			}
 			
 			//断面统计图图例
 			protected function targetDpList_changeHandler(event:IndexChangeEvent):void
 			{
-				// TODO Auto-generated method stub
-				this.dmChart.series = [];
-				//设置Y轴名称 
-				this.dmCalcVerticalAxis.title = targetDpList.selectedItem.title;
-				
-				this.dmChart.clearChartGraphic();
+				//清除上次查询结果
+				clearDMCalcResult();
 			}
 			
 			//河道统计图图例
 			protected function targetRwList_changeHandler(event:IndexChangeEvent):void
 			{
-				// TODO Auto-generated method stub
-				this.hdChart.series = [];
-				//设置Y轴名称 
-				this.hdVerticalAxis.title = targetRwList.selectedItem.title;
-				
-				this.hdChart.clearChartGraphic();
-			}
-			
-			//重置断面图表内容
-			private function resetDmChart():void
-			{
-				//重置断面计算结果展示
-				if(this.currentState == BREAK_STATE)
-				{
-					this.dmChart.series = [];
-					this.dmChart.clearChartGraphic();
-					if(this.targetDpList && this.targetDpList.dataProvider)
-					{
-						this.targetDpList.selectedIndex = 0;
-					}
-				}
-			}
-			
-			//重置断面对比图表内容
-			private function resetDmCompareChart():void
-			{
-				if(this.dmCompareList)
-				{
-					// TODO Auto-generated method stub
-					this.dmCompareChart.series = [];
-					//设置Y轴名称 
-					this.verticalCompareAxis.title = targetDpCompareList.selectedItem.title;
-					
-					this.dmCompareChart.clearChartGraphic();
-				}
+				clearRiverCalcResult();
 			}
 			
 			//断面对比指标选择
 			protected function targetDpCompareList_changeHandler(event:IndexChangeEvent):void
 			{
-				// TODO Auto-generated method stub
-				this.resetDmCompareChart();
+				clearDMCompareResult()
 			}
 			
 			//			//断面对比方案选择
@@ -820,8 +788,7 @@
 			//断面对比断面选择
 			protected function dmCompareList_changeHandler(event:IndexChangeEvent):void
 			{
-				// TODO Auto-generated method stub
-				this.resetDmCompareChart();
+				clearDMCompareResult();
 			}
 			
 			//执行断面对比
@@ -846,6 +813,8 @@
 			{
 				dmCompareType.removeAllElements();
 				dmCompareChart.series = null;
+				verticalCompareAxis.title = "";
+				dmCompareLegend.visible = false;
 			}
 			
 			private function queryDMCompareHandler(event:CairngormEvent):void
@@ -1012,6 +981,7 @@
 				}
 				
 				dmCompareChart.series = createChartSeries(saDatas, true, true);
+				dmCompareLegend.visible = true;
 				
 				function dmComparePollutionChangeHandler(event:Event):void
 				{
@@ -1029,6 +999,7 @@
 			
 			protected function riverTargetRwList_valueCommitHandler(event:FlexEvent):void
 			{
+				clearRiverCompareResult();
 				mapCompare.visible = mapCompare.includeInLayout = false;
 				var dropDownList:DropDownList = event.currentTarget as DropDownList;
 				if (dropDownList.selectedItem.value == 5){
@@ -1042,12 +1013,19 @@
 			//先请求当前方案的河道对应计算指标计算结果
 			protected function riverQueryRwBt_clickHandler(event:MouseEvent):void
 			{
-				clearRiverCompare();
+				clearRiverCompareResult();
+				
 				clickButton = event.currentTarget as Button;
 				if (clickButton == mapCompare)
 				{
 					//点击河道污染物浓度对比
 					this.currentState = POLLUTION_COMPARE_STATE;
+					//设置污染物地图展示标题
+					currentPanel.text= panel.title;
+					comparePanel.text = riverCompareSchemeList.selectedItem.planNm;
+					content.removeAllElements();
+					riverCompareTimeSlider.initParam();
+					
 				}
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
 				waterModelparam.method = getQueryMethodHandler(riverTargetRwList, RIVER_WAY);
@@ -1063,10 +1041,12 @@
 			}
 			
 			/**清除河道对比查询结果*/
-			private function clearRiverCompare():void
+			private function clearRiverCompareResult():void
 			{
 				riverCompareType.removeAllElements();
 				riverCompareChart.series = null;
+				riverCompareLegend.visible = false;
+				riverVerticalAxis.title = "";
 			}
 			
 			private function queryRiverCompareHandler(event:CairngormEvent):void
@@ -1321,6 +1301,7 @@
 				}
 				
 				riverCompareChart.series = createChartSeries(saDatas, true, false, isPollution);
+				riverCompareLegend.visible = true;
 				
 				//河道计算结果，污染物展示控制
 				function riverComparePollutionChangeHandler(event:Event):void
@@ -1385,6 +1366,7 @@
 			
 			protected function dmCompareSchemeList_valueCommitHandler(event:FlexEvent):void
 			{
+				clearDMCompareResult();
 				var dropdownList:DropDownList = event.currentTarget as DropDownList;
 				dmCompareList.enabled = true;
 				//选择的是非当前方案，断面设置为当前断面id------不同方案，相同断面比较
@@ -1509,6 +1491,8 @@
 					}
 				}
 				
+				currentPlanMap.viewBoundsEx = featuresLayer.bounds;
+				
 				//添加两个地图图层
 				baseMapLayer = new TiledDynamicRESTLayerEx();
 				baseMapLayer.layerType = 0
@@ -1544,6 +1528,7 @@
 						}
 					}
 				}
+				comparePlanMap.viewBoundsEx = featuresLayer.bounds;
 				
 				initCompareMapViewBoundsHandler();
 			}
@@ -1602,7 +1587,7 @@
 				//设置河段颜色
 				var preLineStyle:PredefinedLineStyle;
 				for each(var item:Object in data.nodeList){
-					var riverFeature:Feature = riverLayer.getFeatureByID(item.super_ojb_id);
+					var riverFeature:Feature = riverLayer.getFeatureByID(item.super_obj_id);
 					if (riverFeature != null) {
 						riverFeature.visible = true;
 						preLineStyle = riverFeature.style as PredefinedLineStyle;
@@ -1708,7 +1693,7 @@
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
 							<mx:Legend id="dmLegend" dataProvider="{dmChart}" fontSize="12"  buttonMode="true"
-									   direction="vertical" 
+									   direction="vertical"
 									   legendItemClass="widgets.wateremergency.chart.LegendItemEx"/>
 						</mx:ControlBar>
 					</s:NavigatorContent>
@@ -1937,7 +1922,7 @@
 							</chart:LineChartEx>
 						</s:VGroup>
 						<mx:ControlBar top="40" right="20">
-							<mx:Legend dataProvider="{riverCompareChart}"  fontSize="12"  buttonMode="true"
+							<mx:Legend id="riverCompareLegend" dataProvider="{riverCompareChart}"  fontSize="12"  buttonMode="true"
 									   direction="vertical"
 									   legendItemClass="widgets.wateremergency.chart.LegendItemEx"/>
 						</mx:ControlBar>
@@ -1958,9 +1943,29 @@
 		<s:VGroup width="100%" height="100%" gap="0">
 			<s:BorderContainer width="100%" height="100%">
 				<s:HGroup width="100%" height="100%" gap="0" >
-					<ns:MapCtrl id="currentPlanMap" width="100%" height="100%"/>
-					<line:VLine height="100%"/>
-					<ns:MapCtrl id="comparePlanMap" width="100%" height="100%"/>
+					<s:Group width="100%" height="100%">
+						<ns:MapCtrl id="currentPlanMap" width="100%" height="100%"/>
+						<s:Group id="currentPanelGroup" minWidth="200"  minHeight="25" horizontalCenter="0" top="5">
+							<s:Rect width="100%" height="100%">
+								<s:fill>
+									<s:SolidColor color="{getStyle('textSymbolBgColor')}" alpha="{getStyle('textSymbolAlpha')}"/>
+								</s:fill>
+							</s:Rect>
+							<s:Label id="currentPanel" color="0xFFFFFF" fontSize="14" horizontalCenter="0" verticalCenter="0" />
+						</s:Group>
+					</s:Group>
+					<line:VLine  height="100%" width="2" color="0x333333"/>
+					<s:Group width="100%" height="100%">
+						<ns:MapCtrl id="comparePlanMap" width="100%" height="100%"/>
+						<s:Group id="comparePanelGroup" minWidth="200"  minHeight="25" horizontalCenter="0" top="5">
+							<s:Rect width="100%" height="100%">
+								<s:fill>
+									<s:SolidColor color="{getStyle('textSymbolBgColor')}" alpha="{getStyle('textSymbolAlpha')}"/>
+								</s:fill>
+							</s:Rect>
+							<s:Label id="comparePanel" color="0xFFFFFF" fontSize="14" horizontalCenter="0" verticalCenter="0" />
+						</s:Group>
+					</s:Group>
 				</s:HGroup>
 				<s:BorderContainer  borderVisible="true" borderColor="0xEAEAEA" right="5" bottom="5">
 					<s:VGroup  gap="5">

@@ -136,11 +136,9 @@
 			//点击河流段，查询河流计算结果 
 			private function riverClickHandler(event:MouseEvent):void
 			{
-				var feature:Feature = event.currentTarget as Feature;
-				//				modelLocator.waterModelParam.dmId = feature.id;
 				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
 				modelShowVO.state = WaterModelContainerWidget.RIVER_STATE;
-				modelShowVO.title = feature.attributes["sectionName"];
+				modelShowVO.title =  planList.selectedItem.planNm;
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_MODEL_RESULT_WIDGET);
 				queryEvent.data = modelShowVO;
 				queryEvent.dispatch();

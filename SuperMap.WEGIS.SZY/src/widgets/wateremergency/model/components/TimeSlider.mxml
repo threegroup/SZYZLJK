@@ -7,6 +7,8 @@
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import flash.utils.setTimeout;
+			
 			import sm.wegis.szy.events.TimeSliderEvent;
 			import sm.wegis.szy.models.ApplicationModelLocator;
 			private var _data:Object;
@@ -14,6 +16,7 @@
 			private var modelLocator:ApplicationModelLocator = ApplicationModelLocator.getInstance();
 			
 			private var isPlay:Boolean = false;
+			private const interval:int = 2000;
 			
 			
 			public function get data():Object
@@ -33,19 +36,31 @@
 				super.commitProperties();
 				if (dataChange == true) {
 					dataChange = false;
+					resetPlay();
 					if (data != null && data.currentPlan is Array &&  (data.currentPlan as Array).length > 0 
 						&& (data.currentPlan as Array)[0]["result"] && (data.currentPlan as Array)[0]["result"] is Array){
 						timeSlider.maximum = ((data.currentPlan as Array)[0]["result"] as Array).length -1;
+						timeSlider.enabled = dmStartBt.enabled = dmStopBt.enabled = true;
 					}
-					initParam();
+					
 				}
 			}
 			
-			private function initParam():void
+			private function resetPlay():void
 			{
-				timeSlider.value = 0;
+				timeSlider.value = timeSlider.minimum;
 				dmStartBt.label = "开始";
 				isPlay = false;
+				monLb.text = "";
+			}
+			
+			public function initParam():void
+			{
+				timeSlider.value = timeSlider.minimum;
+				dmStartBt.label = "开始";
+				isPlay = false;
+				monLb.text = "";
+				timeSlider.enabled = dmStartBt.enabled = dmStopBt.enabled = false;
 			}
 			
 			protected function play_clickHandler(event:MouseEvent):void
@@ -65,13 +80,20 @@
 				if (isPlay == true && timeSlider.value <= timeSlider.maximum) {
 					dispatchChangeEvent();
 					if (timeSlider.value == timeSlider.maximum){
-						dmStartBt.label = "开始";
-						isPlay = false;
+						setTimeout(stopPlayer, interval);
 					} else {
 						timeSlider.value += timeSlider.stepSize;
-						setTimeout(playHandler,2000);
+						setTimeout(playHandler, interval);
 					}
 				}
+			}
+			
+			private function stopPlayer():void
+			{
+				dmStartBt.label = "开始";
+				timeSlider.value = timeSlider.minimum;
+				isPlay = false;
+				monLb.text = "";
 			}
 			
 			private function dispatchChangeEvent():void
@@ -91,7 +113,7 @@
 						if (pollutionItem.pollutionType == riverCompareBG.selectedValue){
 							monthItem = pollutionItem.result[index];
 							//解析月份
-							monLb.text = monthItem.label;
+							monLb.text = resolveMonth(monthItem.label);
 							chartDatas.currentPlan = monthItem;
 							break;
 						}
@@ -112,11 +134,12 @@
 				}
 				event.data = chartDatas;
 				dispatchEvent(event);
+				
 			}
 			
 			protected function stop_clickHandler(event:MouseEvent):void
 			{
-				initParam();
+				resetPlay();
 			}
 			
 			protected function timeSlider_changeHandler(event:Event):void
@@ -126,26 +149,59 @@
 			
 			protected function riverCompareBG_changeHandler(event:Event):void
 			{
-				initParam();
+				resetPlay();
+			}
+			
+			//断面地形剖面数据
+			private function dmProfileDataTipFunc(val:String):String
+			{
+				var month:String = "";
+				if (data.currentPlan != null){
+					for each(var pollutionItem:Object in data.currentPlan) {
+						//解析污染物
+						if (pollutionItem.pollutionType == riverCompareBG.selectedValue){
+							var monthItem:Object = pollutionItem.result[timeSlider.value];
+							//解析月份
+							month = resolveMonth(monthItem.label);
+							break;
+						}
+					}
+				}
+				return month;
+			}
+			
+			private function resolveMonth(data:String):String
+			{
+				var month:String = "";
+				if (data != null){
+					var times:Array = data.split("-");
+					if (times.length >= 2){
+						month = times[1];
+					}
+				}
+				return month;
+				
 			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<s:RadioButtonGroup id="riverCompareBG" change="riverCompareBG_changeHandler(event)"/>
 	</fx:Declarations>
-	<s:HGroup width="100%" height="100%" verticalAlign="middle" paddingRight="10" paddingLeft="10">
+	<s:HGroup width="100%" height="100%" minHeight="35"  verticalAlign="middle" paddingRight="10" paddingLeft="10">
 		<s:Label text="时间："/>	
-		<s:Label id="monLb" height="100%" width="60"/>
+		<s:Label id="monLb" height="100%"  minWidth="20"/>
+		<s:Label  text="月份" height="100%"/>
 		<s:HSlider id="timeSlider" width="100%" minimum="0" stepSize="1" snapInterval="1"
+				   dataTipFormatFunction="dmProfileDataTipFunc"
 				   change="timeSlider_changeHandler(event)"/>
 		<s:HGroup id="riverCompareType">
 			<s:Label text="污染物类型:" height="100%"/>
 			<s:RadioButton id="NH3N" value="NH3-N" label="NH3-N"  groupName="riverCompareBG" selected="true"/>
-			<s:RadioButton id="COD" value="COD-N" label="COD"  groupName="riverCompareBG"/>
+			<s:RadioButton id="COD" value="COD" label="COD"  groupName="riverCompareBG"/>
 		</s:HGroup>
-		<s:Button id="dmStartBt" label="开始" buttonMode="true" styleName="SubmitRegisterStyle"
+		<s:Button id="dmStartBt" label="开始" enabled="false" buttonMode="true" styleName="SubmitRegisterStyle"
 				  click="play_clickHandler(event)"/>
-		<s:Button id="dmStopBt" label="停止" buttonMode="true" styleName="SubmitRegisterStyle"
+		<s:Button id="dmStopBt" label="停止" enabled="false" buttonMode="true" styleName="SubmitRegisterStyle"
 				  click="stop_clickHandler(event)"/>
 	</s:HGroup>
 </s:Group>

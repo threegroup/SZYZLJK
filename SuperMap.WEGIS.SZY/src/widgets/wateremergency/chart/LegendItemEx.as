@@ -36,7 +36,6 @@ package widgets.wateremergency.chart
 				checkBox.selected = true;
 				checkBox.addEventListener(Event.CHANGE, itemChangeHandler);
 			}
-			
 			this.setSelectedState(true);
 		}
 		

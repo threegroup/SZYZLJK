@@ -224,8 +224,6 @@
 								UI.y = showY;
 								
 								var circleRadius:int = 3;
-								//g.beginFill(0xffffff);
-								//g.lineStyle(2,0x000000);
 								g.beginFill(color);
 								g.lineStyle(2, color);
 								g.drawCircle(seletItem.x, seletItem.y, circleRadius);
@@ -270,6 +268,12 @@
 				ToolTip.getInstance().removeToolTip();
 			}
 			
+			override public function set series(value:Array):void
+			{
+				super.series = value;
+				clearChartGraphic();
+				ToolTip.getInstance().removeToolTip();
+			}
 		]]>
 	</fx:Script>
 	<mx:backgroundElements>
