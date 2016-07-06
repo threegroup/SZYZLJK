@@ -941,7 +941,7 @@
 				var label:String;
 				
 				if (dMCompareResult.currentPlan != null){
-					if (dMCompareResult.currentPlan is Array){
+					if (dMCompareResult.currentPlan is Array && (dMCompareResult.currentPlan as Array).length>0){
 						for each(var item:Object in dMCompareResult.currentPlan){
 							saDatas.push(item);
 						}
@@ -950,7 +950,7 @@
 					}
 				}
 				if (dMCompareResult.comparePlan != null){
-					if (dMCompareResult.comparePlan is Array){
+					if (dMCompareResult.comparePlan is Array && (dMCompareResult.comparePlan as Array).length > 0){
 						for each(var item0:Object in dMCompareResult.comparePlan){
 							saDatas.push(item0);
 						}
