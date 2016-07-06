@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			private var _data:Object
+			private var dataChange:Boolean = false;
+			
+			public function get data():Object
+			{
+				return _data;
+			}
+			
+			public function set data(value:Object):void
+			{
+				_data = value;
+				dataChange = true;
+				invalidateProperties();
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				if (dataChange == true) {
+					dataChange = false;
+					monLb.text = data.label != null ? resolveMonth(data.label) : "";
+					maxPollutionDm.text = data["最高浓度断面名称"] != null ? data["最高浓度断面名称"] : "";
+					maxPollution.text = data["对应浓度值"] != null ?  data["对应浓度值"]+"mg/L" : "";
+				}
+			}
+			
+			private function resolveMonth(data:String):String
+			{
+				var month:String = "";
+				if (data != null){
+					var times:Array = data.split("-");
+					if (times.length >= 2){
+						month = times[1];
+					}
+				}
+				return month;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Rect left="-5" right="-5" top="-5" bottom="-5">
+		<s:fill>
+			<s:SolidColor color="{getStyle('textSymbolBgColor')}" alpha="{getStyle('textSymbolAlpha')}"/>
+		</s:fill>
+	</s:Rect>
+	<mx:Grid  color="0xFFFFFF">
+		<mx:GridRow>
+			<mx:GridItem>
+				<s:Label text="时间："/>	
+			</mx:GridItem>
+			<mx:GridItem>
+				<s:HGroup>
+					<s:Label id="monLb" height="100%"  minWidth="20"/>
+					<s:Label  text="月" height="100%"/>
+				</s:HGroup>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem>
+				<s:Label text="浓度最高断面："/>
+			</mx:GridItem>
+			<mx:GridItem>
+				<s:Label  id="maxPollutionDm"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow>
+			<mx:GridItem>
+				<s:Label text="最高浓度："/>
+			</mx:GridItem>
+			<mx:GridItem>
+				<s:Label  id="maxPollution"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+</s:Group>

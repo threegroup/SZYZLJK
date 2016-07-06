@@ -43,7 +43,7 @@
 					if (data != null && data.currentPlan is Array &&  (data.currentPlan as Array).length > 0 
 						&& (data.currentPlan as Array)[0]["result"] && (data.currentPlan as Array)[0]["result"] is Array){
 						timeSlider.maximum = ((data.currentPlan as Array)[0]["result"] as Array).length -1;
-						timeSlider.enabled = dmStartBt.enabled = dmStopBt.enabled = true;
+						riverCompareType.enabled = timeSlider.enabled = dmStartBt.enabled = dmStopBt.enabled = true;
 					}
 				}
 			}
@@ -55,6 +55,7 @@
 				dmStartBt.label = "开始";
 				isPlay = false;
 				monLb.text = "";
+				timeClear();
 			}
 			
 			public function initParam():void
@@ -64,7 +65,7 @@
 				dmStartBt.label = "开始";
 				isPlay = false;
 				monLb.text = "";
-				timeSlider.enabled = dmStartBt.enabled = dmStopBt.enabled = false;
+				riverCompareType.enabled = timeSlider.enabled = dmStartBt.enabled = dmStopBt.enabled = false;
 			}
 			
 			protected function play_clickHandler(event:MouseEvent):void
@@ -84,20 +85,11 @@
 				if (isPlay == true && timeSlider.value <= timeSlider.maximum) {
 					dispatchChangeEvent();
 					if (timeSlider.value == timeSlider.maximum){
-						setTimeout(stopPlayer, interval);
+						setTimeout(resetPlay, interval);
 					} else {
 						setTimeout(playHandler, interval);
 					}
 				}
-			}
-			
-			private function stopPlayer():void
-			{
-				dmStartBt.label = "开始";
-				timeSlider.value = timeSlider.minimum;
-				currentValue = -1;
-				isPlay = false;
-				monLb.text = "";
 			}
 			
 			private function dispatchChangeEvent(isPlay:Boolean = true):void
@@ -152,6 +144,14 @@
 				resetPlay();
 			}
 			
+			//播放结束，用于外部清除数据
+			private function timeClear():void
+			{
+				var event:TimeSliderEvent = new TimeSliderEvent(TimeSliderEvent.Change);
+				event.data = {};
+				dispatchEvent(event);
+			}
+			
 			protected function timeSlider_changeHandler(event:Event):void
 			{
 				currentValue = timeSlider.value;
@@ -191,22 +191,17 @@
 					}
 				}
 				return month;
-				
 			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<s:RadioButtonGroup id="riverCompareBG" change="riverCompareBG_changeHandler(event)"/>
 	</fx:Declarations>
-	<s:HGroup width="100%" height="100%" minHeight="35"  verticalAlign="middle" paddingRight="10" paddingLeft="10">
+	<s:HGroup width="100%" height="100%" minHeight="35"  verticalAlign="middle" paddingRight="10" paddingLeft="10" bottom="5">
 		<s:Label text="时间："/>	
 		<s:Label id="monLb" height="100%" />
 		<s:Label  text="月" height="100%"/>
-		<s:Label text="最高浓度断面："/>
-		<s:Label  id="maxPollutionDm"/>
-		<s:Label text="浓度："/>
-		<s:Label  id="maxPollution"/>
-		<s:HSlider id="timeSlider" width="100%" minimum="0" stepSize="1" snapInterval="1"
+		<s:HSlider id="timeSlider" enabled="false" width="100%" minimum="0" stepSize="1" snapInterval="1"
 				   dataTipFormatFunction="dmProfileDataTipFunc" 
 				   change="timeSlider_changeHandler(event)"/>
 		<s:HGroup id="riverCompareType">

@@ -548,6 +548,7 @@
 				if (dmProfileGroup != null){
 					this.startDmWaterLevelSimulate();
 				}
+				currentPollutionInfo.visible = comparePollutionInfo.visible = false;
 			}
 			
 			protected function closeBt_clickHandler(event:MouseEvent):void
@@ -1195,7 +1196,7 @@
 			}
 			
 			/**显示对比chart*/
-			private function showRiverCompareChart():void
+			private function showRiverCompareChart(changeByMonth:Boolean = false):void
 			{
 				//设置Y轴名称 
 				this.riverVerticalAxis.title = riverTargetRwList.selectedItem.title;
@@ -1208,27 +1209,47 @@
 				var label:String;
 				var isPollution:Boolean = false;
 				//污染物浓度展示
-				riverCompareType.removeAllElements();
+				//是否通过切换月份改变，如果是，不重新创建checkbox
+				if (changeByMonth == false){
+					riverCompareType.removeAllElements();
+				}
 				if (riverTargetRwList.selectedItem.value == 5){
 					isPollution = true;
-					var tip:Label = new Label();
-					tip.text = "污染物展示类型：";
-					tip.percentHeight = 100;
-					riverCompareType.addElement(tip);
-					
-					var nh3Ck:CheckBox = new CheckBox();
-					nh3Ck.label = "NH3-N";
-					nh3Ck.selected = true;
-					nh3Ck.addEventListener(Event.CHANGE, riverComparePollutionChangeHandler);
-					riverCompareType.addElement(nh3Ck);
-					
-					var codCk:CheckBox = new CheckBox();
-					codCk.label = "COD";
-					codCk.selected = true;
-					codCk.addEventListener(Event.CHANGE, riverComparePollutionChangeHandler);
-					riverCompareType.addElement(codCk);
+					var nh3Ck:CheckBox;
+					var codCk:CheckBox;
+					if (changeByMonth == false){
+						var tip:Label = new Label();
+						tip.text = "污染物展示类型：";
+						tip.percentHeight = 100;
+						riverCompareType.addElement(tip);
+						
+						nh3Ck = new CheckBox();
+						nh3Ck.id = "nh3Ck";
+						nh3Ck.label = "NH3-N";
+						nh3Ck.selected = true;
+						nh3Ck.addEventListener(Event.CHANGE, riverComparePollutionChangeHandler);
+						riverCompareType.addElement(nh3Ck);
+						
+						codCk = new CheckBox();
+						codCk.id = "codCk";
+						codCk.label = "COD";
+						codCk.selected = true;
+						codCk.addEventListener(Event.CHANGE, riverComparePollutionChangeHandler);
+						riverCompareType.addElement(codCk);
+					} else {
+						for (var index:int = 0 ;index < riverCompareType.numElements ;index++){
+							var checkBox:CheckBox = riverCompareType.getElementAt(index) as CheckBox;
+							if ( checkBox != null ) {
+								if (checkBox.id == "nh3Ck"){
+									nh3Ck = checkBox;
+								} else if (checkBox.id == "codCk"){
+									codCk = checkBox;
+								}
+							}
+						}
+					}
 					var pollutionItem:Object;
-					if (riverCompareResult.currentPlan != null){
+					if (riverCompareResult.currentPlan != null ){
 						for each(pollutionItem in riverCompareResult.currentPlan)
 						{
 							for  each (saData in pollutionItem.result)
@@ -1240,6 +1261,12 @@
 										month = parseInt(label.split("-")[1]);
 									}
 									if (month == selectMonth) {
+										if (nh3Ck && nh3Ck.selected == false && saData.name == nh3Ck.label){
+											saData.visible = false;
+										}
+										if (codCk && codCk.selected == false && saData.name == codCk.label){
+											saData.visible = false;
+										}
 										saDatas.push(saData);
 										break;
 									}
@@ -1248,7 +1275,7 @@
 						}
 					}
 					//遍历对比方案
-					if (riverCompareResult.comparePlan != null){
+					if (riverCompareResult.comparePlan != null ){
 						for each(pollutionItem in riverCompareResult.comparePlan)
 						{
 							for  each (saData in pollutionItem.result)
@@ -1260,6 +1287,12 @@
 										month = parseInt(label.split("-")[1]);
 									}
 									if (month == selectMonth) {
+										if (nh3Ck && nh3Ck.selected == false && saData.name == nh3Ck.label){
+											saData.visible = false;
+										}
+										if (codCk && codCk.selected == false && saData.name == codCk.label){
+											saData.visible = false;
+										}
 										saDatas.push(saData);
 										break;
 									}
@@ -1313,13 +1346,13 @@
 							item.visible = checkBox.selected;
 						} 
 					}
-					riverCompareChart.series =createChartSeries(saDatas, false, true, true);
+					riverCompareChart.series =createChartSeries(saDatas, true, false, isPollution);
 				}
 			}
 			
 			protected function riverCompareMonthDpList_changeHandler(event:IndexChangeEvent):void
 			{
-				showRiverCompareChart();
+				showRiverCompareChart(true);
 			}
 			
 			//河道计算结果导出
@@ -1572,9 +1605,17 @@
 				var showDatas:Object = event.data;
 				if (showDatas.currentPlan != null){
 					showRiverMap(showDatas.currentPlan, currentPlanMap);
+					currentPollutionInfo.data = showDatas.currentPlan;
+					currentPollutionInfo.visible = true;
+				} else {
+					currentPollutionInfo.visible = false;
 				}
 				if (showDatas.comparePlan != null){
 					showRiverMap(showDatas.comparePlan, comparePlanMap);
+					comparePollutionInfo.data = showDatas.comparePlan;
+					comparePollutionInfo.visible = true;
+				} else {
+					comparePollutionInfo.visible = false;
 				}
 			}
 			
@@ -1953,8 +1994,9 @@
 							</s:Rect>
 							<s:Label id="currentPanel" color="0xFFFFFF" fontSize="14" horizontalCenter="0" verticalCenter="0" />
 						</s:Group>
+						<components:RiverPollutionInfo id="currentPollutionInfo" visible="false" left="5" bottom="5"/>
 					</s:Group>
-					<line:VLine  height="100%" width="2" color="0x333333"/>
+					<line:VLine  height="100%" width="1" color="0x333333"/>
 					<s:Group width="100%" height="100%">
 						<ns:MapCtrl id="comparePlanMap" width="100%" height="100%"/>
 						<s:Group id="comparePanelGroup" minWidth="200"  minHeight="25" horizontalCenter="0" top="5">
@@ -1965,37 +2007,7 @@
 							</s:Rect>
 							<s:Label id="comparePanel" color="0xFFFFFF" fontSize="14" horizontalCenter="0" verticalCenter="0" />
 						</s:Group>
-						<s:Group id="comparePollutionInfo" minWidth="100" left="5">
-							<mx:Grid>
-								<mx:GridRow>
-									<mx:GridItem>
-										<s:Label text="时间："/>	
-									</mx:GridItem>
-									<mx:GridItem>
-										<s:HGroup>
-											<s:Label id="monLb" height="100%"  minWidth="20"/>
-											<s:Label  text="月" height="100%"/>
-										</s:HGroup>
-									</mx:GridItem>
-								</mx:GridRow>
-								<mx:GridRow>
-									<mx:GridItem>
-										<s:Label text="最高浓度断面："/>
-									</mx:GridItem>
-									<mx:GridItem>
-										<s:Label  id="maxPollutionDm"/>
-									</mx:GridItem>
-								</mx:GridRow>
-								<mx:GridRow>
-									<mx:GridItem>
-										<s:Label text="浓度："/>
-									</mx:GridItem>
-									<mx:GridItem>
-										<s:Label  id="maxPollution"/>
-									</mx:GridItem>
-								</mx:GridRow>
-							</mx:Grid>
-						</s:Group>
+						<components:RiverPollutionInfo id="comparePollutionInfo" visible="false" left="5" bottom="5"/>
 					</s:Group>
 				</s:HGroup>
 				<s:BorderContainer  borderVisible="true" borderColor="0xEAEAEA" right="5" bottom="5">

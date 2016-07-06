@@ -18,6 +18,8 @@
 		<![CDATA[
 			import com.supermap.wegis.common.utils.ToolTip;
 			
+			import flash.utils.setTimeout;
+			
 			import flashx.textLayout.formats.Direction;
 			
 			import mx.charts.HitData;
@@ -268,11 +270,24 @@
 				ToolTip.getInstance().removeToolTip();
 			}
 			
+			private var seriesChange:Boolean = false;
 			override public function set series(value:Array):void
 			{
 				super.series = value;
 				clearChartGraphic();
 				ToolTip.getInstance().removeToolTip();
+				seriesChange = true;
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				if (seriesChange ) 
+				{
+					seriesChange = false;
+//					setTimeout(legendDataChanged,500);
+					legendDataChanged();
+				}
 			}
 		]]>
 	</fx:Script>
