@@ -37,8 +37,6 @@
 			protected function this_creationCompleteHandler(event:FlexEvent):void
 			{
 				initEventListener();
-				// 查询断面对应的河流段空间数据，用于河段点击，查询河流计算结果,请求完空间数据后，再请求模型方案列表数据
-				queryDMRiver();
 			}
 			
 			public function initEventListener():void{
@@ -66,11 +64,36 @@
 			
 			protected function this_WidgetAddCompleteHandler(event:BaseWidgetEvent):void
 			{
+				// 查询断面对应的河流段空间数据，用于河段点击，查询河流计算结果,请求完空间数据后，再请求模型方案列表数据
+				queryDMRiver();
 			}
 			
 			protected function this_WidgetRemoveHandler(event:BaseWidgetEvent):void
 			{
+				//清除查询条件，初始化界面面板
+				clearLastQuery();
+				modelLocator.mapCtrl.infoWindow.hide();
+			}
+			
+			private function clearLastQuery():void
+			{
+				//清空对象列表
+				planList.dataProvider = null;
+				//断面featurelayer
+				var breakPointLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.WATER_MODEL_BREAK_FEATURE_LAYER,
+					modelLocator.mapCtrl);
+				breakPointLayer.clear();
 				
+				//河流段
+				var riverLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.WATER_MODEL_RIVER_FEATURE_LAYER
+					, modelLocator.mapCtrl);
+				riverLayer.clear();
+				//隐藏右下对象监测数据面板
+				var modelEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_MODEL_RESULT_WIDGET);
+				var modelContainerShowVO:ModelContainerShowVO = new ModelContainerShowVO();
+				modelContainerShowVO.state = WaterModelContainerWidget.HIDE_STATE;
+				modelEvent.data = modelContainerShowVO;
+				modelEvent.dispatch();
 			}
 			
 			//获取水模型方案列表

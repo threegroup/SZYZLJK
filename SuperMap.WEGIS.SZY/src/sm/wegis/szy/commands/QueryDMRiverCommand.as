@@ -43,8 +43,13 @@ package sm.wegis.szy.commands
 			queryBySQLParam.filterParameters = [filter];
 			
 			//				/* 执行 SQL 查询 */
-			var queryByDistanceService:QueryBySQLService = new QueryBySQLService( modelLocator.baseMapInfo.dmMapUrl);
-			queryByDistanceService.processAsync(queryBySQLParam, new AsyncResponder(displayRiverQueryRecords, faultHandle, null));
+			if (modelLocator.baseMapInfo.dmMapUrl == null) {
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_DM_RIVER_RESPONSE);
+				queryEvent.dispatch();
+			} else {
+				var queryByDistanceService:QueryBySQLService = new QueryBySQLService( modelLocator.baseMapInfo.dmMapUrl);
+				queryByDistanceService.processAsync(queryBySQLParam, new AsyncResponder(displayRiverQueryRecords, faultHandle, null));
+			}
 		}
 		
 		//河流查询结果

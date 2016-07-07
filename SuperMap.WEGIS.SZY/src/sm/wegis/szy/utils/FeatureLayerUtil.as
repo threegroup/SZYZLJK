@@ -22,11 +22,6 @@ package sm.wegis.szy.utils
 				featureLayer = new FeaturesLayerEx();
 				featureLayer.id = layerId;
 				map.addLayer(featureLayer);
-			} else{
-				if(!featureLayer.visible)
-				{
-					featureLayer.visible = true;
-				}
 			}
 			if (layerType != -1 ) {
 				featureLayer.layerType = layerType;

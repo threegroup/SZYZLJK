@@ -12,11 +12,14 @@
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
 			import com.supermap.web.core.Feature;
+			import com.supermap.web.core.geometry.GeoPoint;
+			import com.supermap.web.core.styles.PictureMarkerStyle;
 			import com.supermap.web.core.styles.PredefinedLineStyle;
 			import com.supermap.web.events.ViewBoundsEvent;
 			import com.supermap.web.iServerJava6R.Recordset;
 			import com.supermap.web.mapping.FeaturesLayer;
 			import com.supermap.web.utils.Hashtable;
+			import com.supermap.wegis.common.core.resourceManager.ResourceManagerEx;
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			import com.supermap.wegis.common.mappingEx.TiledDynamicRESTLayerEx;
 			
@@ -71,9 +74,13 @@
 			[Bindable]
 			private var DMcompareSchemeList:ArrayCollection = null;
 			
-			/**当前方案断面列表*/
+			/**当前方案计算断面列表，不包含插值断面*/
 			[Bindable]
-			private var dmList:ArrayCollection = null;
+			private var dmCalcList:ArrayCollection = null;
+			
+			/**当前方案所有断面列表*/
+			[Bindable]
+			private var dmAllList:Array = null;
 			
 			//			/**当前断面对象*/
 			//			private var sameItem:Object = null;
@@ -282,10 +289,12 @@
 			//获取单个水模型方案结果
 			private function queryModelResultResponseHandler(event:CairngormEvent):void
 			{
-				dmList = null;
+				dmCalcList = null;
+				dmAllList = null;
 				var result:Object = event.data;
 				if (result != null && result.success == true && result.attributes && result.attributes.attributes is Array) {
 					var tempCol:Array = result.attributes.attributes as Array;
+					dmAllList = tempCol;
 					var sectionCol:Array = [];
 					if(tempCol != null && tempCol.length > 0)
 					{
@@ -297,7 +306,7 @@
 							}
 						}
 					}
-					dmList = new ArrayCollection(sectionCol);
+					dmCalcList = new ArrayCollection(sectionCol);
 				}
 			}
 			
@@ -1055,6 +1064,11 @@
 				riverCompareChart.series = null;
 				riverCompareLegend.visible = false;
 				riverVerticalAxis.title = "";
+				var featuresLayer:FeaturesLayer;
+				featuresLayer = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, comparePlanMap);
+				resolveRiverFeature(featuresLayer);
+				featuresLayer = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, currentPlanMap);
+				resolveRiverFeature(featuresLayer);
 			}
 			
 			private function queryRiverCompareHandler(event:CairngormEvent):void
@@ -1489,6 +1503,7 @@
 			
 			protected function riverPollutionCompareInitHandler():void
 			{
+				currentPlanMap.removeAllLayers();
 				var baseMapLayer:TiledDynamicRESTLayerEx;
 				var waterResourceLayer:TiledDynamicRESTLayerEx;
 				//添加两个地图图层
@@ -1533,6 +1548,8 @@
 				
 				currentPlanMap.viewBoundsEx = featuresLayer.bounds;
 				
+				
+				comparePlanMap.removeAllLayers();
 				//添加两个地图图层
 				baseMapLayer = new TiledDynamicRESTLayerEx();
 				baseMapLayer.layerType = 0
@@ -1569,14 +1586,6 @@
 					}
 				}
 				comparePlanMap.viewBoundsEx = featuresLayer.bounds;
-				
-				initCompareMapViewBoundsHandler();
-			}
-			
-			private function initCompareMapViewBoundsHandler():void
-			{
-				currentPlanMap.addEventListener(MouseEvent.ROLL_OVER, mapRollOverHandler);
-				comparePlanMap.addEventListener(MouseEvent.ROLL_OVER, mapRollOverHandler);
 			}
 			
 			private function mapRollOverHandler(event:MouseEvent):void
@@ -1609,6 +1618,7 @@
 			//当前时间轴选择的月份数据，根据月份数据，刷新河流段
 			protected function timeSlider_changeHandler(event:TimeSliderEvent):void
 			{
+				var featuresLayer:FeaturesLayer;
 				var showDatas:Object = event.data;
 				if (showDatas.currentPlan != null){
 					showRiverMap(showDatas.currentPlan, currentPlanMap);
@@ -1616,13 +1626,18 @@
 					currentPollutionInfo.visible = true;
 				} else {
 					currentPollutionInfo.visible = false;
-				}
+					featuresLayer = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, comparePlanMap);
+					resolveRiverFeature(featuresLayer);
+				
 				if (showDatas.comparePlan != null){
 					showRiverMap(showDatas.comparePlan, comparePlanMap);
 					comparePollutionInfo.data = showDatas.comparePlan;
 					comparePollutionInfo.visible = true;
 				} else {
 					comparePollutionInfo.visible = false;
+					featuresLayer = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, currentPlanMap);
+					resolveRiverFeature(featuresLayer);
+				}
 				}
 			}
 			
@@ -1632,9 +1647,13 @@
 				//河流段
 				var riverLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, map);
 				resolveRiverFeature(riverLayer);
+				
+				var maxPolltionDmLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Max_Pollution_Layer, map);
+				maxPolltionDmLayer.clear();
 				//设置河段颜色
 				var preLineStyle:PredefinedLineStyle;
-				for each(var item:Object in data.nodeList){
+				var item:Object;
+				for each(item in data.nodeList){
 					var riverFeature:Feature = riverLayer.getFeatureByID(item.super_obj_id);
 					if (riverFeature != null) {
 						riverFeature.visible = true;
@@ -1646,6 +1665,27 @@
 						preLineStyle.color = parseInt(item.colo_value, 16);
 					}
 				}
+				
+			  for each(item in dmCalcList) {
+//				  if (item.superObjId == data.super_obj_id){
+				  if (item.sectionName == data["最高浓度断面名称"] || item.superObjId == data.super_obj_id){
+					  var pictureMarkerStyle:PictureMarkerStyle = new PictureMarkerStyle();
+					  var typeIDs:String = item.typeIDs;
+					  pictureMarkerStyle.source = ResourceManagerEx.FindResource(typeIDs).cls;
+					  
+					  if (item.lgtd && item.lttd) {
+						  item.x = Number(item.lgtd);
+						  item.y = Number(item.lttd);
+						  var geoPoint:GeoPoint = new GeoPoint(item.x, item.y);
+						  var feature:Feature = new Feature(geoPoint, pictureMarkerStyle, item);
+						  feature.id = item.sectionCode;
+						  feature.toolTip = item.sectionName;
+						  feature.buttonMode = true;
+						  maxPolltionDmLayer.addFeature(feature);
+					  }
+					  break;
+				  }
+			  }
 			}
 			
 			//设置features都不可见
@@ -1806,7 +1846,7 @@
 												valueCommit="dmCompareSchemeList_valueCommitHandler(event)"/>
 								<s:Spacer width="30"/>
 								<s:Label text="对比断面：" height="100%"/>
-								<s:DropDownList id="dmCompareList" width="160" dataProvider="{dmList}" labelField="sectionName"
+								<s:DropDownList id="dmCompareList" width="160" dataProvider="{dmCalcList}" labelField="sectionName"
 												requireSelection="true" styleName="SystemSelectorStyle"
 												change="dmCompareList_changeHandler(event)"/>
 								<s:Spacer width="30"/>
@@ -1992,7 +2032,7 @@
 			<s:BorderContainer width="100%" height="100%">
 				<s:HGroup width="100%" height="100%" gap="0" >
 					<s:Group width="100%" height="100%">
-						<ns:MapCtrl id="currentPlanMap" width="100%" height="100%"/>
+						<ns:MapCtrl id="currentPlanMap" width="100%" height="100%" rollOver="mapRollOverHandler(event)"/>
 						<s:Group id="currentPanelGroup" minWidth="200"  minHeight="25" horizontalCenter="0" top="5">
 							<s:Rect width="100%" height="100%">
 								<s:fill>
@@ -2005,7 +2045,7 @@
 					</s:Group>
 					<line:VLine  height="100%" width="1" color="0x333333"/>
 					<s:Group width="100%" height="100%">
-						<ns:MapCtrl id="comparePlanMap" width="100%" height="100%"/>
+						<ns:MapCtrl id="comparePlanMap" width="100%" height="100%"  rollOver="mapRollOverHandler(event)"/>
 						<s:Group id="comparePanelGroup" minWidth="200"  minHeight="25" horizontalCenter="0" top="5">
 							<s:Rect width="100%" height="100%">
 								<s:fill>

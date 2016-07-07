@@ -136,6 +136,12 @@
 			//系统初始化或系统切换之后重置UI
 			private function resetUI():void
 			{
+				//先移除当前菜单添加的widget
+				if (systemMenuId.currentMenuItem) {
+					var event:MenuItemEvent = new MenuItemEvent(MenuItemEvent.SYSTEM_MENU_SELECT_CHANGE);
+					event.data = {oldItem:systemMenuId.currentMenuItem.data};
+					switchBodyContent(event);
+				}
 				if(this.systemMenuId != null && this.systemMenuId.dataProvider != null)
 				{
 					this.systemMenuId.dataProvider = null;

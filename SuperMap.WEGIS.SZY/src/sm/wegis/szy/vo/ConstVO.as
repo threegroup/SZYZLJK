@@ -96,6 +96,9 @@ package sm.wegis.szy.vo
 		
 		/**河道污染物浓度对比*/
 		public static const River_Pollution_Compare_Layer:String = "RiverPollutionCompareLayer";
+		
+		/**河道污染物最高浓度断面*/
+		public static const River_Max_Pollution_Layer:String = "River_Max_Pollution_Layer";
 
 	}
 }
