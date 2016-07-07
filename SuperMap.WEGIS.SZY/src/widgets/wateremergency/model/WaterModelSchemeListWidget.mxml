@@ -209,7 +209,7 @@
 			//系统重新加载
 			public function systemReloadHandler(event:CairngormEvent):void
 			{
-				
+				this.planList.selectedIndex = -1;
 			}
 			
 			protected function queryBt_clickHandler(event:MouseEvent):void

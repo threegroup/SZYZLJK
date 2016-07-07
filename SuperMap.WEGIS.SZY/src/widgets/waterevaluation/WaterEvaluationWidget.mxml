@@ -926,7 +926,10 @@
 			//系统重新加载
 			public function systemReloadHandler(event:CairngormEvent):void
 			{
-				
+				if(pdfPanel != null)
+				{
+					pdfPanel.closeWindow();
+				}
 			}
 			
 			//查明默认缺省监测点，断面水功能区点,  查询排污口

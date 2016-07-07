@@ -130,6 +130,9 @@
 					riverTargetRwList.selectedIndex = 0;
 					riverCompareSchemeList.selectedIndex = 0;
 				}
+				
+				//停止推演
+				this.dmStopBt_clickHandler(null);
 			}
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
@@ -625,7 +628,11 @@
 			//系统重新加载
 			public function systemReloadHandler(event:CairngormEvent):void
 			{
+				//此处需要清空已有的数据
+				this.currentState = HIDE_STATE;
 				
+				//停止推演
+				this.dmStopBt_clickHandler(null);
 			}
 			
 			//将X轴显示转化为具体的日期格式

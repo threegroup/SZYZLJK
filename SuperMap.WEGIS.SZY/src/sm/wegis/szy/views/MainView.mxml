@@ -42,6 +42,7 @@
 			import sm.wegis.szy.events.SystemEvent;
 			import sm.wegis.szy.events.ToolItemEvent;
 			import sm.wegis.szy.skins.MenuItemSkinEx;
+			import sm.wegis.szy.utils.CairngormEventManager;
 			import sm.wegis.szy.vo.UserVO;
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
@@ -68,6 +69,10 @@
 				//系统选择面板
 				this.choosePanelId.visible = isChoose;
 				this.choosePanelId.includeInLayout = isChoose;
+				
+				//系统重载
+				var systemReloadEvent:SystemEvent = new SystemEvent(SystemEvent.SYSTEM_RELOAD);
+				systemReloadEvent.dispatch();
 			}
 			
 			public function initSystemInitEventHandler():void 
