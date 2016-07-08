@@ -139,7 +139,9 @@
 				}
 				
 				//停止推演
-				this.dmStopBt_clickHandler(null);
+				if (dmTimeSlider != null){
+					this.dmStopBt_clickHandler(null);
+				}
 			}
 			
 			protected function this_creationCompleteHandler(event:FlexEvent):void
