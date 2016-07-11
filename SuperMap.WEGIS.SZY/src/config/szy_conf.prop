@@ -23,7 +23,7 @@ wsdl=http://7.77.55.56:8080/waterEnv/services/query?wsdl
 #wsdl=http://192.168.117.199:8080/waterEnv/services/query?wsdl
 #wsdl=http://192.169.11.84:8080/waterEnv/services/query?wsdl
 #============测距测面服务地址===============#
-measureUrl=http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemap
+measureUrl=http://localhost:8090/iserver/services/map-SZYNew/rest/maps/basemapV
 
 #=============二维地图====================#
 #地图比例尺
