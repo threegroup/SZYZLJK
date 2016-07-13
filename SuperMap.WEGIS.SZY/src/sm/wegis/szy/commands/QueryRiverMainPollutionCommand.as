@@ -79,14 +79,19 @@ package sm.wegis.szy.commands
 						for each(var item:Object in riverMessage) {
 							for each(var featrue:Feature in featuresLayer.features) {
 								if (item.dmID == featrue.attributes.id) {
-									feature = new Feature(featrue.geometry);
+									var targetFeature:Feature = new Feature(featrue.geometry);
+									targetFeature.id = item.dmID;
 									infoStyle = new InfoStyle();
 									waterEvaluationCls = new ClassFactory(WaterEvaluationTarget);
-									waterEvaluationCls.properties = {targets:item.dmMessage, title:item.dmName ,type:WaterEvaluationTarget.Break};
+									waterEvaluationCls.properties = {targets:item.dmMessage, 
+										title:item.dmName,
+										type:WaterEvaluationTarget.Break,
+										targetLayer:targetInfoFeaturesLayer,
+										dmID:item.dmID};
 									infoStyle.infoRenderer = waterEvaluationCls;
 									infoStyle.containerStyleName = "infoStyle";
-									feature.style = infoStyle;
-									targetInfoFeaturesLayer.addFeature(feature);
+									targetFeature.style = infoStyle;
+									targetInfoFeaturesLayer.addFeature(targetFeature);
 								}
 							}
 						}

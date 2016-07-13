@@ -245,21 +245,21 @@ package sm.wegis.szy.commands
 						//						var waterEvaluationCls:ClassFactory;
 						//显示所有水功能区目标水质
 						for each(ft in waterFunctionFeatureLayer.features) 
-				    	{
-							var waterFunctionId:String = ft.attributes["ID"];
-							colorStr = "0x000000";
-							waterFunctionDestionInfo = waterFunctionDestina.find(waterFunctionId);
-							if (waterFunctionDestionInfo != null && waterFunctionDestionInfo["目标水质颜色"] != null)  {
-								colorStr = waterFunctionDestionInfo["目标水质颜色"];
-								colorStr = colorStr.replace(/#/ig, "0x");
-								ft.alpha = 1;
-								ft.toolTip = waterFunctionDestionInfo["name"];
-							} else {
-								//如果没有对应的目标水质，设置不可见
-								ft.alpha = 0;
-							}
-							ft.style = new PredefinedLineStyle("solid",parseInt(colorStr,16), 1,8);
-					   }
+					{
+						var waterFunctionId:String = ft.attributes["ID"];
+						colorStr = "0x000000";
+						waterFunctionDestionInfo = waterFunctionDestina.find(waterFunctionId);
+						if (waterFunctionDestionInfo != null && waterFunctionDestionInfo["目标水质颜色"] != null)  {
+							colorStr = waterFunctionDestionInfo["目标水质颜色"];
+							colorStr = colorStr.replace(/#/ig, "0x");
+							ft.alpha = 1;
+							ft.toolTip = waterFunctionDestionInfo["name"];
+						} else {
+							//如果没有对应的目标水质，设置不可见
+							ft.alpha = 0;
+						}
+						ft.style = new PredefinedLineStyle("solid",parseInt(colorStr,16), 1,8);
+					}
 						
 						for each(riverInfo in waterEvalutions.targetList) {
 						for each(functionInfo in riverInfo.waterFunList) {
@@ -327,8 +327,11 @@ package sm.wegis.szy.commands
 					}
 						break;
 				}
-				modelLocator.mapCtrl.moveLayer(countyFeatureLayer.id, modelLocator.mapCtrl.layerIds.length-1);
-				showWaterEvaluationLegend();
+				if(countyFeatureLayer != null)
+				{
+					modelLocator.mapCtrl.moveLayer(countyFeatureLayer.id, modelLocator.mapCtrl.layerIds.length-1);
+					showWaterEvaluationLegend();
+				}
 			} else {
 				showThemeMapTypePanel(false);
 			}

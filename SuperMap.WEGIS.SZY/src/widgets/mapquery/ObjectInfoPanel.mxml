@@ -395,7 +395,7 @@
 						{
 							infoTypeBar.isUpdateStatus = false;
 						}
-						createNavigationPanel(item);
+						createNavigationPanel(item["data"]);
 					}
 					infoTypeBar.addEventListener(MenuEventEx.MENU_CLICK, mencClickHandler);
 				}
@@ -403,19 +403,18 @@
 			
 			private function mencClickHandler(e:MenuEventEx):void
 			{
-				if(e.Message is MenuItem)
+				if(e.Message["currentItem"] != null)
 				{
-					var item:MenuItem = e.Message as MenuItem;
-					createNavigationPanel(item);
+					createNavigationPanel(e.Message["currentItem"]);
 				}
 			}
 			
 			/**创建导航面板*/
-			private function createNavigationPanel(item:MenuItem=null):void
+			private function createNavigationPanel(item:Object=null):void
 			{
-				if(item.data != null)
+				if(item != null)
 				{
-					switch(item.data["detailType"])
+					switch(item["detailType"])
 					{
 						case "detailInfo":
 						case "linkObject":
@@ -433,7 +432,7 @@
 					//如果为-1 ，则还未添加
 					if (index == -1)
 					{
-						createElemetInfoContent(item.data);
+						createElemetInfoContent(item);
 						infoViewStack.selectedIndex = infoViewStack.numElements -1;
 						
 					}else{

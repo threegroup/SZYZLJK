@@ -2,14 +2,24 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 minWidth="160" minHeight="60">
+		 minWidth="160" minHeight="60" 
+		 xmlns:ns="library://ns.supermap.com/flex/wegis/common">
 	<fx:Script>
 		<![CDATA[
+			import com.supermap.web.core.Feature;
+			import com.supermap.web.core.styles.InfoStyle;
+			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
+			
+			import mx.collections.ArrayCollection;
+			
 			import sm.wegis.szy.renders.items.BreakGridRow;
 			import sm.wegis.szy.renders.items.RiverGridRow;
+			
 			private var _targets:Object;
 			private var _title:String;
 			public var type:String;
+			public var targetLayer:FeaturesLayerEx=null;
+			public var dmID:String="";
 			private var change:Boolean =false;
 			
 			public static const River:String = "river";
@@ -94,6 +104,26 @@
 				this.currentState = "focusOut";
 			}
 			
+			protected function closeHandler(event:MouseEvent):void
+			{
+				if(targetLayer != null && dmID != "")
+				{
+					var fs:ArrayCollection = targetLayer.features as ArrayCollection;
+					if(fs.length > 0)
+					{
+						for(var i:int=0;i<fs.length;i++)
+						{
+							var f:Feature = fs.getItemAt(i) as Feature;
+							if(f.id == dmID)
+							{
+								targetLayer.removeFeature(f);
+								targetLayer.refresh();
+								break;
+							}
+						}
+					}
+				}
+			}
 		]]>
 	</fx:Script>
 	<s:states>
@@ -114,6 +144,11 @@
 				</s:fill>
 			</s:Rect>
 			<s:Label id="titleLb" color="0xFFFFFF" verticalCenter="0" left="5" width="100%"/>
+			<ns:CloseButton id="closeButton" 
+								width="25"
+								height="20" 
+								buttonMode="true" verticalCenter="0" right="0" click="closeHandler(event)">
+			</ns:CloseButton>
 		</s:Group>
 		<mx:Grid id="gridContent"   width="100%" height="100%" 
 				 backgroundAlpha="0.6" 

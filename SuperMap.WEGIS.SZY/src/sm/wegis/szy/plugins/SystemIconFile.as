@@ -575,6 +575,12 @@ package sm.wegis.szy.plugins
 		private static var  C2_8Key:String = "2,8";
 		ResourceManagerEx.RegisterResource("",C2_8Key, C2_8Cls);
 		
+		//
+		[Embed(source="assets/image/location/2_8_H.png")]
+		private static var C2_8_HCls:Class;
+		private static var  C2_8_HKey:String = "2,8_H";
+		ResourceManagerEx.RegisterResource("",C2_8_HKey, C2_8_HCls);
+		
 		[Embed(source="assets/image/location/2_8_S.png")]
 		private static var C2_8_SCls:Class;
 		private static var  C2_8_SKey:String = "2,8_S";
