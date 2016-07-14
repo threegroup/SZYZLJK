@@ -21,6 +21,7 @@
 			import com.supermap.wegis.common.mappingEx.FeaturesLayerEx;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
 			import sm.wegis.szy.events.QueryEvent;
@@ -145,6 +146,8 @@
 								feature.buttonMode = true;
 								breakPointLayer.addFeature(feature);
 							}
+//							if (item.sectionName.toString().search("新断面66") != -1) {
+//							}
 						}
 						//关联断面对应的河流段
 						var riverFeature:Feature = riverLayer.getFeatureByID(item.superObjId);

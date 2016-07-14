@@ -33,12 +33,10 @@
 			import com.supermap.wegis.common.components.events.ContainerManagerEvent;
 			import com.supermap.wegis.common.components.events.MenuEventEx;
 			import com.supermap.wegis.common.components.menuBar.MenuBar;
-			import com.supermap.wegis.common.components.menuBar.MenuItem;
 			import com.supermap.wegis.common.core.hashTable.HashTable;
 			
 			import mx.containers.Canvas;
 			import mx.containers.ViewStack;
-			import mx.events.FlexEvent;
 			
 			import org.efflex.mx.viewStackEffects.Squash;
 			
@@ -168,9 +166,9 @@
 			/**按钮单击事件处理函数*/
 			private function menuClickHandler(e:MenuEventEx):void
 			{
-				if(e.Message is MenuItem)
+				if(e.Message  != null && e.Message.currentItem != null)
 				{
-					var item:MenuItem = e.Message as MenuItem;
+					var item:Object =  e.Message.currentItem;
 					if(item != null)
 					{
 						if(this.viewStack.getChildren().length > 0)
@@ -178,8 +176,8 @@
 							var containerkey:String = item.key;
 							this.viewStack.selectedIndex = this.viewStack.getChildIndex(this.viewStack.getChildByName(containerkey));
 							
-							if(isCreateLinkButton)
-								IndexGroup.updateStatus(item);
+//							if(isCreateLinkButton)
+//								IndexGroup.updateStatus(item);
 						}
 					}
 				}
@@ -244,7 +242,7 @@
 					this.viewStack.addItem(container);
 					
 					if(isCreateLinkButton)
-						IndexGroup.updateStatus(IndexGroup.addButtonItem(title, key));
+						IndexGroup.updateStatus(IndexGroup.addButtonItem(title, key,"",{key:key}));
 				}
 				
 				if(container != null)

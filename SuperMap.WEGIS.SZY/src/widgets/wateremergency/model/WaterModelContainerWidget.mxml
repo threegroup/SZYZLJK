@@ -130,12 +130,14 @@
 				if (hdChart != null){
 					clearRiverCalcResult();
 					targetRwList.selectedIndex = 0;
+					mapCalcBt.visible =false;
 				}
 				
 				if (riverCompareChart != null) {
 					clearRiverCompareResult();
 					riverTargetRwList.selectedIndex = 0;
 					riverCompareSchemeList.selectedIndex = 0;
+					mapCompare.visible = mapCompare.includeInLayout = false
 				}
 				
 				//停止推演
@@ -386,6 +388,7 @@
 						riverCompareTimeSlider.data = riverResult;
 						showRiverCompareLegend(legendData);
 					}
+					initCompareMapViewBounds();
 				}
 				
 				//河道计算结果，污染物展示控制
@@ -607,6 +610,7 @@
 			protected function riverPollutionCompareCloseBt_clickHandler(event:MouseEvent):void
 			{
 				this.currentState = RIVER_STATE;
+				riverCompareTimeSlider.initParam();
 			}
 			
 			//点击查询断面计算结果
@@ -1101,7 +1105,6 @@
 					comparePanelGroup.visible = true;
 					content.removeAllElements();
 					riverCompareTimeSlider.initParam();
-					
 				}
 				var waterModelparam:WaterModelParam = modelLocator.waterModelParam;
 				waterModelparam.method = getQueryMethodHandler(riverTargetRwList, RIVER_WAY);
@@ -1211,6 +1214,7 @@
 						//处理数据，供Hslider使用
 						riverCompareTimeSlider.data = riverCompareResult;
 						showRiverCompareLegend(legendData);
+						initCompareMapViewBounds();
 					}
 				}
 			}
@@ -1584,7 +1588,6 @@
 				currentPlanMap.resolutions = modelLocator.mapCtrl.resolutions;
 				
 				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, currentPlanMap);
-				currentPlanMap.addLayer(featuresLayer);
 				
 				var recordSet:Recordset;
 				var feature:Feature;
@@ -1628,7 +1631,6 @@
 				comparePlanMap.resolutions = modelLocator.mapCtrl.resolutions;
 				
 				featuresLayer = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, comparePlanMap);
-				comparePlanMap.addLayer(featuresLayer);
 				
 				for each(recordSet in recordSets)
 				{
@@ -1805,6 +1807,20 @@
 				panel.title = dmList.selectedItem.sectionName;
 				changeDm();
 				checkChangeEnabelDM();		
+			}
+			
+			private function initCompareMapViewBounds():void
+			{
+				var featuresLayer:FeaturesLayerEx;
+				if (currentPlanMap != null ) {
+					featuresLayer = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, currentPlanMap);
+					currentPlanMap.viewBounds = featuresLayer.bounds;
+				}
+				
+				if (comparePlanMap != null && comparePlanMap.width != 0){
+					featuresLayer = FeatureLayerUtil.getFeatureLayerById(ConstVO.River_Pollution_Compare_Layer, comparePlanMap);
+					comparePlanMap.viewBounds = featuresLayer.bounds;
+				}
 			}
 			
 		]]>
