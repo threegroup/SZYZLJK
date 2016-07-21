@@ -25,6 +25,8 @@
 		<service  label="河湖取水口"  legendid="河湖取水口" />
 		<service label="地表水源地"  legendid="地表水水源地" />
 		<service  label="排污口"  legendid="入河湖排污口" />
+		<service  label="水功能区"  legendid="2,7" />
+		<service  label="河道断面"  legendid="2,8" />
      	<service label="土地利用" type="list"/>
 		<service  label="果园"  legendid="21" />
 		<service  label="茶园"  legendid="22" />
