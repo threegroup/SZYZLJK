@@ -30,6 +30,9 @@ package sm.wegis.szy.vo
 		/**重要水体，敏感目标地图定位注记图层*/
 		public static const LOCATION_FEATURETEXT_LAYER:String = "importWaterLocationFeatureTextLayer";
 		
+		/**信息查询，河流图层*/
+		public static const INFOQUERY_RIVER_LAYER:String = "InfoQueryRiverLayer";
+		
 		/**水质评价，默认监测断面点矢量图层*/
 		public static const EVALUATION_FEATURE_LAYER:String = "EvaluationFeatureLayer";
 		

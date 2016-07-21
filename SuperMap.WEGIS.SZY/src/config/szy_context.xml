@@ -170,6 +170,8 @@
 					</value>
 					<value type="Class">sm.wegis.szy.commands.QueryWaterFunctionDestinationInfoCommand
 					</value>
+					<value type="Class">sm.wegis.szy.commands.QueryRiverFeatureCommand
+					</value>
 					
 					
 					<!--水资源承载力-->
@@ -240,6 +242,7 @@
 				<property name="QueryStationRealInfo" value="QueryStationRealInfoCommand" />
 				<property name="QueryObjectDetail" value="QueryObjectDetailCommand" />
 				<property name="ShowObjectDetail" value="ShowObjectDetailCommand" />
+				<property name="QueryRiverFeature" value="QueryRiverFeatureCommand" />
 
 				<!--水质评价 -->
 				<property name="QueryDefaultPoint" value="QueryDefaultPointCommand"/>

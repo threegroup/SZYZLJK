@@ -69,8 +69,8 @@
 				//查询失败和取消选择
 				if (result.selected == false) {
 					resultList.dataProvider.itemUpdated(selectItem);
-//					QueryInfoLabel.includeInLayout = true;
-//					QueryInfoLabel.text = result.message;
+					//					QueryInfoLabel.includeInLayout = true;
+					//					QueryInfoLabel.text = result.message;
 				} 
 				var featuresLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
 				//如果选择成功，切换选择图标，如果取到勾选，切换普通图标
@@ -166,13 +166,26 @@
 				resultList.dataProvider = null;
 				//清除地图标绘的feature
 				var markLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURE_LAYER, modelLocator.mapCtrl);
-				markLayer.clear();
+				if(markLayer != null)
+				{
+					markLayer.clear();
+				}
 				var markTextLayer:FeaturesLayerEx = FeatureLayerUtil.getFeatureLayerById(ConstVO.LOCATION_FEATURETEXT_LAYER, modelLocator.mapCtrl);
-				markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[2];
-				markTextLayer.clear();
+				if(markTextLayer != null)
+				{
+					markTextLayer.maxVisibleResolution = modelLocator.mapCtrl.resolutions[2];
+					markTextLayer.clear();
+				}
 				//隐藏右下对象监测数据面板
 				var waterWatchEvent:QueryEvent = new QueryEvent(QueryEvent.HIDE_WATER_WATCH_WIDGET);
 				waterWatchEvent.dispatch();
+				//信息查询河流高亮图层
+				var featuresLayer:FeaturesLayerEx = modelLocator.mapCtrl.getLayer(ConstVO.INFOQUERY_RIVER_LAYER) as FeaturesLayerEx;
+				if(featuresLayer != null)
+				{
+					featuresLayer.clear();
+					modelLocator.mapCtrl.removeLayer(featuresLayer);
+				}
 			}
 			
 			//获取下拉框选择的多个类型
@@ -192,18 +205,18 @@
 			
 			private function queryMainTypesHandler(event:CairngormEvent):void
 			{
-//				var data:Object = event.data;
-//				if (data.success == true) {
-//					if (data.attributes) {
-//						if (data.attributes.mainTypes != null && data.attributes.mainTypes.length > 0)
-//						{
-//							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.mainTypes);
-//							scrollButtonPanel.selectedIndex = 0;//必须先设置数据源，查询第一级分类，在scrollButtonPanel的click事件里进行查询
-//						}
-//					}
-//				}else{
-//					QueryInfoLabel.text = data.message;
-//				}
+				//				var data:Object = event.data;
+				//				if (data.success == true) {
+				//					if (data.attributes) {
+				//						if (data.attributes.mainTypes != null && data.attributes.mainTypes.length > 0)
+				//						{
+				//							scrollButtonPanel.dataProvider = new ArrayCollection(data.attributes.mainTypes);
+				//							scrollButtonPanel.selectedIndex = 0;//必须先设置数据源，查询第一级分类，在scrollButtonPanel的click事件里进行查询
+				//						}
+				//					}
+				//				}else{
+				//					QueryInfoLabel.text = data.message;
+				//				}
 			}
 			
 			private function queryTypesAndDetailListHandler(event:CairngormEvent):void
@@ -299,7 +312,12 @@
 						resultList.ensureIndexIsVisible(resultList.dataProvider.getItemIndex(item));
 					}
 				}
-				showFeatureDetail(attribute);
+				
+				modelLocator.waterEvaluaParam.isShowObjectDetail = true;
+				if(modelLocator.waterEvaluaParam.isShowObjectDetail)
+				{
+					showFeatureDetail(attribute);
+				}
 			}
 			
 			private function featureOverHander(event:MouseEvent):void
@@ -391,6 +409,17 @@
 				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_STATION_REAL_INFO);
 				queryEvent.data = requestParam;
 				queryEvent.dispatch();
+				
+				//如果为河流则高亮显示
+				if(event.data["typeIDs"] == "1,1,1")
+				{
+					var queryRiverFeatureEvent:QueryEvent = new QueryEvent(QueryEvent.QUERY_RIVER_FEATURE);
+					var param:Object = {};
+					param["isAdd"] = event.data["selected"];
+					param["superObjId"] = event.data["superObjId"];
+					queryRiverFeatureEvent.data = param;
+					queryRiverFeatureEvent.dispatch();
+				}
 			}
 			
 			private function searchBt_clickHandler():void
@@ -415,7 +444,11 @@
 					} else {
 						modelLocator.mapCtrl.panTo(point);
 					}
-					showFeatureDetail(selectItem);
+					modelLocator.waterEvaluaParam.isShowObjectDetail = false;
+					if(modelLocator.waterEvaluaParam.isShowObjectDetail)
+					{
+						showFeatureDetail(selectItem);
+					}
 				}
 			}
 			
@@ -442,16 +475,16 @@
 	<s:VGroup width="100%" height="100%" gap="5" 
 			  paddingTop="10" paddingBottom="5" paddingLeft="5" paddingRight="5">
 		<!--<s:HGroup width="100%" horizontalAlign="center">
-			<ns:ScrollPanel id="scrollButtonPanel" 
-							horizontalCenter="0"
-							hGap="15"  
-							itemHeight="80" itemWidth="80"
-							contentBackgroundAlpha="0.8" alpha="0.8"
-							labelField="name"
-							rowCount="6" columnCount="4"
-							type="button"
-							buttonStyleName="ScrollPanelItemStyle"
-							ScrollPanelClick="searchBt_clickHandler()"/>
+		<ns:ScrollPanel id="scrollButtonPanel" 
+		horizontalCenter="0"
+		hGap="15"  
+		itemHeight="80" itemWidth="80"
+		contentBackgroundAlpha="0.8" alpha="0.8"
+		labelField="name"
+		rowCount="6" columnCount="4"
+		type="button"
+		buttonStyleName="ScrollPanelItemStyle"
+		ScrollPanelClick="searchBt_clickHandler()"/>
 		</s:HGroup>
 		<line:HLine />-->
 		<s:HGroup width="100%" gap="5" verticalAlign="middle">

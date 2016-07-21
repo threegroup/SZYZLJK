@@ -769,7 +769,7 @@
 			}
 			
 			//河道计算结果查询
-			var riverCaclClickButton:Button;
+			private var riverCaclClickButton:Button;
 			protected function queryRwBt_clickHandler(event:MouseEvent):void
 			{
 				clearRiverCalcResult();
@@ -1942,13 +1942,13 @@
 									<mx:LinearAxis  id="dmVerticalAxis"  title="高程"/>
 								</chart:verticalAxis>
 								<chart:verticalAxisRenderers>
-									<mx:AxisRenderer axis="{dmVerticalAxis}" axisStroke="{chartAxisStroke}" color="#0000A2" tickStroke="{chartAxisStroke}"/>
+									<mx:AxisRenderer axis="{dmVerticalAxis}" axisStroke="{chartAxisStroke}"  fontSize="12" color="#0000A2" tickStroke="{chartAxisStroke}"/>
 								</chart:verticalAxisRenderers>
 								<chart:horizontalAxis>
 									<mx:LinearAxis id="dmHorizontalAxis" title="距离"/>
 								</chart:horizontalAxis>
 								<chart:horizontalAxisRenderers>
-									<mx:AxisRenderer axis="{dmHorizontalAxis}"  canDropLabels="true" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
+									<mx:AxisRenderer axis="{dmHorizontalAxis}"  canDropLabels="true"  fontSize="12" color="#0000A2" axisStroke="{chartAxisStroke}"  tickStroke="{chartAxisStroke}"/>
 								</chart:horizontalAxisRenderers>
 								<chart:series>
 									<mx:AreaSeries id="dmWaterPosition"  xField="distance" yField="altitude" form="curve"/>

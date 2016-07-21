@@ -60,6 +60,9 @@ package sm.wegis.szy.events
 		public static  const QUERY_RIVER_LIST:String = "QueryRiverList";
 		public static  const QUERY_RIVER_LIST_RESPONSE:String = "QueryRiverListResponse";
 		
+		/**查询河流对象列表*/
+		public static  const QUERY_RIVER_FEATURE:String = "QueryRiverFeature";
+		
 		/**查询河流评价年份列表*/
 		public static  const QUERY_RIVER_YEAR:String = "QueryRiverYear";
 		public static  const QUERY_RIVER_YEAR_RESPONSE:String = "QueryRiverYearResponse";

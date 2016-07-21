@@ -14,5 +14,8 @@ package sm.wegis.szy.vo
 		public var name:String;
 		public var x:Number;
 		public var y:Number;
+		
+		/**是否显示要素详情面板，默认不显示。*/
+		public var isShowObjectDetail:Boolean = false;
 	}
 }
