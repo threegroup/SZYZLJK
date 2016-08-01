@@ -14,8 +14,8 @@
 			<Items:SchemeDateItem schemeTitle="制定时间："/>
 			<Items:SchemeTextItem schemeTitle="方案作者：" schemePrompt="作者名称"/>
 			<Items:SchemeDateItem schemeTitle="计算年份："/>
-			<Items:SchemeDropdownItem schemeTitle="计算对象：" schemePrompt="请选择对象"/>
-			<Items:SchemeDropdownItem schemeTitle="计算河段：" schemePrompt="请选择河段"/>
+			<Items:SchemeDropdownItem schemeTitle="计算对象："/>
+			<Items:SchemeDropdownItem schemeTitle="计算河段："/>
 		</s:TileGroup>
 		<Items:SchemeTextItem schemeTitle="方案描述：" width="100%" itemWidth="{Number.NaN}" schemePrompt="请填写方案描述内容"/>
 	</s:VGroup> 
