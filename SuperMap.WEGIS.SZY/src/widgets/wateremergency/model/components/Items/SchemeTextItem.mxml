@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Items:SchemeCommonItem xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:Items="widgets.wateremergency.model.components.Items.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup width="100%" height="100%" horizontalAlign="left" verticalAlign="middle">
+		<s:Label text="{schemeTitle}" width="60"/>
+		<s:TextInput text="{schemeText}" prompt="{schemePrompt}" width="100%"/>
+	</s:HGroup>
+</Items:SchemeCommonItem>

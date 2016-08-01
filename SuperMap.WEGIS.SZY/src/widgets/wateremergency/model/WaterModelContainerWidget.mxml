@@ -7,7 +7,7 @@
 			   xmlns:components="widgets.wateremergency.model.components.*"
 			   width="100%" height="100%"
 			   xmlns:chart="widgets.wateremergency.chart.*"
-			   creationComplete="this_creationCompleteHandler(event)" >
+			   creationComplete="this_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEvent;
@@ -59,6 +59,7 @@
 			public static const BREAK_STATE:String = "breakState";
 			public static const RIVER_STATE:String = "riverState";
 			public static const POLLUTION_COMPARE_STATE:String = "pollutionCompareState";
+			public static const NEW_SCHEME:String = "newscheme";
 			
 			/**断面标识*/
 			public static const BREAK_COVER:String = "BP";
@@ -1835,8 +1836,13 @@
 		<s:State name="breakState"/>
 		<s:State name="riverState"/>
 		<s:State name="pollutionCompareState"/>
+		<s:State name="newscheme"/>
 	</ns:states>
-	<s:Panel id="panel" width="100%" height="100%" visible="false" visible.breakState="true" visible.riverState="true"
+	<s:Panel id="panel" width="100%" height="100%" 
+			 visible="false" 
+			 visible.breakState="true" 
+			 visible.riverState="true" 
+			 visible.newscheme="true"
 			 visible.pollutionCompareState="false">
 		<s:controlBarContent>
 			<fx:Array>
@@ -2148,6 +2154,11 @@
 					</s:NavigatorContent>
 				</mx:ViewStack>
 			</s:VGroup>
+		</s:Group>
+		
+		<!--新建方案面板-->
+		<s:Group id="newSchemeGroup" width="100%"  height="100%"  visible="false" visible.newscheme="true" >
+			<components:NewSchemePanel id="newSchemePanel" width="100%" height="100%"/>
 		</s:Group>
 	</s:Panel>
 	<!--河道污染物浓度对比-->

@@ -238,10 +238,22 @@
 				this.planList.selectedIndex = -1;
 			}
 			
+			//查询方案
 			protected function queryBt_clickHandler(event:MouseEvent):void
 			{
 				hideWaterModelContainerHandler();
 				queryModelList();	
+			}
+			
+			//新建方案
+			protected function createBt_clickHandler(event:MouseEvent):void
+			{
+				var modelShowVO:ModelContainerShowVO = new ModelContainerShowVO();
+				modelShowVO.state = WaterModelContainerWidget.NEW_SCHEME;
+				modelShowVO.title = "新建方案";
+				var queryEvent:QueryEvent = new QueryEvent(QueryEvent.SHOW_MODEL_RESULT_WIDGET);
+				queryEvent.data = modelShowVO;
+				queryEvent.dispatch();	
 			}
 			
 		]]>
@@ -258,8 +270,9 @@
 								<s:Label text="方案名称" height="100%"/>
 								<s:TextInput id="planTextInput" width="100%" prompt="输入方案名称"/>
 								<s:Button id="queryBt" label="查询"  styleName="SubmitRegisterStyle"
-										  click="queryBt_clickHandler(event)" />
-								<s:Button id="createBt" label="新建"  styleName="SubmitRegisterStyle" />
+										  click="queryBt_clickHandler(event)" buttonMode="true"/>
+								<s:Button id="createBt" label="新建" styleName="SubmitRegisterStyle" 
+										  click="createBt_clickHandler(event)" buttonMode="true"/>
 							</s:HGroup>
 							<line:HLine width="100%"/>
 							<s:List id="planList" borderVisible="false" width="100%" height="100%"

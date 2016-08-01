@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%" height="100%" 
+		 xmlns:Items="widgets.wateremergency.model.components.Items.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%" verticalAlign="top" gap="0"
+			  paddingLeft="5" paddingTop="5" paddingRight="5" paddingBottom="5">
+		<s:TileGroup id="header" horizontalGap="5" verticalGap="5" width="100%" height="55" maxHeight="100">
+			<Items:SchemeTextItem schemeTitle="方案名称：" schemePrompt="新建方案"/>
+			<Items:SchemeDateItem schemeTitle="制定时间："/>
+			<Items:SchemeTextItem schemeTitle="方案作者：" schemePrompt="作者名称"/>
+			<Items:SchemeDateItem schemeTitle="计算年份："/>
+			<Items:SchemeDropdownItem schemeTitle="计算对象：" schemePrompt="请选择对象"/>
+			<Items:SchemeDropdownItem schemeTitle="计算河段：" schemePrompt="请选择河段"/>
+		</s:TileGroup>
+		<Items:SchemeTextItem schemeTitle="方案描述：" width="100%" itemWidth="{Number.NaN}" schemePrompt="请填写方案描述内容"/>
+	</s:VGroup> 
+</s:Group>

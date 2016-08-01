@@ -13,12 +13,16 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
+			[Bindable]
 			/**项目宽度*/
 			public var itemWidth:Number = 120;
+			[Bindable]
 			/**星期*/
 			public var dayNamesArray:Array=["日", "一", "二", "三", "四", "五", "六"];
+			[Bindable]
 			/**月份*/
 			public var monthNamesArray:Array=["一月", "二月", "三月", "四月", "五月","六月", "七月", "八月", "九月", "十月", "十一月","十二月"];
+			[Bindable]
 			/**日期格式*/
 			public var formatString:String = "YYYY-MM-DD";
 			public var chartType:String = "Line";

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="{itemWidth}">
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var schemeTitle:String;
+			[Bindable]
+			public var schemeText:String;
+			[Bindable]
+			public var schemePrompt:String;
+			
+			[Bindable]
+			/**项目宽度*/
+			public var itemWidth:Number = 250;
+			/**星期*/
+			[Bindable]
+			public var dayNamesArray:Array=["日", "一", "二", "三", "四", "五", "六"];
+			/**月份*/
+			[Bindable]
+			public var monthNamesArray:Array=["一月", "二月", "三月", "四月", "五月","六月", "七月", "八月", "九月", "十月", "十一月","十二月"];
+			/**日期格式*/
+			[Bindable]
+			public var formatString:String = "YYYY-MM-DD";
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</s:Group>
